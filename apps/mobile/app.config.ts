@@ -1,24 +1,6 @@
-/* eslint-disable max-lines-per-function */
 import type { ConfigContext, ExpoConfig } from '@expo/config';
-import type { AppIconBadgeConfig } from 'app-icon-badge/types';
 
 import { ClientEnv, Env } from './env';
-
-const appIconBadgeConfig: AppIconBadgeConfig = {
-  enabled: Env.APP_ENV !== 'production',
-  badges: [
-    {
-      text: Env.APP_ENV,
-      type: 'banner',
-      color: 'white',
-    },
-    {
-      text: Env.VERSION.toString(),
-      type: 'ribbon',
-      color: 'white',
-    },
-  ],
-};
 
 export default ({ config }: ConfigContext): ExpoConfig => ({
   ...config,
@@ -69,10 +51,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
         fonts: ['./assets/fonts/Inter.ttf'],
       },
     ],
-    'expo-localization',
     'expo-router',
-    ['app-icon-badge', appIconBadgeConfig],
-    ['react-native-edge-to-edge'],
   ],
   extra: {
     ...ClientEnv,
