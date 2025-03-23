@@ -7,6 +7,7 @@ import {
   SidebarInset,
   SidebarProvider,
 } from "@repo/ui/sidebar";
+import { Toaster } from "@repo/ui/sonner";
 
 import "@repo/ui/globals.css";
 
@@ -23,9 +24,12 @@ export default function RootLayout({
           <div className="flex flex-1">
             <AppSidebar />
             <SidebarInset>
-              {children}
+              <div className="min-h-full">
+                {children}
+              </div>
             </SidebarInset>
           </div>
+          <Toaster richColors closeButton />
         </Providers>
       </body>
     </html>
@@ -35,10 +39,9 @@ export default function RootLayout({
 function Providers({ children }: { children: React.ReactNode; }) {
   return (
     <div className="[--header-height:calc(--spacing(14))]">
-      <SidebarProvider className="flex flex-col">
+      <SidebarProvider className="flex flex-col h-[100svh-var(--header-height)]!">
         <NextThemesProvider
           attribute="class"
-          defaultTheme="system"
           enableSystem
           disableTransitionOnChange
           enableColorScheme

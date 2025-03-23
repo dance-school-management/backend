@@ -1,3 +1,5 @@
+"use client";
+
 import { ChevronRight, type LucideIcon } from "lucide-react";
 
 import {
@@ -17,6 +19,7 @@ import {
   SidebarMenuSubItem,
 } from "@repo/ui/sidebar";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 export function NavSection({
   title,
@@ -33,18 +36,29 @@ export function NavSection({
     }[];
   }[];
 }) {
+  const pathname = usePathname();
+
   return (
     <SidebarGroup>
       <SidebarGroupLabel>{title}</SidebarGroupLabel>
       <SidebarMenu>
         {items.map((item) => (
-          <Collapsible key={item.title} asChild>
+          <Collapsible key={item.title} asChild defaultOpen={pathname.startsWith(item.url)}>
             <SidebarMenuItem>
-              <SidebarMenuButton asChild tooltip={item.title}>
-                <Link href={item.url}>
-                  <item.icon />
-                  <span>{item.title}</span>
-                </Link>
+              <SidebarMenuButton asChild tooltip={item.title} isActive={pathname === item.url}>
+                {item.items?.length ? (
+                  <CollapsibleTrigger asChild>
+                    <div>
+                      <item.icon />
+                      <span>{item.title}</span>
+                    </div>
+                  </CollapsibleTrigger>
+                ) : (
+                  <Link href={item.url}>
+                    <item.icon />
+                    <span>{item.title}</span>
+                  </Link>
+                )}
               </SidebarMenuButton>
               {item.items?.length ? (
                 <>
@@ -58,7 +72,7 @@ export function NavSection({
                     <SidebarMenuSub>
                       {item.items?.map((subItem) => (
                         <SidebarMenuSubItem key={subItem.title}>
-                          <SidebarMenuSubButton asChild>
+                          <SidebarMenuSubButton isActive={pathname === subItem.url} asChild>
                             <Link href={subItem.url}>
                               <span>{subItem.title}</span>
                             </Link>

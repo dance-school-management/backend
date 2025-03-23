@@ -2,17 +2,10 @@
 
 import { MenuIcon } from "lucide-react";
 
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@repo/ui/breadcrumb";
 import { Button } from "@repo/ui/button";
 import { Separator } from "@repo/ui/separator";
 import { useSidebar } from "@repo/ui/sidebar";
+import { ModeToggle } from "./theme-toggle";
 
 export function SiteHeader() {
   const { toggleSidebar } = useSidebar();
@@ -31,19 +24,9 @@ export function SiteHeader() {
           </Button>
           <Separator orientation="vertical" className="mr-2 h-4" />
         </div>
-        <Breadcrumb className="hidden sm:block">
-          <BreadcrumbList>
-            <BreadcrumbItem>
-              <BreadcrumbLink href="#">
-                Building Your Application
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbPage>Data Fetching</BreadcrumbPage>
-            </BreadcrumbItem>
-          </BreadcrumbList>
-        </Breadcrumb>
+        <div className="ml-auto">
+          <ModeToggle />
+        </div>
       </div>
     </header>
   );
