@@ -1,0 +1,5 @@
+{
+    "validation": {
+        "length": "Nazwa musi być przynajmniej długa na {{len}} znaków"
+    }
+}

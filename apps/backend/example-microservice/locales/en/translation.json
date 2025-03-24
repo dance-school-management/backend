@@ -1,0 +1,5 @@
+{
+    "validation": {
+        "length": "Name must be at least {{len}} characters"
+    }
+}
