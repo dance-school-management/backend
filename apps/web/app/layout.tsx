@@ -1,5 +1,13 @@
+"use client";
+
 import { Geist, Geist_Mono } from "next/font/google";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
+import {
+  QueryClient,
+  QueryClientProvider,
+  isServer
+} from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
 import { AppSidebar } from "@/components/app-sidebar";
 import { SiteHeader } from "@/components/site-header";
@@ -19,6 +27,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${fontSans.variable} ${fontMono.variable} font-sans antialiased `}>
+        <Toaster richColors closeButton duration={Infinity} className="pointer-events-auto" />
         <Providers>
           <SiteHeader />
           <div className="flex flex-1">
@@ -29,7 +38,7 @@ export default function RootLayout({
               </div>
             </SidebarInset>
           </div>
-          <Toaster richColors closeButton />
+          <ReactQueryDevtools initialIsOpen={false} />
         </Providers>
       </body>
     </html>
@@ -37,20 +46,45 @@ export default function RootLayout({
 }
 
 function Providers({ children }: { children: React.ReactNode; }) {
+  const queryClient = getQueryClient();
+
   return (
     <div className="[--header-height:calc(--spacing(14))]">
-      <SidebarProvider className="flex flex-col h-[100svh-var(--header-height)]!">
-        <NextThemesProvider
-          attribute="class"
-          enableSystem
-          disableTransitionOnChange
-          enableColorScheme
-        >
-          {children}
-        </NextThemesProvider>
-      </SidebarProvider>
+      <QueryClientProvider client={queryClient}>
+        <SidebarProvider className="flex flex-col h-[100svh-var(--header-height)]!">
+          <NextThemesProvider
+            attribute="class"
+            enableSystem
+            disableTransitionOnChange
+            enableColorScheme
+          >
+            {children}
+          </NextThemesProvider>
+        </SidebarProvider>
+      </QueryClientProvider>
     </div >
   );
+}
+
+function makeQueryClient() {
+  return new QueryClient({
+    defaultOptions: {
+      queries: {
+        staleTime: 60 * 1000,
+      },
+    },
+  });
+}
+
+let browserQueryClient: QueryClient | undefined = undefined;
+
+function getQueryClient() {
+  if (isServer) {
+    return makeQueryClient();
+  } else {
+    if (!browserQueryClient) browserQueryClient = makeQueryClient();
+    return browserQueryClient;
+  }
 }
 
 const fontSans = Geist({

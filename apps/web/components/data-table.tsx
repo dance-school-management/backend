@@ -4,7 +4,6 @@ import {
   IconChevronDown,
   IconChevronRight,
   IconLayoutColumns,
-  IconPlus
 } from "@tabler/icons-react";
 import {
   ColumnDef,
@@ -20,8 +19,10 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import * as React from "react";
-import { z } from "zod";
+import z from "zod";
 
+import { NewEmployeeDrawer, UpdateEmployeeDrawer } from "@/components/employee-drawers";
+import { EmployeeRole } from "@/lib/model/employee";
 import {
   Avatar,
   AvatarFallback,
@@ -30,30 +31,11 @@ import {
 import { Badge } from "@repo/ui/badge";
 import { Button } from "@repo/ui/button";
 import {
-  Drawer,
-  DrawerClose,
-  DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerTrigger,
-} from "@repo/ui/drawer";
-import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@repo/ui/dropdown-menu";
-import { Input } from "@repo/ui/input";
-import { Label } from "@repo/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@repo/ui/select";
 import {
   Table,
   TableBody,
@@ -62,12 +44,6 @@ import {
   TableHeader,
   TableRow,
 } from "@repo/ui/table";
-
-export enum EmployeeRole {
-  Admin = "Admin",
-  Trainer = "Trainer",
-  Receptionist = "Receptionist",
-}
 
 export const schema = z.object({
   id: z.number(),
@@ -104,7 +80,7 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
     accessorKey: "name",
     header: "Name",
     cell: ({ row }) => {
-      return <div>{row.original.name} {row.original.surname}</div>;
+      return <UpdateEmployeeDrawer employee={row.original} />;
     },
     enableHiding: false,
   },
@@ -200,7 +176,7 @@ export function DataTable({ data }: { data: z.infer<typeof schema>[]; }) {
   return (
     <div className="w-full flex-col justify-start gap-6">
       <div className="flex items-center justify-between px-4 lg:px-6 mb-4">
-        <EmployeeDrawer />
+        <NewEmployeeDrawer />
         <div className="ml-auto flex items-center gap-2">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -278,80 +254,5 @@ export function DataTable({ data }: { data: z.infer<typeof schema>[]; }) {
         </div>
       </div>
     </div>
-  );
-}
-
-export const oldSchema = z.object({
-  id: z.number(),
-  header: z.string(),
-  type: z.string(),
-  target: z.string(),
-  limit: z.string(),
-});
-
-function EmployeeDrawer({ item }: { item?: z.infer<typeof oldSchema>; }) {
-  return (
-    <Drawer direction="right">
-      <DrawerTrigger asChild>
-        {item ? (
-          <Button variant="link" className="text-foreground w-fit px-0 text-left">
-            {item.header}
-          </Button>
-        ) : (
-          <Button variant="outline" className="text-foreground w-fit text-left">
-            <IconPlus /> New Employee
-          </Button>
-        )}
-      </DrawerTrigger>
-      <DrawerContent>
-        <DrawerHeader className="gap-1">
-          <DrawerTitle>{item?.header}</DrawerTitle>
-          <DrawerDescription>
-            Showing total visitors for the last 6 months
-          </DrawerDescription>
-        </DrawerHeader>
-        <div className="flex flex-col gap-4 overflow-y-auto px-4 text-sm">
-          <form className="flex flex-col gap-4">
-            <div className="flex flex-col gap-3">
-              <Label htmlFor="header">Header</Label>
-              <Input id="header" defaultValue={item?.header} />
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="flex flex-col gap-3">
-                <Label htmlFor="type">Type</Label>
-                <Select>
-                  <SelectTrigger id="type" className="w-full">
-                    <SelectValue placeholder="Select a type" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {Object.values(EmployeeRole).map((role) => (
-                      <SelectItem key={role} value={role}>
-                        {role}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="flex flex-col gap-3">
-                <Label htmlFor="target">Target</Label>
-                <Input id="target" defaultValue={item?.target} />
-              </div>
-              <div className="flex flex-col gap-3">
-                <Label htmlFor="limit">Limit</Label>
-                <Input id="limit" defaultValue={item?.limit} />
-              </div>
-            </div>
-          </form>
-        </div>
-        <DrawerFooter>
-          <Button>Submit</Button>
-          <DrawerClose asChild>
-            <Button variant="outline">Done</Button>
-          </DrawerClose>
-        </DrawerFooter>
-      </DrawerContent>
-    </Drawer>
   );
 }
