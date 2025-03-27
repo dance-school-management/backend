@@ -2,6 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
+import { redirect, RedirectType } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -46,6 +47,10 @@ export function LoginForm() {
         <code className="text-white">{JSON.stringify(values, null, 2)}</code>
       </pre>
     );
+
+    setTimeout(() => {
+      redirect("/", RedirectType.replace);
+    }, 1000);
   };
 
   return (
