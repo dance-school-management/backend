@@ -55,10 +55,11 @@ const dropZoneConfig = {
 };
 
 const formSchema = z.object({
+  id: z.number().optional(),
   name: z.string().min(2),
   surname: z.string().min(2),
   email: z.string().email(),
-  phone: z.string().min(9).optional(),
+  phone: z.string().optional(),
   role: z.string(),
   description: z.string().optional(),
   file: z.string().optional()
@@ -128,7 +129,9 @@ export function NewEmployeeDrawer() {
                       <Input
                         placeholder="123 456 789"
                         type="text"
-                        {...field} />
+                        {...field}
+                        value={field.value ?? undefined}
+                      />
                     </FormControl>
                     <FormDescription>Enter phone number in format XXX XXX XXX</FormDescription>
                     <FormMessage />
@@ -151,8 +154,6 @@ export function NewEmployeeDrawer() {
   );
 }
 
-
-
 export function UpdateEmployeeDrawer({ employee }: { employee: FormValues; }) {
   const [file, setFile] = useState<File[] | null>(null);
 
@@ -162,22 +163,29 @@ export function UpdateEmployeeDrawer({ employee }: { employee: FormValues; }) {
   });
 
   function onSubmit(values: Partial<FormValues>) {
-    const partialData = (Object.keys(values) as (keyof FormValues)[]).reduce((acc, key) => {
-      if (form.formState.dirtyFields[key] && values[key] !== employee[key] && values[key] !== "") {
-        acc[key] = values[key];
-      }
-      return acc;
+    const diff = (Object.keys(values) as (keyof FormValues)[]).reduce((diff, key) => {
+      if (employee[key] === values[key]) return diff;
+      if (values[key] === "") return {
+        ...diff,
+        [key]: null
+      };
+      return {
+        ...diff,
+        [key]: values[key]
+      };
     }, {} as Partial<FormValues>);
 
-    if (Object.keys(partialData).length === 0) {
+    if (Object.keys(diff).length === 0) {
       toast.info("No changes detected");
       return;
     }
 
+    diff.id = employee.id;
+
     try {
       toast(
         <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(partialData, null, 2)}</code>
+          <code className="text-white">{JSON.stringify(diff, null, 2)}</code>
         </pre>
       );
     } catch (error) {
@@ -207,7 +215,14 @@ export function UpdateEmployeeDrawer({ employee }: { employee: FormValues; }) {
                 <FormItem>
                   <FormLabel>Phone Number</FormLabel>
                   <FormControl>
-                    <Input placeholder="123 456 789" type="text" {...field} />
+                    <Input
+                      placeholder="123 456 789"
+                      type="text" {...field}
+                      value={field.value}
+                      onChange={(e) => {
+                        field.onChange(e.target.value);
+                      }}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -286,11 +301,11 @@ const FileChooser = ({ file, setFile }: FileChooserProps) => (
   </FormItem>
 );
 
-const BioField = ({ field }: { field: Partial<ControllerRenderProps<{ description: string; }, "description">>; }) => (
+const BioField = ({ field }: { field: Partial<ControllerRenderProps<{ description: string | null; }, "description">>; }) => (
   <FormItem>
     <FormLabel>Bio</FormLabel>
     <FormControl>
-      <Textarea placeholder="Type Bio section of employee" className="resize-none" {...field} />
+      <Textarea placeholder="Type Bio section of employee" className="resize-none" {...field} value={field.value ?? undefined} />
     </FormControl>
     <FormMessage />
   </FormItem>

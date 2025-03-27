@@ -27,7 +27,6 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${fontSans.variable} ${fontMono.variable} font-sans antialiased `}>
-        <Toaster richColors closeButton duration={Infinity} className="pointer-events-auto" />
         <Providers>
           <SiteHeader />
           <div className="flex flex-1">
@@ -38,6 +37,7 @@ export default function RootLayout({
               </div>
             </SidebarInset>
           </div>
+          <Toaster richColors closeButton className="pointer-events-auto" />
           <ReactQueryDevtools initialIsOpen={false} />
         </Providers>
       </body>
