@@ -21,7 +21,7 @@ import {
 import * as React from "react";
 import z from "zod";
 
-import { NewEmployeeDrawer, UpdateEmployeeDrawer } from "@/components/employee-drawers";
+import { NewEmployeeDrawer, UpdateEmployeeDrawer } from "@/components/forms/employee-drawers";
 import { EmployeeRole } from "@/lib/model/employee";
 import {
   Avatar,

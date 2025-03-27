@@ -85,7 +85,6 @@ export function NewEmployeeDrawer() {
 
   function onSubmit(values: FormValues) {
     try {
-      console.log(values);
       toast(
         <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
           <code className="text-white">{JSON.stringify(values, null, 2)}</code>
@@ -313,9 +312,9 @@ const BioField = ({ field }: { field: Partial<ControllerRenderProps<{ descriptio
 
 const EmailField = ({ field }: { field: Partial<ControllerRenderProps<{ email: string; }, "email">>; }) => (
   <FormItem>
-    <FormLabel>Bio</FormLabel>
+    <FormLabel>Email*</FormLabel>
     <FormControl>
-      <Textarea placeholder="Type Bio section of employee" className="resize-none" {...field} />
+      <Input placeholder="xxxx@xxx.xxx" className="resize-none" {...field} />
     </FormControl>
     <FormMessage />
   </FormItem>
