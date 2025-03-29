@@ -7,6 +7,8 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 
+import { authClient } from "@/lib/auth/auth-client";
+import { useUserStore } from "@/lib/store";
 import { Button } from "@repo/ui/button";
 import {
   Card,
@@ -33,6 +35,8 @@ const formSchema = z.object({
 type FormValues = z.infer<typeof formSchema>;
 
 export function LoginForm() {
+  const { setUser } = useUserStore();
+
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -41,16 +45,36 @@ export function LoginForm() {
     }
   });
 
-  const onSubmit = (values: FormValues) => {
+  const onSubmit = async (values: FormValues) => {
     toast(
       <pre className="w-full rounded-md bg-slate-950">
         <code className="text-white">{JSON.stringify(values, null, 2)}</code>
       </pre>
     );
 
-    setTimeout(() => {
-      redirect("/", RedirectType.replace);
-    }, 1000);
+    await authClient.signIn.email({
+      email: values.email,
+      password: values.password,
+      fetchOptions: {
+        onError: (ctx) => {
+          toast.error(ctx.error.message);
+        },
+      },
+    });
+
+    const { data } = await authClient.getSession({
+      fetchOptions: {
+        onError: (ctx) => {
+          toast.error(ctx.error.message);
+        },
+      },
+    });
+
+    if (data) {
+      toast.success("Logged in successfully");
+      setUser(data.user);
+      redirect("/user/progress", RedirectType.replace);
+    }
   };
 
   return (

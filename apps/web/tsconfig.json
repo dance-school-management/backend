@@ -12,7 +12,8 @@
       {
         "name": "next"
       }
-    ]
+    ],
+    "strict": true,
   },
   "include": [
     "**/*.ts",

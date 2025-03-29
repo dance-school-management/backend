@@ -5,7 +5,9 @@ import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
+import { redirect, RedirectType } from "next/navigation";
 
+import { signUp } from "@/lib/auth/auth-client";
 import { Button } from "@repo/ui/button";
 import {
   Card,
@@ -23,7 +25,6 @@ import {
   FormMessage,
 } from "@repo/ui/form";
 import { Input } from "@repo/ui/input";
-import { redirect, RedirectType } from "next/navigation";
 
 const formSchema = z.object({
   email: z.string().email(),
@@ -58,9 +59,23 @@ export function RegisterForm() {
       </pre>
     );
 
-    setTimeout(() => {
-      redirect("/", RedirectType.replace);
-    }, 1000);
+    const { email, password, name, surname } = values;
+    signUp.email({
+      email,
+      password,
+      name,
+      surname,
+      fetchOptions: {
+        onError: (ctx) => {
+          toast.error(ctx.error.message);
+        },
+        onSuccess: () => {
+          toast.success("Account created successfully. Please log in.");
+          redirect("/login", RedirectType.replace);
+        },
+      },
+    });
+
   };
 
   return (

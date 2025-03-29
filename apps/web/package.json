@@ -35,16 +35,19 @@
     "@tanstack/react-table": "^8.21.2",
     "@yudiel/react-qr-scanner": "^2.2.1",
     "axios": "^1.8.4",
+    "better-auth": "^1.2.5",
     "class-variance-authority": "^0.7.1",
     "lucide-react": "^0.475.0",
     "next": "^15.2.1",
     "next-themes": "^0.4.6",
+    "qrcode.react": "^4.2.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "recharts": "^2.15.1",
     "sonner": "^2.0.1",
     "vaul": "^1.1.2",
-    "zod": "link:@hookform/resolvers/zod"
+    "zod": "link:@hookform/resolvers/zod",
+    "zustand": "^5.0.3"
   },
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",
