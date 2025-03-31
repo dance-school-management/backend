@@ -1,0 +1,14 @@
+services:
+  ex-mic-1:
+    build:
+      context: .
+      target: ex-mic-1
+    ports:
+      - "8000:8000"
+
+  ex-mic-2:
+    build:
+      context: .
+      target: ex-mic-2
+    ports:
+      - "8001:8001"
