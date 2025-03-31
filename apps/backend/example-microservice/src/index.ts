@@ -1,7 +1,5 @@
-import { startServer } from "./createApp";
+import { startServer } from "./utils/createApp";
 import "reflect-metadata";
-import { AppDataSource } from "./dataSource";
-import { User } from "./entity/User";
 import 'dotenv/config';
 const PORT = process.env.PORT || 3000;
 
