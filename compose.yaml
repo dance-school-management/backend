@@ -1,4 +1,14 @@
 services:
+  api-gateway:
+    build:
+      context: .
+      target: api-gateway
+    ports:
+      - "7999:7999"
+    depends_on:
+      - ex-mic-1
+      - ex-mic-2
+
   ex-mic-1:
     build:
       context: .
