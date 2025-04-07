@@ -4,7 +4,6 @@
     "baseUrl": ".",
     "paths": {
       "@/components/*": ["./components/*"],
-      "@/lib/*": ["./lib/*"],
       "@/*": ["./app/*"],
       "@repo/ui/*": ["../../packages/ui/src/*"]
     },
@@ -12,8 +11,7 @@
       {
         "name": "next"
       }
-    ],
-    "strict": true,
+    ]
   },
   "include": [
     "**/*.ts",

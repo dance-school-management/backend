@@ -1,0 +1,24 @@
+services:
+  api-gateway:
+    build:
+      context: .
+      target: api-gateway
+    ports:
+      - "7999:7999"
+    depends_on:
+      - ex-mic-1
+      - ex-mic-2
+
+  ex-mic-1:
+    build:
+      context: .
+      target: ex-mic-1
+    ports:
+      - "8000:8000"
+
+  ex-mic-2:
+    build:
+      context: .
+      target: ex-mic-2
+    ports:
+      - "8001:8001"

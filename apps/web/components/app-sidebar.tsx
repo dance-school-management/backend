@@ -7,19 +7,28 @@ import {
   Home,
   Info,
   LifeBuoy,
-  Newspaper,
-  NotebookText,
   PieChart,
   ScanQrCode,
   Tickets,
-  User
+  User,
+  NotebookText,
+  Newspaper
 } from "lucide-react";
 
-import { useUserStore } from "@/lib/store";
-import { Sidebar, SidebarContent, SidebarFooter } from "@repo/ui/sidebar";
 import { NavProfile } from "components/nav/profile";
 import { NavSecondary } from "components/nav/secondary";
 import { NavSection } from "components/nav/section";
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+} from "@repo/ui/sidebar";
+
+const user = {
+  name: "Test User",
+  email: "test@test.com",
+  avatar: "",
+};
 
 const data = {
   general: [
@@ -77,7 +86,7 @@ const data = {
       icon: User,
     },
     {
-      title: "Dashboard",
+      title: "Sales Dashboard",
       url: "/admin/dashboard",
       icon: PieChart,
     },
@@ -112,8 +121,6 @@ const data = {
 };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const { user } = useUserStore();
-
   return (
     <Sidebar
       className="top-(--header-height) h-[calc(100svh-var(--header-height))]!"
@@ -121,19 +128,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     >
       <SidebarContent>
         <NavSection title="General" items={data.general} />
-        {user && (
-          <NavSection title="User" items={data.user} />
-        )}
-        {user?.role === "trainer" && (
-          <NavSection title="Trainer" items={data.trainer} />
-        )}
-        {(user?.role === "receptionist" || user?.role === "admin") && (
-          <NavSection title="Receptionist" items={data.receptionist} />
-        )}
-        {user?.role === "admin" && (
-          <NavSection title="Admin" items={data.admin} />
-        )}
-
+        <NavSection title="User" items={data.user} />
+        <NavSection title="Trainer" items={data.trainer} />
+        <NavSection title="Receptionist" items={data.receptionist} />
+        <NavSection title="Admin" items={data.admin} />
         <NavSecondary items={data.bottom} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
