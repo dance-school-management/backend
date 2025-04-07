@@ -22,7 +22,7 @@ const proxyMiddlewareEx2 = createProxyMiddleware<Request, Response>(  {
 
 app.use('/ex1', proxyMiddlewareEx1);
 app.use('/ex2', proxyMiddlewareEx2);
-
+app.use('/products', proxyMiddlewareEx2);
 
 app.get("/", (req: Request, res) => {
   res.send("Hello from api-gateway");
