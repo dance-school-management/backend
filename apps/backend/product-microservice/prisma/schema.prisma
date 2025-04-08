@@ -25,14 +25,14 @@ model Course {
 
 model DanceCategory {
   id          Int      @id @default(autoincrement())
-  name        String
-  description String
+  name        String   @unique
+  description String  
   Course      Course[]
 }
 
 model AdvancementLevel {
   id          Int      @id @default(autoincrement())
-  name        String
+  name        String   @unique
   description String
   Course      Course[]
 }

@@ -23,7 +23,6 @@
  *         description: Super dance!
  */
 
-
 /**
  * @swagger
  * components:
@@ -40,13 +39,12 @@
  *         test: message
  */
 
-
 /**
  * @openapi
  * /coordinator/dance_category:
  *   post:
  *     tags:
- *       - create 
+ *       - create
  *     summary: Dance Category creation
  *     description: Allows to create new dance
  *     requestBody:
@@ -73,7 +71,6 @@
  *         description: alright
  */
 
-
 /**
  * @swagger
  * /coordinator:
@@ -90,6 +87,6 @@
  *    description: Testing
  *    responses:
  *      200:
- *        description: good  
- * 
+ *        description: good
+ *
  */
