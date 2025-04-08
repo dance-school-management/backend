@@ -15,6 +15,21 @@ export const authClient = createAuthClient({
         type: "string",
         input: true,
         required: true,
+      },
+      description: {
+        type: "string",
+        input: true,
+        required: false,
+      },
+      phone: {
+        type: "string",
+        input: true,
+        required: false,
+      },
+      date_of_start_working: {
+        type: "string",
+        input: true,
+        required: false,
       }
     }
   })],
