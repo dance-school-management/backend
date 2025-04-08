@@ -14,25 +14,120 @@ datasource db {
 }
 
 model Course {
-  id                 Int              @id @default(autoincrement())
+  id                 Int                    @id @default(autoincrement())
   name               String
   description        String
-  danceCategory      DanceCategory?   @relation(fields: [danceCategoryId], references: [id])
+  danceCategory      DanceCategory?         @relation(fields: [danceCategoryId], references: [id])
   danceCategoryId    Int?
-  advancementLevel   AdvancementLevel? @relation(fields: [advancementLevelId], references: [id])
+  advancementLevel   AdvancementLevel?      @relation(fields: [advancementLevelId], references: [id])
   advancementLevelId Int?
+  students           StudentsOnCourses[]
+  instructors        InstructorsOnCourses[]
+  courseStatus       CourseStatus
 }
 
 model DanceCategory {
-  id          Int      @id @default(autoincrement())
-  name        String   @unique
-  description String  
-  Course      Course[]
+  id            Int             @id @default(autoincrement())
+  name          String          @unique
+  description   String
+  course        Course[]
+  classTemplate ClassTemplate[]
 }
 
 model AdvancementLevel {
-  id          Int      @id @default(autoincrement())
-  name        String   @unique
+  id            Int             @id @default(autoincrement())
+  name          String          @unique
+  description   String
+  course        Course[]
+  classTemplate ClassTemplate[]
+}
+
+model StudentsOnCourses {
+  studentId Int
+  courseId  Int
+  course    Course @relation(fields: [courseId], references: [id])
+
+  @@id([studentId, courseId])
+}
+
+model InstructorsOnCourses {
+  instructorId Int
+  courseId     Int
+  course       Course @relation(fields: [courseId], references: [id])
+
+  @@id([instructorId, courseId])
+}
+
+model Class {
+  id              Int                    @id() @default(autoincrement())
+  classTemplate   ClassTemplate          @relation(fields: [classTemplateId], references: [id])
+  classTemplateId Int
+  groupNumber     Int
+  startDate       DateTime
+  endDate         DateTime
+  peopleLimit     Int
+  classRoom       ClassRoom              @relation(fields: [classRoomId], references: [id])
+  classRoomId     Int
+  classStatus     ClassStatus
+  instructor      InstructorsOnClasses[]
+  student         StudentsOnClasses[]
+}
+
+model StudentsOnClasses {
+  studentId Int
+  classId   Int
+  class     Class @relation(fields: [classId], references: [id])
+
+  @@id([studentId, classId])
+}
+
+model InstructorsOnClasses {
+  instructorId Int
+  classId      Int
+  class        Class @relation(fields: [classId], references: [id])
+
+  @@id([instructorId, classId])
+}
+
+model ClassRoom {
+  id          Int     @id @default(autoincrement())
+  class       Class[]
+  name        String
+  peopleLimit Int
   description String
-  Course      Course[]
+}
+
+model ClassTemplate {
+  id                 Int               @id() @default(autoincrement())
+  Class              Class[]
+  name               String
+  description        String
+  price              Decimal           @db.Decimal(precision: 10, scale: 2)
+  currency           String
+  danceCategory      DanceCategory?    @relation(fields: [danceCategoryId], references: [id])
+  danceCategoryId    Int?
+  advancementLevel   AdvancementLevel? @relation(fields: [advancementLevelId], references: [id])
+  advancementLevelId Int?
+  classType          ClassType
+}
+
+enum ClassType {
+  GROUP_CLASS
+  PRIVATE_CLASS
+  THEME_PARTY
+}
+
+enum ClassStatus {
+  HIDDEN
+  NORMAL
+  CANCELLED
+  POSTPONED
+  MAKE_UP
+}
+
+enum CourseStatus {
+  HIDDEN
+  SALE
+  ONGOING
+  FINISHED
 }
