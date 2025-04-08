@@ -39,3 +39,4 @@ yarn-error.log*
 *.db
 *_migrations
 .pnpm-store
+pnpm-lock.yaml
