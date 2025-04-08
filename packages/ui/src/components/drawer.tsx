@@ -8,7 +8,7 @@ import { cn } from "@repo/ui/lib/utils";
 function Drawer({
   ...props
 }: React.ComponentProps<typeof DrawerPrimitive.Root>) {
-  return <DrawerPrimitive.Root data-slot="drawer" {...props} />;
+  return <DrawerPrimitive.Root handleOnly data-slot="drawer" {...props} />;
 }
 
 function DrawerTrigger({
@@ -63,6 +63,9 @@ function DrawerContent({
           "data-[vaul-drawer-direction=left]:inset-y-0 data-[vaul-drawer-direction=left]:left-0 data-[vaul-drawer-direction=left]:w-3/4 data-[vaul-drawer-direction=left]:border-r data-[vaul-drawer-direction=left]:sm:max-w-sm",
           className
         )}
+        onPointerDownOutside={(e) => {
+          if (e.target instanceof Element && e.target.closest("[data-sonner-toast]")) e.preventDefault();
+        }}
         {...props}
       >
         <div className="bg-muted mx-auto mt-4 hidden h-2 w-[100px] shrink-0 rounded-full group-data-[vaul-drawer-direction=bottom]/drawer-content:block" />
