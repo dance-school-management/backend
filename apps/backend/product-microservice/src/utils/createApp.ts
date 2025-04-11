@@ -2,6 +2,7 @@ import express from "express";
 import "dotenv/config";
 import { setupSwagger } from "./swagger";
 import coordinator from "../routes/coordinator";
+import course from "../routes/cms/courses";
 import { errorHandler } from "../middlewares/errorHandler";
 import morgan from "morgan";
 import helmet from "helmet";
@@ -14,6 +15,7 @@ export function createApp() {
   app.use(express.urlencoded({ extended: true }));
   setupSwagger(app);
   app.use("/coordinator", coordinator);
+  app.use("/course", course);
   app.use(errorHandler);
   return app;
 }
