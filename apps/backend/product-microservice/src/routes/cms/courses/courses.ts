@@ -1,5 +1,9 @@
 import { Router } from "express";
-import { addCourse, editCourse, getCourses } from "../../controllers/cms/courses";
+import {
+  addCourse,
+  editCourse,
+  getCourses,
+} from "../../../controllers/cms/courses";
 
 const router = Router();
 
