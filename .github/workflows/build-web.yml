@@ -5,14 +5,8 @@ on:
       - 'apps/web/**'
       - '.github/workflows/build-web.yml'
   push:
-    - branches:
+    branches:
       - main
-      
-    - branches-ignore: 
-      - main
-      paths:
-        - 'apps/web/**'
-        - '.github/workflows/build-web.yml'
 
 jobs:
   build:
