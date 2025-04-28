@@ -17,7 +17,6 @@ import type { IEvent } from "@/modules/calendar/interfaces";
 import { ReactNode } from "react";
 import { useCalendar } from "../../contexts/calendar-context";
 import { formatTime } from "../../helpers";
-import { AddEditEventDialog } from "@/modules/calendar/components/dialogs/add-edit-event-dialog";
 import { Button } from "@repo/ui/button";
 import { toast } from "sonner";
 
@@ -100,11 +99,6 @@ export function EventDetailsDialog({ event, children }: IProps) {
                     </div>
                 </ScrollArea>
                 <div className="flex justify-end gap-2">
-                    <AddEditEventDialog event={event}>
-                        <Button variant="outline">
-                            Edit
-                        </Button>
-                    </AddEditEventDialog>
                     <Button variant="destructive" onClick={
                         () => {
                             deleteEvent(event.id);

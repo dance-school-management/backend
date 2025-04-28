@@ -15,8 +15,6 @@ import type { CustomComponents } from "react-day-picker";
 type TDayPickerProps = ComponentProps<typeof ReactDayPicker>;
 
 function DayPicker({ className, classNames, showOutsideDays = true, ...props }: TDayPickerProps) {
-  console.log(props.selected);
-
   return (
     <ReactDayPicker
       showOutsideDays={showOutsideDays}

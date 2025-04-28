@@ -1,18 +1,18 @@
-import {IEvent} from "@/modules/calendar/interfaces";
-import {getEventBlockStyle} from "@/modules/calendar/helpers";
-import {areIntervalsOverlapping, parseISO} from "date-fns";
-import {EventBlock} from "@/modules/calendar/components/week-and-day-view/event-block";
+import { IEvent } from "@/modules/calendar/interfaces";
+import { getEventBlockStyle } from "@/modules/calendar/helpers";
+import { areIntervalsOverlapping, parseISO } from "date-fns";
+import { EventBlock } from "@/modules/calendar/components/week-and-day-view/event-block";
 
 interface RenderGroupedEventsProps {
     groupedEvents: IEvent[][];
-    day : Date
+    day: Date;
 }
 
 export function RenderGroupedEvents(
     {
         groupedEvents,
         day
-    } : RenderGroupedEventsProps
+    }: RenderGroupedEventsProps
 ) {
     return (
         groupedEvents.map((group, groupIndex) =>
@@ -23,20 +23,20 @@ export function RenderGroupedEvents(
                         otherIndex !== groupIndex &&
                         otherGroup.some(otherEvent =>
                             areIntervalsOverlapping(
-                                {start: parseISO(event.startDate), end: parseISO(event.endDate)},
-                                {start: parseISO(otherEvent.startDate), end: parseISO(otherEvent.endDate)}
+                                { start: parseISO(event.startDate), end: parseISO(event.endDate) },
+                                { start: parseISO(otherEvent.startDate), end: parseISO(otherEvent.endDate) }
                             )
                         )
                 );
 
-                if (!hasOverlap) style = {...style, width: "100%", left: "0%"};
+                if (!hasOverlap) style = { ...style, width: "100%", left: "0%" };
 
                 return (
                     <div key={event.id} className="absolute p-1" style={style}>
-                        <EventBlock event={event}/>
+                        <EventBlock event={event} />
                     </div>
                 );
             })
         )
-    )
+    );
 }

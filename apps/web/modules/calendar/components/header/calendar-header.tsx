@@ -1,4 +1,9 @@
-import { CalendarRange, LayoutList } from "lucide-react";
+import {
+    CalendarRange,
+    Columns,
+    LayoutList,
+    List,
+} from "lucide-react";
 import { motion } from "framer-motion";
 
 import { Button } from "@repo/ui/button";
@@ -9,19 +14,17 @@ import {
     transition,
 } from "@/modules/calendar/animations";
 
+import { TodayButton } from "@/modules/calendar/components/header/today-button";
 import { DateNavigator } from "@/modules/calendar/components/header/date-navigator";
 
 import type { IEvent } from "@/modules/calendar/interfaces";
+import { ButtonGroup } from "@repo/ui/button-group";
 import { useCalendar } from "@/modules/calendar/contexts/calendar-context";
 import { Toggle } from "@repo/ui/toggle";
 
-interface IProps {
-    events: IEvent[];
-}
-
 const MotionButton = motion(Button);
 
-export function CalendarHeader({ events }: IProps) {
+export function CalendarHeader({ events }: { events: IEvent[]; }) {
     const { view, setView, isAgendaMode, toggleAgendaMode } = useCalendar();
     return (
         <div className="flex flex-col gap-4 border-b p-4 lg:flex-row lg:items-center lg:justify-between">
@@ -32,6 +35,7 @@ export function CalendarHeader({ events }: IProps) {
                 animate="animate"
                 transition={transition}
             >
+                <TodayButton />
                 <DateNavigator view={view} events={events} />
             </motion.div>
 
@@ -51,25 +55,33 @@ export function CalendarHeader({ events }: IProps) {
                         whileHover="hover"
                         whileTap="tap"
                     >
-                        <Toggle>{isAgendaMode ? <LayoutList /> : <CalendarRange />}</Toggle>
+                        <Toggle>{isAgendaMode ? <CalendarRange /> : <LayoutList />}</Toggle>
                     </MotionButton>
-                    <MotionButton
-                        variant="outline"
-                        aria-label="View by day"
-                        onClick={() => {
-                            if (view === "day") {
-                                setView("week");
-                            } else {
+                    <ButtonGroup className="flex">
+                        <MotionButton
+                            variant={view === "day" ? "default" : "outline"}
+                            aria-label="View by day"
+                            onClick={() => {
                                 setView("day");
-                            }
-                        }}
-                        asChild
-                        variants={buttonHover}
-                        whileHover="hover"
-                        whileTap="tap"
-                    >
-                        <Toggle>{view === "day" ? "Daily" : "Weekly"}</Toggle>
-                    </MotionButton>
+                            }}
+                            variants={buttonHover}
+                            whileHover="hover"
+                            whileTap="tap"
+                        >
+                            <List className="h-4 w-4" />
+                        </MotionButton>
+
+                        <MotionButton
+                            variant={view === "week" ? "default" : "outline"}
+                            aria-label="View by week"
+                            onClick={() => setView("week")}
+                            variants={buttonHover}
+                            whileHover="hover"
+                            whileTap="tap"
+                        >
+                            <Columns className="h-4 w-4" />
+                        </MotionButton>
+                    </ButtonGroup>
                 </div>
             </motion.div>
         </div>

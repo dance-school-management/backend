@@ -6,8 +6,8 @@ import { useCalendar } from "@/modules/calendar/contexts/calendar-context";
 import { DayPicker } from "@repo/ui/day-picker";
 import { ScrollArea } from "@repo/ui/scroll-area";
 
-import { AddEditEventDialog } from "@/modules/calendar/components/dialogs/add-edit-event-dialog";
 import { CalendarTimeline } from "@/modules/calendar/components/week-and-day-view/calendar-time-line";
+import { DayViewMultiDayEventsRow } from "@/modules/calendar/components/week-and-day-view/day-view-multi-day-events-row";
 
 import { groupEvents } from "@/modules/calendar/helpers";
 
@@ -19,7 +19,7 @@ interface IProps {
   multiDayEvents: IEvent[];
 }
 
-export function CalendarDayView({ singleDayEvents }: IProps) {
+export function CalendarDayView({ singleDayEvents, multiDayEvents }: IProps) {
   const { selectedDate, setSelectedDate, users } = useCalendar();
 
   const hours = Array.from({ length: 24 }, (_, i) => i);
@@ -54,6 +54,8 @@ export function CalendarDayView({ singleDayEvents }: IProps) {
     <div className="flex">
       <div className="flex flex-1 flex-col">
         <div>
+          <DayViewMultiDayEventsRow selectedDate={selectedDate} multiDayEvents={multiDayEvents} />
+
           {/* Day header */}
           <div className="relative z-20 flex border-b">
             <div className="w-18"></div>
@@ -73,7 +75,10 @@ export function CalendarDayView({ singleDayEvents }: IProps) {
                   <div className="absolute -top-3 right-2 flex h-6 items-center">
                     {index !== 0 && (
                       <span className="text-xs text-t-quaternary">
-                        {format(new Date().setHours(hour, 0, 0, 0), "HH:00")}
+                        {format(
+                          new Date().setHours(hour, 0, 0, 0),
+                          "HH:00"
+                        )}
                       </span>
                     )}
                   </div>
@@ -87,16 +92,9 @@ export function CalendarDayView({ singleDayEvents }: IProps) {
                 {hours.map((hour, index) => (
                   <div key={hour} className="relative" style={{ height: "96px" }}>
                     {index !== 0 && <div className="pointer-events-none absolute inset-x-0 top-0 border-b"></div>}
-
-                    <AddEditEventDialog startDate={selectedDate} startTime={{ hour, minute: 0 }}>
-                      <div className="absolute inset-x-0 top-0 h-[48px] cursor-pointer transition-colors hover:bg-bg-primary-hover" />
-                    </AddEditEventDialog>
-
+                    <div className="absolute inset-x-0 top-0 h-[48px] cursor-pointer transition-colors hover:bg-bg-primary-hover" />
                     <div className="pointer-events-none absolute inset-x-0 top-1/2 border-b border-dashed border-b-tertiary"></div>
-
-                    <AddEditEventDialog startDate={selectedDate} startTime={{ hour, minute: 30 }}>
-                      <div className="absolute inset-x-0 top-[48px] h-[48px] cursor-pointer transition-colors hover:bg-bg-primary-hover" />
-                    </AddEditEventDialog>
+                    <div className="absolute inset-x-0 top-[48px] h-[48px] cursor-pointer transition-colors hover:bg-bg-primary-hover" />
                   </div>
                 ))}
 

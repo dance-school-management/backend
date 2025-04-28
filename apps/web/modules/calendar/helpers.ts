@@ -26,8 +26,9 @@ import {
   isValid,
 } from "date-fns";
 
-import type { TCalendarView } from "@/modules/calendar/types";
+import { TCalendarView, TEventColor } from "@/modules/calendar/types";
 import type { ICalendarCell, IEvent } from "@/modules/calendar/interfaces";
+import { useCalendar } from "@/modules/calendar/contexts/calendar-context";
 
 
 
@@ -37,12 +38,20 @@ export function rangeText(view: TCalendarView, date: Date) {
   let end: Date;
 
   switch (view) {
+    case "month":
+      start = startOfMonth(date);
+      end = endOfMonth(date);
+      break;
     case "week":
       start = startOfWeek(date);
       end = endOfWeek(date);
       break;
     case "day":
       return format(date, formatString);
+    case "year":
+      start = startOfYear(date);
+      end = endOfYear(date);
+      break;
     default:
       return "Error while formatting ";
   }
@@ -69,13 +78,7 @@ export function getEventsCount(events: IEvent[], date: Date, view: TCalendarView
     year: isSameYear,
   };
 
-  const singleDayEvents = events.filter((event) => {
-    const startDate = parseISO(event.startDate);
-    const endDate = parseISO(event.endDate);
-    return isSameDay(startDate, endDate);
-  });
-
-  return singleDayEvents.filter(event => compareFns[view](new Date(event.startDate), date)).length;
+  return events.filter(event => (compareFns[view](new Date(event.startDate), date) || compareFns[view](new Date(event.endDate), date))).length;
 }
 
 export function groupEvents(dayEvents: IEvent[]) {
@@ -233,7 +236,7 @@ export function formatTime(date: Date | string) {
 
   if (!isValid(date)) return '';
 
-  return format(date, 'HH:mm');
+  return format(date, "HH:mm");
 }
 
 export const getFirstLetters = (str: string): string => {
@@ -251,11 +254,72 @@ export const getFirstLetters = (str: string): string => {
   return `${firstLetterFirstWord}${firstLetterSecondWord}`;
 };
 
-export function getEventsForYear(events: IEvent[], year: number): IEvent[] {
+export const getEventsForDay = (events: IEvent[], date: Date, isWeek = false): IEvent[] => {
+  return events.filter((event) => {
+    const startOfDayForEventStartDate = startOfDay(event.startDate);
+    const startOfDayForEventEndDate = startOfDay(event.endDate);
+    const targetDate = startOfDay(date);
+
+    if (isWeek) return (event.startDate !== event.endDate) && (startOfDayForEventStartDate <= targetDate && startOfDayForEventEndDate >= targetDate);
+    else return startOfDayForEventStartDate <= targetDate && startOfDayForEventEndDate >= targetDate;
+  }).map((event) => {
+    let point = undefined;
+
+    if (isSameDay(new Date(event.startDate).setHours(0, 0, 0, 0), new Date(event.endDate).setHours(0, 0, 0, 0))) {
+      point = 'none';
+    } else if (isSameDay(new Date(event.startDate).setHours(0, 0, 0, 0), new Date(date))) {
+      point = 'start';
+    } else if (isSameDay(new Date(event.endDate).setHours(0, 0, 0, 0), new Date(date))) {
+      point = 'end';
+    }
+
+    return {
+      ...event,
+      point,
+    };
+  }) as IEvent[];
+};
+
+export const getWeekDates = (date: Date): Date[] => {
+  const startDate = startOfWeek(date, { weekStartsOn: 0 });
+  const weekDates: Date[] = [];
+
+  for (let i = 0; i < 7; i++) {
+    weekDates.push(addDays(startDate, i));
+  }
+
+  return weekDates;
+};
+
+export const getEventsForWeek = (events: IEvent[], date: Date): IEvent[] => {
+  const weekDates = getWeekDates(date);
+  const startOfWeek = weekDates[0];
+  const endOfWeek = weekDates[6];
+
+  return events.filter((event) => {
+    return new Date(event.startDate) <= endOfWeek && new Date(event.endDate) >= startOfWeek;
+  });
+};
+
+export const getEventsForMonth = (events: IEvent[], date: Date): IEvent[] => {
+  const startOfMonthDate = startOfMonth(date);
+  const endOfMonthDate = endOfMonth(date);
+
+  return events.filter((event) => {
+    return new Date(event.startDate) < endOfMonthDate && new Date(event.endDate) > startOfMonthDate;
+  });
+};
+
+export const getEventsForYear = (events: IEvent[], date: Date): IEvent[] => {
+  if (!events || !Array.isArray(events) || !isValid(date)) {
+    return [];
+  }
+
+  const year = date.getFullYear();
   const startOfYearDate = startOfYear(new Date(year, 0, 1));
   const endOfYearDate = endOfYear(new Date(year, 0, 1));
 
-  return events.filter(event => {
+  return events.filter((event) => {
     const eventStart = parseISO(event.startDate);
     const eventEnd = parseISO(event.endDate);
 
@@ -265,4 +329,50 @@ export function getEventsForYear(events: IEvent[], year: number): IEvent[] {
 
     return eventStart <= endOfYearDate && eventEnd >= startOfYearDate;
   });
-}
+};
+
+export const getColorClass = (color: string): string => {
+  const colorClasses: Record<TEventColor, string> = {
+    red: 'border-red-200 bg-red-50 text-red-700 dark:border-red-800 dark:bg-red-950 dark:text-red-300',
+    yellow: 'border-yellow-200 bg-yellow-50 text-yellow-700 dark:border-yellow-800 dark:bg-yellow-950 dark:text-yellow-300',
+    green: 'border-green-200 bg-green-50 text-green-700 dark:border-green-800 dark:bg-green-950 dark:text-green-300',
+    blue: 'border-blue-200 bg-blue-50 text-blue-700 dark:border-blue-800 dark:bg-blue-950 dark:text-blue-300',
+    orange: 'border-orange-200 bg-orange-50 text-orange-700 dark:border-orange-800 dark:bg-orange-950 dark:text-orange-300',
+    purple: 'border-purple-200 bg-purple-50 text-purple-700 dark:border-purple-800 dark:bg-purple-950 dark:text-purple-300',
+  };
+  return colorClasses[color as TEventColor] || '';
+};
+
+export const getBgColor = (color: string): string => {
+  const colorClasses: Record<TEventColor, string> = {
+    red: 'bg-red-400 dark:bg-red-600',
+    yellow: 'bg-yellow-400 dark:bg-yellow-600',
+    green: 'bg-green-400 dark:bg-green-600',
+    blue: 'bg-blue-400 dark:bg-blue-600',
+    orange: 'bg-orange-400 dark:bg-orange-600',
+    purple: 'bg-purple-400 dark:bg-purple-600',
+  };
+  return colorClasses[color as TEventColor] || '';
+};
+
+export const useGetEventsByMode = (events: IEvent[]) => {
+  const { view, selectedDate } = useCalendar();
+
+  switch (view) {
+    case 'day': {
+      return getEventsForDay(events, selectedDate);
+    }
+    case 'week': {
+      return getEventsForWeek(events, selectedDate);
+    }
+    case 'month': {
+      return getEventsForMonth(events, selectedDate);
+    }
+    case 'year': {
+      return getEventsForYear(events, selectedDate);
+    }
+    default: {
+      return [];
+    }
+  }
+};

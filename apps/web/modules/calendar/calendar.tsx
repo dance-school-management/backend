@@ -1,6 +1,6 @@
-import { ClientContainer } from "@/modules/calendar/components/client-container";
-import { CalendarProvider } from "@/modules/calendar/contexts/calendar-context";
 import { getEvents, getUsers } from "@/modules/calendar/requests";
+import { CalendarProvider } from "@/modules/calendar/contexts/calendar-context";
+import { ClientContainer } from "@/modules/calendar/components/client-container";
 
 export default async function Calendar() {
     const [events, users] = await Promise.all([getEvents(), getUsers()]);

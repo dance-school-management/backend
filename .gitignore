@@ -40,3 +40,4 @@ yarn-error.log*
 *_migrations
 .pnpm-store
 pnpm-lock.yaml
+*.tsbuildinfo

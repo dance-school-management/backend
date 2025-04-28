@@ -1,4 +1,3 @@
-import { FC } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@repo/ui/avatar";
 import {
     Command,
@@ -11,12 +10,12 @@ import {
 import { format } from "date-fns";
 import { Repeat } from "lucide-react";
 import { cn } from "@repo/ui/lib/utils";
-import { getBgColor, getColorClass, useGetEventsByMode } from "@/modules/calendar/hooks";
+import { getBgColor, getColorClass, useGetEventsByMode } from "@/modules/calendar/helpers";
 import { EventDetailsDialog } from "@/modules/calendar/components/dialogs/event-details-dialog";
 import { getFirstLetters } from "@/modules/calendar/helpers";
 import { useCalendar } from "@/modules/calendar/contexts/calendar-context";
 
-export const AgendaEvents: FC = () => {
+export const AgendaEvents = () => {
     const { events } = useCalendar();
     const eventsByMode = useGetEventsByMode(events);
 

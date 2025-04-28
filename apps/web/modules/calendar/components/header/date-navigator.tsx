@@ -36,7 +36,6 @@ export function DateNavigator({ view, events }: IProps) {
   const month = formatDate(selectedDate, "MMMM");
   const year = selectedDate.getFullYear();
 
-
   const eventCount = useMemo(
     () => getEventsCount(events, selectedDate, view),
     [events, selectedDate, view]
