@@ -1,7 +1,7 @@
 name: Build Next.js Web App
 on:
   pull_request:
-    - paths:
+    paths:
       - 'apps/web/**'
       - '.github/workflows/build-web.yml'
   push:
