@@ -1,9 +1,29 @@
-import { DanceCategory, Prisma } from "@prisma/client";
+import {
+  Course,
+  CourseStatus,
+  DanceCategory,
+  Prisma,
+} from "@prisma/client";
 import { NextFunction, Request, Response } from "express";
 import { validationResult } from "express-validator";
 import { StatusCodes } from "http-status-codes";
 import prisma from "../../utils/prisma";
 import { prismaError } from "prisma-better-errors";
+export async function createCourse(
+  req: Request<{}, {}, Course>,
+  res: Response,
+) {
+  const { name, description, danceCategoryId, advancementLevelId } = req.body;
+  const course = await prisma.course.create({
+    data: {
+      name,
+      description,
+      danceCategoryId,
+      advancementLevelId,
+      courseStatus: CourseStatus.HIDDEN
+    },
+  });
+}
 
 export async function createDanceCategory(
   req: Request<{}, {}, DanceCategory>,
