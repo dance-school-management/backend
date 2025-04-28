@@ -1,11 +1,17 @@
 name: Build Next.js Web App
 on:
   pull_request:
+    - paths:
+      - 'apps/web/**'
+      - '.github/workflows/build-web.yml'
   push:
-    branches:
-      - main
-      - frontend
-      - setup-frontend-ci
+    - branches: [main]
+      
+    - branches-ignore: [main]
+      paths:
+        - 'apps/web/**'
+        - '.github/workflows/build-web.yml'
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -27,5 +33,5 @@ jobs:
         run: pnpm install --no-frozen-lockfile
 
       - name: Build Next.js app
-        run: npm run build
+        run: pnpm run build
         working-directory: apps/web
