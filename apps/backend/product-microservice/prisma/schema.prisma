@@ -26,6 +26,7 @@ model Course {
   instructors        InstructorsOnCourses[]
   courseStatus       CourseStatus
   customPrice        Decimal?
+  classTemplate      ClassTemplate[]
 }
 
 model DanceCategory {
@@ -34,7 +35,7 @@ model DanceCategory {
   description   String
   course        Course[]
   classTemplate ClassTemplate[]
-  photoPath String?
+  photoPath     String?
 }
 
 model AdvancementLevel {
@@ -102,7 +103,9 @@ model ClassRoom {
 
 model ClassTemplate {
   id                 Int               @id() @default(autoincrement())
-  Class              Class[]
+  class              Class[]
+  course             Course?           @relation(fields: [courseId], references: [id])
+  courseId           Int
   name               String
   description        String
   price              Decimal           @db.Decimal(precision: 10, scale: 2)
@@ -112,7 +115,7 @@ model ClassTemplate {
   advancementLevel   AdvancementLevel? @relation(fields: [advancementLevelId], references: [id])
   advancementLevelId Int?
   classType          ClassType
-  scheduleTileColor String?
+  scheduleTileColor  String?
 }
 
 enum ClassType {
