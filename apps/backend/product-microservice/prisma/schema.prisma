@@ -32,6 +32,7 @@ model DanceCategory {
   description   String
   course        Course[]
   classTemplate ClassTemplate[]
+  photoPath String?
 }
 
 model AdvancementLevel {
@@ -109,6 +110,7 @@ model ClassTemplate {
   advancementLevel   AdvancementLevel? @relation(fields: [advancementLevelId], references: [id])
   advancementLevelId Int?
   classType          ClassType
+  scheduleTileColor String?
 }
 
 enum ClassType {
