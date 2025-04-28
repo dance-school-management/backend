@@ -133,10 +133,10 @@ const mockGenerator = (numberOfEvents: number): IEvent[] => {
     id: currentId++,
     startDate: new Date(now.getTime() - 30 * 60000).toISOString(),
     endDate: new Date(now.getTime() + 30 * 60000).toISOString(),
-    title: events[Math.floor(Math.random() * events.length)],
-    color: COLORS[Math.floor(Math.random() * COLORS.length)],
+    title: events[Math.floor(Math.random() * events.length)]!,
+    color: COLORS[Math.floor(Math.random() * COLORS.length)]!,
     description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-    user: randomUser,
+    user: randomUser!,
   };
 
   result.push(currentEvent);
@@ -167,10 +167,10 @@ const mockGenerator = (numberOfEvents: number): IEvent[] => {
       id: currentId++,
       startDate: startDate.toISOString(),
       endDate: endDate.toISOString(),
-      title: events[Math.floor(Math.random() * events.length)],
-      color: COLORS[Math.floor(Math.random() * COLORS.length)],
+      title: events[Math.floor(Math.random() * events.length)]!,
+      color: COLORS[Math.floor(Math.random() * COLORS.length)]!,
       description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-      user: USERS_MOCK[Math.floor(Math.random() * USERS_MOCK.length)],
+      user: USERS_MOCK[Math.floor(Math.random() * USERS_MOCK.length)]!,
     });
   }
 

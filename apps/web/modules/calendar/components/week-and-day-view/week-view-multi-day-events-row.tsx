@@ -50,8 +50,9 @@ export function WeekViewMultiDayEventsRow({ selectedDate, multiDayEvents }: IPro
         rowIndex = rows.length;
         rows.push([]);
       }
-
-      rows[rowIndex].push(event);
+      const indexRows = rows[rowIndex];
+      if (!indexRows) return;
+      indexRows.push(event);
     });
 
     return rows;
