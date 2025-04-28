@@ -20,8 +20,7 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install --no-frozen-lockfile
-        working-directory: frontend
 
       - name: Build Next.js app
         run: npm run build
-        working-directory: frontend
+        working-directory: apps/web
