@@ -3,6 +3,7 @@ import "dotenv/config";
 import { setupSwagger } from "./swagger";
 import coordinator from "../routes/coordinator";
 import course from "../routes/cms/courses";
+import traineeSchedule from "../routes/trainee/schedule";
 import { errorHandler } from "../middlewares/errorHandler";
 import morgan from "morgan";
 import helmet from "helmet";
@@ -16,6 +17,7 @@ export function createApp() {
   setupSwagger(app);
   app.use("/coordinator", coordinator);
   app.use("/course", course);
+  app.use("/trainee/schedule", traineeSchedule);
   app.use(errorHandler);
   return app;
 }

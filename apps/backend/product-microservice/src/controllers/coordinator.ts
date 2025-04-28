@@ -1,6 +1,7 @@
 import {
   AdvancementLevel,
   Course,
+  CourseStatus,
   DanceCategory,
   Prisma,
 } from "@prisma/client";
@@ -20,6 +21,7 @@ export async function createCourse(
       description,
       danceCategoryId,
       advancementLevelId,
+      courseStatus: CourseStatus.HIDDEN
     },
   });
 }
