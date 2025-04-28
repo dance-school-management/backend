@@ -1,0 +1,27 @@
+name: Build Next.js Web App
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - frontend
+      - setup-frontend-ci
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        run: pnpm install --no-frozen-lockfile
+        working-directory: frontend
+
+      - name: Build Next.js app
+        run: npm run build
+        working-directory: frontend
