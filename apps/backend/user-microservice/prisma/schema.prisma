@@ -6,6 +6,7 @@
 
 generator client {
   provider = "prisma-client-js"
+  output   = "../generated/client"
 }
 
 datasource db {
@@ -13,26 +14,22 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Course {
-  id                 Int              @id @default(autoincrement())
+model User {
+  id                 Int       @id @default(autoincrement())
+  username           String
+  password           String
+  email              String
+  phone              String
+  role               UserRole
   name               String
-  description        String
-  danceCategory      DanceCategory?   @relation(fields: [danceCategoryId], references: [id])
-  danceCategoryId    Int?
-  advancementLevel   AdvancementLevel? @relation(fields: [advancementLevelId], references: [id])
-  advancementLevelId Int?
+  surname            String
+  description        String?
+  photoUrl           String?
+  dateOfStartWorking DateTime?
 }
 
-model DanceCategory {
-  id          Int      @id @default(autoincrement())
-  name        String
-  description String
-  Course      Course[]
-}
-
-model AdvancementLevel {
-  id          Int      @id @default(autoincrement())
-  name        String
-  description String
-  Course      Course[]
+enum UserRole {
+  TRAINEE
+  INSTRUCTOR
+  COORDINATOR
 }
