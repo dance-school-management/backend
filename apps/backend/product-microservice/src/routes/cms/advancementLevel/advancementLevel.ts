@@ -1,10 +1,12 @@
 import { Router } from "express";
 import {
   createAdvancementLevel,
+  deleteAdvancementLevel,
   getAdvancementLevel,
   getAdvancementLevelList,
+  updateAdvancementLevel,
 } from "../../../controllers/cms/advancementLevel";
-import { body } from "express-validator";
+import { body, param } from "express-validator";
 
 const router = Router();
 
@@ -21,4 +23,12 @@ router.get(
 );
 
 router.get("/", getAdvancementLevelList);
+
+router.delete("/:id", deleteAdvancementLevel);
+router.put(
+  "/:id",
+  param("id").isNumeric(),
+  body(["name", "description"]).notEmpty(),
+  updateAdvancementLevel,
+);
 export default router;
