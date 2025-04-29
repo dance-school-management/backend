@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import {
   Prisma,
   CourseStatus
-} from "@prisma/client";
+} from "../../../generated/client";
 import prisma from "../../utils/prisma";
 import { prismaError } from "prisma-better-errors";
 import { StatusCodes } from "http-status-codes";

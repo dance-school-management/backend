@@ -27,7 +27,7 @@
  *       summary: Create a new classroom
  *       description: Creates a new classroom with the provided name, people limit, and description.
  *       tags:
- *         - ClassRooms
+ *         - cms - ClassRooms
  *       requestBody:
  *         required: true
  *         content:

@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import prisma from "../../utils/prisma";
 import { prismaError } from "prisma-better-errors";
 import { StatusCodes } from "http-status-codes";
-import { Class, ClassStatus } from "@prisma/client";
+import { Class, ClassStatus } from "../../../generated/client";
 import { Prisma } from "@prisma/client";
 
 export async function createClass(
@@ -53,4 +53,21 @@ export async function createClass(
     }
     throw error;
   }
+}
+
+export async function getPossibleInstructorIds(
+  req: Request<{}, {}, any>,
+  res: Response,
+  next: NextFunction,
+) {
+  const { classRoom, groupNumber, date, time } = req.body;
+
+  const allInstructorIds = await prisma.instructorsOnCourses.findMany({
+    select: {
+      instructorId: true,
+    },
+    distinct: ["instructorId"],
+  });
+
+  res.json(allInstructorIds);
 }

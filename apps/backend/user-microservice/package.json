@@ -21,6 +21,7 @@
     "dotenv": "^16.4.5",
     "express": "^5.0.1",
     "express-validator": "^7.2.1",
+    "prisma-better-errors": "^1.0.4",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1"
   },

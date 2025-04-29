@@ -94,7 +94,7 @@
  * /cms/course/new:
  *  post:
  *    tags:
- *      - addCourse
+ *      - cms - Courses
  *    requestBody:
  *      required: true
  *      content:
@@ -114,7 +114,7 @@
  * /cms/course/edit:
  *  put:
  *    tags:
- *      - editCourseDetails
+ *      - cms - Courses
  *    requestBody:
  *      required: true
  *      content:
@@ -134,7 +134,7 @@
  * /cms/course:
  *  post:
  *    tags:
- *      - getCourses
+ *      - cms - Courses
  *    requestBody:
  *      required: true
  *      content:

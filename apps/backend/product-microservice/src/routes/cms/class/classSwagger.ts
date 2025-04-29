@@ -61,12 +61,6 @@
  *                 example: 1
  */
 
-
-
-
-
-
-
 /**
  * @swagger
  * paths:
@@ -75,7 +69,7 @@
  *       summary: Create a new class
  *       description: Creates a new class with the given data, assigns instructors, and sets status to HIDDEN.
  *       tags:
- *         - Classes
+ *         - cms - Classes
  *       requestBody:
  *         required: true
  *         content:
@@ -136,3 +130,55 @@
  *           description: Internal Server Error
  */
 
+/**
+ * @swagger
+ * paths:
+ *   /cms/class/possible_instructors:
+ *     post:
+ *       summary: Get possible instructor IDs
+ *       description: Returns a list of unique instructor IDs that can be assigned to a class.
+ *       tags:
+ *         - cms - Classes
+ *       requestBody:
+ *         required: true
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 classRoom:
+ *                   type: string
+ *                   description: Name or identifier of the classroom (optional for now)
+ *                   example: "Studio A"
+ *                 groupNumber:
+ *                   type: integer
+ *                   description: Group number (optional for filtering)
+ *                   example: 1
+ *                 date:
+ *                   type: string
+ *                   format: date
+ *                   description: Date of the class (optional for filtering)
+ *                   example: "2025-05-10"
+ *                 time:
+ *                   type: string
+ *                   format: time
+ *                   description: Time of the class (optional for filtering)
+ *                   example: "14:00:00"
+ *       responses:
+ *         "200":
+ *           description: Successfully retrieved list of instructor IDs
+ *           content:
+ *             application/json:
+ *               schema:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     instructorId:
+ *                       type: integer
+ *                       example: 1
+ *         "400":
+ *           description: Bad Request (Invalid input)
+ *         "500":
+ *           description: Internal Server Error
+ */

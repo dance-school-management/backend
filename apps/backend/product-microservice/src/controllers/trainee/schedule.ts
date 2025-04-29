@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import prisma from "../../utils/prisma";
 import { getOnlyDate } from "../../utils/date";
-import { ClassStatus } from "@prisma/client";
+import { ClassStatus } from "../../../generated/client";
 
 export async function dailySchedule(
   req: Request,

@@ -55,7 +55,7 @@
  *       summary: Create a new class template
  *       description: Creates a new class template with the given data.
  *       tags:
- *         - ClassTemplates
+ *         - cms - ClassTemplates
  *       requestBody:
  *         required: true
  *         content:
