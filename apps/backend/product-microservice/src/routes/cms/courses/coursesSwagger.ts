@@ -52,7 +52,7 @@
  * @swagger
  * components:
  *   schemas:
- *  
+ *
  *     GetCourseFilter:
  *       type: object
  *       properties:

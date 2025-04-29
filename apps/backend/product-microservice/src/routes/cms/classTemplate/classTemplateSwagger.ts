@@ -46,7 +46,6 @@
  *           example: "#FF5733"
  */
 
-
 /**
  * @swagger
  * paths:

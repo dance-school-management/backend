@@ -1,7 +1,7 @@
 /**
  * @swagger
  * /trainee/schedule/daily:
-*   post:
+ *   post:
  *     summary: Get trainee's daily schedule
  *     description: Returns all scheduled classes for a given date, excluding hidden and cancelled classes.
  *     tags:

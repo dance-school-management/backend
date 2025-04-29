@@ -39,12 +39,6 @@
  *         test: message
  */
 
-
-
-
-
-
-
 /**
  * @openapi
  * /coordinator/dance_category:
@@ -96,5 +90,3 @@
  *        description: good
  *
  */
-
-

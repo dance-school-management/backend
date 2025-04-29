@@ -1,25 +1,41 @@
 import { NextFunction, Request, Response } from "express";
-import { ValidationError } from "express-validator";
 import { prismaError } from "prisma-better-errors";
-interface ErrorObject {
-  message: string[];
-}
+import { ExValError } from "../errors/ExValError";
+import { StatusCodes } from "http-status-codes";
+import { exErrJsonBuilder } from "../utils/errorHelpers";
+import { Prisma } from "../../generated/client";
+import logger from "../utils/winston";
 
 export function errorHandler(
-  err: Error & { errors: ValidationError[] },
+  err: Error,
   req: Request,
   res: Response,
-  next: NextFunction,
+  _next: NextFunction,
 ) {
-  let errors = [];
-  if (err instanceof prismaError) {
-    res.status(err.statusCode);
+  logger.error({
+    level: "error",
+    message: err.message,
+  });
+
+  if (err instanceof ExValError) {
+    res.status(err.statusCode).json(exErrJsonBuilder(err));
+    return;
   }
-  if (err.errors) {
-    errors = err.errors.map((object) => object.msg);
+
+  if (err instanceof Prisma.PrismaClientKnownRequestError) {
+    const customPrismaError = new prismaError(err);
+    res.status(customPrismaError.statusCode).json({
+      title: customPrismaError.title,
+      message: customPrismaError.message,
+      metaData: customPrismaError.metaData,
+    });
+    return;
   }
-  const errorObject: ErrorObject = {
-    message: errors.concat(err.message || []),
-  };
-  res.json(errorObject);
+  res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+    title: "Internal Server Error",
+    message: "An unexpected error occurred.",
+    metaData: {
+      error: err.message,
+    },
+  });
 }
