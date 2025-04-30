@@ -91,7 +91,7 @@
  *                     type: integer
  *                   description: Array of instructor IDs to assign to the class
  *                   example: [1, 2, 3]
- *                 classroomId:
+ *                 classRoomId:
  *                   type: integer
  *                   description: ID of the classroom
  *                   example: 5

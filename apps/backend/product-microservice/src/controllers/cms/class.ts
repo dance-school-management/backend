@@ -4,55 +4,44 @@ import { prismaError } from "prisma-better-errors";
 import { StatusCodes } from "http-status-codes";
 import { Class, ClassStatus } from "../../../generated/client";
 import { Prisma } from "@prisma/client";
+import { checkValidations } from "../../utils/errorHelpers";
+import { validationResult } from "express-validator";
 
 export async function createClass(
   req: Request<{}, {}, any>,
   res: Response,
   next: NextFunction,
 ) {
-  try {
-    const {
-      instructorIds,
-      classroomId,
+  checkValidations(validationResult(req));
+
+  const {
+    instructorIds,
+    classRoomId,
+    groupNumber,
+    startDate,
+    endDate,
+    peopleLimit,
+    classTemplateId,
+  } = req.body;
+
+  const createdClass = await prisma.class.create({
+    data: {
+      classTemplateId,
       groupNumber,
       startDate,
       endDate,
       peopleLimit,
-      classTemplateId,
-    }: {
-      instructorIds: number[];
-      classroomId: number;
-      groupNumber: number;
-      startDate: Date;
-      endDate: Date;
-      peopleLimit: number;
-      classTemplateId: number;
-    } = req.body;
-
-    const result = await prisma.class.create({
-      data: {
-        classTemplateId: classTemplateId,
-        groupNumber: groupNumber,
-        startDate: new Date(startDate),
-        endDate: new Date(endDate),
-        peopleLimit: peopleLimit,
-        classRoomId: classroomId,
-        instructor: {
-          create: instructorIds.map((instructorId: number) => ({
-            instructorId,
-          })),
-        },
-        classStatus: ClassStatus.HIDDEN,
+      classRoomId,
+      instructor: {
+        create: instructorIds.map((instructorId: number) => ({
+          instructorId,
+        })),
       },
-    });
+      classStatus: ClassStatus.HIDDEN,
+    },
+  });
 
-    res.json(result);
-  } catch (error: any) {
-    if (error instanceof Prisma.PrismaClientKnownRequestError) {
-      throw new prismaError(error);
-    }
-    throw error;
-  }
+  res.status(StatusCodes.CREATED).json(createdClass);
 }
 
 export async function getPossibleInstructorIds(

@@ -2,28 +2,27 @@ import { NextFunction, Request, Response } from "express";
 import prisma from "../../utils/prisma";
 import { Prisma } from "@prisma/client";
 import { prismaError } from "prisma-better-errors";
+import { checkValidations } from "../../utils/errorHelpers";
+import { validationResult } from "express-validator";
+import { ClassRoom } from "../../../generated/client";
+import { StatusCodes } from "http-status-codes";
 
 export async function createClassRoom(
-  req: Request<{}, {}, any>,
+  req: Request<{}, {}, ClassRoom>,
   res: Response,
   next: NextFunction,
 ) {
-  try {
-    const { name, peopleLimit, description } = req.body;
+  checkValidations(validationResult(req));
 
-    const result = await prisma.classRoom.create({
-      data: {
-        name,
-        peopleLimit,
-        description,
-      },
-    });
+  const { name, peopleLimit, description } = req.body;
 
-    res.json(result);
-  } catch (error: any) {
-    if (error instanceof Prisma.PrismaClientKnownRequestError) {
-      throw new prismaError(error);
-    }
-    throw error;
-  }
+  const createdClassRoom = await prisma.classRoom.create({
+    data: {
+      name,
+      peopleLimit,
+      description,
+    },
+  });
+
+  res.status(StatusCodes.CREATED).json(createdClassRoom);
 }
