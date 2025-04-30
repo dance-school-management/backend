@@ -7,7 +7,7 @@
 generator client {
   provider        = "prisma-client-js"
   previewFeatures = ["relationJoins"]
-  output = "../generated/client"
+  output          = "../generated/client"
 }
 
 datasource db {
@@ -106,7 +106,7 @@ model ClassTemplate {
   id                 Int               @id() @default(autoincrement())
   class              Class[]
   course             Course?           @relation(fields: [courseId], references: [id])
-  courseId           Int
+  courseId           Int?
   name               String
   description        String
   price              Decimal           @db.Decimal(precision: 10, scale: 2)

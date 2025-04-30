@@ -4,9 +4,10 @@ import { prismaError } from "prisma-better-errors";
 import { Prisma } from "@prisma/client";
 import { validationResult } from "express-validator";
 import { StatusCodes } from "http-status-codes";
+import { ClassTemplate } from "../../../generated/client";
 
 export async function createClassTemplate(
-  req: Request<{}, {}, any>,
+  req: Request<{}, {}, ClassTemplate>,
   res: Response,
   next: NextFunction,
 ) {
@@ -29,7 +30,7 @@ export async function createClassTemplate(
       classType,
       scheduleTileColor,
     } = req.body;
-
+    
     const result = await prisma.classTemplate.create({
       data: {
         courseId,
