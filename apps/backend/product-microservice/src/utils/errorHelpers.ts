@@ -1,6 +1,7 @@
 import { Result, ValidationError } from "express-validator";
 import { ExValError } from "../errors/ExValError";
 import { StatusCodes } from "http-status-codes";
+import { Warning } from "../errors/Warning";
 
 export function checkValidations(validationResult: Result<ValidationError>) {
   if (!validationResult.isEmpty()) {
@@ -21,5 +22,15 @@ export function exErrJsonBuilder(err: ExValError): {
     title: err.title,
     message: err.message,
     validationArray: err.validationArray,
+  };
+}
+
+export function warningJsonBuilder(err: Warning): {
+  title: string;
+  message: string;
+} {
+  return {
+    title: err.title,
+    message: err.message,
   };
 }

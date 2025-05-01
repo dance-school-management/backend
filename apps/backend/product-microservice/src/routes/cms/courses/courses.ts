@@ -10,8 +10,8 @@ const router = Router();
 
 router.post("/", getCourses);
 
-router.post("/new", body(["name"]).notEmpty(), addCourse);
+router.post("/new", body(["name"]).notEmpty().withMessage("Name must not be empty"), addCourse);
 
-router.put("/edit", body(["name"]).notEmpty(), editCourse);
+router.put("/edit", body(["name"]).notEmpty().withMessage("Name must not be empty"), editCourse);
 
 export default router;

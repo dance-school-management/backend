@@ -10,9 +10,9 @@ import { body } from "express-validator";
 
 const router = Router();
 
-router.post("/", body(["name"]).notEmpty(), createClassTemplate);
+router.post("/", body(["name"]).notEmpty().withMessage("Name must not be empty"), createClassTemplate);
 
-router.put("/:id", body(["name"]).notEmpty(), editClassTemplate);
+router.put("/:id", body(["name"]).notEmpty().withMessage("Name must not be empty"), editClassTemplate);
 
 router.delete("/:id", deleteClassTemplate);
 
