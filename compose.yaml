@@ -1,24 +1,45 @@
+version: "3.8"
+
 services:
   api-gateway:
     build:
       context: .
       target: api-gateway
     ports:
-      - "7999:7999"
-    depends_on:
-      - ex-mic-1
-      - ex-mic-2
-
-  ex-mic-1:
-    build:
-      context: .
-      target: ex-mic-1
-    ports:
       - "8000:8000"
-
-  ex-mic-2:
+    depends_on:
+      - product-microservice
+    volumes:
+      - ./apps/backend/api-gateway:/prod/api-gateway
+       - /prod/api-gateway/node_modules
+    environment:
+      - PRODUCT_MICROSERVICE_URL=http://product-microservice:8001
+      - PORT=8000
+  product-microservice:
     build:
       context: .
-      target: ex-mic-2
+      target: product-microservice
     ports:
       - "8001:8001"
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@product_db:5432/products
+      - PORT=8001
+      - API_GATEWAY_URL=http://api-gateway:8000
+    volumes:
+      - ./apps/backend/product-microservice:/prod/product-microservice
+      - /prod/product-microservice/node_modules
+    depends_on:
+      - product_db
+  product_db:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: products
+    ports:
+      - "5434:5432"
+    volumes:
+      - product_data:/var/lib/postgresql/data
+
+volumes:
+  product_data:

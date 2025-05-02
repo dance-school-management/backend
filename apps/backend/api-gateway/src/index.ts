@@ -1,38 +1,24 @@
 import express, { Request, Response } from "express";
-import { createProxyMiddleware } from 'http-proxy-middleware';
+import { createProxyMiddleware } from "http-proxy-middleware";
+import "dotenv/config";
 
 const app = express();
-const PORT = 7999;
+const PORT = process.env.PORT;
+const PRODUCT_MICROSERVICE_URL = process.env.PRODUCT_MICROSERVICE_URL;
 
-const proxyMiddlewareEx1 = createProxyMiddleware<Request, Response>(  {
-  target: "http://ex-mic-1:8000",
+const proxyMiddlewareProduct = createProxyMiddleware<Request, Response>({
+  target: PRODUCT_MICROSERVICE_URL,
   changeOrigin: true,
   pathRewrite: {
-    "^/ex1": ""
-  }
-})
+    "^/product": "",
+  },
+});
 
-const proxyMiddlewareEx2 = createProxyMiddleware<Request, Response>(  {
-  target: "http://ex-mic-2:8001",
-  changeOrigin: true,
-  pathRewrite: {
-    "^/ex2": ""
-  }
-})
-
-app.use('/ex1', proxyMiddlewareEx1);
-app.use('/ex2', proxyMiddlewareEx2);
-app.use('/products', proxyMiddlewareEx2);
+app.use("/product", proxyMiddlewareProduct);
 
 app.get("/", (req: Request, res) => {
   res.send("Hello from api-gateway");
 });
-
-
-
-
-
-
 
 app.listen(PORT, () => {
   console.log(`Listening on port ${PORT}`);

@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import prisma from "../../utils/prisma";
-import { Prisma } from "@prisma/client";
+import { Prisma } from "../../../generated/client";
 import { prismaError } from "prisma-better-errors";
 
 export async function createClassRoom(

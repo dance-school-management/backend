@@ -1,10 +1,9 @@
 import { NextFunction, Request, Response } from "express";
 import prisma from "../../utils/prisma";
 import { prismaError } from "prisma-better-errors";
-import { Prisma } from "@prisma/client";
 import { validationResult } from "express-validator";
 import { StatusCodes } from "http-status-codes";
-import { ClassTemplate } from "../../../generated/client";
+import { Prisma, ClassTemplate } from "../../../generated/client";
 
 export async function createClassTemplate(
   req: Request<{}, {}, ClassTemplate>,
