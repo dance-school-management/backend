@@ -7,25 +7,26 @@ FROM base AS build
 COPY . /usr/src/app
 WORKDIR /usr/src/app
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
-RUN pnpm run build --filter ex-mic-1 --filter ex-mic-2 --filter api-gateway
-RUN pnpm deploy --filter=ex-mic-1 --prod /prod/ex-mic-1
-RUN pnpm deploy --filter=ex-mic-2 --prod /prod/ex-mic-2
-RUN pnpm deploy --filter=api-gateway --prod /prod/api-gateway
+RUN pnpm install --filter=api-gateway --filter=product-microservice --filter=auth-microservice
+RUN pnpm deploy --filter=api-gateway /prod/api-gateway
+RUN pnpm deploy --filter=product-microservice /prod/product-microservice
+RUN pnpm deploy --filter=auth-microservice /prod/auth-microservice
 
-FROM base AS ex-mic-1
-COPY --from=build /prod/ex-mic-1 /prod/ex-mic-1
-WORKDIR /prod/ex-mic-1
-EXPOSE 8000
-CMD [ "pnpm", "start" ]
-
-FROM base AS ex-mic-2
-COPY --from=build /prod/ex-mic-2 /prod/ex-mic-2
-WORKDIR /prod/ex-mic-2
-EXPOSE 8001
-CMD [ "pnpm", "start" ]
 
 FROM base AS api-gateway
 COPY --from=build /prod/api-gateway /prod/api-gateway
 WORKDIR /prod/api-gateway
-EXPOSE 7000
-CMD [ "pnpm", "start" ]
+EXPOSE 8000
+CMD [ "pnpm", "start:dev" ]
+
+FROM base AS product-microservice
+COPY --from=build /prod/product-microservice /prod/product-microservice
+WORKDIR /prod/product-microservice
+EXPOSE 8001
+CMD ["sh", "-c", "pnpm db:deploy && pnpm start:dev"]
+
+FROM base AS auth-microservice
+COPY --from=build /prod/auth-microservice /prod/auth-microservice
+WORKDIR /prod/auth-microservice
+EXPOSE 8002
+CMD ["sh", "-c", "pnpm db:deploy && pnpm start:dev"]
