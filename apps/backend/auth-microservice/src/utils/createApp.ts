@@ -4,21 +4,23 @@ import { setupSwagger } from "./swagger";
 import { errorHandler } from "../middlewares/errorHandler";
 import morgan from "morgan";
 import helmet from "helmet";
-import cmsRouter from "../routes/cms/cms";
-import path from "path";
+import { toNodeHandler } from "better-auth/node";
+import { auth } from "./auth";
+import cookieParser from "cookie-parser";
 
 export function createApp() {
   const app = express();
+
   app.use(morgan("tiny"));
+  app.all("/api/auth/{*any}", toNodeHandler(auth));
   app.use(helmet());
+  app.use(cookieParser());
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
   setupSwagger(app);
-  app.use("/uploads", express.static(path.resolve("uploads")));
-  app.use("/cms", cmsRouter);
   app.use(errorHandler);
-  app.use("/", (req, res) => {
-    res.send("Hello from product-microservice1");
+  app.get("/", (req, res) => {
+    res.send("Hello from auth-microservice");
   });
   return app;
 }
