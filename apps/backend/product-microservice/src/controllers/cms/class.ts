@@ -28,6 +28,7 @@ export async function createClass(
     peopleLimit,
     classTemplateId,
     isConfirmation,
+    classStatus,
   } = req.body;
 
   if (startDate >= endDate) {
@@ -114,7 +115,7 @@ export async function createClass(
     if (!isConfirmation) {
       throw new Warning(
         "You are trying to exceed the classroom's people limit with the class people limit",
-        StatusCodes.CONFLICT
+        StatusCodes.CONFLICT,
       );
     }
   }
@@ -131,7 +132,7 @@ export async function createClass(
           instructorId,
         })),
       },
-      classStatus: ClassStatus.HIDDEN,
+      classStatus,
     },
   });
 
@@ -174,8 +175,49 @@ export async function getSchedule(
       danceCategoryName: cur.classTemplate.danceCategory?.name,
       advancementLevelName: cur.classTemplate.advancementLevel?.name,
       courseName: cur.classTemplate.course?.name,
+      classStatus: cur.classStatus,
     })),
   };
+
+  res.status(StatusCodes.OK).json(result);
+}
+
+export async function editClassStatus(
+  req: Request<
+    {},
+    {},
+    { classId: number; newStatus: ClassStatus; isConfirmation: boolean }
+  >,
+  res: Response,
+  next: NextFunction,
+) {
+  const { classId, newStatus, isConfirmation } = req.body;
+
+  const currentClass = await prisma.class.findUniqueOrThrow({
+    where: {
+      id: classId,
+    },
+  });
+
+  if (!currentClass) {
+    throw new Error("There is no class with this id");
+  }
+
+  if (!isConfirmation) {
+    throw new Warning(
+      `This class' status is ${currentClass.classStatus} and you are trying to set it to ${newStatus}`,
+      StatusCodes.CONFLICT,
+    );
+  }
+
+  const result = await prisma.class.update({
+    where: {
+      id: classId,
+    },
+    data: {
+      classStatus: newStatus,
+    },
+  });
 
   res.status(StatusCodes.OK).json(result);
 }

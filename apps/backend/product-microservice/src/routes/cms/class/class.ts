@@ -1,5 +1,9 @@
 import { Router } from "express";
-import { createClass, getSchedule } from "../../../controllers/cms/class";
+import {
+  createClass,
+  editClassStatus,
+  getSchedule,
+} from "../../../controllers/cms/class";
 import { body, param } from "express-validator";
 
 const router = Router();
@@ -27,5 +31,7 @@ router.get(
     .toDate(),
   getSchedule,
 );
+
+router.put("/status/edit", editClassStatus);
 
 export default router;
