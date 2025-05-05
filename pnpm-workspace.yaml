@@ -1,5 +1,0 @@
-packages:
-  - "apps/web"
-  - "packages/*"
-  - "apps/backend/*"
-  - "apps/backend/simple/auth"
