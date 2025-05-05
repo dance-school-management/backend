@@ -1,5 +1,5 @@
 packages:
   - "apps/web"
-  - "apps/mobile"
   - "packages/*"
   - "apps/backend/*"
+  - "apps/backend/simple/auth"

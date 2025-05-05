@@ -5,7 +5,11 @@ import {
   Bell,
   ChevronsUpDown,
   LogOut,
+  UserPlus,
+  LogIn
 } from "lucide-react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 import {
   Avatar,
@@ -17,7 +21,6 @@ import {
   DropdownMenuContent,
   DropdownMenuGroup,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@repo/ui/dropdown-menu";
@@ -27,15 +30,37 @@ import {
   SidebarMenuItem,
 } from "@repo/ui/sidebar";
 
-export function NavProfile({
-  user,
-}: {
-  user: {
-    name: string;
-    email: string;
-    avatar: string;
-  };
-}) {
+import { signOut, User } from "@/lib/model";
+import { useUserStore } from "@/lib/store";
+
+export function NavProfile({ user }: { user: User | null; }) {
+  const { setUser } = useUserStore();
+  const pathname = usePathname();
+
+  if (!user) return (
+    <SidebarMenu>
+      <SidebarMenuItem>
+        <SidebarMenuButton isActive={pathname === "/login"} asChild >
+          <Link href="/login">
+            <LogIn />
+            <span>Log In</span>
+          </Link>
+        </SidebarMenuButton>
+      </SidebarMenuItem>
+      <SidebarMenuItem>
+        <SidebarMenuButton isActive={pathname === "/register"} asChild>
+          <Link href="/register">
+            <UserPlus />
+            <span>Sign Up</span>
+          </Link>
+        </SidebarMenuButton>
+      </SidebarMenuItem>
+    </SidebarMenu>
+  );
+
+  const name = user.name + " " + user.surname;
+  const fallback = user.name.charAt(0) + user.surname.charAt(0);
+
   return (
     <SidebarMenu>
       <SidebarMenuItem>
@@ -46,11 +71,11 @@ export function NavProfile({
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
               <Avatar className="h-8 w-8 rounded-lg">
-                <AvatarImage src={user.avatar} alt={user.name} />
-                <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+                <AvatarImage src={user.image || ""} alt={name} />
+                <AvatarFallback className="rounded-lg">{fallback}</AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-medium">{user.name}</span>
+                <span className="truncate font-medium">{name}</span>
                 <span className="truncate text-xs">{user.email}</span>
               </div>
               <ChevronsUpDown className="ml-auto size-4" />
@@ -62,19 +87,6 @@ export function NavProfile({
             align="end"
             sideOffset={4}
           >
-            <DropdownMenuLabel className="p-0 font-normal">
-              <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-                <Avatar className="h-8 w-8 rounded-lg">
-                  <AvatarImage src={user.avatar} alt={user.name} />
-                  <AvatarFallback className="rounded-lg">CN</AvatarFallback>
-                </Avatar>
-                <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-medium">{user.name}</span>
-                  <span className="truncate text-xs">{user.email}</span>
-                </div>
-              </div>
-            </DropdownMenuLabel>
-            <DropdownMenuSeparator />
             <DropdownMenuGroup>
               <DropdownMenuItem>
                 <BadgeCheck />
@@ -86,7 +98,10 @@ export function NavProfile({
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={() => {
+              signOut();
+              setUser(null);
+            }}>
               <LogOut />
               Log out
             </DropdownMenuItem>
