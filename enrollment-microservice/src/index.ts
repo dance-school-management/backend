@@ -1,9 +1,6 @@
 import { createApp } from "./utils/createApp";
-import { server } from "./utils/createGrpcServer";
 const PORT = process.env.PORT || 8001;
 const app = createApp();
-
-server.listen();
 
 app.listen(PORT, () => {
   console.log(`Listening on ${PORT}`);
