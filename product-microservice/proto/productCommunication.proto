@@ -11,5 +11,5 @@ message CheckClassRequest {
 };
 
 message CheckClassResponse {
-  int64 classId = 1;
+  bool isThere = 1;
 };
