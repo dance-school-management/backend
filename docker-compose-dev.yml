@@ -140,7 +140,7 @@ networks:
     driver: bridge
 secrets:
   auth_db:
-    file: db/auth_db-password.txt
+    file: db/auth-db-password.txt
   product_db:
     file: db/product-db-password.txt
   enroll_db:
