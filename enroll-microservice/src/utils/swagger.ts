@@ -14,7 +14,7 @@ const options: swaggerJsdoc.Options = {
     },
     servers: [
       {
-        url: "http://localhost:8000/product"
+        url: "http://localhost:8000/enroll"
       }
     ]
   },

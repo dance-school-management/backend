@@ -1,9 +1,0 @@
-syntax = "proto3";
-
-service EnrollWithProduct {
-  rpc CheckClass() {} 
-}
-
-message CheckClassRequest {
-  int64 classId = 1;
-};

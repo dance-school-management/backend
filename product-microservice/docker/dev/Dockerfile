@@ -14,16 +14,20 @@ RUN --mount=type=bind,source=package.json,target=package.json \
     --mount=type=cache,target=/root/.npm \
     npm ci
 
+# COPY prisma ./prisma
+# RUN npx prisma generate
+
 FROM base AS final
 
 ENV NODE_ENV=development
 
 #USER node
 
+# COPY --from=deps /usr/src/app/generated ./generated
 COPY package.json .
 COPY --from=deps /usr/src/app/node_modules ./node_modules
 
 EXPOSE 8000
 EXPOSE 50051
 
-CMD ["npm", "run", "start:dev"]
+CMD ["sh", "-c", "npm run db:deploy && npm run start:dev"]

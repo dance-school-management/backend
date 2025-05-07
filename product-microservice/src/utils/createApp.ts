@@ -17,7 +17,7 @@ export function createApp() {
   app.use("/uploads", express.static(path.resolve("uploads")));
   app.use("/cms", cmsRouter);
   app.use(errorHandler);
-  app.use("/", (req, res) => {
+  app.get("/", (req, res) => {
     res.send("Hello from product-microservice1");
   });
   return app;
