@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package productcommunication;
+
+service EnrollWithProduct {
+  rpc CheckClass(CheckClassRequest) returns (CheckClassResponse) {}; 
+}
+
+message CheckClassRequest {
+  int64 classId = 1;
+};
+
+message CheckClassResponse {
+  bool isThere = 1;
+};

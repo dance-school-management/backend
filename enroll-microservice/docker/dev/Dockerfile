@@ -28,6 +28,6 @@ COPY package.json .
 COPY --from=deps /usr/src/app/node_modules ./node_modules
 
 EXPOSE 8000
-EXPOSE 50051
 
+# CMD ["npm", "run", "start:dev"]
 CMD ["sh", "-c", "npm run db:deploy && npm run start:dev"]

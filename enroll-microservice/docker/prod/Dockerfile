@@ -12,22 +12,18 @@ FROM base AS deps
 RUN --mount=type=bind,source=package.json,target=package.json \
     --mount=type=bind,source=package-lock.json,target=package-lock.json \
     --mount=type=cache,target=/root/.npm \
-    npm ci
-
-# COPY prisma ./prisma
-# RUN npx prisma generate
+    npm ci --omit=dev
 
 FROM base AS final
 
-ENV NODE_ENV=development
+ENV NODE_ENV=production
 
-#USER node
+USER node
 
-# COPY --from=deps /usr/src/app/generated ./generated
 COPY package.json .
 COPY --from=deps /usr/src/app/node_modules ./node_modules
+COPY ./dist/ ./dist
 
 EXPOSE 8000
-EXPOSE 50051
 
-CMD ["sh", "-c", "npm run db:deploy && npm run start:dev"]
+CMD ["node", "dist/index.js"]
