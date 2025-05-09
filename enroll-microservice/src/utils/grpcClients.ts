@@ -1,7 +1,8 @@
 import { credentials } from "@grpc/grpc-js";
 import { EnrollWithProductClient } from "../../proto/productCommunication_grpc_pb";
 import "dotenv/config";
-import { CheckClassRequest } from "../../proto/productCommunication_pb";
+import { CheckClassRequest, CheckClassResponse } from "../../proto/productCommunication_pb";
+import { UniversalError } from "../errors/UniversalError";
 
 const PRODUCT_MICROSERVICE_GRPC = process.env.PRODUCT_MICROSERVICE_GRPC;
 
@@ -13,15 +14,28 @@ const enrollWithProductClient = new EnrollWithProductClient(
   credentials.createInsecure(),
 );
 
-export async function checkClass(classId: number) {
+export async function checkClass(classId: number): Promise<CheckClassResponse.AsObject> {
   return new Promise((resolve, reject) => {
     const request = new CheckClassRequest().setClassid(classId);
     enrollWithProductClient.checkClass(request, (err, response) => {
       if (err) {
-        reject(err);
+        let unErr: UniversalError;
+        try {
+          const error = JSON.parse(err.details);
+          unErr = new UniversalError(
+            error.statusCode,
+            error.message,
+            error.errors,
+          );
+        } catch (parseError) {
+          console.error("Failed to parse gRPC error details:", parseError);
+          unErr = new UniversalError(500, "Internal Server Error", []);
+        }
+        reject(unErr);
         return;
       }
       resolve(response.toObject());
+      return;
     });
   });
 }

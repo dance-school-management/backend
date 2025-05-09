@@ -29,4 +29,7 @@ export class UniversalError extends Error {
       errors: this.errors,
     };
   }
+  toString() {
+    return JSON.stringify(this.toJSON());
+  }
 }

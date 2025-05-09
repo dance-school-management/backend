@@ -1,8 +1,15 @@
 import { NextFunction, Request, Response } from "express";
 import { checkClass } from "../utils/grpcClients";
+import { ClassTicket } from "../../generated/client";
+import { checkValidations } from "../utils/errorHelpers";
+import { validationResult } from "express-validator";
+import { StatusCodes } from "http-status-codes";
 
-export async function makeClassOrder(req: Request, res: Response) {
-  const { classId } = req.body;
-  const response = await checkClass(classId);
+export async function makeClassOrder(req: Request<object, object, ClassTicket>, res: Response) {
+  checkValidations(validationResult(req));
+  const { classId, studentId} = req.body;
+  const response = await checkClass(classId); // asks the product-microservice if the class is available
+  // asks the payment-microservice for starting transaction and the result
+  res.status(StatusCodes.OK).json(response);
   res.json(response);
 }
