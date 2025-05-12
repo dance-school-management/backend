@@ -41,3 +41,4 @@ yarn-error.log*
 
 db
 .vscode/settings.json
+.idea

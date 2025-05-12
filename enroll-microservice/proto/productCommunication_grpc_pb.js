@@ -15,15 +15,26 @@ function deserialize_productcommunication_CheckClassRequest(buffer_arg) {
   return productCommunication_pb.CheckClassRequest.deserializeBinary(new Uint8Array(buffer_arg));
 }
 
-function serialize_productcommunication_CheckClassResponse(arg) {
-  if (!(arg instanceof productCommunication_pb.CheckClassResponse)) {
-    throw new Error('Expected argument of type productcommunication.CheckClassResponse');
+function serialize_productcommunication_CheckCourseRequest(arg) {
+  if (!(arg instanceof productCommunication_pb.CheckCourseRequest)) {
+    throw new Error('Expected argument of type productcommunication.CheckCourseRequest');
   }
   return Buffer.from(arg.serializeBinary());
 }
 
-function deserialize_productcommunication_CheckClassResponse(buffer_arg) {
-  return productCommunication_pb.CheckClassResponse.deserializeBinary(new Uint8Array(buffer_arg));
+function deserialize_productcommunication_CheckCourseRequest(buffer_arg) {
+  return productCommunication_pb.CheckCourseRequest.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
+function serialize_productcommunication_CheckResponse(arg) {
+  if (!(arg instanceof productCommunication_pb.CheckResponse)) {
+    throw new Error('Expected argument of type productcommunication.CheckResponse');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_productcommunication_CheckResponse(buffer_arg) {
+  return productCommunication_pb.CheckResponse.deserializeBinary(new Uint8Array(buffer_arg));
 }
 
 
@@ -33,11 +44,22 @@ var EnrollWithProductService = exports.EnrollWithProductService = {
     requestStream: false,
     responseStream: false,
     requestType: productCommunication_pb.CheckClassRequest,
-    responseType: productCommunication_pb.CheckClassResponse,
+    responseType: productCommunication_pb.CheckResponse,
     requestSerialize: serialize_productcommunication_CheckClassRequest,
     requestDeserialize: deserialize_productcommunication_CheckClassRequest,
-    responseSerialize: serialize_productcommunication_CheckClassResponse,
-    responseDeserialize: deserialize_productcommunication_CheckClassResponse,
+    responseSerialize: serialize_productcommunication_CheckResponse,
+    responseDeserialize: deserialize_productcommunication_CheckResponse,
+  },
+  checkCourse: {
+    path: '/productcommunication.EnrollWithProduct/CheckCourse',
+    requestStream: false,
+    responseStream: false,
+    requestType: productCommunication_pb.CheckCourseRequest,
+    responseType: productCommunication_pb.CheckResponse,
+    requestSerialize: serialize_productcommunication_CheckCourseRequest,
+    requestDeserialize: deserialize_productcommunication_CheckCourseRequest,
+    responseSerialize: serialize_productcommunication_CheckResponse,
+    responseDeserialize: deserialize_productcommunication_CheckResponse,
   },
 };
 
