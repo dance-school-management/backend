@@ -7,8 +7,8 @@
 import * as jspb from "google-protobuf";
 
 export class CheckClassRequest extends jspb.Message { 
-    getClassid(): number;
-    setClassid(value: number): CheckClassRequest;
+    getClassId(): number;
+    setClassId(value: number): CheckClassRequest;
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): CheckClassRequest.AsObject;
@@ -22,26 +22,46 @@ export class CheckClassRequest extends jspb.Message {
 
 export namespace CheckClassRequest {
     export type AsObject = {
-        classid: number,
+        classId: number,
     }
 }
 
-export class CheckClassResponse extends jspb.Message { 
-    getIsthere(): boolean;
-    setIsthere(value: boolean): CheckClassResponse;
+export class CheckCourseRequest extends jspb.Message { 
+    getCourseId(): number;
+    setCourseId(value: number): CheckCourseRequest;
 
     serializeBinary(): Uint8Array;
-    toObject(includeInstance?: boolean): CheckClassResponse.AsObject;
-    static toObject(includeInstance: boolean, msg: CheckClassResponse): CheckClassResponse.AsObject;
+    toObject(includeInstance?: boolean): CheckCourseRequest.AsObject;
+    static toObject(includeInstance: boolean, msg: CheckCourseRequest): CheckCourseRequest.AsObject;
     static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
     static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-    static serializeBinaryToWriter(message: CheckClassResponse, writer: jspb.BinaryWriter): void;
-    static deserializeBinary(bytes: Uint8Array): CheckClassResponse;
-    static deserializeBinaryFromReader(message: CheckClassResponse, reader: jspb.BinaryReader): CheckClassResponse;
+    static serializeBinaryToWriter(message: CheckCourseRequest, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): CheckCourseRequest;
+    static deserializeBinaryFromReader(message: CheckCourseRequest, reader: jspb.BinaryReader): CheckCourseRequest;
 }
 
-export namespace CheckClassResponse {
+export namespace CheckCourseRequest {
     export type AsObject = {
-        isthere: boolean,
+        courseId: number,
+    }
+}
+
+export class CheckResponse extends jspb.Message { 
+    getIsValid(): boolean;
+    setIsValid(value: boolean): CheckResponse;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): CheckResponse.AsObject;
+    static toObject(includeInstance: boolean, msg: CheckResponse): CheckResponse.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: CheckResponse, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): CheckResponse;
+    static deserializeBinaryFromReader(message: CheckResponse, reader: jspb.BinaryReader): CheckResponse;
+}
+
+export namespace CheckResponse {
+    export type AsObject = {
+        isValid: boolean,
     }
 }

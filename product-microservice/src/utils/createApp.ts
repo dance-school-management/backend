@@ -6,6 +6,7 @@ import morgan from "morgan";
 import helmet from "helmet";
 import cmsRouter from "../routes/cms/cms";
 import path from "path";
+import { UniversalError } from "../errors/UniversalError";
 
 export function createApp() {
   const app = express();
@@ -16,9 +17,12 @@ export function createApp() {
   setupSwagger(app);
   app.use("/uploads", express.static(path.resolve("uploads")));
   app.use("/cms", cmsRouter);
-  app.use(errorHandler);
   app.get("/", (req, res) => {
     res.send("Hello from product-microservice1");
   });
+  app.use((req, res) => {
+    throw new UniversalError(404, "Endpoint not found", []);
+  });
+  app.use(errorHandler);
   return app;
 }
