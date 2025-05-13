@@ -12,13 +12,16 @@ export const auth = betterAuth({
     enabled: true,
   },
   user: {
+    deleteUser: {
+      enabled: true,
+    },
     additionalFields: {
       role: {
         type: "string",
         required: false,
-        defaultValue: "student",
-        input: false, 
-      }
+        defaultValue: "STUDENT",
+        input: false,
+      },
     },
   },
 });

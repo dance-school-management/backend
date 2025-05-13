@@ -206,7 +206,6 @@
  *         description: Internal Server Error
  */
 
-
 /**
  * @swagger
  * /cms/class_template/{id}:

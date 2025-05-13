@@ -65,6 +65,24 @@ services:
         condition: service_healthy
     networks:
       - microservices-network
+  profile-microservice:
+    build:
+      context: ./profile-microservice
+      dockerfile: docker/dev/Dockerfile
+      target: final
+    ports:
+      - "8004:8004"
+      - "50052:50051"
+    env_file:
+      - ./profile-microservice/.env.development
+    volumes:
+      - ./profile-microservice/:/usr/src/app
+      - /usr/src/app/node_modules
+    depends_on:
+      profile_db:
+        condition: service_healthy
+    networks:
+      - microservices-network
   product_db:
     image: postgres:latest
     restart: always
@@ -131,10 +149,35 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+  profile_db:
+    image: postgres:latest
+    restart: always
+    user: postgres
+    secrets:
+      - profile_db
+    environment:
+      POSTGRES_DB: profiles
+      POSTGRES_PASSWORD_FILE: /run/secrets/profile_db
+    ports:
+      - "5436:5432"
+    volumes:
+      - profile_data:/var/lib/postgresql/data
+    networks:
+      - microservices-network
+    expose:
+      - 5432
+    healthcheck:
+      test: [ "CMD", "pg_isready" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+
 volumes:
   product_data:
   auth_data:
   enroll_data:
+  profile_data:
 networks:
   microservices-network:
     driver: bridge
@@ -145,3 +188,5 @@ secrets:
     file: db/product-db-password.txt
   enroll_db:
     file: db/enroll-db-password.txt
+  profile_db:
+    file: db/profile-db-password.txt
