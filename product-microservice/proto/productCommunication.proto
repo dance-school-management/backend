@@ -7,6 +7,10 @@ service EnrollWithProduct {
   rpc CheckCourse(CheckCourseRequest) returns (CheckResponse) {};
 }
 
+service ProductWithEnroll {
+  rpc GetInstructorsClasses (InstructorIdsRequest) returns (InstructorsClassesResponse);
+}
+
 message CheckClassRequest {
   int64 class_id = 1;
 };
@@ -17,4 +21,17 @@ message CheckCourseRequest {
 
 message CheckResponse {
   bool is_valid = 1;
+};
+
+message InstructorIdsRequest {
+  repeated int64 instructorIds = 1;
+};
+
+message InstructorsClassesResponse {
+  repeated InstructorClass instructorsClassesIds = 1;
+};
+
+message InstructorClass {
+  int64 intructorId = 1;
+  int64 classId = 2; 
 };
