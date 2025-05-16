@@ -262,13 +262,17 @@ export async function editClassStatus(
   next: NextFunction,
 ) {
   const { classId, newStatus, isConfirmation } = req.body;
-  const currentClass = await prisma.class.findUniqueOrThrow({
+  const currentClass = await prisma.class.findFirst({
     where: {
       id: classId,
     },
   });
   if (!currentClass) {
-    throw new Error("There is no class with this id");
+    throw new UniversalError(
+      StatusCodes.NOT_FOUND,
+      "There is no class with this id",
+      [],
+    );
   }
   if (!isConfirmation) {
     throw new Warning(
