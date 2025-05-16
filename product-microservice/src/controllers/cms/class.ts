@@ -1,14 +1,17 @@
 import { NextFunction, Request, Response } from "express";
 import prisma from "../../utils/prisma";
-import { prismaError } from "prisma-better-errors";
 import { StatusCodes } from "http-status-codes";
-import { Prisma, Class, ClassStatus } from "../../../generated/client";
+import { Class, ClassStatus } from "../../../generated/client";
 import { checkValidations } from "../../utils/errorHelpers";
 import { validationResult } from "express-validator";
 import { Warning } from "../../errors/Warning";
-import { getInstructorsClasses } from "../../grpc/cms/class";
+import {
+  enrollInstructorsInClass,
+  getClassesInstructors,
+  getClassesStudents,
+  getInstructorsClasses,
+} from "../../grpc/cms/class";
 import { UniversalError } from "../../errors/UniversalError";
-import { PrimaryExpression } from "typescript";
 
 export async function createClass(
   req: Request<
@@ -43,12 +46,14 @@ export async function createClass(
     },
   });
 
-  if (!thisClassTemplate)
+  if (!thisClassTemplate) {
     throw new UniversalError(
       StatusCodes.NOT_FOUND,
       "Class template not found",
       [],
     );
+    return;
+  }
 
   const thisClassroom = await prisma.classRoom.findFirst({
     where: {
@@ -56,106 +61,132 @@ export async function createClass(
     },
   });
 
-  if (!thisClassroom)
+  if (!thisClassroom) {
     throw new UniversalError(StatusCodes.NOT_FOUND, "Classroom not found", []);
+    return;
+  }
 
-  console.log("test")
+  const classRoomOccupation = await prisma.class.findFirst({
+    where: {
+      classRoomId,
+      startDate: {
+        lte: endDate,
+      },
+      endDate: {
+        gte: startDate,
+      },
+    },
+  });
 
-  const allClassIdsConductedByGivenInstructor =
-    getInstructorsClasses(instructorIds);
-  res.status(200).json(allClassIdsConductedByGivenInstructor);
-  return;
+  if (classRoomOccupation) {
+    throw new UniversalError(
+      StatusCodes.CONFLICT,
+      "Classroom occupied: this classroom is occupied during the specified time span",
+      [],
+    );
+  }
 
-  // const classRoomOccupation = await prisma.class.findFirst({
-  //   where: {
-  //     classRoomId,
-  //     startDate: {
-  //       lte: endDate,
-  //     },
-  //     endDate: {
-  //       gte: startDate,
-  //     },
-  //   },
-  // });
+  const thisGroupThisCourseClasses = await prisma.class.findMany({
+    where: {
+      classTemplate: {
+        courseId: {
+          equals: thisClassTemplate.courseId,
+        },
+      },
+      groupNumber,
+    },
+  });
 
-  // if (classRoomOccupation) {
-  //   throw new Error(
-  //     "Classroom occupied: this classroom is occupied during the specified time span",
-  //   );
-  // }
+  const overlappingClasses = thisGroupThisCourseClasses.filter(
+    (thisGroupThisCourseClass) =>
+      thisGroupThisCourseClass.startDate <= endDate &&
+      thisGroupThisCourseClass.endDate >= startDate,
+  );
 
-  // const thisGroupThisCourseClasses = await prisma.class.findMany({
-  //   where: {
-  //     classTemplate: {
-  //       courseId: {
-  //         equals: thisClassTemplate.courseId,
-  //       },
-  //     },
-  //     groupNumber,
-  //   },
-  // });
+  if (overlappingClasses.length > 0) {
+    throw new UniversalError(
+      StatusCodes.CONFLICT,
+      "Overlapping classes: can't proceed, because this group would have overlapping classes",
+      [],
+    );
+  }
 
-  // const overlappingClasses = thisGroupThisCourseClasses.filter(
-  //   (thisGroupThisCourseClass) =>
-  //     thisGroupThisCourseClass.startDate <= endDate &&
-  //     thisGroupThisCourseClass.endDate >= startDate,
-  // );
+  const allClassIdsConductedByGivenInstructors =
+    await getInstructorsClasses(instructorIds);
 
-  // if (overlappingClasses.length > 0) {
-  //   throw new Error(
-  //     "Overlapping classes: can't proceed, because this group would have overlapping classes",
-  //   );
-  // }
+  const instructorOccupation = await prisma.class.findMany({
+    where: {
+      startDate: {
+        lte: endDate,
+      },
+      endDate: {
+        gte: startDate,
+      },
+      id: {
+        in: allClassIdsConductedByGivenInstructors.instructorsClassesIdsList.map(
+          (item) => item.classId,
+        ),
+      },
+    },
+  });
 
-  // const instructorOccupation = await prisma.class.findMany({
-  //   where: {
-  //     startDate: {
-  //       lte: endDate,
-  //     },
-  //     endDate: {
-  //       gte: startDate,
-  //     },
-  //     // instructor: {
-  //     //   some: {
-  //     //     instructorId: {
-  //     //       in: instructorIds,
-  //     //     },
-  //     //   },
-  //     // },
-  //   },
-  // });
-  // if (instructorOccupation.length > 0) {
-  //   throw new Error(
-  //     "One of the instructors is occupied in the specified time span",
-  //   );
-  // }
+  if (instructorOccupation.length > 0) {
+    throw new UniversalError(
+      StatusCodes.CONFLICT,
+      "One of the instructors is occupied in the specified time span",
+      [],
+    );
+  }
 
-  // if (peopleLimit > thisClassroom.peopleLimit) {
-  //   if (!isConfirmation) {
-  //     throw new Warning(
-  //       "You are trying to exceed the classroom's people limit with the class people limit",
-  //       StatusCodes.CONFLICT,
-  //     );
-  //   }
-  // }
-  // const createdClass = await prisma.class.create({
-  //   data: {
-  //     classTemplateId,
-  //     groupNumber,
-  //     startDate,
-  //     endDate,
-  //     peopleLimit,
-  //     classRoomId,
-  //     // instructor: {
-  //     //   create: instructorIds.map((instructorId: number) => ({
-  //     //     instructorId,
-  //     //   })),
-  //     // },
-  //     classStatus,
-  //   },
-  // });
+  if (peopleLimit > thisClassroom.peopleLimit) {
+    if (!isConfirmation) {
+      throw new Warning(
+        "You are trying to exceed the classroom's people limit with the class people limit",
+        StatusCodes.CONFLICT,
+      );
+    }
+  }
 
-  // res.status(StatusCodes.CREATED).json(createdClass);
+  let createdClass;
+
+  try {
+    createdClass = await prisma.class.create({
+      data: {
+        classTemplateId,
+        groupNumber,
+        startDate,
+        endDate,
+        peopleLimit,
+        classRoomId,
+        classStatus,
+      },
+    });
+
+    await enrollInstructorsInClass(createdClass.id, instructorIds);
+  } catch (err: any) {
+    if (createdClass) {
+      deleteClass(createdClass.id);
+    }
+    throw new UniversalError(
+      StatusCodes.INTERNAL_SERVER_ERROR,
+      "Failed to create class",
+      [],
+    );
+  }
+
+  res.status(StatusCodes.CREATED).json(createdClass);
+}
+
+async function deleteClass(id: number) {
+  try {
+    await prisma.class.delete({
+      where: {
+        id,
+      },
+    });
+  } catch (err: any) {
+    console.log("Failed to compensate class creation by deleting class");
+  }
 }
 
 export async function getSchedule(
@@ -163,39 +194,62 @@ export async function getSchedule(
   res: Response,
   next: NextFunction,
 ) {
-  // const { startDateFrom, startDateTo } = req.params;
-  // const allClassesBetweenDates = await prisma.class.findMany({
-  //   where: {
-  //     startDate: {
-  //       gte: startDateFrom,
-  //       lte: startDateTo,
-  //     },
-  //   },
-  //   include: {
-  //     classTemplate: {
-  //       include: {
-  //         course: true,
-  //         danceCategory: true,
-  //         advancementLevel: true,
-  //       },
-  //     },
-  //     student: true,
-  //   },
-  // });
-  // const result = {
-  //   schedule: allClassesBetweenDates.map((cur) => ({
-  //     startDate: cur.startDate,
-  //     endDate: cur.endDate,
-  //     name: cur.classTemplate.name,
-  //     groupNumber: cur.groupNumber,
-  //     vacancies: cur.peopleLimit - cur.student.length,
-  //     danceCategoryName: cur.classTemplate.danceCategory?.name,
-  //     advancementLevelName: cur.classTemplate.advancementLevel?.name,
-  //     courseName: cur.classTemplate.course?.name,
-  //     classStatus: cur.classStatus,
-  //   })),
-  // };
-  // res.status(StatusCodes.OK).json(result);
+  const { startDateFrom, startDateTo } = req.params;
+  const allClassesBetweenDates = await prisma.class.findMany({
+    where: {
+      startDate: {
+        gte: startDateFrom,
+        lte: startDateTo,
+      },
+    },
+    include: {
+      classTemplate: {
+        include: {
+          course: true,
+          danceCategory: true,
+          advancementLevel: true,
+        },
+      },
+      // student: true,
+    },
+  });
+
+  const classesInstructors = await getClassesInstructors(
+    allClassesBetweenDates.map((aClass) => aClass.id),
+  );
+
+  console.log(classesInstructors);
+  // TODO - pobrać z profile microservice imiona i nazwiska instruktorów i wyświetlić
+
+  const classesStudents = await getClassesStudents(
+    allClassesBetweenDates.map((aClass) => aClass.id),
+  );
+
+  const result = {
+    schedule: allClassesBetweenDates.map((cur) => ({
+      startDate: cur.startDate,
+      endDate: cur.endDate,
+      name: cur.classTemplate.name,
+      groupNumber: cur.groupNumber,
+      vacancies:
+        cur.peopleLimit -
+        classesStudents.studentsClassesIdsList.reduce(
+          (acc, item) => (item.classId === cur.id ? acc + 1 : acc),
+          0,
+        ),
+      danceCategoryName: cur.classTemplate.danceCategory
+        ? cur.classTemplate.danceCategory.name
+        : null,
+      advancementLevelName: cur.classTemplate.advancementLevel
+        ? cur.classTemplate.advancementLevel.name
+        : null,
+      courseName: cur.classTemplate.course
+        ? cur.classTemplate.course.name
+        : null,
+      classStatus: cur.classStatus,
+    })),
+  };
+  res.status(StatusCodes.OK).json(result);
 }
 
 export async function editClassStatus(
@@ -207,28 +261,28 @@ export async function editClassStatus(
   res: Response,
   next: NextFunction,
 ) {
-  // const { classId, newStatus, isConfirmation } = req.body;
-  // const currentClass = await prisma.class.findUniqueOrThrow({
-  //   where: {
-  //     id: classId,
-  //   },
-  // });
-  // if (!currentClass) {
-  //   throw new Error("There is no class with this id");
-  // }
-  // if (!isConfirmation) {
-  //   throw new Warning(
-  //     `This class' status is ${currentClass.classStatus} and you are trying to set it to ${newStatus}`,
-  //     StatusCodes.CONFLICT,
-  //   );
-  // }
-  // const result = await prisma.class.update({
-  //   where: {
-  //     id: classId,
-  //   },
-  //   data: {
-  //     classStatus: newStatus,
-  //   },
-  // });
-  // res.status(StatusCodes.OK).json(result);
+  const { classId, newStatus, isConfirmation } = req.body;
+  const currentClass = await prisma.class.findUniqueOrThrow({
+    where: {
+      id: classId,
+    },
+  });
+  if (!currentClass) {
+    throw new Error("There is no class with this id");
+  }
+  if (!isConfirmation) {
+    throw new Warning(
+      `This class' status is ${currentClass.classStatus} and you are trying to set it to ${newStatus}`,
+      StatusCodes.CONFLICT,
+    );
+  }
+  const result = await prisma.class.update({
+    where: {
+      id: classId,
+    },
+    data: {
+      classStatus: newStatus,
+    },
+  });
+  res.status(StatusCodes.OK).json(result);
 }

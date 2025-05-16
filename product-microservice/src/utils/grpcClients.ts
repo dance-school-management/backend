@@ -5,7 +5,7 @@ import { ProductWithEnrollClient } from "../../proto/productCommunication_grpc_p
 const ENROLL_MICROSERVICE_GRPC = process.env.ENROLL_MICROSERVICE_GRPC;
 
 if (!ENROLL_MICROSERVICE_GRPC) {
-  throw new Error("PRODUCT_MICROSERVICE_GRPC is not defined");
+  throw new Error("ENROLL_MICROSERVICE_GRPC is not defined");
 }
 
 export const productWithEnrollClient = new ProductWithEnrollClient(
