@@ -9,7 +9,7 @@
     "test": "jest",
     "test:e2e": "jest --testPathPattern=src/e2e --detectOpenHandles",
     "prettier": "npx prettier . --write",
-    "start:dev": "nodemon ./src/index.ts",
+    "start:dev": "nodemon --legacy-watch ./src/index.ts",
     "lint": "eslint ./src",
     "db:deploy": "npx prisma migrate deploy && npx prisma generate"
   },
