@@ -2,6 +2,7 @@ import { Router } from "express";
 import {
   createClass,
   editClassStatus,
+  getClassDetails,
   getSchedule,
 } from "../../../controllers/cms/class";
 import { body, param } from "express-validator";
@@ -33,5 +34,7 @@ router.get(
 );
 
 router.put("/status/edit", editClassStatus);
+
+router.get("/:id", getClassDetails);
 
 export default router;

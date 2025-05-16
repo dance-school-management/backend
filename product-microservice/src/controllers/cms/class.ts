@@ -194,6 +194,8 @@ export async function getSchedule(
   res: Response,
   next: NextFunction,
 ) {
+  checkValidations(validationResult(req));
+
   const { startDateFrom, startDateTo } = req.params;
   const allClassesBetweenDates = await prisma.class.findMany({
     where: {
@@ -261,6 +263,8 @@ export async function editClassStatus(
   res: Response,
   next: NextFunction,
 ) {
+  checkValidations(validationResult(req));
+
   const { classId, newStatus, isConfirmation } = req.body;
   const currentClass = await prisma.class.findFirst({
     where: {
@@ -288,5 +292,48 @@ export async function editClassStatus(
       classStatus: newStatus,
     },
   });
+  res.status(StatusCodes.OK).json(result);
+}
+
+export async function getClassDetails(
+  req: Request<{ id: string }, {}, {}>,
+  res: Response,
+  next: NextFunction,
+) {
+  checkValidations(validationResult(req));
+
+  const id = parseInt(req.params.id);
+
+  const theClass = await prisma.class.findFirst({
+    where: {
+      id,
+    },
+    include: {
+      classTemplate: {
+        include: {
+          course: true,
+          danceCategory: true,
+          advancementLevel: true,
+        },
+      },
+      classRoom: true,
+    },
+  });
+
+  if (!theClass)
+    throw new UniversalError(StatusCodes.NOT_FOUND, "Class not found", []);
+
+  const classInstructors = await getClassesInstructors([id]);
+
+  // TODO - zwrócić jeszcze dane instruktorów
+
+  const classStudents = await getClassesStudents([id]);
+
+  const result = {
+    class: theClass,
+    vacancies:
+      theClass.peopleLimit - classStudents.studentsClassesIdsList.length,
+  };
+
   res.status(StatusCodes.OK).json(result);
 }
