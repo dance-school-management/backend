@@ -1,3 +1,4 @@
+
 generator client {
   provider = "prisma-client-js"
   output   = "../generated/client"
@@ -19,10 +20,16 @@ model User {
   sessions      Session[]
   accounts      Account[]
 
-  role String
+  role Role
 
   @@unique([email])
   @@map("user")
+}
+
+enum Role {
+  INSTRUCTOR
+  COORDINATOR
+  STUDENT
 }
 
 model Session {
