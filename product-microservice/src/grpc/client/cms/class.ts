@@ -5,9 +5,9 @@ import {
   InstructorIdsRequest,
   InstructorsClassesResponse,
   StudentsClassesResponse,
-} from "../../../proto/productCommunication_pb";
-import { UniversalError } from "../../errors/UniversalError";
-import { productWithEnrollClient } from "../../utils/grpcClients";
+} from "../../../../proto/productCommunication_pb";
+import { UniversalError } from "../../../errors/UniversalError";
+import { productWithEnrollClient } from "../../../utils/grpcClients";
 
 export async function getInstructorsClasses(
   instructorIds: number[],

@@ -55,6 +55,7 @@ services:
       target: final
     ports:
       - "8003:8003"
+      - "50053:50051"
     env_file:
       - ./enroll-microservice/.env.development
     volumes:

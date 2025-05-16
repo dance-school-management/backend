@@ -5,7 +5,7 @@ import { ProfileClient } from "../../proto/AuthCommunication_grpc_pb";
 const PROFILE_MICROSERVICE_GRPC_URL = process.env.PROFILE_MICROSERVICE_GRPC_URL;
 
 if (!PROFILE_MICROSERVICE_GRPC_URL) {
-  throw new Error("PRODUCT_MICROSERVICE_GRPC is not defined");
+  throw new Error("PROFILE_MICROSERVICE_GRPC_URL is not defined");
 }
 
 export const profileServiceClient = new ProfileClient(
