@@ -10,7 +10,7 @@ import {
   getClassesInstructors,
   getClassesStudents,
   getInstructorsClasses,
-} from "../../grpc/cms/class";
+} from "../../grpc/client/cms/class";
 import { UniversalError } from "../../errors/UniversalError";
 
 export async function createClass(

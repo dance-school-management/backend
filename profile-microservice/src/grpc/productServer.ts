@@ -18,7 +18,7 @@ export function createGrpcServer() {
         logger.error(`Server error: ${err.message}`);
         return;
       }
-      logger.info(`gRPC server running at http://localhost:$50052`);
+      logger.info(`gRPC server running at http://localhost:50052`);
     },
   );
 }
