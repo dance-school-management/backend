@@ -20,9 +20,11 @@ export function errorHandler(
 
   if (err instanceof UniversalError) {
     res.status(err.statusCode).json(err);
+    return;
   }
   if (err instanceof Warning) {
     res.status(err.statusCode).json(warningJsonBuilder(err));
+    return;
   }
 
   if (err instanceof Prisma.PrismaClientKnownRequestError) {
@@ -35,6 +37,7 @@ export function errorHandler(
       wrongFields,
     );
     res.status(status).json(uniErr);
+    return;
   }
   if (err instanceof Prisma.PrismaClientValidationError) {
     const validationError = new UniversalError(
@@ -63,4 +66,5 @@ export function errorHandler(
     message: err.message,
     errors: [],
   });
+  return;
 }

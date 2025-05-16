@@ -1,4 +1,4 @@
-import express, { Request, Response } from "express";
+import express, { NextFunction, Request, Response } from "express";
 import { createProxyMiddleware } from "http-proxy-middleware";
 import "dotenv/config";
 import cors from "cors";
@@ -58,6 +58,14 @@ if (ENROLL_MICROSERVICE_URL) {
 
 app.get("/", (req: Request, res) => {
   res.send("Hello from api-gateway1");
+});
+
+app.use((req: Request, res) => {
+  res.send("Endpoint not found");
+});
+
+app.use((err: any, req: Request, res: Response, next: NextFunction) => {
+  res.send(`Problem with microservices, ${err.message}`);
 });
 
 app.listen(PORT, () => {

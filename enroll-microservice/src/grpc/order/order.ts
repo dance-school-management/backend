@@ -1,12 +1,14 @@
 import {
   CheckClassRequest,
   CheckCourseRequest,
-  CheckResponse
+  CheckResponse,
 } from "../../../proto/productCommunication_pb";
 import { UniversalError } from "../../errors/UniversalError";
 import { enrollWithProductClient } from "../../utils/grpcClients";
 
-export async function checkClass(classId: number): Promise<CheckResponse.AsObject> {
+export async function checkClass(
+  classId: number,
+): Promise<CheckResponse.AsObject> {
   return new Promise((resolve, reject) => {
     const request = new CheckClassRequest().setClassId(classId);
     enrollWithProductClient.checkClass(request, (err, response) => {
@@ -32,7 +34,9 @@ export async function checkClass(classId: number): Promise<CheckResponse.AsObjec
   });
 }
 
-export async function checkCourse(courseId: number): Promise<CheckResponse.AsObject> {
+export async function checkCourse(
+  courseId: number,
+): Promise<CheckResponse.AsObject> {
   return new Promise((resolve, reject) => {
     const request = new CheckCourseRequest().setCourseId(courseId);
     enrollWithProductClient.checkCourse(request, (err, response) => {

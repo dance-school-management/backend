@@ -24,6 +24,7 @@ COPY package.json .
 COPY --from=deps /usr/src/app/node_modules ./node_modules
 COPY ./dist/ ./dist
 
-EXPOSE 8000
+EXPOSE 8001
+EXPOSE 50051
 
 CMD ["node", "dist/index.js"]

@@ -231,8 +231,8 @@
  *   put:
  *     summary: Edit status of a class
  *     description: >
- *       Updates the status of a class based on its ID.  
- *       If the current status is HIDDEN and you're setting a different status than NORMAL, 
+ *       Updates the status of a class based on its ID.
+ *       If the current status is HIDDEN and you're setting a different status than NORMAL,
  *       a confirmation flag is required.
  *     tags:
  *       - cms - Classes

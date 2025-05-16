@@ -71,4 +71,3 @@
  *                 is_valid:
  *                   type: boolean
  */
-
