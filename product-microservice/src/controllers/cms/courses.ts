@@ -1,10 +1,12 @@
 import { NextFunction, Request, Response } from "express";
-import { Prisma, CourseStatus } from "../../../generated/client";
+import { Prisma, CourseStatus, Course } from "../../../generated/client";
 import prisma from "../../utils/prisma";
 import { prismaError } from "prisma-better-errors";
 import { StatusCodes } from "http-status-codes";
 import { checkValidations } from "../../utils/errorHelpers";
 import { validationResult } from "express-validator";
+import { UniversalError } from "../../errors/UniversalError";
+import { Warning } from "../../errors/Warning";
 
 interface GetCourseFilter {
   danceCategoryIds: number[] | null;
@@ -20,13 +22,13 @@ export async function getCourses(
 
   const courseFiltersAndSearch: Prisma.CourseWhereInput[] = [];
 
-  if (filter.danceCategoryIds) {
+  if (filter.danceCategoryIds && filter.danceCategoryIds.length > 0) {
     courseFiltersAndSearch.push({
       danceCategoryId: { in: filter.danceCategoryIds },
     });
   }
 
-  if (filter.advancementLevelIds) {
+  if (filter.advancementLevelIds && filter.advancementLevelIds.length > 0) {
     courseFiltersAndSearch.push({
       advancementLevelId: { in: filter.advancementLevelIds },
     });
@@ -62,11 +64,24 @@ export async function getCourses(
 }
 
 export async function addCourse(
-  req: Request<{}, {}, { name: string }>,
+  req: Request<{}, {}, { name: string; isConfirmation: boolean }>,
   res: Response,
 ) {
   checkValidations(validationResult(req));
-  const { name } = req.body;
+  const { name, isConfirmation } = req.body;
+
+  if (!isConfirmation) {
+    const alreadyExistingCourse = await prisma.course.findFirst({
+      where: {
+        name,
+      },
+    });
+    if (alreadyExistingCourse)
+      throw new Warning(
+        "There is already a course with this name",
+        StatusCodes.CONFLICT,
+      );
+  }
 
   const newCourse = await prisma.course.create({
     data: {
@@ -78,19 +93,7 @@ export async function addCourse(
   res.status(StatusCodes.CREATED).json(newCourse);
 }
 
-interface EditCourseRequest {
-  id: number;
-  name: string;
-  description: string;
-  danceCategoryId: number | null;
-  advancementLevelId: number | null;
-  customPrice: number | null;
-}
-
-export async function editCourse(
-  req: Request<{}, {}, EditCourseRequest>,
-  res: Response,
-) {
+export async function editCourse(req: Request<{}, {}, Course>, res: Response) {
   checkValidations(validationResult(req));
 
   const {

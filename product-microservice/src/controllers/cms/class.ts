@@ -229,6 +229,7 @@ export async function getSchedule(
 
   const result = {
     schedule: allClassesBetweenDates.map((cur) => ({
+      id: cur.id,
       startDate: cur.startDate,
       endDate: cur.endDate,
       name: cur.classTemplate.name,

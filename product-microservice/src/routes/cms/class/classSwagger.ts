@@ -187,6 +187,9 @@
  *                   items:
  *                     type: object
  *                     properties:
+ *                       id:
+ *                         type: integer
+ *                         example: 1
  *                       startDate:
  *                         type: string
  *                         format: date-time
@@ -232,8 +235,7 @@
  *     summary: Edit status of a class
  *     description: >
  *       Updates the status of a class based on its ID.
- *       If the current status is HIDDEN and you're setting a different status than NORMAL,
- *       a confirmation flag is required.
+ *       Requires isConfirmation to be set to true to proceed, otherwise throws a Warning
  *     tags:
  *       - cms - Classes
  *     requestBody:
@@ -337,14 +339,6 @@
  *                   description: Number of available spots in the class
  *       404:
  *         description: Class not found
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/ErrorResponse'
  *       400:
  *         description: Validation error
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/ErrorResponse'
  */

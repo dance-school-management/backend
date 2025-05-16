@@ -37,11 +37,11 @@ export function checkValidations(validationResult: Result<ValidationError>) {
 }
 
 export function warningJsonBuilder(err: Warning): {
-  title: string;
+  name: string;
   message: string;
 } {
   return {
-    title: err.title,
+    name: err.name,
     message: err.message,
   };
 }
