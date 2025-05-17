@@ -48,83 +48,117 @@
 
 /**
  * @swagger
- * paths:
- *   /cms/class_template:
- *     post:
- *       summary: Create a new class template
- *       description: Creates a new class template with the given data.
- *       tags:
- *         - cms - ClassTemplates
- *       requestBody:
- *         required: true
+ * components:
+ *   schemas:
+ *     ClassTemplateInput:
+ *       type: object
+ *       required:
+ *         - name
+ *         - description
+ *         - price
+ *         - currency
+ *         - classType
+ *         - isConfirmation
+ *       properties:
+ *         courseId:
+ *           type: integer
+ *           nullable: true
+ *           description: Optional ID of the related course
+ *           example: 1
+ *         name:
+ *           type: string
+ *           description: Name of the class template
+ *           example: "Salsa Basics"
+ *         description:
+ *           type: string
+ *           description: Description of the class template
+ *           example: "Beginner salsa course covering basic steps and figures."
+ *         price:
+ *           type: number
+ *           format: float
+ *           description: Price of the class template
+ *           example: 199.99
+ *         currency:
+ *           type: string
+ *           description: Currency code (ISO 4217 format)
+ *           example: "USD"
+ *         danceCategoryId:
+ *           type: integer
+ *           nullable: true
+ *           description: Optional ID of the dance category
+ *           example: 2
+ *         advancementLevelId:
+ *           type: integer
+ *           nullable: true
+ *           description: Optional ID of the advancement level
+ *           example: 3
+ *         classType:
+ *           type: string
+ *           enum:
+ *             - GROUP_CLASS
+ *             - PRIVATE_CLASS
+ *             - THEME_PARTY
+ *           description: Type of the class
+ *           example: "GROUP_CLASS"
+ *         scheduleTileColor:
+ *           type: string
+ *           nullable: true
+ *           description: Optional hex color code for the schedule tile
+ *           example: "#FF5733"
+ *         isConfirmation:
+ *           type: boolean
+ *           description: Set to true to skip name duplication check
+ *           example: false
+ */
+
+/**
+ * @swagger
+ * /cms/class_template:
+ *   post:
+ *     summary: Create a new class template
+ *     description: >
+ *       Creates a new class template with the given data.
+ *       If a template with the same name exists, set "isConfirmation: true" to override the warning.
+ *     tags:
+ *       - cms - ClassTemplates
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/ClassTemplateInput'
+ *     responses:
+ *       201:
+ *         description: Class template created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ClassTemplate'
+ *       400:
+ *         description: Bad request (validation failed)
  *         content:
  *           application/json:
  *             schema:
  *               type: object
- *               required:
- *                 - name
- *                 - description
- *                 - price
- *                 - currency
- *                 - classType
  *               properties:
- *                 courseId:
- *                   type: integer
- *                   nullable: true
- *                   description: Optional ID of the related course
- *                   example: 1
- *                 name:
+ *                 message:
  *                   type: string
- *                   description: Name of the class template
- *                   example: "Salsa Basics"
- *                 description:
+ *                 errors:
+ *                   type: array
+ *                   items:
+ *                     type: string
+ *       409:
+ *         description: A class template with this name already exists
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
  *                   type: string
- *                   description: Description of the class template
- *                   example: "Beginner salsa course covering basic steps and figures."
- *                 price:
- *                   type: number
- *                   format: decimal
- *                   description: Price of the class template
- *                   example: 199.99
- *                 currency:
- *                   type: string
- *                   description: Currency code (ISO 4217 format)
- *                   example: "USD"
- *                 danceCategoryId:
- *                   type: integer
- *                   nullable: true
- *                   description: Optional ID of the dance category
- *                   example: 2
- *                 advancementLevelId:
- *                   type: integer
- *                   nullable: true
- *                   description: Optional ID of the advancement level
- *                   example: 3
- *                 classType:
- *                   type: string
- *                   enum:
- *                     - GROUP_CLASS
- *                     - PRIVATE_CLASS
- *                     - THEME_PARTY
- *                   description: Type of the class
- *                   example: "GROUP_CLASS"
- *                 scheduleTileColor:
- *                   type: string
- *                   nullable: true
- *                   description: Optional color code for the schedule tile
- *                   example: "#FF5733"
- *       responses:
- *         "201":
- *           description: Class template created successfully
- *           content:
- *             application/json:
- *               schema:
- *                 $ref: "#/components/schemas/ClassTemplate"
- *         "400":
- *           description: Bad Request (Invalid data)
- *         "500":
- *           description: Internal Server Error
+ *                   example: There is already a class template with this name
  */
+
 
 /**
  * @swagger
