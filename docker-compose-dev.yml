@@ -84,6 +84,23 @@ services:
         condition: service_healthy
     networks:
       - microservices-network
+  review-microservice:
+    build:
+      context: ./review-microservice
+      dockerfile: docker/dev/Dockerfile
+      target: final
+    ports:
+      - "8007:8007"
+    env_file:
+      - ./review-microservice/.env.development
+    volumes:
+      - ./review-microservice/:/usr/src/app
+      - /usr/src/app/node_modules
+    depends_on:
+      review_db:
+        condition: service_healthy
+    networks:
+      - microservices-network
   product_db:
     image: postgres:latest
     restart: always
@@ -172,6 +189,28 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+  review_db:
+    image: postgres:latest
+    restart: always
+    user: postgres
+    secrets:
+      - review_db
+    environment:
+      POSTGRES_DB: reviews
+      POSTGRES_PASSWORD_FILE: /run/secrets/review_db
+    ports:
+      - "5439:5432"
+    volumes:
+      - review_data:/var/lib/postgresql/data
+    networks:
+      - microservices-network
+    expose:
+      - 5432
+    healthcheck:
+      test: [ "CMD", "pg_isready" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
 
 volumes:
@@ -179,6 +218,7 @@ volumes:
   auth_data:
   enroll_data:
   profile_data:
+  review_data:
 networks:
   microservices-network:
     driver: bridge
@@ -191,3 +231,5 @@ secrets:
     file: db/enroll-db-password.txt
   profile_db:
     file: db/profile-db-password.txt
+  review_db:
+    file: db/review-db-password.txt
