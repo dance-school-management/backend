@@ -4,6 +4,7 @@ import { setupSwagger } from "./swagger";
 import { errorHandler } from "../middlewares/errorHandler";
 import morgan from "morgan";
 import helmet from "helmet";
+import reviewRouter from "../routes/review/review"
 
 export function createApp() {
   const app = express();
@@ -12,6 +13,7 @@ export function createApp() {
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
   setupSwagger(app);
+  app.use("/review", reviewRouter);
   app.get("/", (req, res) => {
     res.send("Hello from review-microservice");
   });
