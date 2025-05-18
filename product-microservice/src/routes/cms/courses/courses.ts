@@ -1,7 +1,9 @@
 import { Router } from "express";
 import {
   addCourse,
+  deleteCourse,
   editCourse,
+  getCourseDetails,
   getCourses,
 } from "../../../controllers/cms/courses";
 import { body } from "express-validator";
@@ -21,5 +23,9 @@ router.put(
   body(["name"]).notEmpty().withMessage("Name must not be empty"),
   editCourse,
 );
+
+router.delete("/:id", deleteCourse);
+
+router.get("/:id", getCourseDetails);
 
 export default router;
