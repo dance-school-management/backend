@@ -25,8 +25,8 @@ router.get(
         .withMessage("title must be a string"),
     query("createdAt")
         .optional()
-        .isString()
-        .withMessage("createdAt must be a string"),
+        .isISO8601()
+        .withMessage("createdAt must be a valid ISO8601 date"),
     query("tags")
         .optional()
         .custom((value) => {
