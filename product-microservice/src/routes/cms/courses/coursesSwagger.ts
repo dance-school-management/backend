@@ -40,15 +40,22 @@
  *           description: New advancement level ID (optional)
  *         customPrice:
  *           type: number
+ *           format: float
  *           description: New price (optional)
+ *         courseStatus:
+ *           type: string
+ *           description: New course status (optional)
+ *           enum: [HIDDEN, SALE, ONGOING, FINISHED]
  *       example:
  *         id: 1
- *         name: "Tango Advanced"
- *         description: "Updated course"
- *         danceCategoryId: 3
- *         advancementLevelId: 2
- *         customPrice: 2000
+ *         name: "Advanced Tango"
+ *         description: "Updated course for advanced learners"
+ *         danceCategoryId: 2
+ *         advancementLevelId: 3
+ *         customPrice: 1800
+ *         courseStatus: "ONGOING"
  */
+
 
 /**
  * @swagger
@@ -161,7 +168,8 @@
  *     description: >
  *       Updates a course by ID.  
  *       All fields will be updated with the provided values, including `null`.  
- *       Fields not sent will be treated as `undefined` and may result in Prisma error.
+ *       Fields not sent will be treated as `undefined` and may result in Prisma error.  
+ *       Make sure to provide all necessary fields, especially `courseStatus`, if required by validation.
  *     requestBody:
  *       required: true
  *       content:
@@ -201,6 +209,7 @@
  */
 
 
+
 /**
  * @swagger
  * /cms/course:
@@ -224,4 +233,153 @@
  *               type: array
  *               items:
  *                 $ref: '#/components/schemas/edited_course'
+ */
+
+/**
+ * @swagger
+ * /cms/course/{id}:
+ *   delete:
+ *     tags:
+ *       - cms - Courses
+ *     summary: Delete a course by ID
+ *     description: Permanently deletes a course from the database using its ID.
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID of the course to delete
+ *     responses:
+ *       204:
+ *         description: Course successfully deleted (no content)
+ *       404:
+ *         description: Course not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Course with this ID not found
+ *       400:
+ *         description: Invalid course ID
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Invalid course ID
+ */
+
+/**
+ * @swagger
+ * /cms/course/{id}:
+ *   get:
+ *     tags:
+ *       - cms - Courses
+ *     summary: Get detailed course information by ID
+ *     description: >
+ *       Returns detailed data about a specific course, including related class templates with classes, dance category and advancement level.
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID of the course to retrieve
+ *     responses:
+ *       200:
+ *         description: Course details with relations
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: integer
+ *                 name:
+ *                   type: string
+ *                 description:
+ *                   type: string
+ *                 courseStatus:
+ *                   type: string
+ *                   enum: [HIDDEN, SALE, ONGOING, FINISHED]
+ *                 customPrice:
+ *                   type: number
+ *                   nullable: true
+ *                 danceCategory:
+ *                   type: object
+ *                   nullable: true
+ *                   properties:
+ *                     id:
+ *                       type: integer
+ *                     name:
+ *                       type: string
+ *                     description:
+ *                       type: string
+ *                 advancementLevel:
+ *                   type: object
+ *                   nullable: true
+ *                   properties:
+ *                     id:
+ *                       type: integer
+ *                     name:
+ *                       type: string
+ *                     description:
+ *                       type: string
+ *                 classTemplate:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: integer
+ *                       name:
+ *                         type: string
+ *                       description:
+ *                         type: string
+ *                       class:
+ *                         type: array
+ *                         items:
+ *                           type: object
+ *                           properties:
+ *                             id:
+ *                               type: integer
+ *                             groupNumber:
+ *                               type: integer
+ *                             startDate:
+ *                               type: string
+ *                               format: date-time
+ *                             endDate:
+ *                               type: string
+ *                               format: date-time
+ *                             peopleLimit:
+ *                               type: integer
+ *                             classStatus:
+ *                               type: string
+ *                               enum: [HIDDEN, NORMAL, CANCELLED, POSTPONED, MAKE_UP]
+ *       404:
+ *         description: Course not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Course not found
+ *       400:
+ *         description: Invalid ID
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Invalid course ID
  */

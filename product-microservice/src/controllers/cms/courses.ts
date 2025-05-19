@@ -103,6 +103,7 @@ export async function editCourse(req: Request<{}, {}, Course>, res: Response) {
     danceCategoryId,
     advancementLevelId,
     customPrice,
+    courseStatus,
   } = req.body;
 
   const editedCourse = await prisma.course.update({
@@ -115,7 +116,63 @@ export async function editCourse(req: Request<{}, {}, Course>, res: Response) {
       danceCategoryId,
       advancementLevelId,
       customPrice,
+      courseStatus,
     },
   });
   res.status(StatusCodes.OK).json(editedCourse);
+}
+
+export async function getCourseDetails(
+  req: Request<{ id: string }, {}, {}>,
+  res: Response,
+) {
+  const id = parseInt(req.params.id);
+
+  const theCourse = await prisma.course.findFirst({
+    where: {
+      id,
+    },
+    include: {
+      classTemplate: {
+        include: {
+          class: true,
+        },
+      },
+      danceCategory: true,
+      advancementLevel: true,
+    },
+  });
+
+  if (!theCourse)
+    throw new UniversalError(StatusCodes.NOT_FOUND, "Course not found", []);
+
+  res.status(StatusCodes.OK).json(theCourse);
+}
+
+export async function deleteCourse(
+  req: Request<{ id: string }, {}, {}>,
+  res: Response,
+) {
+  const id = parseInt(req.params.id);
+
+  const theCourse = await prisma.course.findUniqueOrThrow({
+    where: {
+      id,
+    },
+  });
+
+  if (theCourse?.courseStatus !== "HIDDEN")
+    throw new UniversalError(
+      StatusCodes.CONFLICT,
+      "Cannot delete this course, because its status is not 'hidden'",
+      [],
+    );
+
+  await prisma.course.delete({
+    where: {
+      id,
+    },
+  });
+
+  res.status(StatusCodes.NO_CONTENT).send();
 }
