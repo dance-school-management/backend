@@ -159,7 +159,6 @@
  *                   example: There is already a class template with this name
  */
 
-
 /**
  * @swagger
  * /cms/class_template/{id}:

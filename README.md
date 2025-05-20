@@ -13,6 +13,12 @@
 5. To start all microservices - `docker compose -f 'docker-compose-dev.yml' up --build`
 
 You can find swagger docs at:
+
 - localhost:8000/product/api-docs
 - localhost:8000/auth/api-docs
 - localhost:8000/enroll/api-docs
+
+Authentication (2 places):
+
+1. In Api gateway for choosen paths you have to provide middleware if you want to authenticate user.
+2. Through headers is sent information about user to microservice. Based on that you can provide for each route, endpoint middleware which checks role

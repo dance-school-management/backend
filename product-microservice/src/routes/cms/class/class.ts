@@ -11,11 +11,12 @@ const router = Router();
 
 router.post(
   "/",
-  body(["instructorIds"])
+  body("instructorIds")
     .isArray({ min: 1 })
     .withMessage("instructorIds must be a non-empty array")
-    .custom((arr) => arr.every((id: any) => Number.isInteger(id)))
-    .withMessage("All instructorIds must be integers"),
+    .bail()
+    .custom((arr) => arr.every((id: any) => typeof id === "string"))
+    .withMessage("All instructorIds must be strings"),
   body(["startDate", "endDate"])
     .isISO8601()
     .withMessage("Dates must be of type ISO8601")

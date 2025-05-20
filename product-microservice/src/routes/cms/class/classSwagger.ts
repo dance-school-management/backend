@@ -92,8 +92,8 @@
  *                 type: array
  *                 description: IDs of instructors assigned to the class
  *                 items:
- *                   type: integer
- *                 example: [1, 2]
+ *                   type: string
+ *                 example: ["1", "2"]
  *               classRoomId:
  *                 type: integer
  *                 description: ID of the classroom where the class takes place

@@ -1,10 +1,13 @@
+import { StatusCodes } from "http-status-codes";
 import {
   CheckClassRequest,
   CheckCourseRequest,
+  CheckCourseResponse,
   CheckResponse,
 } from "../../../proto/productCommunication_pb";
 import { UniversalError } from "../../errors/UniversalError";
 import { enrollWithProductClient } from "../../utils/grpcClients";
+import logger from "../../utils/winston";
 
 export async function checkClass(
   classId: number,
@@ -22,8 +25,12 @@ export async function checkClass(
             error.errors,
           );
         } catch (parseError) {
-          console.error("Failed to parse gRPC error details:", parseError);
-          unErr = new UniversalError(500, "Internal Server Error", []);
+          logger.error("Failed to parse gRPC error details:", parseError);
+          unErr = new UniversalError(
+            StatusCodes.INTERNAL_SERVER_ERROR,
+            "Problem with accessing product data",
+            [],
+          );
         }
         reject(unErr);
         return;
@@ -36,9 +43,12 @@ export async function checkClass(
 
 export async function checkCourse(
   courseId: number,
-): Promise<CheckResponse.AsObject> {
+  groupNumber: number,
+): Promise<CheckCourseResponse.AsObject> {
   return new Promise((resolve, reject) => {
-    const request = new CheckCourseRequest().setCourseId(courseId);
+    const request = new CheckCourseRequest()
+      .setCourseId(courseId)
+      .setGroupNumber(groupNumber);
     enrollWithProductClient.checkCourse(request, (err, response) => {
       if (err) {
         let unErr: UniversalError;
@@ -50,8 +60,12 @@ export async function checkCourse(
             error.errors,
           );
         } catch (parseError) {
-          console.error("Failed to parse gRPC error details:", parseError);
-          unErr = new UniversalError(500, "Internal Server Error", []);
+          logger.error("Failed to parse gRPC error details:", parseError);
+          unErr = new UniversalError(
+            StatusCodes.INTERNAL_SERVER_ERROR,
+            "Problem with accessing product data",
+            [],
+          );
         }
         reject(unErr);
         return;

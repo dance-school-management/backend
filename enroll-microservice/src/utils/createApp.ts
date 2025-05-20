@@ -6,6 +6,8 @@ import morgan from "morgan";
 import helmet from "helmet";
 import orderRouter from "../routes/order/order";
 import { UniversalError } from "../errors/UniversalError";
+import { handleUserContext } from "../middlewares/handleUserContext";
+import { checkRole } from "../middlewares/checkRole";
 
 export function createApp() {
   const app = express();
@@ -14,7 +16,8 @@ export function createApp() {
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
   setupSwagger(app);
-  app.use("/order", orderRouter);
+  app.use(handleUserContext);
+  app.use("/order", checkRole(["STUDENT"]), orderRouter);
   app.get("/", (req, res) => {
     res.send("Hello from enroll-microservice");
   });

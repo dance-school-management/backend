@@ -42,3 +42,4 @@ yarn-error.log*
 db
 .vscode/settings.json
 .idea
+api-gateway/combined.log

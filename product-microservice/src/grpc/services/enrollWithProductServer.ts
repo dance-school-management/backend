@@ -2,12 +2,15 @@ import { IEnrollWithProductServer } from "../../../proto/productCommunication_gr
 import {
   CheckClassRequest,
   CheckCourseRequest,
+  CheckCourseResponse,
+  CheckCourseResponseEntry,
   CheckResponse,
 } from "../../../proto/productCommunication_pb";
 import { sendUnaryData, ServerUnaryCall, status } from "@grpc/grpc-js";
 import prisma from "../../utils/prisma";
 import { UniversalError } from "../../errors/UniversalError";
 import { StatusCodes } from "http-status-codes";
+import { ClassType } from "../../../generated/client";
 
 export const EnrollWithProductServerImp: IEnrollWithProductServer = {
   async checkClass(
@@ -15,35 +18,58 @@ export const EnrollWithProductServerImp: IEnrollWithProductServer = {
     callback: sendUnaryData<CheckResponse>,
   ): Promise<void> {
     const classId = call.request.getClassId();
-    //need to add checking free slots in Class
     const classObj = await prisma.class.findFirst({
       where: {
         id: classId,
+        classTemplate: {
+          classType: {
+            in: [ClassType.PRIVATE_CLASS, ClassType.THEME_PARTY],
+          },
+        },
       },
     });
     if (!classObj) {
       const err = new UniversalError(
         StatusCodes.NOT_FOUND,
-        `This class with id ${classId} doesn't exists`,
+        `This class with id ${classId} doesn't exists or is part of a course`,
         [],
       );
       callback({ code: status.NOT_FOUND, details: JSON.stringify(err) });
       return;
     }
-    const res = new CheckResponse().setIsValid(true);
+    const res = new CheckResponse().setPeopleLimit(classObj.peopleLimit);
     callback(null, res);
   },
   async checkCourse(
-    call: ServerUnaryCall<CheckCourseRequest, CheckResponse>,
-    callback: sendUnaryData<CheckResponse>,
+    call: ServerUnaryCall<CheckCourseRequest, CheckCourseResponse>,
+    callback: sendUnaryData<CheckCourseResponse>,
   ): Promise<void> {
     const courseId = call.request.getCourseId();
-    const courseObj = await prisma.course.findFirst({
+    const groupNumber = call.request.getGroupNumber();
+    // const courseObj = await prisma.course.findFirst({
+    //   where: {
+    //     id: courseId,
+    //   },
+    // });
+
+    const classesWithPeopleLimites = await prisma.classTemplate.findMany({
       where: {
-        id: courseId,
+        courseId: courseId,
+      },
+      select: {
+        class: {
+          select: {
+            id: true,
+            peopleLimit: true,
+          },
+          where: {
+            groupNumber,
+          },
+        },
       },
     });
-    if (!courseObj) {
+
+    if (!classesWithPeopleLimites) {
       const err = new UniversalError(
         StatusCodes.NOT_FOUND,
         `This course with id ${courseId} doesn't exists`,
@@ -52,7 +78,35 @@ export const EnrollWithProductServerImp: IEnrollWithProductServer = {
       callback({ code: status.NOT_FOUND, details: JSON.stringify(err) });
       return;
     }
-    const res = new CheckResponse().setIsValid(true);
+    if (classesWithPeopleLimites.length === 0) {
+      const err = new UniversalError(
+        StatusCodes.NOT_FOUND,
+        `This course with id ${courseId} doesn't have class_templates with group number ${groupNumber}`,
+        [],
+      );
+      callback({ code: status.NOT_FOUND, details: JSON.stringify(err) });
+    }
+    classesWithPeopleLimites.forEach((classWithPeopleLimit) => {
+      if (classWithPeopleLimit.class.length !== 1) {
+        const err = new UniversalError(
+          StatusCodes.NOT_FOUND,
+          `This course with id ${courseId} doesn't have complete set of classes with group number ${groupNumber}`,
+          [],
+        );
+        callback({ code: status.NOT_FOUND, details: JSON.stringify(err) });
+      }
+    });
+
+    const res = new CheckCourseResponse().setPeopleLimitsList(
+      classesWithPeopleLimites
+        .flatMap((classWithPeopleLimit) => classWithPeopleLimit.class)
+        .map((classObj) => {
+          const entry = new CheckCourseResponseEntry();
+          entry.setClassId(classObj.id);
+          entry.setPeopleLimit(classObj.peopleLimit);
+          return entry;
+        }),
+    );
     callback(null, res);
   },
 };

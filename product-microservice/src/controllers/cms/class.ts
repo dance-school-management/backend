@@ -10,14 +10,14 @@ import {
   getClassesInstructors,
   getClassesStudents,
   getInstructorsClasses,
-} from "../../grpc/client/cms/class";
+} from "../../grpc/client/enrollCommunication/class";
 import { UniversalError } from "../../errors/UniversalError";
 
 export async function createClass(
   req: Request<
     {},
     {},
-    Class & { instructorIds: number[]; isConfirmation: boolean }
+    Class & { instructorIds: string[]; isConfirmation: boolean }
   >,
   res: Response,
   next: NextFunction,

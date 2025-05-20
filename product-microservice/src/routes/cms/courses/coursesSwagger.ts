@@ -56,7 +56,6 @@
  *         courseStatus: "ONGOING"
  */
 
-
 /**
  * @swagger
  * components:
@@ -165,10 +164,10 @@
  *     tags:
  *       - cms - Courses
  *     summary: Edit an existing course
- *     description: >
- *       Updates a course by ID.  
- *       All fields will be updated with the provided values, including `null`.  
- *       Fields not sent will be treated as `undefined` and may result in Prisma error.  
+ *     description:
+ *       Updates a course by ID.
+ *       All fields will be updated with the provided values, including `null`.
+ *       Fields not sent will be treated as `undefined` and may result in Prisma error.
  *       Make sure to provide all necessary fields, especially `courseStatus`, if required by validation.
  *     requestBody:
  *       required: true
@@ -207,8 +206,6 @@
  *                   type: string
  *                   example: Course with this ID not found
  */
-
-
 
 /**
  * @swagger
