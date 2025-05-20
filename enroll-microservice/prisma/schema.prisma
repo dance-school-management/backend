@@ -15,27 +15,54 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Attendance {
+  id        Int      @id @default(autoincrement())
+  studentId String
+  classId   Int
+  date      DateTime
+  status    String
+  classTicket ClassTicket @relation(fields: [studentId, classId], references: [studentId, classId])
+}
+
+enum AttendanceStatus {
+  PRESENT
+  ABSENT
+}
+
 model ClassTicket {
-  studentId Int
-  classId  Int
+  studentId   String
+  classId     Int
   isConfirmed Boolean
+  attendance Attendance[]
+  paymentStatus PaymentStatus
+
   @@id([studentId, classId])
 }
 
 model CourseTicket {
-  studentId Int
+  studentId String
   courseId  Int
+  paymentStatus PaymentStatus
+
   @@id([studentId, courseId])
 }
 
+enum PaymentStatus {
+  PENDING
+  PAID
+  REFUNDED
+}
+
 model ClassesOnInstructors {
-  instructorId Int
-  classId  Int
+  instructorId String
+  classId      Int
+
   @@id([instructorId, classId])
 }
 
 model CoursesOnInstructors {
-  instructorId Int
-  courseId  Int
+  instructorId String
+  courseId     Int
+
   @@id([instructorId, courseId])
 }

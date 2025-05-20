@@ -4,7 +4,6 @@ import { setupSwagger } from "./swagger";
 import { errorHandler } from "../middlewares/errorHandler";
 import morgan from "morgan";
 import helmet from "helmet";
-import path from "path";
 import { UniversalError } from "../errors/UniversalError";
 
 export function createApp() {

@@ -9,12 +9,12 @@ const options: swaggerJsdoc.Options = {
   definition: {
     openapi: "3.0.0",
     info: {
-      title: "profile API Docs",
+      title: "api gateway API Docs",
       version: "1.0.0",
     },
     servers: [
       {
-        url: "http://localhost:8000/profile",
+        url: "http://localhost:8000",
       },
     ],
   },

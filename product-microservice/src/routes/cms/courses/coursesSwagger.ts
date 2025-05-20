@@ -159,8 +159,8 @@
  *       - cms - Courses
  *     summary: Edit an existing course
  *     description: >
- *       Updates a course by ID.  
- *       All fields will be updated with the provided values, including `null`.  
+ *       Updates a course by ID.
+ *       All fields will be updated with the provided values, including `null`.
  *       Fields not sent will be treated as `undefined` and may result in Prisma error.
  *     requestBody:
  *       required: true
@@ -199,7 +199,6 @@
  *                   type: string
  *                   example: Course with this ID not found
  */
-
 
 /**
  * @swagger

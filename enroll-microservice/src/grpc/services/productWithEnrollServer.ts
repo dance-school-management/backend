@@ -5,6 +5,8 @@ import {
   ClassIdsRequest,
   EnrollInstructorsInClassRequest,
   EnrollInstructorsInClassResponse,
+  GetStudentClassesRequest,
+  GetStudentClassesResponse,
   InstructorClass,
   InstructorIdsRequest,
   InstructorsClassesResponse,
@@ -77,23 +79,25 @@ export const ProductWithEnrollServerImp: IProductWithEnrollServer = {
   ): Promise<void> {
     const classId = call.request.getClassId();
     const instructorIds = call.request.getInstructorIdsList();
-
-    const classes = await prisma.classesOnInstructors.createMany({
-      data: instructorIds.map((instructorId) => ({
-        classId,
-        instructorId,
-      })),
-    });
-
-    if (!classes) {
-      const err = new UniversalError(
+    try {
+      console.log(classId, instructorIds);
+      const classes = await prisma.classesOnInstructors.createMany({
+        data: instructorIds.map((instructorId) => ({
+          classId,
+          instructorId,
+        })),
+      });
+    } catch (err) {
+      console.log(err);
+      const unErr = new UniversalError(
         StatusCodes.NOT_FOUND,
         "Error occured while creating classes-instructor enrollments",
         [],
       );
-      callback({ code: status.NOT_FOUND, details: JSON.stringify(err) });
+      callback({ code: status.NOT_FOUND, details: JSON.stringify(unErr) });
       return;
     }
+
     const res = new EnrollInstructorsInClassResponse().setSuccess(true);
     callback(null, res);
   },
@@ -101,7 +105,7 @@ export const ProductWithEnrollServerImp: IProductWithEnrollServer = {
     call: ServerUnaryCall<ClassIdsRequest, StudentsClassesResponse>,
     callback: sendUnaryData<StudentsClassesResponse>,
   ): Promise<void> {
-    const classIds = call.request.getClassIdsList()
+    const classIds = call.request.getClassIdsList();
 
     const classesStudents = await prisma.classTicket.findMany({
       where: {
@@ -111,17 +115,48 @@ export const ProductWithEnrollServerImp: IProductWithEnrollServer = {
       },
     });
 
-    const classesStudentsProtobuf: StudentClass[] =
-      classesStudents.map((item) => {
+    const classesStudentsProtobuf: StudentClass[] = classesStudents.map(
+      (item) => {
         const ic = new StudentClass();
         ic.setClassId(item.classId);
         ic.setStudentId(item.studentId);
         return ic;
-      });
+      },
+    );
 
     const res = new StudentsClassesResponse().setStudentsClassesIdsList(
       classesStudentsProtobuf,
     );
     callback(null, res);
-  }
+  },
+  getStudentClasses: async function (
+    call: ServerUnaryCall<GetStudentClassesRequest, GetStudentClassesResponse>,
+    callback: sendUnaryData<GetStudentClassesResponse>,
+  ): Promise<void> {
+    const studentId = call.request.getStudentId();
+
+    const studentClasses = await prisma.classTicket.findMany({
+      where: {
+        studentId,
+      },
+      select: {
+        classId: true,
+        studentId: true,
+      },
+    });
+
+    const classesStudentsProtobuf: StudentClass[] = studentClasses.map(
+      (item) => {
+        const ic = new StudentClass();
+        ic.setClassId(item.classId);
+        ic.setStudentId(item.studentId);
+        return ic;
+      },
+    );
+
+    const res = new GetStudentClassesResponse().setStudentClassesList(
+      classesStudentsProtobuf,
+    );
+    callback(null, res);
+  },
 };

@@ -2,72 +2,73 @@
  * @swagger
  * /order/class:
  *   post:
- *     summary: Create an order for a class
+ *     summary: Creates an order for a class (private class or theme party).
  *     tags:
- *       - Order
+ *       - student
+ *         - order
+ *         - class
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
  *             type: object
- *             properties:
- *               classId:
- *                 type: number
- *                 description: The ID of the class to order
- *                 example: 1
- *               studentId:
- *                 type: number
- *                 description: The ID of the student placing the order
- *                 example: 1
  *             required:
  *               - classId
- *               - studentId
+ *             properties:
+ *               classId:
+ *                 type: integer
+ *                 description: id of the class to order.
+ *                 example: 1
  *     responses:
  *       200:
- *         description: Order created successfully
+ *         description: Successfully created order for class.
  *         content:
  *           application/json:
  *             schema:
  *               type: object
  *               properties:
- *                 is_valid:
- *                   type: boolean
+ *                 message:
+ *                   type: string
+ *                   example: "Order for class with 1 created successfully"
  */
 
 /**
  * @swagger
  * /order/course:
  *   post:
- *     summary: Create an order for a course
+ *     summary: Creates an order for a course.
  *     tags:
- *       - Order
+ *       - student
+ *         - order
+ *         - course
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
  *             type: object
- *             properties:
- *               courseId:
- *                 type: number
- *                 description: The ID of the class to order
- *                 example: 1
- *               studentId:
- *                 type: number
- *                 description: The ID of the student placing the order
- *                 example: 1
  *             required:
  *               - courseId
- *               - studentId
+ *               - groupNumber
+ *             properties:
+ *               courseId:
+ *                 type: integer
+ *                 description: course id to order.
+ *                 example: 1
+ *               groupNumber:
+ *                 type: integer
+ *                 description: group number (it's identifier of class set).
+ *                 example: 1
  *     responses:
  *       200:
- *         description: Order created successfully
+ *         description: Successfully created order for course.
  *         content:
  *           application/json:
  *             schema:
  *               type: object
  *               properties:
- *                 is_valid:
- *                   type: boolean
+ *                 message:
+ *                   type: string
+ *                   example: "Order created successfully"
  */
