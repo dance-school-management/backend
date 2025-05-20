@@ -3,13 +3,61 @@ syntax = "proto3";
 package productcommunication;
 
 service EnrollWithProduct {
-  rpc CheckClass(CheckClassRequest) returns (CheckClassResponse) {}; 
+  rpc CheckClass(CheckClassRequest) returns (CheckResponse) {};
+  rpc CheckCourse(CheckCourseRequest) returns (CheckResponse) {};
 }
 
 message CheckClassRequest {
-  int64 classId = 1;
+  int64 class_id = 1;
 };
 
-message CheckClassResponse {
-  bool isThere = 1;
+message CheckCourseRequest {
+  int64 course_id = 1;
+};
+
+message CheckResponse {
+  bool is_valid = 1;
+};
+
+service ProductWithEnroll {
+  rpc GetInstructorsClasses (InstructorIdsRequest) returns (InstructorsClassesResponse);
+  rpc GetClassesInstructors (ClassIdsRequest) returns (InstructorsClassesResponse);
+  rpc EnrollInstructorsInClass (EnrollInstructorsInClassRequest) returns (EnrollInstructorsInClassResponse);
+
+  rpc GetClassesStudents (ClassIdsRequest) returns (StudentsClassesResponse);
+}
+
+message InstructorIdsRequest {
+  repeated int64 instructor_ids = 1;
+};
+
+message ClassIdsRequest {
+  repeated int64 class_ids = 1;
+};
+
+message InstructorsClassesResponse {
+  repeated InstructorClass instructors_classes_ids = 1;
+};
+
+message StudentsClassesResponse {
+  repeated StudentClass students_classes_ids = 1;
+}
+
+message InstructorClass {
+  int64 intructor_id = 1;
+  int64 class_id = 2; 
+};
+
+message StudentClass {
+  int64 student_id = 1;
+  int64 class_id = 2;
+};
+
+message EnrollInstructorsInClassRequest {
+  int64 class_id = 1;
+  repeated int64 instructor_ids = 2;
+};
+
+message EnrollInstructorsInClassResponse {
+  bool success = 1;
 };

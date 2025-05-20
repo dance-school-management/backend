@@ -1,14 +1,11 @@
 import { StatusCodes } from "http-status-codes";
 
 export class Warning extends Error {
-  title: string;
+  name: string;
   statusCode: StatusCodes;
-  constructor(
-    message: string,
-    statusCode: StatusCodes,
-  ) {
+  constructor(message: string, statusCode: StatusCodes) {
     super(message);
-    this.title = "Warning";
+    this.name = "Warning";
     this.statusCode = statusCode;
   }
 }

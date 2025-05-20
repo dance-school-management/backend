@@ -6,7 +6,7 @@ import { checkValidations } from "../../utils/errorHelpers";
 import { AdvancementLevel } from "../../../generated/client";
 
 export async function createAdvancementLevel(
-  req: Request<{}, {}, AdvancementLevel>,
+  req: Request<object, object, AdvancementLevel>,
   res: Response,
 ) {
   checkValidations(validationResult(req));

@@ -187,6 +187,9 @@
  *                   items:
  *                     type: object
  *                     properties:
+ *                       id:
+ *                         type: integer
+ *                         example: 1
  *                       startDate:
  *                         type: string
  *                         format: date-time
@@ -231,9 +234,8 @@
  *   put:
  *     summary: Edit status of a class
  *     description: >
- *       Updates the status of a class based on its ID.  
- *       If the current status is HIDDEN and you're setting a different status than NORMAL, 
- *       a confirmation flag is required.
+ *       Updates the status of a class based on its ID.
+ *       Requires isConfirmation to be set to true to proceed, otherwise throws a Warning
  *     tags:
  *       - cms - Classes
  *     requestBody:
@@ -287,3 +289,56 @@
  *         description: Internal server error
  */
 
+/**
+ * @swagger
+ * /cms/class/{id}:
+ *   get:
+ *     summary: Get class details
+ *     description: Returns detailed information about a specific class, including its template, course, category, level, room, and available spots.
+ *     tags:
+ *       - cms - Classes
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID of the class to retrieve
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved class details
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 class:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: integer
+ *                     peopleLimit:
+ *                       type: integer
+ *                     classTemplate:
+ *                       type: object
+ *                       properties:
+ *                         course:
+ *                           type: object
+ *                           additionalProperties: true
+ *                         danceCategory:
+ *                           type: object
+ *                           additionalProperties: true
+ *                         advancementLevel:
+ *                           type: object
+ *                           additionalProperties: true
+ *                     classRoom:
+ *                       type: object
+ *                       additionalProperties: true
+ *                 vacancies:
+ *                   type: integer
+ *                   description: Number of available spots in the class
+ *       404:
+ *         description: Class not found
+ *       400:
+ *         description: Validation error
+ */

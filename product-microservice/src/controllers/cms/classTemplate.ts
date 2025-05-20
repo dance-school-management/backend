@@ -4,9 +4,10 @@ import { validationResult } from "express-validator";
 import { StatusCodes } from "http-status-codes";
 import { ClassTemplate } from "../../../generated/client";
 import { checkValidations } from "../../utils/errorHelpers";
+import { Warning } from "../../errors/Warning";
 
 export async function createClassTemplate(
-  req: Request<{}, {}, ClassTemplate>,
+  req: Request<{}, {}, ClassTemplate & { isConfirmation: boolean }>,
   res: Response,
   next: NextFunction,
 ) {
@@ -22,7 +23,21 @@ export async function createClassTemplate(
     advancementLevelId,
     classType,
     scheduleTileColor,
+    isConfirmation,
   } = req.body;
+
+  if (!isConfirmation) {
+    const alreadyExistingClassTemplate = await prisma.classTemplate.findFirst({
+      where: {
+        name,
+      },
+    });
+    if (alreadyExistingClassTemplate)
+      throw new Warning(
+        "There is already a class template with this name",
+        StatusCodes.CONFLICT,
+      );
+  }
 
   const createdClassTemplate = await prisma.classTemplate.create({
     data: {

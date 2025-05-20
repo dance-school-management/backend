@@ -6,7 +6,13 @@
 - auth-db-password.txt
 - product-db-password.txt
 - enroll-db-password.txt
+- profile-db-password.txt
 
-3. There has to be at least one migration for microservices locally. It is a little bit tricky. You have to start all microservices' databases in docker and use `bash migrate-all-prismas.sh`.
-4. To start all microservices - `docker compose -f 'docker-compose-dev.yml' up --build`
-5. Developing gRPC - for each microservice use build.sh in proto folder
+3. To make gRPC work use script `generate-files-from-protos.sh` for macOS/linux, for windows use `generate-files-from-protos-Windows.sh`
+4. There has to be at least one migration for microservices locally. It is a little bit tricky. You have to start all microservices' databases in docker and use `bash migrate-all-prismas.sh`.
+5. To start all microservices - `docker compose -f 'docker-compose-dev.yml' up --build`
+
+You can find swagger docs at:
+- localhost:8000/product/api-docs
+- localhost:8000/auth/api-docs
+- localhost:8000/enroll/api-docs
