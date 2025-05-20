@@ -22,7 +22,7 @@ export async function makeClassOrder(
     studentId = req.user.id;
   } else {
     throw new UniversalError(
-      StatusCodes.INTERNAL_SERVER_ERROR,
+      StatusCodes.UNAUTHORIZED,
       "Problems with authentication",
       [],
     );
@@ -72,7 +72,7 @@ export async function makeCourseOrder(
     studentId = req.user.id;
   } else {
     throw new UniversalError(
-      StatusCodes.INTERNAL_SERVER_ERROR,
+      StatusCodes.UNAUTHORIZED,
       "Problems with authentication",
       [],
     );
@@ -103,7 +103,7 @@ export async function makeCourseOrder(
     }
   });
   try {
-    prisma.$transaction(async (tx) => {
+    await prisma.$transaction(async (tx) => {
       await tx.classTicket.createMany({
         data: classes.map((classObj) => ({
           classId: classObj.classId,

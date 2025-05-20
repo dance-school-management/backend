@@ -34,7 +34,7 @@ export const ProductWithEnrollServerImp: IProductWithEnrollServer = {
       instructorsClasses.map((item) => {
         const ic = new InstructorClass();
         ic.setClassId(item.classId);
-        ic.setIntructorId(item.instructorId);
+        ic.setInstructorId(item.instructorId);
         return ic;
       });
 
@@ -61,7 +61,7 @@ export const ProductWithEnrollServerImp: IProductWithEnrollServer = {
       classesInstructors.map((item) => {
         const ic = new InstructorClass();
         ic.setClassId(item.classId);
-        ic.setIntructorId(item.instructorId);
+        ic.setInstructorId(item.instructorId);
         return ic;
       });
 

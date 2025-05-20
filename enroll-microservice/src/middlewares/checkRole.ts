@@ -31,7 +31,7 @@ export function checkRole(roles: string[]) {
     } else {
       throw new UniversalError(
         StatusCodes.UNAUTHORIZED,
-        "Problem with accessing user role  in product-microservice",
+        "Problem with accessing user role in enroll-microservice",
         [],
       );
     }
