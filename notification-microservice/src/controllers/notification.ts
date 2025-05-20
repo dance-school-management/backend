@@ -55,6 +55,7 @@ export async function getNotificationById(req: Request, res: Response) {
     });
     if (!notification) {
         res.status(StatusCodes.NOT_FOUND).json({ message: `Notification with id ${id} not found` });
+        return;
     }
     res.status(StatusCodes.OK).json(notification);
 }
