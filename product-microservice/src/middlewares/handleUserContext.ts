@@ -6,7 +6,7 @@ export function handleUserContext(
   res: Response,
   _next: NextFunction,
 ) {
-  console.log(req.originalUrl)
+  console.log(req.originalUrl);
   try {
     const userHeader = req.headers["user-context"] as string;
     const user = JSON.parse(Buffer.from(userHeader, "base64").toString("utf8"));

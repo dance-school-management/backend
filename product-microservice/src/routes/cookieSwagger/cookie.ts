@@ -8,4 +8,4 @@
  *       name: better-auth.session_token
  * security:
  *   - cookieAuth: []
-*/
+ */
