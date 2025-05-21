@@ -27,6 +27,6 @@ ENV NODE_ENV=development
 COPY package.json .
 COPY --from=deps /usr/src/app/node_modules ./node_modules
 
-EXPOSE 8000
+EXPOSE 8005
 
 CMD ["sh", "-c", "npm run db:deploy && npm run start:dev"]
