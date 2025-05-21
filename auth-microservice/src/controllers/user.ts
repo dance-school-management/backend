@@ -1,12 +1,10 @@
 import { Request, Response } from "express";
 import { auth } from "../utils/auth";
-import prisma from "../utils/prisma";
 import { createProfile } from "../grpc/profile/profile";
 import { APIError } from "better-auth/api";
 import { UniversalError } from "../errors/UniversalError";
 import { StatusCodes } from "http-status-codes";
 import logger from "../utils/winston";
-import * as cookie from "cookie";
 export async function registerUser(req: Request, res: Response) {
   const { email, password, name, surname } = req.body;
   let responseForProfile;

@@ -1,13 +1,12 @@
-import express, { NextFunction, Request, Response } from "express";
+import express, { Request, Response } from "express";
 import { createProxyMiddleware } from "http-proxy-middleware";
 import "dotenv/config";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-import { authenticate } from "./controllers/authenticate";
+import { authenticate } from "./middlewares/authenticate";
 import { errorHandler } from "./middlewares/errorHandler";
 import { UniversalError } from "./errors/UniversalError";
 import { StatusCodes } from "http-status-codes";
-import logger from "./utils/winston";
 
 const app = express();
 const PORT = process.env.PORT || 8000;
@@ -25,9 +24,8 @@ app.use(
     credentials: true,
   })
 );
-app.use(cookieParser());
 
-//app.get("/test", authenticate("student"));
+app.use(cookieParser());
 
 if (AUTH_MICROSERVICE_URL) {
   const proxyMiddlewareAuth = createProxyMiddleware<Request, Response>({
