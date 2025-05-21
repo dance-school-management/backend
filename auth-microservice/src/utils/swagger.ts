@@ -1,7 +1,9 @@
 import swaggerJsdoc from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express";
-import { Express } from "express";
+import { Express, Request, Response, Router } from "express";
 import "dotenv/config";
+
+const router = Router();
 
 const API_GATEWAY_URL = process.env.API_GATEWAY_URL;
 
@@ -23,8 +25,10 @@ const options: swaggerJsdoc.Options = {
 
 const swaggerSpec = swaggerJsdoc(options);
 
-export const setupSwagger = (app: Express) => {
-  app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-};
+router.use("/api-docs", swaggerUi.serve, (req: Request, res: Response) => {
+  let html = swaggerUi.generateHTML(swaggerSpec);
+  res.send(html);
+});
 
+export default router;
 export const swaggerDocument = swaggerSpec;

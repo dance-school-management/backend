@@ -22,3 +22,23 @@ Authentication (2 places):
 
 1. In Api gateway for choosen paths you have to provide middleware if you want to authenticate user.
 2. Through headers is sent information about user to microservice. Based on that you can provide for each route, endpoint middleware which checks role
+
+Development mode (auth):
+
+1. To disable authentication set env variable `AUTH_FLAG` to `false` in api-gateway .
+2. Directly in `api-gateway/src/middlewares/authenticate.ts` you can change user data:
+
+```ts
+//...
+  if (AUTH_FLAG === "false") {
+        const fakeUser = {
+          id: "provided-fake-id-string124",
+          role: "STUDENT",
+        };
+        req.headers["user-context"] = Buffer.from(
+          JSON.stringify(fakeUser)
+        ).toString("base64");
+        next();
+  }
+//...
+```

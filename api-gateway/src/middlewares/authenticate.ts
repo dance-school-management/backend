@@ -5,8 +5,9 @@ import { StatusCodes } from "http-status-codes";
 import logger from "../utils/winston";
 
 const AUTH_MICROSERVICE_URL = process.env.AUTH_MICROSERVICE_URL;
+const AUTH_FLAG = process.env.AUTH_FLAG;
 
-export function authenticate() { //requiredRole: string[]
+export function authenticate() {
   return async (
     req: Request & { user?: any },
     res: Response,
@@ -15,6 +16,9 @@ export function authenticate() { //requiredRole: string[]
     const cookies = req.cookies;
     const betterAuthCookie = cookies["better-auth.session_token"];
     try {
+      if (AUTH_FLAG === "false") {
+        throw new Error();
+      }
       const response = await fetch(
         `${AUTH_MICROSERVICE_URL}/api/auth/get-session`,
         {
@@ -28,31 +32,29 @@ export function authenticate() { //requiredRole: string[]
       const data = await response.json();
       logger.info({
         level: "info",
-        message: `User ${data.user.id} authenticated with role: ${data.user.role}`
+        message: `User ${data.user.id} authenticated with role: ${data.user.role}`,
       });
-      // if (!requiredRole.includes(data.user.role)) {
-      //   logger.error({
-      //     level: "error",
-      //     message: `User ${data.user.id} is not authorized to access this resource as ${data.user.role}`
-      //   });
-      //   throw new UniversalError(
-      //     StatusCodes.UNAUTHORIZED,
-      //     `You are not authorized to access this resource as ${data.user.role}`,
-      //     []
-      //   );
-      // }
-      // req.user = data.user;
-      //console.log(req.user);
       req.headers["user-context"] = Buffer.from(
         JSON.stringify(data.user)
       ).toString("base64");
       next();
     } catch (err: any) {
-      throw new UniversalError(
-        StatusCodes.INTERNAL_SERVER_ERROR,
-        "Error while authenticating",
-        []
-      );
+      if (AUTH_FLAG === "false") {
+        const fakeUser = {
+          id: "provided-fake-id-string124",
+          role: "STUDENT",
+        };
+        req.headers["user-context"] = Buffer.from(
+          JSON.stringify(fakeUser)
+        ).toString("base64");
+        next();
+      } else {
+        throw new UniversalError(
+          StatusCodes.UNAUTHORIZED,
+          "Error while authenticating",
+          []
+        );
+      }
     }
   };
 }

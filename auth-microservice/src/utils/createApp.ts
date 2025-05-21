@@ -1,6 +1,5 @@
 import express from "express";
 import "dotenv/config";
-import { setupSwagger } from "./swagger";
 import { errorHandler } from "../middlewares/errorHandler";
 import morgan from "morgan";
 import helmet from "helmet";
@@ -9,7 +8,8 @@ import { auth } from "./auth";
 import cookieParser from "cookie-parser";
 import { UniversalError } from "../errors/UniversalError";
 import userRouter from "../routes/user/user";
-
+import swaggerRouter from "./swagger";
+import swaggerBetterAuthRouter from "./swaggerBetterAuth";
 export function createApp() {
   const app = express();
 
@@ -19,7 +19,8 @@ export function createApp() {
   app.use(cookieParser());
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
-  setupSwagger(app);
+  app.use("/1", swaggerRouter);
+  app.use("/2", swaggerBetterAuthRouter);
   app.use("/", userRouter);
   app.get("/", (req, res) => {
     res.send("Hello from auth-microservice");
