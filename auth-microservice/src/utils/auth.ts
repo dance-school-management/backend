@@ -60,5 +60,5 @@ export const auth = betterAuth({
       },
     },
   },
-  trustedOrigins: ["http://localhost:8000"],
+  trustedOrigins: ["http://localhost:8000", "http://localhost:3000"],
 });
