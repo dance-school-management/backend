@@ -1,0 +1,9 @@
+node_modules
+/prisma/migrations  
+generated
+combined.log
+error.log
+uploads
+.env
+.env.*
+!.env.*.example
