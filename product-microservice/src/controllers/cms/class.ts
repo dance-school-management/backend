@@ -13,6 +13,12 @@ import {
 } from "../../grpc/client/enrollCommunication/class";
 import { UniversalError } from "../../errors/UniversalError";
 
+//  <!-- Controllers in this file -->
+// createClass
+// getSchedule
+// editClassStatus
+// getClassDetails
+
 export async function createClass(
   req: Request<
     {},

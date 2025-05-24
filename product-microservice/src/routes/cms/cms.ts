@@ -6,6 +6,7 @@ import courseRouter from "./courses/courses";
 import classTemplateRouter from "../cms/classTemplate/classTemplate";
 import classRoomRouter from "../cms/classRoom/classRoom";
 import advancementLevelRouter from "./advancementLevel/advancementLevel";
+import aggregationsRouter from "../cms/aggregations/aggregations";
 
 const router = Router();
 
@@ -16,5 +17,6 @@ router.use("/course", courseRouter);
 // router.use("/trainee_schedule", traineeSchedule);
 router.use("/class_template", classTemplateRouter);
 router.use("/class_room", classRoomRouter);
+router.use("/aggregations", aggregationsRouter);
 
 export default router;

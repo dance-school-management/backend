@@ -7,6 +7,7 @@ import { checkValidations } from "../../utils/errorHelpers";
 import { validationResult } from "express-validator";
 import { UniversalError } from "../../errors/UniversalError";
 import { Warning } from "../../errors/Warning";
+import { ClassType } from "../../../generated/client";
 
 interface GetCourseFilter {
   danceCategoryIds: number[] | null;
@@ -90,6 +91,20 @@ export async function addCourse(
       courseStatus: CourseStatus.HIDDEN,
     },
   });
+
+  if (process.env.NODE_ENV === 'development') {
+    await prisma.classTemplate.create({
+      data: {
+        name: "name",
+        description: "description",
+        price: 200,
+        classType: ClassType.GROUP_CLASS,
+        currency: "PLN",
+        courseId: newCourse.id,
+      },
+  });
+}
+
   res.status(StatusCodes.CREATED).json(newCourse);
 }
 
