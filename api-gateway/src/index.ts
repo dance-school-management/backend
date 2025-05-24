@@ -23,7 +23,7 @@ app.use(
     origin: FRONTEND_URL,
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
-  })
+  }),
 );
 app.use(cookieParser());
 
@@ -73,7 +73,7 @@ if (ENROLL_MICROSERVICE_URL) {
         const currPath = req.originalUrl;
         return currPath.replace("/enroll", "");
       },
-    }
+    },
   );
   if (NODE_ENV === "development") {
     app.use("/enroll/api-docs", proxyMiddlewareEnrollApiDocs);

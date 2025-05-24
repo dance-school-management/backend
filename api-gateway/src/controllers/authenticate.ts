@@ -6,11 +6,12 @@ import logger from "../utils/winston";
 
 const AUTH_MICROSERVICE_URL = process.env.AUTH_MICROSERVICE_URL;
 
-export function authenticate() { //requiredRole: string[]
+export function authenticate() {
+  //requiredRole: string[]
   return async (
     req: Request & { user?: any },
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ) => {
     const cookies = req.cookies;
     const betterAuthCookie = cookies["better-auth.session_token"];
@@ -23,12 +24,12 @@ export function authenticate() { //requiredRole: string[]
             Cookie: `better-auth.session_token=${betterAuthCookie}`,
           },
           credentials: "include",
-        }
+        },
       );
       const data = await response.json();
       logger.info({
         level: "info",
-        message: `User ${data.user.id} authenticated with role: ${data.user.role}`
+        message: `User ${data.user.id} authenticated with role: ${data.user.role}`,
       });
       // if (!requiredRole.includes(data.user.role)) {
       //   logger.error({
@@ -44,14 +45,14 @@ export function authenticate() { //requiredRole: string[]
       // req.user = data.user;
       //console.log(req.user);
       req.headers["user-context"] = Buffer.from(
-        JSON.stringify(data.user)
+        JSON.stringify(data.user),
       ).toString("base64");
       next();
     } catch (err: any) {
       throw new UniversalError(
         StatusCodes.INTERNAL_SERVER_ERROR,
         "Error while authenticating",
-        []
+        [],
       );
     }
   };

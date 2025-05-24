@@ -7,7 +7,7 @@ export function errorHandler(
   err: Error,
   req: Request,
   res: Response,
-  _next: NextFunction
+  _next: NextFunction,
 ) {
   logger.error({
     level: "error",
