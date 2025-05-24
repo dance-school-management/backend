@@ -11,7 +11,7 @@ export function authenticate() {
   return async (
     req: Request & { user?: any },
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ) => {
     const cookies = req.cookies;
     const betterAuthCookie = cookies["better-auth.session_token"];
@@ -27,7 +27,7 @@ export function authenticate() {
             Cookie: `better-auth.session_token=${betterAuthCookie}`,
           },
           credentials: "include",
-        }
+        },
       );
       const data = await response.json();
       logger.info({
@@ -35,7 +35,7 @@ export function authenticate() {
         message: `User ${data.user.id} authenticated with role: ${data.user.role}`,
       });
       req.headers["user-context"] = Buffer.from(
-        JSON.stringify(data.user)
+        JSON.stringify(data.user),
       ).toString("base64");
       next();
     } catch (err: any) {
