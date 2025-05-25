@@ -66,6 +66,23 @@ services:
         condition: service_healthy
     networks:
       - microservices-network
+  notification-microservice:
+    build:
+      context: ./notification-microservice
+      dockerfile: docker/dev/Dockerfile
+      target: final
+    ports:
+      - "8005:8005"
+    env_file:
+      - ./notification-microservice/.env.development
+    volumes:
+      - ./notification-microservice/:/usr/src/app
+      - /usr/src/app/node_modules
+    depends_on:
+      notification_db:
+        condition: service_healthy
+    networks:
+      - microservices-network
   profile-microservice:
     build:
       context: ./profile-microservice
@@ -150,6 +167,28 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+  notification_db:
+    image: postgres:latest
+    restart: always
+    user: postgres
+    secrets:
+      - notification_db
+    environment:
+      POSTGRES_DB: notification
+      POSTGRES_PASSWORD_FILE: /run/secrets/notification_db
+    ports:
+      - "5437:5432"
+    volumes:
+      - notification_data:/var/lib/postgresql/data
+    networks:
+      - microservices-network
+    expose:
+      - 5432
+    healthcheck:
+      test: [ "CMD", "pg_isready" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
   profile_db:
     image: postgres:latest
     restart: always
@@ -171,13 +210,14 @@ services:
       test: [ "CMD", "pg_isready" ]
       interval: 10s
       timeout: 5s
-      retries: 5
+      retries: 5 
 
 
 volumes:
   product_data:
   auth_data:
   enroll_data:
+  notification_data:
   profile_data:
 networks:
   microservices-network:
@@ -189,5 +229,7 @@ secrets:
     file: db/product-db-password.txt
   enroll_db:
     file: db/enroll-db-password.txt
+  notification_db:
+    file: db/notification-db-password.txt
   profile_db:
     file: db/profile-db-password.txt
