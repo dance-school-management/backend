@@ -5,6 +5,9 @@ import {
   CheckCourseResponse,
   CheckCourseResponseEntry,
   CheckResponse,
+  ClassDetails,
+  ClassesDetailsResponse,
+  ClassIdsRequest,
 } from "../../../proto/productCommunication_pb";
 import { sendUnaryData, ServerUnaryCall, status } from "@grpc/grpc-js";
 import prisma from "../../utils/prisma";
@@ -107,6 +110,50 @@ export const EnrollWithProductServerImp: IEnrollWithProductServer = {
           return entry;
         }),
     );
+    callback(null, res);
+  },
+  async getClassesDetails(
+    call: ServerUnaryCall<ClassIdsRequest, ClassesDetailsResponse>,
+    callback: sendUnaryData<ClassesDetailsResponse>,
+  ): Promise<void> {
+    const classIds = call.request.getClassIdsList();
+
+    const classesDetails = await prisma.class.findMany({
+      where: {
+        id: {
+          in: classIds,
+        },
+      },
+      include: {
+        classTemplate: {
+          include: {
+            danceCategory: true,
+            advancementLevel: true
+          }
+        },
+        classRoom: true,
+      },
+    });
+
+    const classesDetailsProtobuf = classesDetails.map(
+      (classDetails) => {
+        const cbd = new ClassDetails();
+        cbd.setClassId(classDetails.id);
+        cbd.setName(classDetails.classTemplate.name);
+        cbd.setStartDate(classDetails.startDate.toISOString());
+        cbd.setEndDate(classDetails.endDate.toISOString());
+        cbd.setClassRoomName(classDetails.classRoom.name);
+        if (classDetails.classTemplate.danceCategory)
+          cbd.setDanceCategoryName(classDetails.classTemplate.danceCategory.name);
+        if (classDetails.classTemplate.advancementLevel)
+          cbd.setAdvancementLevelName(classDetails.classTemplate.advancementLevel?.name)
+        cbd.setDescription(classDetails.classTemplate.description);
+        return cbd;
+      },
+    );
+
+    const res = new ClassesDetailsResponse();
+    res.setClassesdetailsList(classesDetailsProtobuf);
     callback(null, res);
   },
 };

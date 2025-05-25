@@ -5,6 +5,8 @@ package productcommunication;
 service EnrollWithProduct {
   rpc CheckClass(CheckClassRequest) returns (CheckResponse) {};
   rpc CheckCourse(CheckCourseRequest) returns (CheckCourseResponse) {};
+
+  rpc GetClassesDetails (ClassIdsRequest) returns (ClassesDetailsResponse);
 }
 
 message CheckClassRequest {
@@ -47,6 +49,10 @@ message ClassIdsRequest {
   repeated int64 class_ids = 1;
 };
 
+message ClassIdRequest {
+  int64 class_id = 1;
+}
+
 message InstructorsClassesResponse {
   repeated InstructorClass instructors_classes_ids = 1;
 };
@@ -82,3 +88,19 @@ message GetStudentClassesRequest {
 message GetStudentClassesResponse {
   repeated StudentClass student_classes = 1;
 }
+
+message ClassDetails {
+  int64 class_id = 1;
+  string name = 2;
+  string description = 3;
+  string start_date = 4;
+  string end_date = 5;
+  string class_room_name = 6;
+  optional string dance_category_name = 7;
+  optional string advancement_level_name = 8;
+}
+
+message ClassesDetailsResponse {
+  repeated ClassDetails classesDetails = 1;
+}
+

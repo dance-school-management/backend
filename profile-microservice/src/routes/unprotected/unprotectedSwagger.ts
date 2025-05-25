@@ -6,7 +6,7 @@
  *     description: >
  *       Returns a list of all users with the role of INSTRUCTOR, including their basic profile information.
  *     tags:
- *       - cms - Instructors
+ *       - unprotected - instructors
  *     responses:
  *       "200":
  *         description: Successfully retrieved instructors
