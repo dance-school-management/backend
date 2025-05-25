@@ -275,7 +275,8 @@
  * /cms/class_template/{id}:
  *   get:
  *     summary: Get a class template by ID
- *     description: Retrieves a class template using its unique ID.
+ *     description: >
+ *       Retrieves a specific class template by its ID, including related dance category, advancement level, and associated classes with room details.
  *     tags:
  *       - cms - ClassTemplates
  *     parameters:
@@ -284,17 +285,15 @@
  *         required: true
  *         schema:
  *           type: integer
- *         description: ID of the class template to retrieve
+ *         description: ID of the class template
  *         example: 1
  *     responses:
  *       "200":
- *         description: Class template retrieved successfully
+ *         description: Class template found
  *         content:
  *           application/json:
  *             schema:
  *               $ref: "#/components/schemas/ClassTemplate"
- *       "400":
- *         description: Bad Request (invalid or missing ID)
  *       "404":
  *         description: Class template not found
  *       "500":
@@ -306,7 +305,7 @@
  * /cms/class_template:
  *   get:
  *     summary: Get all class templates
- *     description: Retrieves a list of all available class templates.
+ *     description: Retrieves a list of all available class templates, including related categories, levels, and classes with room details.
  *     tags:
  *       - cms - ClassTemplates
  *     responses:
@@ -320,4 +319,115 @@
  *                 $ref: "#/components/schemas/ClassTemplate"
  *       "500":
  *         description: Internal Server Error
+ *
+ * components:
+ *   schemas:
+ *     ClassTemplate:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: integer
+ *           example: 1
+ *         name:
+ *           type: string
+ *           example: "Salsa Beginner Class"
+ *         description:
+ *           type: string
+ *           example: "Basic steps and rhythm exercises"
+ *         price:
+ *           type: number
+ *           format: decimal
+ *           example: 200.00
+ *         currency:
+ *           type: string
+ *           example: "PLN"
+ *         classType:
+ *           type: string
+ *           enum: [GROUP_CLASS, PRIVATE_CLASS, THEME_PARTY]
+ *           example: "GROUP_CLASS"
+ *         scheduleTileColor:
+ *           type: string
+ *           nullable: true
+ *           example: "#FFAA00"
+ *         danceCategory:
+ *           $ref: "#/components/schemas/DanceCategory"
+ *         advancementLevel:
+ *           $ref: "#/components/schemas/AdvancementLevel"
+ *         class:
+ *           type: array
+ *           items:
+ *             $ref: "#/components/schemas/Class"
+ *
+ *     DanceCategory:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: integer
+ *           example: 1
+ *         name:
+ *           type: string
+ *           example: "Salsa"
+ *         description:
+ *           type: string
+ *           example: "Latin American dance style"
+ *         photoPath:
+ *           type: string
+ *           nullable: true
+ *           example: "https://example.com/salsa.jpg"
+
+ *     AdvancementLevel:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: integer
+ *           example: 1
+ *         name:
+ *           type: string
+ *           example: "Beginner"
+ *         description:
+ *           type: string
+ *           example: "No prior experience required"
+
+ *     Class:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: integer
+ *           example: 10
+ *         groupNumber:
+ *           type: integer
+ *           example: 2
+ *         startDate:
+ *           type: string
+ *           format: date-time
+ *           example: "2025-06-10T18:00:00.000Z"
+ *         endDate:
+ *           type: string
+ *           format: date-time
+ *           example: "2025-06-10T19:30:00.000Z"
+ *         peopleLimit:
+ *           type: integer
+ *           example: 20
+ *         classStatus:
+ *           type: string
+ *           enum: [HIDDEN, NORMAL, CANCELLED, POSTPONED, MAKE_UP]
+ *           example: "NORMAL"
+ *         classRoom:
+ *           $ref: "#/components/schemas/ClassRoom"
+
+ *     ClassRoom:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: integer
+ *           example: 3
+ *         name:
+ *           type: string
+ *           example: "Studio 1"
+ *         peopleLimit:
+ *           type: integer
+ *           example: 25
+ *         description:
+ *           type: string
+ *           example: "Spacious dance room with mirrors and sound system"
  */

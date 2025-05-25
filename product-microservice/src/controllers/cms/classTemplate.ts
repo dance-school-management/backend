@@ -5,6 +5,8 @@ import { StatusCodes } from "http-status-codes";
 import { ClassTemplate } from "../../../generated/client";
 import { checkValidations } from "../../utils/errorHelpers";
 import { Warning } from "../../errors/Warning";
+import { ClassType } from "../../../generated/client";
+import { UniversalError } from "../../errors/UniversalError";
 
 export async function createClassTemplate(
   req: Request<{}, {}, ClassTemplate & { isConfirmation: boolean }>,
@@ -25,6 +27,26 @@ export async function createClassTemplate(
     scheduleTileColor,
     isConfirmation,
   } = req.body;
+
+  if (
+    courseId &&
+    (classType === ClassType.PRIVATE_CLASS ||
+      classType === ClassType.THEME_PARTY)
+  ) {
+    throw new UniversalError(
+      StatusCodes.CONFLICT,
+      "Class template with class type 'private class' or 'theme_party' cannot be binded to a course",
+      [],
+    );
+  }
+
+  if (!courseId && classType === ClassType.GROUP_CLASS) {
+    throw new UniversalError(
+      StatusCodes.CONFLICT,
+      "Class template with class type 'group class' must be binded to a course",
+      [],
+    );
+  }
 
   if (!isConfirmation) {
     const alreadyExistingClassTemplate = await prisma.classTemplate.findFirst({
@@ -74,6 +96,26 @@ export async function editClassTemplate(
     scheduleTileColor,
   } = req.body;
 
+  if (
+    courseId &&
+    (classType === ClassType.PRIVATE_CLASS ||
+      classType === ClassType.THEME_PARTY)
+  ) {
+    throw new UniversalError(
+      StatusCodes.CONFLICT,
+      "Class template with class type 'private class' or 'theme_party' cannot be binded to a course",
+      [],
+    );
+  }
+
+  if (!courseId && classType === ClassType.GROUP_CLASS) {
+    throw new UniversalError(
+      StatusCodes.CONFLICT,
+      "Class template with class type 'group class' must be binded to a course",
+      [],
+    );
+  }
+
   const editedClassTemplate = await prisma.classTemplate.update({
     where: {
       id: id,
@@ -121,6 +163,15 @@ export async function getClassTemplate(
     where: {
       id: id,
     },
+    include: {
+      danceCategory: true,
+      advancementLevel: true,
+      class: {
+        include: {
+          classRoom: true,
+        },
+      },
+    },
   });
 
   res.status(StatusCodes.OK).json(theClassTemplate);
@@ -131,7 +182,17 @@ export async function getAllClassTemplates(
   res: Response,
   next: NextFunction,
 ) {
-  const allClassTemplates = await prisma.classTemplate.findMany();
+  const allClassTemplates = await prisma.classTemplate.findMany({
+    include: {
+      danceCategory: true,
+      advancementLevel: true,
+      class: {
+        include: {
+          classRoom: true,
+        },
+      },
+    },
+  });
 
   res.status(StatusCodes.OK).json(allClassTemplates);
 }

@@ -8,7 +8,7 @@
  *       The user must send their own ID and updated profile data.  
  *       Editing another user's profile is not allowed.
  *     tags:
- *       - cms - Profile
+ *       - user - profile
  *     requestBody:
  *       required: true
  *       content:

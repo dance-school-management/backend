@@ -117,10 +117,10 @@ export const ProductWithEnrollServerImp: IProductWithEnrollServer = {
 
     const classesStudentsProtobuf: StudentClass[] = classesStudents.map(
       (item) => {
-        const ic = new StudentClass();
-        ic.setClassId(item.classId);
-        ic.setStudentId(item.studentId);
-        return ic;
+        const sc = new StudentClass();
+        sc.setClassId(item.classId);
+        sc.setStudentId(item.studentId);
+        return sc;
       },
     );
 
@@ -147,10 +147,10 @@ export const ProductWithEnrollServerImp: IProductWithEnrollServer = {
 
     const classesStudentsProtobuf: StudentClass[] = studentClasses.map(
       (item) => {
-        const ic = new StudentClass();
-        ic.setClassId(item.classId);
-        ic.setStudentId(item.studentId);
-        return ic;
+        const sc = new StudentClass();
+        sc.setClassId(item.classId);
+        sc.setStudentId(item.studentId);
+        return sc;
       },
     );
 
