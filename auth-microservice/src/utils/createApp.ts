@@ -7,7 +7,6 @@ import { toNodeHandler } from "better-auth/node";
 import { auth } from "./auth";
 import cookieParser from "cookie-parser";
 import { UniversalError } from "../errors/UniversalError";
-import userRouter from "../routes/user/user";
 import swaggerRouter from "./swagger";
 import swaggerBetterAuthRouter from "./swaggerBetterAuth";
 export function createApp() {
@@ -21,7 +20,6 @@ export function createApp() {
   app.use(express.urlencoded({ extended: true }));
   app.use("/1", swaggerRouter);
   app.use("/2", swaggerBetterAuthRouter);
-  app.use("/", userRouter);
   app.get("/", (req, res) => {
     res.send("Hello from auth-microservice");
   });

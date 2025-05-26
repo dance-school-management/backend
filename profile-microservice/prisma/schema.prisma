@@ -19,8 +19,12 @@ model Profile {
   id          String  @id
   name        String
   surname     String
+  email       String?  @unique
+  phone       String? 
+  start_date  DateTime?
   description String?
   photo_url   String?
+  favouriteDanceCategories Int[] @default([])
   role        Role
 }
 

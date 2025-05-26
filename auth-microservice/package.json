@@ -13,6 +13,9 @@
     "lint": "eslint ./src",
     "db:deploy": "npx prisma migrate deploy && npx prisma generate"
   },
+  "prisma": {
+    "seed": "ts-node prisma/seed.ts"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -38,6 +41,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.23.0",
+    "@faker-js/faker": "^9.8.0",
     "@types/cookie": "^0.6.0",
     "@types/cookie-parser": "^1.4.8",
     "@types/cors": "^2.8.17",

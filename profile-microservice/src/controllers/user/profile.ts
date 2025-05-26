@@ -13,27 +13,12 @@ export async function editProfile(
 ) {
   checkValidations(validationResult(req));
 
-  if (!req.user) {
-    throw new UniversalError(
-      StatusCodes.UNAUTHORIZED,
-      "Problems with authentication",
-      [],
-    );
-  }
-
-  const { id, name, surname, description, photo_url } = req.body;
-
-  if (!(req.user.id === id)) {
-    throw new UniversalError(
-      StatusCodes.UNAUTHORIZED,
-      "You are not authorized to edit another user's profile",
-      [],
-    );
-  }
+  const { name, surname, description, photo_url } = req.body;
+  const id = req.user.id;
 
   const editedProfile = await prisma.profile.update({
     where: {
-      id: id,
+      id,
     },
     data: {
       name,
