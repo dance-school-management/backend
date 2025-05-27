@@ -1,0 +1,47 @@
+[
+  {
+    "id": 1,
+    "name": "Hip Hop dla początkujących",
+    "description": "Podstawowy kurs hip-hopu, skupiający się na rytmice i podstawowych ruchach.",
+    "danceCategoryId": 1,
+    "advancementLevelId": 1,
+    "courseStatus": "ONGOING",
+    "customPrice": 299.99
+  },
+  {
+    "id": 2,
+    "name": "Balet średniozaawansowany",
+    "description": "Kurs rozwijający technikę baletową, z elementami pracy przy drążku i kombinacjami.",
+    "danceCategoryId": 2,
+    "advancementLevelId": 2,
+    "courseStatus": "SALE",
+    "customPrice": 349.99
+  },
+  {
+    "id": 3,
+    "name": "Salsa dla zaawansowanych",
+    "description": "Intensywny kurs salsy z naciskiem na technikę partnerowania i footwork.",
+    "danceCategoryId": 3,
+    "advancementLevelId": 3,
+    "courseStatus": "FINISHED",
+    "customPrice": 399.99
+  },
+  {
+    "id": 4,
+    "name": "Jazz techniczny",
+    "description": "Kurs łączący ekspresję i technikę, idealny dla tancerzy chcących rozwinąć styl sceniczny.",
+    "danceCategoryId": 5,
+    "advancementLevelId": 2,
+    "courseStatus": "SALE",
+    "customPrice": 319.00
+  },
+  {
+    "id": 5,
+    "name": "Taniec współczesny – poziom open",
+    "description": "Kreatywny kurs tańca współczesnego, otwarty dla wszystkich poziomów.",
+    "danceCategoryId": 4,
+    "advancementLevelId": 1,
+    "courseStatus": "HIDDEN",
+    "customPrice": 289.50
+  }
+]

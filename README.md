@@ -7,6 +7,7 @@
 - product-db-password.txt
 - enroll-db-password.txt
 - profile-db-password.txt
+- notification-db-password.txt
 
 3. To make gRPC work use script `generate-files-from-protos.sh` for macOS/linux, for windows use `generate-files-from-protos-Windows.sh`
 4. There has to be at least one migration for microservices locally. It is a little bit tricky. You have to start all microservices' databases in docker and use `bash migrate-all-prismas.sh`.
@@ -15,8 +16,10 @@
 You can find swagger docs at:
 
 - localhost:8000/product/api-docs
-- localhost:8000/auth/api-docs
+- localhost:8000/auth/1/api-docs
+- localhost:8000/auth/2/api-docs
 - localhost:8000/enroll/api-docs
+- localhost:8000/profile/api-docs
 
 Authentication (2 places):
 
@@ -47,4 +50,5 @@ Development mode (auth):
 > [!WARNING]
 > When running `seed-databases.sh` be careful about `sleep` value. If problems occured adjust its value
 
+- Careful! Auth seeding is related with profile-microservice. Remember about starting all needed docker's containers.
 - remember to create "uploads" folder if isn't there

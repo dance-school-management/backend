@@ -1,0 +1,406 @@
+[
+  {
+    "instructorId": "25",
+    "classId": 1
+  },
+  {
+    "instructorId": "27",
+    "classId": 2
+  },
+  {
+    "instructorId": "27",
+    "classId": 3
+  },
+  {
+    "instructorId": "27",
+    "classId": 4
+  },
+  {
+    "instructorId": "25",
+    "classId": 4
+  },
+  {
+    "instructorId": "18",
+    "classId": 5
+  },
+  {
+    "instructorId": "21",
+    "classId": 5
+  },
+  {
+    "instructorId": "21",
+    "classId": 6
+  },
+  {
+    "instructorId": "18",
+    "classId": 6
+  },
+  {
+    "instructorId": "18",
+    "classId": 7
+  },
+  {
+    "instructorId": "18",
+    "classId": 8
+  },
+  {
+    "instructorId": "28",
+    "classId": 9
+  },
+  {
+    "instructorId": "11",
+    "classId": 9
+  },
+  {
+    "instructorId": "11",
+    "classId": 10
+  },
+  {
+    "instructorId": "28",
+    "classId": 10
+  },
+  {
+    "instructorId": "28",
+    "classId": 11
+  },
+  {
+    "instructorId": "11",
+    "classId": 12
+  },
+  {
+    "instructorId": "30",
+    "classId": 13
+  },
+  {
+    "instructorId": "20",
+    "classId": 13
+  },
+  {
+    "instructorId": "30",
+    "classId": 14
+  },
+  {
+    "instructorId": "20",
+    "classId": 14
+  },
+  {
+    "instructorId": "20",
+    "classId": 15
+  },
+  {
+    "instructorId": "20",
+    "classId": 16
+  },
+  {
+    "instructorId": "30",
+    "classId": 16
+  },
+  {
+    "instructorId": "30",
+    "classId": 17
+  },
+  {
+    "instructorId": "20",
+    "classId": 17
+  },
+  {
+    "instructorId": "20",
+    "classId": 18
+  },
+  {
+    "instructorId": "20",
+    "classId": 19
+  },
+  {
+    "instructorId": "30",
+    "classId": 19
+  },
+  {
+    "instructorId": "20",
+    "classId": 20
+  },
+  {
+    "instructorId": "24",
+    "classId": 21
+  },
+  {
+    "instructorId": "28",
+    "classId": 21
+  },
+  {
+    "instructorId": "24",
+    "classId": 22
+  },
+  {
+    "instructorId": "28",
+    "classId": 22
+  },
+  {
+    "instructorId": "28",
+    "classId": 23
+  },
+  {
+    "instructorId": "24",
+    "classId": 23
+  },
+  {
+    "instructorId": "24",
+    "classId": 24
+  },
+  {
+    "instructorId": "28",
+    "classId": 24
+  },
+  {
+    "instructorId": "28",
+    "classId": 25
+  },
+  {
+    "instructorId": "24",
+    "classId": 25
+  },
+  {
+    "instructorId": "28",
+    "classId": 26
+  },
+  {
+    "instructorId": "28",
+    "classId": 27
+  },
+  {
+    "instructorId": "24",
+    "classId": 28
+  },
+  {
+    "instructorId": "17",
+    "classId": 29
+  },
+  {
+    "instructorId": "27",
+    "classId": 29
+  },
+  {
+    "instructorId": "17",
+    "classId": 30
+  },
+  {
+    "instructorId": "27",
+    "classId": 30
+  },
+  {
+    "instructorId": "17",
+    "classId": 31
+  },
+  {
+    "instructorId": "17",
+    "classId": 32
+  },
+  {
+    "instructorId": "17",
+    "classId": 33
+  },
+  {
+    "instructorId": "27",
+    "classId": 33
+  },
+  {
+    "instructorId": "17",
+    "classId": 34
+  },
+  {
+    "instructorId": "27",
+    "classId": 34
+  },
+  {
+    "instructorId": "17",
+    "classId": 35
+  },
+  {
+    "instructorId": "27",
+    "classId": 36
+  },
+  {
+    "instructorId": "17",
+    "classId": 37
+  },
+  {
+    "instructorId": "27",
+    "classId": 38
+  },
+  {
+    "instructorId": "25",
+    "classId": 38
+  },
+  {
+    "instructorId": "11",
+    "classId": 39
+  },
+  {
+    "instructorId": "28",
+    "classId": 39
+  },
+  {
+    "instructorId": "30",
+    "classId": 40
+  },
+  {
+    "instructorId": "30",
+    "classId": 41
+  },
+  {
+    "instructorId": "20",
+    "classId": 41
+  },
+  {
+    "instructorId": "27",
+    "classId": 42
+  },
+  {
+    "instructorId": "27",
+    "classId": 43
+  },
+  {
+    "instructorId": "17",
+    "classId": 43
+  },
+  {
+    "instructorId": "28",
+    "classId": 44
+  },
+  {
+    "instructorId": "20",
+    "classId": 45
+  },
+  {
+    "instructorId": "30",
+    "classId": 45
+  },
+  {
+    "instructorId": "24",
+    "classId": 46
+  },
+  {
+    "instructorId": "28",
+    "classId": 46
+  },
+  {
+    "instructorId": "24",
+    "classId": 47
+  },
+  {
+    "instructorId": "27",
+    "classId": 48
+  },
+  {
+    "instructorId": "17",
+    "classId": 48
+  },
+  {
+    "instructorId": "27",
+    "classId": 49
+  },
+  {
+    "instructorId": "25",
+    "classId": 50
+  },
+  {
+    "instructorId": "27",
+    "classId": 50
+  },
+  {
+    "instructorId": "30",
+    "classId": 51
+  },
+  {
+    "instructorId": "17",
+    "classId": 52
+  },
+  {
+    "instructorId": "27",
+    "classId": 52
+  },
+  {
+    "instructorId": "30",
+    "classId": 53
+  },
+  {
+    "instructorId": "20",
+    "classId": 53
+  },
+  {
+    "instructorId": "21",
+    "classId": 54
+  },
+  {
+    "instructorId": "27",
+    "classId": 55
+  },
+  {
+    "instructorId": "27",
+    "classId": 56
+  },
+  {
+    "instructorId": "17",
+    "classId": 57
+  },
+  {
+    "instructorId": "24",
+    "classId": 58
+  },
+  {
+    "instructorId": "28",
+    "classId": 58
+  },
+  {
+    "instructorId": "17",
+    "classId": 59
+  },
+  {
+    "instructorId": "27",
+    "classId": 59
+  },
+  {
+    "instructorId": "24",
+    "classId": 60
+  },
+  {
+    "instructorId": "24",
+    "classId": 61
+  },
+  {
+    "instructorId": "27",
+    "classId": 62
+  },
+  {
+    "instructorId": "17",
+    "classId": 62
+  },
+  {
+    "instructorId": "18",
+    "classId": 63
+  },
+  {
+    "instructorId": "21",
+    "classId": 63
+  },
+  {
+    "instructorId": "17",
+    "classId": 64
+  },
+  {
+    "instructorId": "27",
+    "classId": 64
+  },
+  {
+    "instructorId": "30",
+    "classId": 65
+  },
+  {
+    "instructorId": "20",
+    "classId": 65
+  },
+  {
+    "instructorId": "17",
+    "classId": 66
+  }
+]

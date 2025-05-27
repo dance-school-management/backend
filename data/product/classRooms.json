@@ -1,0 +1,50 @@
+[
+  {
+    "id": 1,
+    "name": "Sala Lustrzana",
+    "peopleLimit": 20,
+    "description": "Sala z lustrami na całej ścianie, idealna do zajęć tanecznych."
+  },
+  {
+    "id": 2,
+    "name": "Studio Rytmu",
+    "peopleLimit": 15,
+    "description": "Kameralne studio z dobrą akustyką do zajęć rytmicznych i indywidualnych."
+  },
+  {
+    "id": 3,
+    "name": "Sala Akrobatyczna",
+    "peopleLimit": 25,
+    "description": "Przestronna sala wyposażona w materace i sprzęt do akrobatyki."
+  },
+  {
+    "id": 4,
+    "name": "Sala Nowoczesna",
+    "peopleLimit": 18,
+    "description": "Sala z nowoczesnym nagłośnieniem i oświetleniem LED."
+  },
+  {
+    "id": 5,
+    "name": "Sala Klasyczna",
+    "peopleLimit": 12,
+    "description": "Sala z drążkami i lustrami."
+  },
+  {
+    "id": 6,
+    "name": "Studio Improwizacji",
+    "peopleLimit": 10,
+    "description": "Kameralna sala do zajęć improwizacyjnych i pracy indywidualnej."
+  },
+  {
+    "id": 7,
+    "name": "Sala Grupowa A",
+    "peopleLimit": 30,
+    "description": "Duża sala dla grup zorganizowanych, wyposażona w projektor."
+  },
+  {
+    "id": 8,
+    "name": "Sala Grupowa B",
+    "peopleLimit": 30,
+    "description": "Bliźniacza sala do Sali Grupowej A, przystosowana do dużych zajęć tanecznych."
+  }
+]
