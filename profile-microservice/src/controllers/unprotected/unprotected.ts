@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 import prisma from "../../utils/prisma";
-import { Role } from "../../../generated/client";
+import { Profile, Role } from "../../../generated/client";
 
 export async function getAllInstructors(
   req: Request<{}, {}, {}>,
@@ -19,4 +19,18 @@ export async function getAllInstructors(
   };
 
   res.status(StatusCodes.OK).json(result);
+}
+
+export async function getInstructor(
+  req: Request<Profile>,
+  res: Response,
+  next: NextFunction,
+) {
+  const instructor = await prisma.profile.findUnique({
+    where: {
+      id: req.params.id,
+      role: Role.INSTRUCTOR,
+    },
+  });
+  res.status(StatusCodes.OK).json(instructor);
 }

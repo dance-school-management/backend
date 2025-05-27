@@ -5,7 +5,8 @@
     "password": "qwertyqwerty",
     "name": "Anna Kowalska",
     "first_name": "Anna",
-    "surname": "Kowalska"
+    "surname": "Kowalska",
+    "role": "COORDINATOR"
   },
   {
      "id": "2",
@@ -13,7 +14,8 @@
     "password": "qwertyqwerty",
     "name": "Marek Nowak",
     "first_name": "Marek",
-    "surname": "Nowak"
+    "surname": "Nowak",
+    "role": "COORDINATOR"
   },
   {
      "id": "3",
@@ -21,6 +23,7 @@
     "password": "qwertyqwerty",
     "name": "Ewa Zielinska",
     "first_name": "Ewa",
-    "surname": "Zielinska"
+    "surname": "Zielinska",
+    "role": "COORDINATOR"
   }
 ]

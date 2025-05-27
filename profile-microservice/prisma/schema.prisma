@@ -21,9 +21,9 @@ model Profile {
   surname     String
   email       String?  @unique
   phone       String? 
-  start_date  DateTime?
+  startDate  DateTime?
   description String?
-  photo_url   String?
+  photoPath   String?
   favouriteDanceCategories Int[] @default([])
   role        Role
 }
