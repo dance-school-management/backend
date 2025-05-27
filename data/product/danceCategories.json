@@ -1,0 +1,32 @@
+[
+  {
+    "id": 1,
+    "name": "Hip Hop",
+    "description": "Dynamiczny styl tańca ulicznego z dużą ekspresją.",
+    "photoPath": "images/hiphop.jpg"
+  },
+  {
+    "id": 2,
+    "name": "Balet",
+    "description": "Klasyczna technika tańca charakteryzująca się precyzją i elegancją.",
+    "photoPath": "images/balet.jpg"
+  },
+  {
+    "id": 3,
+    "name": "Salsa",
+    "description": "Energetyczny taniec latynoamerykański z partnerem.",
+    "photoPath": "images/salsa.jpg"
+  },
+  {
+    "id": 4,
+    "name": "Taniec Współczesny",
+    "description": "Styl łączący elementy baletu, modern dance i improwizacji, z naciskiem na ekspresję emocji.",
+    "photoPath": "images/contemporary.jpg"
+  },
+  {
+    "id": 5,
+    "name": "Jazz",
+    "description": "Energetyczny styl tańca wykorzystujący techniki baletowe i rytmiczne akcenty.",
+    "photoPath": "images/jazz.jpg"
+  }
+]

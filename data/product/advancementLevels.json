@@ -1,0 +1,17 @@
+[
+  {
+    "id": 1,
+    "name": "Początkujący",
+    "description": "Poziom dla osób rozpoczynających naukę tańca, bez wcześniejszego doświadczenia."
+  },
+  {
+    "id": 2,
+    "name": "Średniozaawansowany",
+    "description": "Dla osób z podstawową znajomością technik tanecznych i doświadczeniem w zajęciach."
+  },
+  {
+    "id": 3,
+    "name": "Zaawansowany",
+    "description": "Dla doświadczonych tancerzy, którzy opanowali wiele technik i stylów."
+  }
+]

@@ -1,0 +1,706 @@
+[
+  {
+    "id": 1,
+    "classTemplateId": 1,
+    "groupNumber": 1,
+    "startDate": "2025-05-29T13:00:00",
+    "endDate": "2025-05-29T14:30:00",
+    "peopleLimit": 15,
+    "classRoomId": 1,
+    "classStatus": "HIDDEN"
+  },
+  {
+    "id": 2,
+    "classTemplateId": 1,
+    "groupNumber": 1,
+    "startDate": "2025-06-02T17:00:00",
+    "endDate": "2025-06-02T18:30:00",
+    "peopleLimit": 19,
+    "classRoomId": 1,
+    "classStatus": "HIDDEN"
+  },
+  {
+    "id": 3,
+    "classTemplateId": 1,
+    "groupNumber": 1,
+    "startDate": "2025-06-01T12:00:00",
+    "endDate": "2025-06-01T13:30:00",
+    "peopleLimit": 27,
+    "classRoomId": 4,
+    "classStatus": "HIDDEN"
+  },
+  {
+    "id": 4,
+    "classTemplateId": 1,
+    "groupNumber": 1,
+    "startDate": "2025-06-06T15:00:00",
+    "endDate": "2025-06-06T16:30:00",
+    "peopleLimit": 14,
+    "classRoomId": 6,
+    "classStatus": "HIDDEN"
+  },
+  {
+    "id": 5,
+    "classTemplateId": 2,
+    "groupNumber": 1,
+    "startDate": "2025-05-29T17:00:00",
+    "endDate": "2025-05-29T18:30:00",
+    "peopleLimit": 12,
+    "classRoomId": 5,
+    "classStatus": "NORMAL"
+  },
+  {
+    "id": 6,
+    "classTemplateId": 2,
+    "groupNumber": 1,
+    "startDate": "2025-06-01T18:00:00",
+    "endDate": "2025-06-01T19:30:00",
+    "peopleLimit": 28,
+    "classRoomId": 3,
+    "classStatus": "NORMAL"
+  },
+  {
+    "id": 7,
+    "classTemplateId": 2,
+    "groupNumber": 1,
+    "startDate": "2025-06-05T10:00:00",
+    "endDate": "2025-06-05T11:30:00",
+    "peopleLimit": 28,
+    "classRoomId": 3,
+    "classStatus": "NORMAL"
+  },
+  {
+    "id": 8,
+    "classTemplateId": 2,
+    "groupNumber": 1,
+    "startDate": "2025-05-30T18:00:00",
+    "endDate": "2025-05-30T19:30:00",
+    "peopleLimit": 11,
+    "classRoomId": 6,
+    "classStatus": "NORMAL"
+  },
+  {
+    "id": 9,
+    "classTemplateId": 3,
+    "groupNumber": 1,
+    "startDate": "2025-05-30T11:00:00",
+    "endDate": "2025-05-30T12:30:00",
+    "peopleLimit": 11,
+    "classRoomId": 1,
+    "classStatus": "NORMAL"
+  },
+  {
+    "id": 10,
+    "classTemplateId": 3,
+    "groupNumber": 1,
+    "startDate": "2025-06-07T17:00:00",
+    "endDate": "2025-06-07T18:30:00",
+    "peopleLimit": 12,
+    "classRoomId": 5,
+    "classStatus": "NORMAL"
+  },
+  {
+    "id": 11,
+    "classTemplateId": 3,
+    "groupNumber": 1,
+    "startDate": "2025-06-06T18:00:00",
+    "endDate": "2025-06-06T19:30:00",
+    "peopleLimit": 17,
+    "classRoomId": 5,
+    "classStatus": "NORMAL"
+  },
+  {
+    "id": 12,
+    "classTemplateId": 3,
+    "groupNumber": 1,
+    "startDate": "2025-06-06T12:00:00",
+    "endDate": "2025-06-06T13:30:00",
+    "peopleLimit": 15,
+    "classRoomId": 3,
+    "classStatus": "NORMAL"
+  },
+  {
+    "id": 13,
+    "classTemplateId": 4,
+    "groupNumber": 1,
+    "startDate": "2025-05-29T09:00:00",
+    "endDate": "2025-05-29T10:30:00",
+    "peopleLimit": 11,
+    "classRoomId": 2,
+    "classStatus": "NORMAL"
+  },
+  {
+    "id": 14,
+    "classTemplateId": 4,
+    "groupNumber": 1,
+    "startDate": "2025-05-27T14:00:00",
+    "endDate": "2025-05-27T15:30:00",
+    "peopleLimit": 17,
+    "classRoomId": 5,
+    "classStatus": "NORMAL"
+  },
+  {
+    "id": 15,
+    "classTemplateId": 4,
+    "groupNumber": 1,
+    "startDate": "2025-06-05T12:00:00",
+    "endDate": "2025-06-05T13:30:00",
+    "peopleLimit": 24,
+    "classRoomId": 8,
+    "classStatus": "NORMAL"
+  },
+  {
+    "id": 16,
+    "classTemplateId": 4,
+    "groupNumber": 1,
+    "startDate": "2025-06-01T16:00:00",
+    "endDate": "2025-06-01T17:30:00",
+    "peopleLimit": 18,
+    "classRoomId": 2,
+    "classStatus": "NORMAL"
+  },
+  {
+    "id": 17,
+    "classTemplateId": 5,
+    "groupNumber": 1,
+    "startDate": "2025-06-03T18:00:00",
+    "endDate": "2025-06-03T19:30:00",
+    "peopleLimit": 26,
+    "classRoomId": 4,
+    "classStatus": "NORMAL"
+  },
+  {
+    "id": 18,
+    "classTemplateId": 5,
+    "groupNumber": 1,
+    "startDate": "2025-06-03T13:00:00",
+    "endDate": "2025-06-03T14:30:00",
+    "peopleLimit": 13,
+    "classRoomId": 2,
+    "classStatus": "NORMAL"
+  },
+  {
+    "id": 19,
+    "classTemplateId": 5,
+    "groupNumber": 1,
+    "startDate": "2025-05-29T12:00:00",
+    "endDate": "2025-05-29T13:30:00",
+    "peopleLimit": 13,
+    "classRoomId": 2,
+    "classStatus": "NORMAL"
+  },
+  {
+    "id": 20,
+    "classTemplateId": 5,
+    "groupNumber": 1,
+    "startDate": "2025-06-02T10:00:00",
+    "endDate": "2025-06-02T11:30:00",
+    "peopleLimit": 11,
+    "classRoomId": 2,
+    "classStatus": "NORMAL"
+  },
+  {
+    "id": 21,
+    "classTemplateId": 6,
+    "groupNumber": 1,
+    "startDate": "2025-06-01T11:00:00",
+    "endDate": "2025-06-01T12:30:00",
+    "peopleLimit": 15,
+    "classRoomId": 3,
+    "classStatus": "NORMAL"
+  },
+  {
+    "id": 22,
+    "classTemplateId": 6,
+    "groupNumber": 1,
+    "startDate": "2025-05-27T12:00:00",
+    "endDate": "2025-05-27T13:30:00",
+    "peopleLimit": 21,
+    "classRoomId": 7,
+    "classStatus": "NORMAL"
+  },
+  {
+    "id": 23,
+    "classTemplateId": 6,
+    "groupNumber": 1,
+    "startDate": "2025-05-31T17:00:00",
+    "endDate": "2025-05-31T18:30:00",
+    "peopleLimit": 26,
+    "classRoomId": 5,
+    "classStatus": "NORMAL"
+  },
+  {
+    "id": 24,
+    "classTemplateId": 6,
+    "groupNumber": 1,
+    "startDate": "2025-06-05T14:00:00",
+    "endDate": "2025-06-05T15:30:00",
+    "peopleLimit": 29,
+    "classRoomId": 5,
+    "classStatus": "NORMAL"
+  },
+  {
+    "id": 25,
+    "classTemplateId": 7,
+    "groupNumber": 1,
+    "startDate": "2025-06-04T11:00:00",
+    "endDate": "2025-06-04T12:30:00",
+    "peopleLimit": 10,
+    "classRoomId": 8,
+    "classStatus": "NORMAL"
+  },
+  {
+    "id": 26,
+    "classTemplateId": 7,
+    "groupNumber": 1,
+    "startDate": "2025-05-27T18:00:00",
+    "endDate": "2025-05-27T19:30:00",
+    "peopleLimit": 10,
+    "classRoomId": 4,
+    "classStatus": "NORMAL"
+  },
+  {
+    "id": 27,
+    "classTemplateId": 7,
+    "groupNumber": 1,
+    "startDate": "2025-05-30T17:00:00",
+    "endDate": "2025-05-30T18:30:00",
+    "peopleLimit": 27,
+    "classRoomId": 1,
+    "classStatus": "NORMAL"
+  },
+  {
+    "id": 28,
+    "classTemplateId": 7,
+    "groupNumber": 1,
+    "startDate": "2025-05-29T18:00:00",
+    "endDate": "2025-05-29T19:30:00",
+    "peopleLimit": 22,
+    "classRoomId": 2,
+    "classStatus": "NORMAL"
+  },
+  {
+    "id": 29,
+    "classTemplateId": 8,
+    "groupNumber": 1,
+    "startDate": "2025-05-30T16:00:00",
+    "endDate": "2025-05-30T17:30:00",
+    "peopleLimit": 1,
+    "classRoomId": 3,
+    "classStatus": "HIDDEN"
+  },
+  {
+    "id": 30,
+    "classTemplateId": 8,
+    "groupNumber": 1,
+    "startDate": "2025-06-02T18:00:00",
+    "endDate": "2025-06-02T19:30:00",
+    "peopleLimit": 1,
+    "classRoomId": 7,
+    "classStatus": "HIDDEN"
+  },
+  {
+    "id": 31,
+    "classTemplateId": 9,
+    "groupNumber": 1,
+    "startDate": "2025-05-28T18:00:00",
+    "endDate": "2025-05-28T19:30:00",
+    "peopleLimit": 1,
+    "classRoomId": 5,
+    "classStatus": "NORMAL"
+  },
+  {
+    "id": 32,
+    "classTemplateId": 9,
+    "groupNumber": 1,
+    "startDate": "2025-05-27T10:00:00",
+    "endDate": "2025-05-27T11:30:00",
+    "peopleLimit": 1,
+    "classRoomId": 5,
+    "classStatus": "NORMAL"
+  },
+  {
+    "id": 33,
+    "classTemplateId": 12,
+    "groupNumber": 1,
+    "startDate": "2025-06-02T13:00:00",
+    "endDate": "2025-06-02T14:30:00",
+    "peopleLimit": 1,
+    "classRoomId": 8,
+    "classStatus": "NORMAL"
+  },
+  {
+    "id": 34,
+    "classTemplateId": 12,
+    "groupNumber": 1,
+    "startDate": "2025-05-31T16:00:00",
+    "endDate": "2025-05-31T17:30:00",
+    "peopleLimit": 1,
+    "classRoomId": 3,
+    "classStatus": "NORMAL"
+  },
+  {
+    "id": 35,
+    "classTemplateId": 10,
+    "groupNumber": 1,
+    "startDate": "2025-06-04T17:00:00",
+    "endDate": "2025-06-04T18:30:00",
+    "peopleLimit": 37,
+    "classRoomId": 4,
+    "classStatus": "NORMAL"
+  },
+  {
+    "id": 36,
+    "classTemplateId": 11,
+    "groupNumber": 1,
+    "startDate": "2025-06-03T11:00:00",
+    "endDate": "2025-06-03T12:30:00",
+    "peopleLimit": 33,
+    "classRoomId": 5,
+    "classStatus": "NORMAL"
+  },
+  {
+    "id": 37,
+    "classTemplateId": 8,
+    "groupNumber": 3,
+    "startDate": "2025-06-14T14:00:00",
+    "endDate": "2025-06-14T15:30:00",
+    "peopleLimit": 14,
+    "classRoomId": 7,
+    "classStatus": "NORMAL"
+  },
+  {
+    "id": 38,
+    "classTemplateId": 1,
+    "groupNumber": 1,
+    "startDate": "2025-06-12T19:00:00",
+    "endDate": "2025-06-12T20:30:00",
+    "peopleLimit": 15,
+    "classRoomId": 3,
+    "classStatus": "HIDDEN"
+  },
+  {
+    "id": 39,
+    "classTemplateId": 3,
+    "groupNumber": 2,
+    "startDate": "2025-06-10T13:00:00",
+    "endDate": "2025-06-10T14:30:00",
+    "peopleLimit": 29,
+    "classRoomId": 7,
+    "classStatus": "NORMAL"
+  },
+  {
+    "id": 40,
+    "classTemplateId": 5,
+    "groupNumber": 2,
+    "startDate": "2025-06-19T19:00:00",
+    "endDate": "2025-06-19T20:30:00",
+    "peopleLimit": 12,
+    "classRoomId": 4,
+    "classStatus": "NORMAL"
+  },
+  {
+    "id": 41,
+    "classTemplateId": 5,
+    "groupNumber": 3,
+    "startDate": "2025-06-09T09:00:00",
+    "endDate": "2025-06-09T10:30:00",
+    "peopleLimit": 20,
+    "classRoomId": 3,
+    "classStatus": "NORMAL"
+  },
+  {
+    "id": 42,
+    "classTemplateId": 8,
+    "groupNumber": 2,
+    "startDate": "2025-06-18T12:00:00",
+    "endDate": "2025-06-18T13:30:00",
+    "peopleLimit": 30,
+    "classRoomId": 1,
+    "classStatus": "NORMAL"
+  },
+  {
+    "id": 43,
+    "classTemplateId": 9,
+    "groupNumber": 2,
+    "startDate": "2025-06-18T11:00:00",
+    "endDate": "2025-06-18T12:30:00",
+    "peopleLimit": 13,
+    "classRoomId": 7,
+    "classStatus": "NORMAL"
+  },
+  {
+    "id": 44,
+    "classTemplateId": 7,
+    "groupNumber": 1,
+    "startDate": "2025-06-13T18:00:00",
+    "endDate": "2025-06-13T19:30:00",
+    "peopleLimit": 13,
+    "classRoomId": 3,
+    "classStatus": "NORMAL"
+  },
+  {
+    "id": 45,
+    "classTemplateId": 4,
+    "groupNumber": 3,
+    "startDate": "2025-06-15T13:00:00",
+    "endDate": "2025-06-15T14:30:00",
+    "peopleLimit": 27,
+    "classRoomId": 1,
+    "classStatus": "NORMAL"
+  },
+  {
+    "id": 46,
+    "classTemplateId": 6,
+    "groupNumber": 1,
+    "startDate": "2025-06-17T09:00:00",
+    "endDate": "2025-06-17T10:30:00",
+    "peopleLimit": 11,
+    "classRoomId": 6,
+    "classStatus": "NORMAL"
+  },
+  {
+    "id": 47,
+    "classTemplateId": 7,
+    "groupNumber": 2,
+    "startDate": "2025-06-14T19:00:00",
+    "endDate": "2025-06-14T20:30:00",
+    "peopleLimit": 23,
+    "classRoomId": 2,
+    "classStatus": "NORMAL"
+  },
+  {
+    "id": 48,
+    "classTemplateId": 8,
+    "groupNumber": 2,
+    "startDate": "2025-06-19T15:00:00",
+    "endDate": "2025-06-19T16:30:00",
+    "peopleLimit": 27,
+    "classRoomId": 1,
+    "classStatus": "NORMAL"
+  },
+  {
+    "id": 49,
+    "classTemplateId": 9,
+    "groupNumber": 1,
+    "startDate": "2025-06-15T19:00:00",
+    "endDate": "2025-06-15T20:30:00",
+    "peopleLimit": 18,
+    "classRoomId": 1,
+    "classStatus": "NORMAL"
+  },
+  {
+    "id": 50,
+    "classTemplateId": 1,
+    "groupNumber": 2,
+    "startDate": "2025-06-14T18:00:00",
+    "endDate": "2025-06-14T19:30:00",
+    "peopleLimit": 14,
+    "classRoomId": 1,
+    "classStatus": "HIDDEN"
+  },
+  {
+    "id": 51,
+    "classTemplateId": 4,
+    "groupNumber": 2,
+    "startDate": "2025-06-14T12:00:00",
+    "endDate": "2025-06-14T13:30:00",
+    "peopleLimit": 19,
+    "classRoomId": 3,
+    "classStatus": "NORMAL"
+  },
+  {
+    "id": 52,
+    "classTemplateId": 10,
+    "groupNumber": 1,
+    "startDate": "2025-06-17T11:00:00",
+    "endDate": "2025-06-17T12:30:00",
+    "peopleLimit": 19,
+    "classRoomId": 2,
+    "classStatus": "NORMAL"
+  },
+  {
+    "id": 53,
+    "classTemplateId": 4,
+    "groupNumber": 1,
+    "startDate": "2025-06-21T17:00:00",
+    "endDate": "2025-06-21T18:30:00",
+    "peopleLimit": 27,
+    "classRoomId": 6,
+    "classStatus": "NORMAL"
+  },
+  {
+    "id": 54,
+    "classTemplateId": 2,
+    "groupNumber": 2,
+    "startDate": "2025-06-16T17:00:00",
+    "endDate": "2025-06-16T18:30:00",
+    "peopleLimit": 25,
+    "classRoomId": 3,
+    "classStatus": "NORMAL"
+  },
+  {
+    "id": 55,
+    "classTemplateId": 8,
+    "groupNumber": 1,
+    "startDate": "2025-06-19T12:00:00",
+    "endDate": "2025-06-19T13:30:00",
+    "peopleLimit": 18,
+    "classRoomId": 6,
+    "classStatus": "NORMAL"
+  },
+  {
+    "id": 56,
+    "classTemplateId": 11,
+    "groupNumber": 3,
+    "startDate": "2025-06-11T09:00:00",
+    "endDate": "2025-06-11T10:30:00",
+    "peopleLimit": 20,
+    "classRoomId": 4,
+    "classStatus": "NORMAL"
+  },
+  {
+    "id": 57,
+    "classTemplateId": 9,
+    "groupNumber": 2,
+    "startDate": "2025-06-20T16:00:00",
+    "endDate": "2025-06-20T17:30:00",
+    "peopleLimit": 12,
+    "classRoomId": 6,
+    "classStatus": "NORMAL"
+  },
+  {
+    "id": 58,
+    "classTemplateId": 6,
+    "groupNumber": 1,
+    "startDate": "2025-06-11T15:00:00",
+    "endDate": "2025-06-11T16:30:00",
+    "peopleLimit": 23,
+    "classRoomId": 2,
+    "classStatus": "NORMAL"
+  },
+  {
+    "id": 59,
+    "classTemplateId": 12,
+    "groupNumber": 1,
+    "startDate": "2025-06-13T16:00:00",
+    "endDate": "2025-06-13T17:30:00",
+    "peopleLimit": 14,
+    "classRoomId": 6,
+    "classStatus": "NORMAL"
+  },
+  {
+    "id": 60,
+    "classTemplateId": 6,
+    "groupNumber": 1,
+    "startDate": "2025-06-11T16:00:00",
+    "endDate": "2025-06-11T17:30:00",
+    "peopleLimit": 29,
+    "classRoomId": 1,
+    "classStatus": "NORMAL"
+  },
+  {
+    "id": 61,
+    "classTemplateId": 7,
+    "groupNumber": 2,
+    "startDate": "2025-06-18T13:00:00",
+    "endDate": "2025-06-18T14:30:00",
+    "peopleLimit": 27,
+    "classRoomId": 6,
+    "classStatus": "NORMAL"
+  },
+  {
+    "id": 62,
+    "classTemplateId": 11,
+    "groupNumber": 2,
+    "startDate": "2025-06-20T19:00:00",
+    "endDate": "2025-06-20T20:30:00",
+    "peopleLimit": 20,
+    "classRoomId": 5,
+    "classStatus": "NORMAL"
+  },
+  {
+    "id": 63,
+    "classTemplateId": 2,
+    "groupNumber": 3,
+    "startDate": "2025-06-17T14:00:00",
+    "endDate": "2025-06-17T15:30:00",
+    "peopleLimit": 18,
+    "classRoomId": 6,
+    "classStatus": "NORMAL"
+  },
+  {
+    "id": 64,
+    "classTemplateId": 11,
+    "groupNumber": 2,
+    "startDate": "2025-06-13T11:00:00",
+    "endDate": "2025-06-13T12:30:00",
+    "peopleLimit": 21,
+    "classRoomId": 3,
+    "classStatus": "NORMAL"
+  },
+  {
+    "id": 65,
+    "classTemplateId": 4,
+    "groupNumber": 2,
+    "startDate": "2025-06-12T11:00:00",
+    "endDate": "2025-06-12T12:30:00",
+    "peopleLimit": 29,
+    "classRoomId": 1,
+    "classStatus": "NORMAL"
+  },
+  {
+    "id": 66,
+    "classTemplateId": 12,
+    "groupNumber": 2,
+    "startDate": "2025-06-18T09:00:00",
+    "endDate": "2025-06-18T10:30:00",
+    "peopleLimit": 26,
+    "classRoomId": 1,
+    "classStatus": "NORMAL"
+  },
+  {
+    "comment": "ręcznie dodane",
+    "id": 67,
+    "classTemplateId": 4,
+    "groupNumber": 2,
+    "startDate": "2025-06-21T17:30:00",
+    "endDate": "2025-06-21T19:30:00",
+    "peopleLimit": 27,
+    "classRoomId": 2,
+    "classStatus": "NORMAL"
+  },
+  {
+    "comment": "ręcznie dodane",
+    "id": 68,
+    "classTemplateId": 7,
+    "groupNumber": 3,
+    "startDate": "2025-06-18T12:15:00",
+    "endDate": "2025-06-18T14:00:00",
+    "peopleLimit": 27,
+    "classRoomId": 3,
+    "classStatus": "NORMAL"
+  },
+  {
+    "comment": "ręcznie dodane",
+    "id": 69,
+    "classTemplateId": 7,
+    "groupNumber": 2,
+    "startDate": "2025-05-29T19:00:00",
+    "endDate": "2025-05-29T20:30:00",
+    "peopleLimit": 22,
+    "classRoomId": 4,
+    "classStatus": "NORMAL"
+  },
+  {
+    "comment": "ręcznie dodane",
+    "id": 70,
+    "classTemplateId": 4,
+    "groupNumber": 2,
+    "startDate": "2025-05-27T14:00:00",
+    "endDate": "2025-05-27T15:30:00",
+    "peopleLimit": 17,
+    "classRoomId": 7,
+    "classStatus": "NORMAL"
+  }
+]
