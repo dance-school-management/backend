@@ -14,10 +14,6 @@ import logger from "../src/utils/winston";
 
 const prisma = new PrismaClient();
 
-function sleep(ms: number) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
 async function main() {
   for (const danceCategory of danceCategoriesJson) {
     try {

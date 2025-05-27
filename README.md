@@ -49,3 +49,4 @@ Development mode (auth):
 ## Seeding databases
 > [!WARNING]
 > When running `seed-databases.sh` be careful about `sleep` value. If problems occured adjust its value
+> In order to seed auth and profile microservices, both of them must be active as containers in Docker
