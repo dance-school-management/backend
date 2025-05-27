@@ -1,26 +1,29 @@
 [
   { 
-    "id": "21",
+    "id": "61",
     "email": "student1@example.com",
     "password": "qwertyqwerty",
     "name": "Alice Johnson",
     "first_name": "Alice",
-    "surname": "Johnson"
+    "surname": "Johnson",
+    "role": "STUDENT"
   },
   {
-    "id": "22",
+    "id": "62",
     "email": "student2@example.com",
     "password": "qwertyqwerty",
     "name": "Bob Williams",
     "first_name": "Bob",
-    "surname": "Williams"
+    "surname": "Williams",
+    "role": "STUDENT"
   },
   {
-    "id": "23",
+    "id": "63",
     "email": "student3@example.com",
     "password": "qwertyqwerty",
     "name": "Charlie Davis",
     "first_name": "Charlie",
-    "surname": "Davis"
+    "surname": "Davis",
+    "role": "STUDENT"
   }
 ]

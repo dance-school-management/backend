@@ -2,78 +2,48 @@
  * @swagger
  * /user/profile:
  *   put:
- *     summary: Edit current user's profile
+ *     summary: Edit the current user's profile
  *     description: >
- *       Allows an authenticated user to edit their own profile.  
- *       The user must send their own ID and updated profile data.  
- *       Editing another user's profile is not allowed.
+ *       Allows an authenticated user to update their own profile information, including name, surname, email, phone, description, photo, and favorite dance categories.
+ *       The user must be authenticated. Only their own profile can be edited.
  *     tags:
  *       - user - profile
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             type: object
- *             required:
- *               - id
- *               - name
- *               - surname
- *               - role
  *             properties:
- *               id:
- *                 type: string
- *                 example: "abc123"
  *               name:
  *                 type: string
  *                 example: "Jan"
  *               surname:
  *                 type: string
  *                 example: "Kowalski"
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 example: "jan.kowalski@example.com"
+ *               phone:
+ *                 type: string
+ *                 example: "123456789"
  *               description:
  *                 type: string
- *                 nullable: true
- *                 example: "Instruktor tańca nowoczesnego"
- *               photo_url:
+ *                 example: "Modern dance instructor"
+ *               favouriteDanceCategories:
+ *                 type: array
+ *                 items:
+ *                   type: number
+ *                 example: [1, 2, 3]
+ *               photo:
  *                 type: string
- *                 nullable: true
- *                 example: "https://example.com/images/profile.jpg"
+ *                 format: binary
+ *           encoding:
+ *             photo:
+ *               contentType: image/png, image/jpeg, image/gif, image/jpg
  *     responses:
  *       "200":
- *         description: Successfully edited profile
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Profile'
- *       "401":
- *         description: Unauthorized (missing or invalid user ID / editing another user's profile)
- *       "500":
- *         description: Internal Server Error
- *
- * components:
- *   schemas:
- *     Profile:
- *       type: object
- *       properties:
- *         id:
- *           type: string
- *           example: "abc123"
- *         name:
- *           type: string
- *           example: "Jan"
- *         surname:
- *           type: string
- *           example: "Kowalski"
- *         description:
- *           type: string
- *           nullable: true
- *           example: "Instruktor z 10-letnim doświadczeniem"
- *         photo_url:
- *           type: string
- *           nullable: true
- *           example: "https://example.com/images/jan.jpg"
- *         role:
- *           type: string
- *           enum: [INSTRUCTOR, COORDINATOR, STUDENT]
- *           example: "INSTRUCTOR"
+ *         description: Profile updated successfully
  */
+

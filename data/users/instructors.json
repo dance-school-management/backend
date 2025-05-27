@@ -5,7 +5,8 @@
     "password": "qwertyqwerty",
     "name": "Emily Carter",
     "first_name": "Emily",
-    "surname": "Carter"
+    "surname": "Carter",
+    "role": "INSTRUCTOR"
   },
   { 
     "id": "12",
@@ -13,7 +14,8 @@
     "password": "qwertyqwerty",
     "name": "Michael Lee",
     "first_name": "Michael",
-    "surname": "Lee"
+    "surname": "Lee",
+    "role": "INSTRUCTOR"
   },
   {
     "id": "13",
@@ -21,6 +23,7 @@
     "password": "qwertyqwerty",
     "name": "Sarah Kim",
     "first_name": "Sarah",
-    "surname": "Kim"
+    "surname": "Kim",
+    "role": "INSTRUCTOR"
   }
 ]

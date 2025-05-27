@@ -11,16 +11,10 @@ async function main() {
   const users = coordinatorsJson.concat(
     studentsJson,
     instructorsJson,
-    generateFakeUsers(10),
+    generateFakeUsers(64, 67, Role.STUDENT),
+    generateFakeUsers(14, 46, Role.INSTRUCTOR),
+    generateFakeUsers(4, 6, Role.COORDINATOR),
   );
-
-  for (const key of Object.keys(prisma)) {
-    if (key[0] == "_" || key[0] == "$" || key == "constructor") {
-      continue;
-    }
-    logger.info(`Deleting data from ${key}...`);
-    await (prisma as any)[key].deleteMany();
-  }
 
   for (const user of users) {
     try {
@@ -42,24 +36,18 @@ async function main() {
     }
   }
 
-  const roles = [Role.COORDINATOR, Role.STUDENT, Role.INSTRUCTOR];
-  const usersJson = [coordinatorsJson, studentsJson, instructorsJson];
-
-  for (let index = 0; index < usersJson.length; index++) {
-    const users = usersJson[index];
-    for (const user of users) {
-      try {
-        await prisma.user.update({
-          where: { email: user.email },
-          data: {
-            role: roles[index],
-          },
-        });
-      } catch (error: any) {
-        logger.error(
-          `Error updating user role for email: ${user.email} \n error: ${error}`,
-        );
-      }
+  for (const user of users) {
+    try {
+      await prisma.user.update({
+        where: { id: user.id },
+        data: {
+          role: user.role as Role,
+        },
+      });
+    } catch (error: any) {
+      logger.error(
+        `Error updating user role for email: ${user.email} \n error: ${error}`,
+      );
     }
   }
 }
