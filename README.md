@@ -42,3 +42,9 @@ Development mode (auth):
   }
 //...
 ```
+
+## Seeding databases
+> [!WARNING]
+> When running `seed-databases.sh` be careful about `sleep` value. If problems occured adjust its value
+
+- remember to create "uploads" folder if isn't there

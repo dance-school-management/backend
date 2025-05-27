@@ -13,24 +13,30 @@ export const auth = betterAuth({
           return returned;
         }
         const userId: string = returned.user.id;
-        const { first_name, surname } = ctx.body;
-
+        const { first_name, surname, id } = ctx.body;
+        if (id) {
+          ctx.context.internalAdapter.updateUser(userId, {
+            id,
+          });
+        }
         try {
           const responseProfile = await createProfile(
-            userId,
+            id || userId,
             first_name,
             surname,
             "STUDENT",
           );
+          // console.log(ctx.context.authCookies.sessionData);
           return ctx.json(returned);
         } catch (err: any) {
           try {
-            await ctx.context.internalAdapter.deleteUser(userId);
+            await ctx.context.internalAdapter.deleteUser(id || userId);
           } catch (err2: any) {
             logger.error(
               `Error deleting user in auth service after profile creation error`,
             );
           }
+
           throw new APIError("INTERNAL_SERVER_ERROR", {
             message:
               "User account creation failed, problem with profile creation",

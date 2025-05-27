@@ -13,10 +13,14 @@
     "lint": "eslint ./src",
     "db:deploy": "npx prisma migrate deploy && npx prisma generate"
   },
+  "prisma": {
+    "seed": "ts-node prisma/seed.ts"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@faker-js/faker": "^9.8.0",
     "@grpc/grpc-js": "^1.13.3",
     "@prisma/adapter-pg": "^6.5.0",
     "@prisma/client": "^6.5.0",

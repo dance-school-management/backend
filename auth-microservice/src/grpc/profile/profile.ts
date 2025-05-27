@@ -6,6 +6,7 @@ import {
   Role as GrpcRole,
 } from "../../../proto/AuthCommunication_pb";
 import { Role as PrismaRole } from "../../../generated/client";
+import logger from "../../utils/winston";
 
 export const StringRoleToGrpcRole: Record<string, GrpcRole> = {
   [PrismaRole.INSTRUCTOR]: GrpcRole.INSTRUCTOR,
@@ -38,6 +39,7 @@ export async function createProfile(
           );
         } catch (parseError) {
           console.error("Failed to parse gRPC error details:", parseError);
+          logger.error(err);
           unErr = new UniversalError(500, "Internal Server Error", []);
         }
         reject(unErr);

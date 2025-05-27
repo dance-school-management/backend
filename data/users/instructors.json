@@ -1,0 +1,29 @@
+[
+  { 
+    "id": "11",
+    "email": "instructor1@example.com",
+    "password": "qwertyqwerty",
+    "name": "Emily Carter",
+    "first_name": "Emily",
+    "surname": "Carter",
+    "role": "INSTRUCTOR"
+  },
+  { 
+    "id": "12",
+    "email": "instructor2@example.com",
+    "password": "qwertyqwerty",
+    "name": "Michael Lee",
+    "first_name": "Michael",
+    "surname": "Lee",
+    "role": "INSTRUCTOR"
+  },
+  {
+    "id": "13",
+    "email": "instructor3@example.com",
+    "password": "qwertyqwerty",
+    "name": "Sarah Kim",
+    "first_name": "Sarah",
+    "surname": "Kim",
+    "role": "INSTRUCTOR"
+  }
+]

@@ -80,7 +80,6 @@ export const ProductWithEnrollServerImp: IProductWithEnrollServer = {
     const classId = call.request.getClassId();
     const instructorIds = call.request.getInstructorIdsList();
     try {
-      console.log(classId, instructorIds);
       const classes = await prisma.classesOnInstructors.createMany({
         data: instructorIds.map((instructorId) => ({
           classId,
@@ -88,7 +87,6 @@ export const ProductWithEnrollServerImp: IProductWithEnrollServer = {
         })),
       });
     } catch (err) {
-      console.log(err);
       const unErr = new UniversalError(
         StatusCodes.NOT_FOUND,
         "Error occured while creating classes-instructor enrollments",

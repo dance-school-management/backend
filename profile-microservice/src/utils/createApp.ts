@@ -9,6 +9,7 @@ import { handleUserContext } from "../middlewares/handleUserContext";
 import { checkRole } from "../middlewares/checkRole";
 import unprotectedRouter from "../routes/unprotected/unprotected";
 import userRouter from "../routes/user/profile";
+import path from "path";
 
 export function createApp() {
   const app = express();
@@ -18,7 +19,8 @@ export function createApp() {
   app.use(express.urlencoded({ extended: true }));
   setupSwagger(app);
   app.use(handleUserContext);
-  app.use("/unprotected", unprotectedRouter);
+  app.use("/uploads", express.static(path.resolve("uploads")));
+  app.use("/", unprotectedRouter);
   app.use("/user", userRouter);
   app.get("/", (req, res) => {
     res.send("Hello from profile-microservice");
