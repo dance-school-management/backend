@@ -1,5 +1,8 @@
 import { Router } from "express";
-import { getAllInstructors, getInstructor } from "../../controllers/unprotected/unprotected";
+import {
+  getAllInstructors,
+  getInstructor,
+} from "../../controllers/unprotected/unprotected";
 
 const router = Router();
 

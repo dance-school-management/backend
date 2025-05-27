@@ -128,29 +128,29 @@ export const EnrollWithProductServerImp: IEnrollWithProductServer = {
         classTemplate: {
           include: {
             danceCategory: true,
-            advancementLevel: true
-          }
+            advancementLevel: true,
+          },
         },
         classRoom: true,
       },
     });
 
-    const classesDetailsProtobuf = classesDetails.map(
-      (classDetails) => {
-        const cbd = new ClassDetails();
-        cbd.setClassId(classDetails.id);
-        cbd.setName(classDetails.classTemplate.name);
-        cbd.setStartDate(classDetails.startDate.toISOString());
-        cbd.setEndDate(classDetails.endDate.toISOString());
-        cbd.setClassRoomName(classDetails.classRoom.name);
-        if (classDetails.classTemplate.danceCategory)
-          cbd.setDanceCategoryName(classDetails.classTemplate.danceCategory.name);
-        if (classDetails.classTemplate.advancementLevel)
-          cbd.setAdvancementLevelName(classDetails.classTemplate.advancementLevel?.name)
-        cbd.setDescription(classDetails.classTemplate.description);
-        return cbd;
-      },
-    );
+    const classesDetailsProtobuf = classesDetails.map((classDetails) => {
+      const cbd = new ClassDetails();
+      cbd.setClassId(classDetails.id);
+      cbd.setName(classDetails.classTemplate.name);
+      cbd.setStartDate(classDetails.startDate.toISOString());
+      cbd.setEndDate(classDetails.endDate.toISOString());
+      cbd.setClassRoomName(classDetails.classRoom.name);
+      if (classDetails.classTemplate.danceCategory)
+        cbd.setDanceCategoryName(classDetails.classTemplate.danceCategory.name);
+      if (classDetails.classTemplate.advancementLevel)
+        cbd.setAdvancementLevelName(
+          classDetails.classTemplate.advancementLevel?.name,
+        );
+      cbd.setDescription(classDetails.classTemplate.description);
+      return cbd;
+    });
 
     const res = new ClassesDetailsResponse();
     res.setClassesdetailsList(classesDetailsProtobuf);

@@ -45,14 +45,14 @@ export function authenticate() {
           role: "STUDENT",
         };
         req.headers["user-context"] = Buffer.from(
-          JSON.stringify(fakeUser)
+          JSON.stringify(fakeUser),
         ).toString("base64");
         next();
       } else {
         throw new UniversalError(
           StatusCodes.UNAUTHORIZED,
           "Error while authenticating",
-          []
+          [],
         );
       }
     }

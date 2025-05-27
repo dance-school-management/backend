@@ -6,7 +6,7 @@
 
 generator client {
   provider = "prisma-client-js"
-  output = "../generated/client"
+  output   = "../generated/client"
 }
 
 datasource db {
@@ -15,14 +15,14 @@ datasource db {
 }
 
 model Notification {
-  id Int @id @default(autoincrement())
-  productId Int
-  userId Int
+  id          Int         @id @default(autoincrement())
+  productId   Int
+  userId      Int
   productType ProductType
-  title String
+  title       String
   description String
-  hasBeenRead Boolean @default(false)
-  sendDate DateTime @default(now())
+  hasBeenRead Boolean     @default(false)
+  sendDate    DateTime    @default(now())
 }
 
 enum ProductType {

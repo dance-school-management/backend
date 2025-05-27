@@ -46,4 +46,3 @@
  *       "200":
  *         description: Profile updated successfully
  */
-

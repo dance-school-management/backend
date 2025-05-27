@@ -29,7 +29,7 @@ export const ProfileServiceImpl: IProfileServer = {
     call: ServerUnaryCall<CreateProfileRequest, CreateProfileResponse>,
     callback: sendUnaryData<CreateProfileResponse>,
   ): Promise<void> {
-    const { id, name, surname, role} = call.request.toObject();
+    const { id, name, surname, role } = call.request.toObject();
     try {
       await prisma.profile.create({
         data: {
@@ -44,7 +44,7 @@ export const ProfileServiceImpl: IProfileServer = {
       callback(null, response);
       return;
     } catch (err) {
-     console.error("Error creating profile:", err);
+      console.error("Error creating profile:", err);
       let fields: FieldErrorArray = [];
       if (err instanceof Prisma.PrismaClientKnownRequestError) {
         fields = getWrongFields(err);

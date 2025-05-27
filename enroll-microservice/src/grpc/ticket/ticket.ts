@@ -1,5 +1,8 @@
 import { StatusCodes } from "http-status-codes";
-import { ClassesDetailsResponse, ClassIdsRequest } from "../../../proto/productCommunication_pb";
+import {
+  ClassesDetailsResponse,
+  ClassIdsRequest,
+} from "../../../proto/productCommunication_pb";
 import { UniversalError } from "../../errors/UniversalError";
 import { enrollWithProductClient } from "../../utils/grpcClients";
 import logger from "../../utils/winston";

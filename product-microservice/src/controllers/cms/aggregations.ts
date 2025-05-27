@@ -21,6 +21,10 @@ export async function getAllAdvancementLevelsAndDanceCategoriesAndClassrooms(
 
     res.status(StatusCodes.OK).json(result);
   } catch (err: any) {
-    throw new UniversalError(StatusCodes.INTERNAL_SERVER_ERROR, "Failed to retrieve data due to server errors", []);
+    throw new UniversalError(
+      StatusCodes.INTERNAL_SERVER_ERROR,
+      "Failed to retrieve data due to server errors",
+      [],
+    );
   }
 }

@@ -3,6 +3,9 @@ import { getAllAdvancementLevelsAndDanceCategoriesAndClassrooms } from "../../..
 
 const router = Router();
 
-router.get("/class-template-creation-data", getAllAdvancementLevelsAndDanceCategoriesAndClassrooms);
+router.get(
+  "/class-template-creation-data",
+  getAllAdvancementLevelsAndDanceCategoriesAndClassrooms,
+);
 
 export default router;

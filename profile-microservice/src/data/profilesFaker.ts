@@ -16,14 +16,12 @@ export const generateFakeProfile = (id: string, role: Role): Profile => {
     email: faker.internet.email(),
     startDate:
       role == "STUDENT"
-        ? null 
-        : new Date(faker.date
-            .past({ years: 5 })
-            .toISOString()
-            .split("T")[0]),
+        ? null
+        : new Date(faker.date.past({ years: 5 }).toISOString().split("T")[0]),
     description: faker.lorem.paragraph(),
     role,
-    photoPath: "uploads/" + photosNames[parseInt(id) % photosNames.length] || null,
+    photoPath:
+      "uploads/" + photosNames[parseInt(id) % photosNames.length] || null,
     favouriteDanceCategories: [
       getRandomInt(DANCE_CATEGORIES_COUNT),
       getRandomInt(DANCE_CATEGORIES_COUNT),
