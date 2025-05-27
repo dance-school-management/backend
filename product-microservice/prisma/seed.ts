@@ -29,7 +29,9 @@ async function main() {
         },
       });
     } catch (error: any) {
-      logger.error(`Error upserting danceCategory with id ${danceCategory.id} \n error: ${error}`);
+      logger.error(
+        `Error upserting danceCategory with id ${danceCategory.id} \n error: ${error}`,
+      );
     }
   }
 
@@ -46,7 +48,9 @@ async function main() {
         },
       });
     } catch (error: any) {
-      logger.error(`Error upserting advancementLevel with id ${advancementLevel.id} \n error: ${error}`);
+      logger.error(
+        `Error upserting advancementLevel with id ${advancementLevel.id} \n error: ${error}`,
+      );
     }
   }
 
@@ -64,7 +68,9 @@ async function main() {
         },
       });
     } catch (error: any) {
-      logger.error(`Error upserting classRoom with id ${classRoom.id} \n error: ${error}`);
+      logger.error(
+        `Error upserting classRoom with id ${classRoom.id} \n error: ${error}`,
+      );
     }
   }
 
@@ -85,7 +91,9 @@ async function main() {
         },
       });
     } catch (error: any) {
-      logger.error(`Error upserting course with id ${course.id}\n error: ${error}`);
+      logger.error(
+        `Error upserting course with id ${course.id}\n error: ${error}`,
+      );
     }
   }
 
@@ -109,7 +117,9 @@ async function main() {
         },
       });
     } catch (error: any) {
-      logger.error(`Error upserting classTemplate with id ${classTemplate.id} \n error: ${error}`);
+      logger.error(
+        `Error upserting classTemplate with id ${classTemplate.id} \n error: ${error}`,
+      );
     }
   }
 
@@ -131,7 +141,9 @@ async function main() {
         },
       });
     } catch (error: any) {
-      logger.error(`Error upserting class with id ${aClass.id} \n error: ${error}`);
+      logger.error(
+        `Error upserting class with id ${aClass.id} \n error: ${error}`,
+      );
     }
   }
 }

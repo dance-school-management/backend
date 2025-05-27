@@ -92,7 +92,7 @@ export async function addCourse(
     },
   });
 
-  if (process.env.NODE_ENV === 'development') {
+  if (process.env.NODE_ENV === "development") {
     await prisma.classTemplate.create({
       data: {
         name: "name",
@@ -102,8 +102,8 @@ export async function addCourse(
         currency: "PLN",
         courseId: newCourse.id,
       },
-  });
-}
+    });
+  }
 
   res.status(StatusCodes.CREATED).json(newCourse);
 }

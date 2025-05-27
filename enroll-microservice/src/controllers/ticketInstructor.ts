@@ -38,5 +38,7 @@ export async function scanTicket(
     },
   });
 
-  res.status(StatusCodes.OK).json({message: "Successfully recorded student's attendance"});
+  res
+    .status(StatusCodes.OK)
+    .json({ message: "Successfully recorded student's attendance" });
 }

@@ -45,8 +45,8 @@
  *   post:
  *     summary: Mark student attendance by scanning ticket
  *     description: >
- *       Marks a student as present for a specific class by scanning their ticket.  
- *       Requires valid `classId` and `studentId`.  
+ *       Marks a student as present for a specific class by scanning their ticket.
+ *       Requires valid `classId` and `studentId`.
  *       Fails if no ticket is found in the database.
  *     tags:
  *       - instructor - tickets

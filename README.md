@@ -50,5 +50,8 @@ Development mode (auth):
 > [!WARNING]
 > When running `seed-databases.sh` be careful about `sleep` value. If problems occured adjust its value
 
+> [!NOTE]
+> To seed database run script `seed-databases.sh`. It clears all databases and runs particular `seed.ts`.
+
 - Careful! Auth seeding is related with profile-microservice. Remember about starting all needed docker's containers.
-- remember to create "uploads" folder if isn't there
+- Remember to create "uploads" folder if isn't there. It is used by muter for uploading photo.

@@ -14,9 +14,9 @@ const options: swaggerJsdoc.Options = {
     },
     servers: [
       {
-        url: "http://localhost:8000/notification"
-      }
-    ]
+        url: "http://localhost:8000/notification",
+      },
+    ],
   },
   apis: ["./src/routes/**/*.ts"],
 };

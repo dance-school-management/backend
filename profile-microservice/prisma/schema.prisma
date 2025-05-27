@@ -16,16 +16,16 @@ datasource db {
 }
 
 model Profile {
-  id          String  @id
-  name        String
-  surname     String
-  email       String?  @unique
-  phone       String? 
-  startDate  DateTime?
-  description String?
-  photoPath   String?
-  favouriteDanceCategories Int[] @default([])
-  role        Role
+  id                       String    @id
+  name                     String
+  surname                  String
+  email                    String?   @unique
+  phone                    String?
+  startDate                DateTime?
+  description              String?
+  photoPath                String?
+  favouriteDanceCategories Int[]     @default([])
+  role                     Role
 }
 
 enum Role {
