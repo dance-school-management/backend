@@ -4,6 +4,7 @@ import { createAuthMiddleware, openAPI } from "better-auth/plugins";
 import prisma from "./prisma";
 import { createProfile } from "../grpc/profile/profile";
 import { APIError } from "better-auth/api";
+import { expo } from "@better-auth/expo";
 export const auth = betterAuth({
   hooks: {
     after: createAuthMiddleware(async (ctx) => {
@@ -12,13 +13,21 @@ export const auth = betterAuth({
         if (returned instanceof APIError) {
           return returned;
         }
+
         const userId: string = returned.user.id;
-        const { first_name, surname, id } = ctx.body;
-        if (id) {
-          ctx.context.internalAdapter.updateUser(userId, {
-            id,
-          });
+        const { first_name, surname } = ctx.body;
+        let id = ctx.body.id || null;
+        try {
+          if (id) {
+            await ctx.context.internalAdapter.updateUser(userId, {
+              id,
+            });
+          }
+        } catch {
+          logger.error(`Error updating user id, default id stays`);
+          id = null;
         }
+
         try {
           const responseProfile = await createProfile(
             id || userId,
@@ -26,7 +35,7 @@ export const auth = betterAuth({
             surname,
             "STUDENT",
           );
-          // console.log(ctx.context.authCookies.sessionData);
+
           return ctx.json(returned);
         } catch (err: any) {
           try {
@@ -46,7 +55,7 @@ export const auth = betterAuth({
       }
     }),
   },
-  plugins: [openAPI()],
+  plugins: [openAPI(), expo()],
   database: prismaAdapter(prisma, {
     provider: "postgresql",
   }),
@@ -66,5 +75,9 @@ export const auth = betterAuth({
       },
     },
   },
-  trustedOrigins: ["http://localhost:8000", "http://localhost:3000"],
+  trustedOrigins: [
+    "http://localhost:8000",
+    "http://localhost:3000",
+    "Myexpo://",
+  ],
 });
