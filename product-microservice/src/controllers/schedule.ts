@@ -103,7 +103,6 @@ export async function getSchedulePersonal(
         },
       },
     });
-    console.log("Classes data for personal schedule:", classesData);
     res.status(StatusCodes.OK).json(classesData);
   } catch (err: any) {
     throw new UniversalError(
