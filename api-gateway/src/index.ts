@@ -85,7 +85,7 @@ if (PROFILE_MICROSERVICE_URL) {
     changeOrigin: true,
   });
 
-  const proxyMiddlewareProfileApiDocs = createProxyMiddleware<
+  const proxyMiddlewareProfileAdditional = createProxyMiddleware<
     Request,
     Response
   >({
@@ -96,9 +96,11 @@ if (PROFILE_MICROSERVICE_URL) {
       return currPath.replace("/profile", "");
     },
   });
+
   if (NODE_ENV === "development") {
-    app.use("/profile/api-docs", proxyMiddlewareProfileApiDocs);
+    app.use("/profile/api-docs", proxyMiddlewareProfileAdditional);
   }
+  app.use("/profile/uploads", proxyMiddlewareProfileAdditional);
   app.use("/profile", authenticate(), proxyMiddlewareProfile);
 }
 
