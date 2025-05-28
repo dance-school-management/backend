@@ -1,50 +1,50 @@
 [
   {
     "id": 1,
-    "name": "Sala Lustrzana",
+    "name": "Mirror Room",
     "peopleLimit": 20,
-    "description": "Sala z lustrami na całej ścianie, idealna do zajęć tanecznych."
+    "description": "Room with wall-to-wall mirrors, ideal for dance classes."
   },
   {
     "id": 2,
-    "name": "Studio Rytmu",
+    "name": "Rhythm Studio",
     "peopleLimit": 15,
-    "description": "Kameralne studio z dobrą akustyką do zajęć rytmicznych i indywidualnych."
+    "description": "Cozy studio with good acoustics for rhythm and individual classes."
   },
   {
     "id": 3,
-    "name": "Sala Akrobatyczna",
+    "name": "Acrobatics Room",
     "peopleLimit": 25,
-    "description": "Przestronna sala wyposażona w materace i sprzęt do akrobatyki."
+    "description": "Spacious room equipped with mats and acrobatics equipment."
   },
   {
     "id": 4,
-    "name": "Sala Nowoczesna",
+    "name": "Modern Room",
     "peopleLimit": 18,
-    "description": "Sala z nowoczesnym nagłośnieniem i oświetleniem LED."
+    "description": "Room with modern sound system and LED lighting."
   },
   {
     "id": 5,
-    "name": "Sala Klasyczna",
+    "name": "Classical Room",
     "peopleLimit": 12,
-    "description": "Sala z drążkami i lustrami."
+    "description": "Room with barres and mirrors."
   },
   {
     "id": 6,
-    "name": "Studio Improwizacji",
+    "name": "Improvisation Studio",
     "peopleLimit": 10,
-    "description": "Kameralna sala do zajęć improwizacyjnych i pracy indywidualnej."
+    "description": "Intimate space for improvisation classes and individual work."
   },
   {
     "id": 7,
-    "name": "Sala Grupowa A",
+    "name": "Group Room A",
     "peopleLimit": 30,
-    "description": "Duża sala dla grup zorganizowanych, wyposażona w projektor."
+    "description": "Large room for organized groups, equipped with a projector."
   },
   {
     "id": 8,
-    "name": "Sala Grupowa B",
+    "name": "Group Room B",
     "peopleLimit": 30,
-    "description": "Bliźniacza sala do Sali Grupowej A, przystosowana do dużych zajęć tanecznych."
+    "description": "Twin room to Group Room A, adapted for large dance classes."
   }
 ]
