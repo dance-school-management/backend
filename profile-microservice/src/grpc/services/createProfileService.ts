@@ -16,12 +16,14 @@ export const PrismaRoleToGrpcRole: Record<PrismaRole, GrpcRole> = {
   [PrismaRole.INSTRUCTOR]: GrpcRole.INSTRUCTOR,
   [PrismaRole.COORDINATOR]: GrpcRole.COORDINATOR,
   [PrismaRole.STUDENT]: GrpcRole.STUDENT,
+  [PrismaRole.ADMINISTRATOR]: GrpcRole.ADMINISTRATOR,
 };
 
 export const GrpcRoleToPrismaRole: Record<GrpcRole, PrismaRole> = {
   [GrpcRole.INSTRUCTOR]: PrismaRole.INSTRUCTOR,
   [GrpcRole.COORDINATOR]: PrismaRole.COORDINATOR,
   [GrpcRole.STUDENT]: PrismaRole.STUDENT,
+  [GrpcRole.ADMINISTRATOR]: PrismaRole.ADMINISTRATOR,
 };
 
 export const ProfileServiceImpl: IProfileServer = {

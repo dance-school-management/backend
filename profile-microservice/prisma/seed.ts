@@ -7,6 +7,7 @@ async function main() {
   const users = generateFakeProfiles(61, 70, Role.STUDENT).concat(
     generateFakeProfiles(11, 19, Role.INSTRUCTOR),
     generateFakeProfiles(1, 9, Role.COORDINATOR),
+    generateFakeProfiles(2000, 2, Role.ADMINISTRATOR),
   );
 
   for (const user of users) {
@@ -26,8 +27,9 @@ async function main() {
         },
       });
     } catch (error: any) {
+      console.log(user);
       logger.info(
-        `\n Profile already exists or error occurred, skipping creation for email: ${user.email} \n error: ${error}`,
+        `\n Profile already exists or error occurred, skipping updates for email: ${user.email} \n error: ${error}`,
       );
     }
   }

@@ -29,6 +29,7 @@ enum Role {
   INSTRUCTOR
   COORDINATOR
   STUDENT
+  ADMINISTRATOR
 }
 
 model Session {

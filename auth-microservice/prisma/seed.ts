@@ -5,12 +5,14 @@ import { generateFakeUsers } from "../src/data/usersFaker";
 import coordinatorsJson from "../../data/users/coordinators.json";
 import studentsJson from "../../data/users/students.json";
 import instructorsJson from "../../data/users/instructors.json";
+import administratorsJson from "../../data/users/administrators.json";
 
 const prisma = new PrismaClient();
 async function main() {
   const users = coordinatorsJson.concat(
     studentsJson,
     instructorsJson,
+    administratorsJson,
     generateFakeUsers(64, 67, Role.STUDENT),
     generateFakeUsers(14, 16, Role.INSTRUCTOR),
     generateFakeUsers(4, 6, Role.COORDINATOR),
@@ -45,6 +47,7 @@ async function main() {
         },
       });
     } catch (error: any) {
+      console.log(user);
       logger.error(
         `Error updating user role for email: ${user.email} \n error: ${error}`,
       );
