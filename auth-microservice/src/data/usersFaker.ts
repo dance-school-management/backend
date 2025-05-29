@@ -30,7 +30,7 @@ export const generateFakeUsers = (
   count: number,
   role: Role,
 ): User[] => {
-  return Array.from({ length: count }, (_, index) => {
+  return Array.from({ length: count + 1 }, (_, index) => {
     const id = (startId + index).toString();
     return generateFakeUser(id, role);
   });

@@ -35,7 +35,7 @@ export const generateFakeProfiles = (
   count: number,
   role: Role,
 ) => {
-  return Array.from({ length: count }, (_, index) => {
+  return Array.from({ length: count + 1 }, (_, index) => {
     const id = (startId + index).toString();
     return generateFakeProfile(id, role);
   });

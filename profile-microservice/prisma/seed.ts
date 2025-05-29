@@ -5,7 +5,7 @@ import { generateFakeProfiles } from "../src/data/profilesFaker";
 const prisma = new PrismaClient();
 async function main() {
   const users = generateFakeProfiles(61, 70, Role.STUDENT).concat(
-    generateFakeProfiles(11, 49, Role.INSTRUCTOR),
+    generateFakeProfiles(11, 19, Role.INSTRUCTOR),
     generateFakeProfiles(1, 9, Role.COORDINATOR),
   );
 
