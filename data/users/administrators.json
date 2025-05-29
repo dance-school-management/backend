@@ -1,0 +1,29 @@
+[
+  {
+    "id": "2000",
+    "email": "admin1@example.com",
+    "password": "qwertyqwerty",
+    "name": "Alice Admin",
+    "first_name": "Alice",
+    "surname": "Admin",
+    "role": "ADMINISTRATOR"
+  },
+  {
+    "id": "2001",
+    "email": "admin2@example.com",
+    "password": "qwertyqwerty",
+    "name": "Adam Admin",
+    "first_name": "Adam",
+    "surname": "Admin",
+    "role": "ADMINISTRATOR"
+  },
+  {
+    "id": "2002",
+    "email": "admin3@example.com",
+    "password": "qwertyqwerty",
+    "name": "Martin Admin",
+    "first_name": "Martin",
+    "surname": "Admin",
+    "role": "ADMINISTRATOR"
+  }
+]

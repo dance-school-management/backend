@@ -10,6 +10,7 @@ enum Role {
   INSTRUCTOR = 0;
   COORDINATOR = 1;
   STUDENT = 2;
+  ADMINISTRATOR = 3;
 }
 
 message CreateProfileRequest {
