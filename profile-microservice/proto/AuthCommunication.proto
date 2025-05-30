@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package productcommunication;
+package authcommunication;
 
 service Profile {
   rpc CreateProfile(CreateProfileRequest) returns (CreateProfileResponse);
