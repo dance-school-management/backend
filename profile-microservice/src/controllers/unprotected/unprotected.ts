@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 import prisma from "../../utils/prisma";
 import { Profile, Role } from "../../../generated/client";
+import { getDanceCategories } from "../../grpc/client/danceCategory";
 
 export async function getAllInstructors(
   req: Request<{}, {}, {}>,
@@ -14,8 +15,34 @@ export async function getAllInstructors(
     },
   });
 
+  const danceCategoriesIds = Array.from(
+    new Set(
+      allInstructors.flatMap(
+        (instructor) => instructor.favouriteDanceCategories || [],
+      ),
+    ),
+  );
+
+  const danceCategoriesEntries = (await getDanceCategories(danceCategoriesIds))
+    .danceCategoriesList;
+
+  const instructorsWithDanceCategoriesNames = allInstructors.map(
+    (instructor) => ({
+      ...instructor,
+      favouriteDanceCategories: instructor.favouriteDanceCategories.map(
+        (favId) => {
+          return (
+            danceCategoriesEntries.find(
+              (danceCategory) => danceCategory.id === favId,
+            )?.name || ""
+          );
+        },
+      ),
+    }),
+  );
+
   const result = {
-    instructors: allInstructors,
+    instructors: instructorsWithDanceCategoriesNames,
   };
 
   res.status(StatusCodes.OK).json(result);
@@ -32,5 +59,24 @@ export async function getInstructor(
       role: Role.INSTRUCTOR,
     },
   });
+  if (
+    instructor?.favouriteDanceCategories &&
+    instructor.favouriteDanceCategories.length > 0
+  ) {
+    const danceCategoriesEntries = (
+      await getDanceCategories(instructor?.favouriteDanceCategories)
+    ).danceCategoriesList;
+    const instructorWithDanceCategoriesNames = {
+      ...instructor,
+      favouriteDanceCategories: instructor.favouriteDanceCategories.map(
+        (favId) =>
+          danceCategoriesEntries.find(
+            (danceCategory) => danceCategory.id === favId,
+          )?.name || "",
+      ),
+    };
+    res.status(StatusCodes.OK).json(instructorWithDanceCategoriesNames);
+    return;
+  }
   res.status(StatusCodes.OK).json(instructor);
 }

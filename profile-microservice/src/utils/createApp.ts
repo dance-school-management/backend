@@ -8,7 +8,7 @@ import { UniversalError } from "../errors/UniversalError";
 import { handleUserContext } from "../middlewares/handleUserContext";
 import { checkRole } from "../middlewares/checkRole";
 import unprotectedRouter from "../routes/unprotected/unprotected";
-import userRouter from "../routes/user/profile";
+import userRouter from "../routes/user/profile";  
 import path from "path";
 
 export function createApp() {
@@ -18,8 +18,8 @@ export function createApp() {
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
   setupSwagger(app);
-  app.use(handleUserContext);
   app.use("/uploads", express.static(path.resolve("uploads")));
+  app.use(handleUserContext);
   app.use("/", unprotectedRouter);
   app.use("/user", userRouter);
   app.get("/", (req, res) => {
