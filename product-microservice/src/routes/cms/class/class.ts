@@ -1,5 +1,7 @@
 import { Router } from "express";
 import {
+  availableClassrooms,
+  availableInstructors,
   createClass,
   editClassStatus,
   getClassDetails,
@@ -26,7 +28,7 @@ router.post(
 );
 
 router.get(
-  "/:startDateFrom/:startDateTo",
+  "/schedule/:startDateFrom/:startDateTo",
   param(["startDateFrom", "startDateTo"])
     .isISO8601()
     .withMessage("Dates must be of type ISO8601")
@@ -37,5 +39,34 @@ router.get(
 router.put("/status/edit", editClassStatus);
 
 router.get("/:id", getClassDetails);
+
+router.get(
+  "/available/classrooms/:startDate/:endDate",
+  [
+    param("startDate")
+      .isISO8601()
+      .withMessage("startDate must be ISO8601")
+      .toDate(),
+    param("endDate")
+      .isISO8601()
+      .withMessage("endDate must be ISO8601")
+      .toDate(),
+  ],
+  availableClassrooms,
+);
+router.get(
+  "/available/instructors/:startDate/:endDate",
+  [
+    param("startDate")
+      .isISO8601()
+      .withMessage("startDate must be ISO8601")
+      .toDate(),
+    param("endDate")
+      .isISO8601()
+      .withMessage("endDate must be ISO8601")
+      .toDate(),
+  ],
+  availableInstructors,
+);
 
 export default router;

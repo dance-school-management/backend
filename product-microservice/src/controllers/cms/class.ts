@@ -12,6 +12,7 @@ import {
   getInstructorsClasses,
 } from "../../grpc/client/enrollCommunication/class";
 import { UniversalError } from "../../errors/UniversalError";
+import { getOtherInstructorsData } from "../../grpc/client/profileCommunication/profile";
 
 //  <!-- Controllers in this file -->
 // createClass
@@ -343,4 +344,81 @@ export async function getClassDetails(
   };
 
   res.status(StatusCodes.OK).json(result);
+}
+
+export async function availableClassrooms(
+  req: Request<{ startDate: Date; endDate: Date }, {}, {}>,
+  res: Response,
+  next: NextFunction,
+) {
+  checkValidations(validationResult(req));
+
+  const { startDate, endDate } = req.params;
+  const adjustedEndDate = new Date(endDate.getTime());
+  adjustedEndDate.setMinutes(adjustedEndDate.getMinutes() + 15);
+
+  const adjustedStartDate = new Date(startDate.getTime());
+  adjustedStartDate.setMinutes(adjustedStartDate.getMinutes() - 15);
+
+  const busyClassrooms = await prisma.class.findMany({
+    where: {
+      startDate: { lte: adjustedEndDate },
+      endDate: { gte: adjustedStartDate },
+    },
+    select: {
+      classRoomId: true,
+    },
+    distinct: ["classRoomId"],
+  });
+
+  const busyClassroomIds = busyClassrooms.map((c) => c.classRoomId);
+
+  const freeClassrooms = await prisma.classRoom.findMany({
+    where: {
+      id: {
+        notIn: busyClassroomIds,
+      },
+    },
+  });
+
+  res.status(200).json({ freeClassrooms });
+}
+
+export async function availableInstructors(
+  req: Request<{ startDate: Date; endDate: Date }, {}, {}>,
+  res: Response,
+  next: NextFunction,
+) {
+  checkValidations(validationResult(req));
+
+  const { startDate, endDate } = req.params;
+  const adjustedEndDate = new Date(endDate.getTime());
+  adjustedEndDate.setMinutes(adjustedEndDate.getMinutes() + 15);
+
+  const adjustedStartDate = new Date(startDate.getTime());
+  adjustedStartDate.setMinutes(adjustedStartDate.getMinutes() - 15);
+
+  const classIdsOfClassesBetweenDates = await prisma.class.findMany({
+    where: {
+      startDate: { lte: adjustedEndDate },
+      endDate: { gte: adjustedStartDate },
+    },
+    select: {
+      id: true,
+    },
+  });
+
+  const classesInstructors = await getClassesInstructors(
+    classIdsOfClassesBetweenDates.map((item) => item.id),
+  );
+
+  const busyInstructorIds = classesInstructors.instructorsClassesIdsList.map(
+    (item) => item.instructorId,
+  );
+
+  const freeInstructors = await getOtherInstructorsData(busyInstructorIds);
+
+  res
+    .status(200)
+    .json({ freeInstructors: freeInstructors.instructorsdataList });
 }

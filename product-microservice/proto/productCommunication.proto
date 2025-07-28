@@ -108,6 +108,13 @@ service DanceCategories {
   rpc GetDanceCategories(GetDanceCategoriesRequest) returns (GetDanceCategoriesResponse);
 }
 
+service ProductWithProfile {
+  // Important! This method does not get the 
+  // data of instructors of the given ids, but those whose ids do not belong to given ids list
+  rpc GetOtherInstructorsData(InstructorIdsRequest) returns (InstructorsDataResponse);
+};
+
+
 enum Role {
   INSTRUCTOR = 0;
   COORDINATOR = 1;
@@ -129,3 +136,12 @@ message DanceCategory {
 message GetDanceCategoriesResponse {
   repeated DanceCategory dance_categories = 1;
 };
+
+message InstructorData {
+  string id = 1;
+  string name = 2;
+}
+
+message InstructorsDataResponse {
+  repeated InstructorData instructorsData = 1;
+}

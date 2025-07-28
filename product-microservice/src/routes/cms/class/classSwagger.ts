@@ -149,7 +149,7 @@
 
 /**
  * @swagger
- * /cms/class/{startDateFrom}/{startDateTo}:
+ * /cms/class/schedule/{startDateFrom}/{startDateTo}:
  *   get:
  *     summary: Get schedule for classes within a date range
  *     description: >
@@ -341,4 +341,108 @@
  *         description: Class not found
  *       400:
  *         description: Validation error
+ */
+
+/**
+ * @swagger
+ * /cms/class/available/classrooms/{startDate}/{endDate}:
+ *   get:
+ *     summary: Get available classrooms
+ *     description: >
+ *       Returns a list of classrooms that are free within the given time window (±15 minutes).
+ *     tags:
+ *       - cms - Availability
+ *     parameters:
+ *       - in: path
+ *         name: startDate
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: date-time
+ *         example: "2025-05-10T14:00:00.000Z"
+ *       - in: path
+ *         name: endDate
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: date-time
+ *         example: "2025-05-10T16:00:00.000Z"
+ *     responses:
+ *       200:
+ *         description: List of available classrooms
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 freeClassrooms:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: integer
+ *                         example: 1
+ *                       name:
+ *                         type: string
+ *                         example: "Room A"
+ *                       peopleLimit:
+ *                         type: integer
+ *                         example: 25
+ *                       description:
+ *                         type: string
+ *                         example: "Large mirrored room with wooden floors"
+ *       400:
+ *         description: Invalid request
+ *       500:
+ *         description: Internal server error
+ */
+
+/**
+ * @swagger
+ * /cms/class/available/instructors/{startDate}/{endDate}:
+ *   get:
+ *     summary: Get available instructors
+ *     description: >
+ *       Returns a list of instructors that are free within the given time window (±15 minutes).
+ *     tags:
+ *       - cms - Availability
+ *     parameters:
+ *       - in: path
+ *         name: startDate
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: date-time
+ *         example: "2025-05-10T14:00:00.000Z"
+ *       - in: path
+ *         name: endDate
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: date-time
+ *         example: "2025-05-10T16:00:00.000Z"
+ *     responses:
+ *       200:
+ *         description: List of available instructors
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 freeInstructors:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: string
+ *                         example: "123"
+ *                       name:
+ *                         type: string
+ *                         example: "Jane Doe"
+ *       400:
+ *         description: Invalid request
+ *       500:
+ *         description: Internal server error
  */
