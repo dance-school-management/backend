@@ -10,11 +10,16 @@ import { UniversalError } from "../errors/UniversalError";
 import { handleUserContext } from "../middlewares/handleUserContext";
 import { checkRole } from "../middlewares/checkRole";
 import scheduleRouter from "../routes/schedule/schedule";
+import checkoutSessionRouter from "../routes/stripe/other/checkoutSession"
+import webhookRouter from "../routes/stripe/webhooks/webhook"
 
 export function createApp() {
   const app = express();
   app.use(morgan("tiny"));
   app.use(helmet());
+
+  app.use("/stripe/webhook", webhookRouter)
+
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
   setupSwagger(app);
@@ -22,6 +27,7 @@ export function createApp() {
   app.use("/uploads", express.static(path.resolve("uploads")));
   app.use("/cms", checkRole(["COORDINATOR"]), cmsRouter);
   app.use("/schedule", scheduleRouter);
+  app.use("/stripe/other", checkRole(["STUDENT"]), checkoutSessionRouter)
   app.get("/", (req, res) => {
     res.send("Hello from product-microservice1");
   });
