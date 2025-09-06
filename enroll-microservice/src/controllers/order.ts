@@ -1,5 +1,4 @@
 import { NextFunction, Request, Response } from "express";
-import { checkClass, checkCourse } from "../grpc/order/order";
 import {
   ClassTicket,
   CourseTicket,
@@ -10,6 +9,8 @@ import { validationResult } from "express-validator";
 import { StatusCodes } from "http-status-codes";
 import prisma from "../utils/prisma";
 import { UniversalError } from "../errors/UniversalError";
+import { checkClass } from "../grpc/client/productCommunication/checkClass";
+import { checkCourse } from "../grpc/client/productCommunication/checkCourse";
 
 export async function makeClassOrder(
   req: Request<object, object, ClassTicket> & { user?: any },

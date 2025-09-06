@@ -2,7 +2,7 @@ import { betterAuth, logger } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { createAuthMiddleware, openAPI } from "better-auth/plugins";
 import prisma from "./prisma";
-import { createProfile } from "../grpc/profile/profile";
+import { createProfile } from "../grpc/client/profileCommunication/profile";
 import { APIError } from "better-auth/api";
 import { expo } from "@better-auth/expo";
 export const auth = betterAuth({

@@ -1,0 +1,118 @@
+syntax = "proto3";
+
+package product_microservice;
+
+enum Role {
+  INSTRUCTOR = 0;
+  COORDINATOR = 1;
+  STUDENT = 2;
+  ADMINISTRATOR = 3;
+};
+
+message DanceCategoriesIdsRequest {
+  repeated int64 id = 1;
+};
+
+message DanceCategory {
+  int64 id = 1;
+  string name = 2;
+};
+
+message GetDanceCategoriesResponse {
+  repeated DanceCategory dance_categories = 1;
+};
+
+message InstructorData {
+  string id = 1;
+  string name = 2;
+}
+
+message InstructorsDataResponse {
+  repeated InstructorData instructorsData = 1;
+}
+
+message CheckClassRequest {
+  int64 class_id = 1;
+};
+
+message CheckCourseRequest {
+  int64 course_id = 1;
+  int32 group_number = 2;
+};
+
+message CheckResponse {
+  int32 people_limit = 1;
+};
+
+message CheckCourseResponse {
+  repeated CheckCourseResponseEntry people_limits = 1;
+};
+
+message CheckCourseResponseEntry {
+  int64 class_id = 1;
+  int32 people_limit = 2;
+}
+
+message InstructorIdsRequest {
+  repeated string instructor_ids = 1;
+};
+
+message ClassIdsRequest {
+  repeated int64 class_ids = 1;
+};
+
+message ClassIdRequest {
+  int64 class_id = 1;
+}
+
+message InstructorsClassesResponse {
+  repeated InstructorClass instructors_classes_ids = 1;
+};
+
+message StudentsClassesResponse {
+  repeated StudentClass students_classes_ids = 1;
+}
+
+message InstructorClass {
+  string instructor_id = 1;
+  int64 class_id = 2; 
+};
+
+message StudentClass {
+  string student_id = 1;
+  int64 class_id = 2;
+};
+
+message EnrollInstructorsInClassRequest {
+  int64 class_id = 1;
+  repeated string instructor_ids = 2;
+};
+
+message EnrollInstructorsInClassResponse {
+  bool success = 1;
+};
+
+
+message GetStudentClassesRequest {
+  string student_id = 1;
+}
+
+message GetStudentClassesResponse {
+  repeated StudentClass student_classes = 1;
+}
+
+message ClassDetails {
+  int64 class_id = 1;
+  string name = 2;
+  string description = 3;
+  string start_date = 4;
+  string end_date = 5;
+  string class_room_name = 6;
+  optional string dance_category_name = 7;
+  optional string advancement_level_name = 8;
+}
+
+message ClassesDetailsResponse {
+  repeated ClassDetails classesDetails = 1;
+}
+

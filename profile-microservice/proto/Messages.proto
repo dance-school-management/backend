@@ -1,0 +1,48 @@
+syntax = "proto3";
+
+package profile_microservice;
+
+enum Role {
+  INSTRUCTOR = 0;
+  COORDINATOR = 1;
+  STUDENT = 2;
+  ADMINISTRATOR = 3;
+}
+
+message CreateProfileRequest {
+  string id = 1;
+  string name = 2;
+  string surname = 3;
+  Role role = 4;
+};
+
+message CreateProfileResponse {
+  bool is_valid = 1;
+};
+
+message DanceCategoriesIdsRequest {
+  repeated int64 id = 1;
+};
+
+
+message DanceCategory {
+  int64 id = 1;
+  string name = 2;
+};
+
+message GetDanceCategoriesResponse {
+  repeated DanceCategory dance_categories = 1;
+};
+
+message InstructorIdsRequest {
+  repeated string instructorIds = 1;
+};
+
+message InstructorData {
+  string id = 1;
+  string name = 2;
+}
+
+message InstructorsDataResponse {
+  repeated InstructorData instructorsData = 1;
+}

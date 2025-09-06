@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package product_to_enroll;
+
+import "Messages.proto";
+
+service ProductToEnroll {
+  rpc GetInstructorsClasses (enroll_microservice.InstructorIdsRequest) returns (enroll_microservice.InstructorsClassesResponse);
+  rpc GetClassesInstructors (enroll_microservice.ClassIdsRequest) returns (enroll_microservice.InstructorsClassesResponse);
+  rpc EnrollInstructorsInClass (enroll_microservice.EnrollInstructorsInClassRequest) returns (enroll_microservice.EnrollInstructorsInClassResponse);
+
+  rpc GetClassesStudents (enroll_microservice.ClassIdsRequest) returns (enroll_microservice.StudentsClassesResponse);
+  rpc GetStudentClasses (enroll_microservice.GetStudentClassesRequest) returns (enroll_microservice.GetStudentClassesResponse);
+}

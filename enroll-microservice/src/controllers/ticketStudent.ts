@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import prisma from "../utils/prisma";
-import { getClassesDetails } from "../grpc/ticket/ticket";
+import { getClassesDetails } from "../grpc/client/productCommunication/getClassesDetails";
 
 export async function getStudentTickets(
   req: Request<{}, {}, {}> & { user?: any },

@@ -5,14 +5,12 @@ import { Class, ClassStatus } from "../../../generated/client";
 import { checkValidations } from "../../utils/errorHelpers";
 import { validationResult } from "express-validator";
 import { Warning } from "../../errors/Warning";
-import {
-  enrollInstructorsInClass,
-  getClassesInstructors,
-  getClassesStudents,
-  getInstructorsClasses,
-} from "../../grpc/client/enrollCommunication/class";
+import { enrollInstructorsInClass } from "../../grpc/client/enrollCommunication/enrollInstructorsInClass";
 import { UniversalError } from "../../errors/UniversalError";
-import { getOtherInstructorsData } from "../../grpc/client/profileCommunication/profile";
+import { getOtherInstructorsData } from "../../grpc/client/profileCommunication/getOtherInstructorsData";
+import { getInstructorsClasses } from "../../grpc/client/enrollCommunication/getInstructorsClasses";
+import { getClassesInstructors } from "../../grpc/client/enrollCommunication/getClassesInstructors";
+import { getClassesStudents } from "../../grpc/client/enrollCommunication/getClassesStudents";
 
 //  <!-- Controllers in this file -->
 // createClass

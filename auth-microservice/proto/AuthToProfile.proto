@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+package auth_to_profile;
+
+import "Messages.proto";
+
+service AuthToProfile {
+  rpc CreateProfile(auth_microservice.CreateProfileRequest) returns (auth_microservice.CreateProfileResponse);
+}

@@ -1,12 +1,10 @@
 import { NextFunction, Request, Response } from "express";
 import prisma from "../utils/prisma";
-import {
-  getInstructorsClasses,
-  getStudentClasses,
-} from "../grpc/client/enrollCommunication/class";
 import { UniversalError } from "../errors/UniversalError";
 import { StatusCodes } from "http-status-codes";
 import { ClassStatus } from "../../generated/client";
+import { getStudentClasses } from "../grpc/client/enrollCommunication/getStudentClasses";
+import { getInstructorsClasses } from "../grpc/client/enrollCommunication/getInstructorsClasses";
 
 interface GetScheduleParams {
   dateFrom: string;

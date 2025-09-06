@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+package profile_to_product;
+
+import "Messages.proto";
+
+service ProfileToProduct {
+  rpc GetDanceCategories(product_microservice.DanceCategoriesIdsRequest) returns (product_microservice.GetDanceCategoriesResponse);
+};
