@@ -43,6 +43,7 @@ export async function getClassesDetails(
         classDetails.classTemplate.advancementLevel?.name,
       );
     cbd.setDescription(classDetails.classTemplate.description);
+    cbd.setPrice(Number(classDetails.classTemplate.price.toNumber().toFixed(2)))
     return cbd;
   });
 

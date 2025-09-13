@@ -54,16 +54,16 @@ export async function checkCourse(
     );
     callback({ code: status.NOT_FOUND, details: JSON.stringify(err) });
   }
-  classesWithPeopleLimites.forEach((classWithPeopleLimit) => {
-    if (classWithPeopleLimit.class.length !== 1) {
-      const err = new UniversalError(
-        StatusCodes.NOT_FOUND,
-        `This course with id ${courseId} doesn't have complete set of classes with group number ${groupNumber}`,
-        [],
-      );
-      callback({ code: status.NOT_FOUND, details: JSON.stringify(err) });
-    }
-  });
+  // classesWithPeopleLimites.forEach((classWithPeopleLimit) => {
+  //   if (classWithPeopleLimit.class.length !== 1) {
+  //     const err = new UniversalError(
+  //       StatusCodes.NOT_FOUND,
+  //       `This course with id ${courseId} doesn't have complete set of classes with group number ${groupNumber}`,
+  //       [],
+  //     );
+  //     callback({ code: status.NOT_FOUND, details: JSON.stringify(err) });
+  //   }
+  // });
 
   const res = new CheckCourseResponse().setPeopleLimitsList(
     classesWithPeopleLimites

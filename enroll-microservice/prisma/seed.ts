@@ -22,6 +22,7 @@ async function main() {
         },
         update: {},
         create: {
+          checkoutSessionId: classTicket.checkoutSessionId,
           studentId: classTicket.studentId,
           classId: classTicket.classId,
           isConfirmed: classTicket.isConfirmed,
@@ -48,6 +49,7 @@ async function main() {
         },
         update: {},
         create: {
+          checkoutSessionId: courseTicket.checkoutSessionId,
           studentId: courseTicket.studentId,
           courseId: courseTicket.courseId,
           paymentStatus: courseTicket.paymentStatus as PaymentStatus,

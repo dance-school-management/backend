@@ -41,7 +41,7 @@ export function authenticate() {
     } catch (err: any) {
       if (AUTH_FLAG === "false") {
         const fakeUser = {
-          id: "provided-fake-id-string124",
+          id: "75",
           role: "STUDENT",
         };
         req.headers["user-context"] = Buffer.from(

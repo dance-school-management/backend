@@ -20,7 +20,7 @@ export async function scanTicket(
   if (!enrollment) {
     throw new UniversalError(
       StatusCodes.BAD_REQUEST,
-      "Failed to find ticket in database, this might be a fake ticket or an error occured while enrolling fot the class",
+      "Failed to find ticket in database, this might be a fake ticket or an error occured while enrolling for the class",
       [],
     );
   }

@@ -110,6 +110,7 @@ message ClassDetails {
   string class_room_name = 6;
   optional string dance_category_name = 7;
   optional string advancement_level_name = 8;
+  float price = 9;
 }
 
 message ClassesDetailsResponse {

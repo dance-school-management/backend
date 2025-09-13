@@ -3,6 +3,7 @@ import { IProfileToProductServer } from "../../proto/ProfileToProduct_grpc_pb";
 import { checkClass } from "./services/enrollCommunication/checkClass";
 import { checkCourse } from "./services/enrollCommunication/checkCourse";
 import { getClassesDetails } from "./services/enrollCommunication/getClassesDetails";
+import { getCoursesDetails } from "./services/enrollCommunication/getCoursesDetails";
 import { getDanceCategories } from "./services/profileCommunication/getDanceCategories";
 
 export const ProfileToProductServerImpl: IProfileToProductServer = {
@@ -13,4 +14,5 @@ export const EnrollToProductServerImpl: IEnrollToProductServer = {
   checkClass: checkClass,
   checkCourse: checkCourse,
   getClassesDetails: getClassesDetails,
+  getCoursesDetails: getCoursesDetails
 };

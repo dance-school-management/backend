@@ -1,12 +1,17 @@
 /**
- * @swagger
+ * @openapi
  * /order/class:
  *   post:
- *     summary: Creates an order for a class (private class or theme party).
+ *     summary: Utwórz zamówienie na zajęcia (klasę)
+ *     description: >
+ *       Tworzy nowe zamówienie na zajęcia dla zalogowanego studenta.  
+ *       Endpoint sprawdza limit miejsc, tworzy sesję płatności w Stripe  
+ *       i zapisuje ticket w bazie z oznaczeniem `PENDING`.  
+ *       Zwraca URL do sesji checkout w Stripe.
  *     tags:
- *       - student
- *         - order
- *         - class
+ *       - ClassOrders
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -18,19 +23,19 @@
  *             properties:
  *               classId:
  *                 type: integer
- *                 description: id of the class to order.
  *                 example: 1
  *     responses:
  *       200:
- *         description: Successfully created order for class.
+ *         description: Utworzono sesję płatności
  *         content:
  *           application/json:
  *             schema:
  *               type: object
  *               properties:
- *                 message:
+ *                 sessionUrl:
  *                   type: string
- *                   example: "Order for class with 1 created successfully"
+ *                   format: uri
+ *                   example: "https://checkout.stripe.com/pay/cs_test_12345"
  */
 
 /**

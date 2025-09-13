@@ -7,11 +7,15 @@ import prisma from "../../../utils/prisma";
 import { ClassType } from "../../../../generated/client";
 import { UniversalError } from "../../../errors/UniversalError";
 import { StatusCodes } from "http-status-codes";
+import { ClassStatus } from "../../../../generated/client";
 
+// Checks if a class with given id exists, if it is not cancelled or postponed 
+// and returns current number of people enrolled in this class 
 export async function checkClass(
   call: ServerUnaryCall<CheckClassRequest, CheckResponse>,
   callback: sendUnaryData<CheckResponse>,
 ): Promise<void> {
+
   const classId = call.request.getClassId();
   const classObj = await prisma.class.findFirst({
     where: {
@@ -30,6 +34,15 @@ export async function checkClass(
       [],
     );
     callback({ code: status.NOT_FOUND, details: JSON.stringify(err) });
+    return;
+  }
+  if (classObj.classStatus === ClassStatus.CANCELLED || classObj.classStatus === ClassStatus.POSTPONED) {
+    const err = new UniversalError(
+      StatusCodes.CONFLICT,
+      `This class with id ${classId} is cancelled or postponed`,
+      [],
+    );
+    callback({ code: status.UNAVAILABLE, details: JSON.stringify(err) });
     return;
   }
   const res = new CheckResponse().setPeopleLimit(classObj.peopleLimit);
