@@ -169,7 +169,7 @@ export async function makeCourseOrder(
           classId: classObj.classId,
           studentId,
           isConfirmed: false,
-          paymentStatus: PaymentStatus.UNNECESSARY,
+          paymentStatus: PaymentStatus.PART_OF_COURSE,
         })),
       });
       await tx.courseTicket.create({
@@ -189,6 +189,5 @@ export async function makeCourseOrder(
     );
   }
 
-  // asks the payment-microservice for starting transaction and the result
   res.status(200).json({ sessionUrl: session.url })
 }

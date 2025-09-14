@@ -3,7 +3,7 @@ import {
   CourseDetailsResponse,
   CourseIdsRequest,
   CoursesDetailsResponse,
-} from "../../../../proto/EnrollToProduct_pb";
+} from "../../../../proto/Messages_pb";
 import prisma from "../../../utils/prisma";
 
 export async function getCoursesDetails(
@@ -47,10 +47,10 @@ export async function getCoursesDetails(
     }
 
     const courseDetails = new CourseDetailsResponse();
-    courseDetails.setCourseId(courseData.id);
-    courseDetails.setDescription(courseData.description);
-    courseDetails.setName(courseData.name);
-    courseDetails.setCourseStatus(courseData.courseStatus.toString());
+    courseDetails.setCourseId(courseData.id)
+    .setDescription(courseData.description)
+    .setName(courseData.name)
+    .setCourseStatus(courseData.courseStatus.toString())
     if (courseData.danceCategory)
       courseDetails.setDanceCategoryName(courseData.danceCategory.name);
     if (courseData.advancementLevel)

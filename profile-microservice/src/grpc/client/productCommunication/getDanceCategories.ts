@@ -14,7 +14,7 @@ export async function getDanceCategories(
     );
     danceCategoriesClient.getDanceCategories(
       request,
-      (err: any, response: any) => {
+      (err, response) => {
         console.log(err);
         if (err) {
           let unErr: UniversalError;

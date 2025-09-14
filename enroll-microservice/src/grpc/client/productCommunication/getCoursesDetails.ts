@@ -1,5 +1,5 @@
 import { StatusCodes } from "http-status-codes";
-import { CourseIdsRequest, CoursesDetailsResponse } from "../../../../proto/EnrollToProduct_pb";
+import { CourseIdsRequest, CoursesDetailsResponse } from "../../../../proto/Messages_pb";
 import { UniversalError } from "../../../errors/UniversalError";
 import { enrollToProductClient } from "../../../utils/grpcClients";
 import logger from "../../../utils/winston";
@@ -11,7 +11,7 @@ export async function getCoursesDetails(
     const request = new CourseIdsRequest().setCourseIdsList(courseIds);
     enrollToProductClient.getCoursesDetails(
       request,
-      (err: any, response: any) => {
+      (err, response) => {
         if (err) {
           let unErr: UniversalError;
           try {

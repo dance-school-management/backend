@@ -9,7 +9,7 @@ export async function checkClass(
 ): Promise<CheckResponse.AsObject> {
   return new Promise((resolve, reject) => {
     const request = new CheckClassRequest().setClassId(classId);
-    enrollToProductClient.checkClass(request, (err: any, response: any) => {
+    enrollToProductClient.checkClass(request, (err, response) => {
       if (err) {
         let unErr: UniversalError;
         try {

@@ -9,7 +9,7 @@ for dir in "$MICROSERVICES_DIR"*/ ; do
 
     if [ -f "$EXAMPLE_FILE" ]; then
       cp "$EXAMPLE_FILE" "$TARGET_FILE"
-      echo "Skopiowano (nadpisano): $EXAMPLE_FILE -> $TARGET_FILE"
+      echo "Copied (overwritten): $EXAMPLE_FILE -> $TARGET_FILE"
     fi
   fi
 done

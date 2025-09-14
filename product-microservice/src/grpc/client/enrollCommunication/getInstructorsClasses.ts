@@ -1,3 +1,4 @@
+import { StatusCodes } from "http-status-codes";
 import { InstructorIdsRequest, InstructorsClassesResponse } from "../../../../proto/Messages_pb";
 import { UniversalError } from "../../../errors/UniversalError";
 import { productWithEnrollClient } from "../../../utils/grpcClients";
@@ -9,7 +10,7 @@ export async function getInstructorsClasses(
     const request = new InstructorIdsRequest().setInstructorIdsList(
       instructorIds,
     );
-    productWithEnrollClient.getInstructorsClasses(request, (err: any, response: any) => {
+    productWithEnrollClient.getInstructorsClasses(request, (err, response) => {
       console.log(err);
       if (err) {
         let unErr: UniversalError;
@@ -22,7 +23,7 @@ export async function getInstructorsClasses(
           );
         } catch (parseError) {
           console.error("Failed to parse gRPC error details:", parseError);
-          unErr = new UniversalError(500, "Internal Server Error", []);
+          unErr = new UniversalError(StatusCodes.INTERNAL_SERVER_ERROR, "Internal Server Error", []);
         }
         reject(unErr);
         return;

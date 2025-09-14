@@ -12,12 +12,6 @@ import { getInstructorsClasses } from "../../grpc/client/enrollCommunication/get
 import { getClassesInstructors } from "../../grpc/client/enrollCommunication/getClassesInstructors";
 import { getClassesStudents } from "../../grpc/client/enrollCommunication/getClassesStudents";
 
-//  <!-- Controllers in this file -->
-// createClass
-// getSchedule
-// editClassStatus
-// getClassDetails
-
 export async function createClass(
   req: Request<
     {},
@@ -351,12 +345,14 @@ export async function availableClassrooms(
 ) {
   checkValidations(validationResult(req));
 
+  const CLASS_OCCUPATION_BREAK = 15
+
   const { startDate, endDate } = req.params;
   const adjustedEndDate = new Date(endDate.getTime());
-  adjustedEndDate.setMinutes(adjustedEndDate.getMinutes() + 15);
+  adjustedEndDate.setMinutes(adjustedEndDate.getMinutes() + CLASS_OCCUPATION_BREAK);
 
   const adjustedStartDate = new Date(startDate.getTime());
-  adjustedStartDate.setMinutes(adjustedStartDate.getMinutes() - 15);
+  adjustedStartDate.setMinutes(adjustedStartDate.getMinutes() - CLASS_OCCUPATION_BREAK);
 
   const busyClassrooms = await prisma.class.findMany({
     where: {
@@ -379,7 +375,7 @@ export async function availableClassrooms(
     },
   });
 
-  res.status(200).json({ freeClassrooms });
+  res.status(StatusCodes.OK).json({ freeClassrooms });
 }
 
 export async function availableInstructors(
@@ -389,12 +385,14 @@ export async function availableInstructors(
 ) {
   checkValidations(validationResult(req));
 
+  const CLASS_OCCUPATION_BREAK = 15
+
   const { startDate, endDate } = req.params;
   const adjustedEndDate = new Date(endDate.getTime());
-  adjustedEndDate.setMinutes(adjustedEndDate.getMinutes() + 15);
+  adjustedEndDate.setMinutes(adjustedEndDate.getMinutes() + CLASS_OCCUPATION_BREAK);
 
   const adjustedStartDate = new Date(startDate.getTime());
-  adjustedStartDate.setMinutes(adjustedStartDate.getMinutes() - 15);
+  adjustedStartDate.setMinutes(adjustedStartDate.getMinutes() - CLASS_OCCUPATION_BREAK);
 
   const classIdsOfClassesBetweenDates = await prisma.class.findMany({
     where: {
@@ -417,6 +415,6 @@ export async function availableInstructors(
   const freeInstructors = await getOtherInstructorsData(busyInstructorIds);
 
   res
-    .status(200)
+    .status(StatusCodes.OK)
     .json({ freeInstructors: freeInstructors.instructorsdataList });
 }

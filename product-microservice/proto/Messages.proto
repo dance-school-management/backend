@@ -117,3 +117,20 @@ message ClassesDetailsResponse {
   repeated ClassDetails classesDetails = 1;
 }
 
+message CourseIdsRequest {
+  repeated int64 course_ids = 1;
+}
+
+message CourseDetailsResponse {
+  int64 course_id = 1;
+  string name = 2;
+  string description = 3;
+  float price = 4;
+  optional string dance_category_name = 5;
+  optional string advancement_level_name = 6;
+  string course_status = 7;
+}
+
+message CoursesDetailsResponse {
+  repeated CourseDetailsResponse courses_details = 1;
+}

@@ -28,7 +28,7 @@ export async function createProfile(
       .setSurname(surname)
       .setRole(StringRoleToGrpcRole[role]);
 
-    profileServiceClient.createProfile(request, (err: any, response: any) => {
+    profileServiceClient.createProfile(request, (err, response) => {
       if (err) {
         let unErr: UniversalError;
         try {

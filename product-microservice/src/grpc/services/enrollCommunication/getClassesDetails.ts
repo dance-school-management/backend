@@ -31,19 +31,19 @@ export async function getClassesDetails(
 
   const classesDetailsProtobuf = classesDetails.map((classDetails) => {
     const cbd = new ClassDetails();
-    cbd.setClassId(classDetails.id);
-    cbd.setName(classDetails.classTemplate.name);
-    cbd.setStartDate(classDetails.startDate.toISOString());
-    cbd.setEndDate(classDetails.endDate.toISOString());
-    cbd.setClassRoomName(classDetails.classRoom.name);
+    cbd.setClassId(classDetails.id)
+    .setName(classDetails.classTemplate.name)
+    .setStartDate(classDetails.startDate.toISOString())
+    .setEndDate(classDetails.endDate.toISOString())
+    .setClassRoomName(classDetails.classRoom.name)
     if (classDetails.classTemplate.danceCategory)
       cbd.setDanceCategoryName(classDetails.classTemplate.danceCategory.name);
     if (classDetails.classTemplate.advancementLevel)
       cbd.setAdvancementLevelName(
         classDetails.classTemplate.advancementLevel?.name,
       );
-    cbd.setDescription(classDetails.classTemplate.description);
-    cbd.setPrice(Number(classDetails.classTemplate.price.toNumber().toFixed(2)))
+    cbd.setDescription(classDetails.classTemplate.description)
+    .setPrice(Number(classDetails.classTemplate.price.toNumber().toFixed(2)))
     return cbd;
   });
 

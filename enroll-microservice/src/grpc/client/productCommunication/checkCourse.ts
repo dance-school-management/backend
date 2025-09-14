@@ -12,7 +12,7 @@ export async function checkCourse(
     const request = new CheckCourseRequest()
       .setCourseId(courseId)
       .setGroupNumber(groupNumber);
-    enrollToProductClient.checkCourse(request, (err: any, response: any) => {
+    enrollToProductClient.checkCourse(request, (err, response) => {
       if (err) {
         let unErr: UniversalError;
         try {

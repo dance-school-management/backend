@@ -1,3 +1,4 @@
+import { StatusCodes } from "http-status-codes";
 import {
   EnrollInstructorsInClassRequest,
   EnrollInstructorsInClassResponse,
@@ -29,7 +30,7 @@ export async function enrollInstructorsInClass(
             );
           } catch (parseError) {
             console.error("Failed to parse gRPC error details:", parseError);
-            unErr = new UniversalError(500, "Internal Server Error", []);
+            unErr = new UniversalError(StatusCodes.INTERNAL_SERVER_ERROR, "Internal Server Error", []);
           }
           reject(unErr);
           return;

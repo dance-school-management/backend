@@ -14,7 +14,7 @@ export async function getClassesDetails(
     const request = new ClassIdsRequest().setClassIdsList(classIds);
     enrollToProductClient.getClassesDetails(
       request,
-      (err: any, response: any) => {
+      (err, response) => {
         if (err) {
           let unErr: UniversalError;
           try {
