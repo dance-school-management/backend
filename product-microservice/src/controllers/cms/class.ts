@@ -349,27 +349,15 @@ export async function availableClassrooms(
 ) {
   checkValidations(validationResult(req));
 
-  const CLASS_OCCUPATION_BREAK = 15;
-
   const { startDateQ, endDateQ } = req.query;
 
   const startDate = new Date(startDateQ)
   const endDate = new Date(endDateQ)
 
-  const adjustedEndDate = new Date(endDate.getTime());
-  adjustedEndDate.setMinutes(
-    adjustedEndDate.getMinutes() + CLASS_OCCUPATION_BREAK,
-  );
-
-  const adjustedStartDate = new Date(startDate.getTime());
-  adjustedStartDate.setMinutes(
-    adjustedStartDate.getMinutes() - CLASS_OCCUPATION_BREAK,
-  );
-
   const busyClassrooms = await prisma.class.findMany({
     where: {
-      startDate: { lte: adjustedEndDate },
-      endDate: { gte: adjustedStartDate },
+      startDate: { lte: endDate },
+      endDate: { gte: startDate },
     },
     select: {
       classRoomId: true,
@@ -397,27 +385,15 @@ export async function availableInstructors(
 ) {
   checkValidations(validationResult(req));
 
-  const CLASS_OCCUPATION_BREAK = 15;
-
   const { startDateQ, endDateQ } = req.query;
 
   const startDate = new Date(startDateQ)
   const endDate = new Date(endDateQ)
 
-  const adjustedEndDate = new Date(endDate.getTime());
-  adjustedEndDate.setMinutes(
-    adjustedEndDate.getMinutes() + CLASS_OCCUPATION_BREAK,
-  );
-
-  const adjustedStartDate = new Date(startDate.getTime());
-  adjustedStartDate.setMinutes(
-    adjustedStartDate.getMinutes() - CLASS_OCCUPATION_BREAK,
-  );
-
   const classIdsOfClassesBetweenDates = await prisma.class.findMany({
     where: {
-      startDate: { lte: adjustedEndDate },
-      endDate: { gte: adjustedStartDate },
+      startDate: { lte: endDate },
+      endDate: { gte: startDate },
     },
     select: {
       id: true,
