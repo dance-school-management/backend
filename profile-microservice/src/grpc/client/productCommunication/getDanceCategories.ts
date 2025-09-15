@@ -1,7 +1,7 @@
 import {
   DanceCategoriesIdsRequest,
   GetDanceCategoriesResponse,
-} from "../../../../proto/Messages_pb";
+} from "../../../../proto/ProfileToProductMessages_pb";
 import { UniversalError } from "../../../errors/UniversalError";
 import { danceCategoriesClient } from "../../../utils/grpcClients";
 

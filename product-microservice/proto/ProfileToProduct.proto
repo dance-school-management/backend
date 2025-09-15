@@ -2,8 +2,8 @@ syntax = "proto3";
 
 package profile_to_product;
 
-import "Messages.proto";
+import "ProfileToProductMessages.proto";
 
 service ProfileToProduct {
-  rpc GetDanceCategories(product_microservice.DanceCategoriesIdsRequest) returns (product_microservice.GetDanceCategoriesResponse);
+  rpc GetDanceCategories(DanceCategoriesIdsRequest) returns (GetDanceCategoriesResponse);
 };

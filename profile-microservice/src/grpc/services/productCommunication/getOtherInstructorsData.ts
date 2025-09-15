@@ -1,5 +1,5 @@
 import { ServerUnaryCall, sendUnaryData, status } from "@grpc/grpc-js";
-import { Role as GrpcRole } from "../../../../proto/Messages_pb";
+import { Role as GrpcRole } from "../../../../proto/ProfileToProductMessages_pb";
 import prisma from "../../../utils/prisma";
 import { Role as PrismaRole } from "../../../../generated/client";
 import {
@@ -13,7 +13,7 @@ import {
   InstructorData,
   InstructorIdsRequest,
   InstructorsDataResponse,
-} from "../../../../proto/Messages_pb";
+} from "../../../../proto/ProductToProfileMessages_pb";
 
 export const PrismaRoleToGrpcRole: Record<PrismaRole, GrpcRole> = {
   [PrismaRole.INSTRUCTOR]: GrpcRole.INSTRUCTOR,
@@ -33,7 +33,7 @@ export async function getOtherInstructorsData(
   call: ServerUnaryCall<InstructorIdsRequest, InstructorsDataResponse>,
   callback: sendUnaryData<InstructorsDataResponse>,
 ): Promise<void> {
-  const instructorIds = call.request.getInstructoridsList();
+  const instructorIds = call.request.getInstructorIdsList();
   try {
     const instructors = await prisma.profile.findMany({
       where: {

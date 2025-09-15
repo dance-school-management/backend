@@ -3,7 +3,7 @@ import {
   ClassDetails,
   ClassesDetailsResponse,
   ClassIdsRequest,
-} from "../../../../proto/Messages_pb";
+} from "../../../../proto/EnrollToProductMessages_pb";
 import prisma from "../../../utils/prisma";
 
 export async function getClassesDetails(

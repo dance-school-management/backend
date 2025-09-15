@@ -2,7 +2,7 @@ import { StatusCodes } from "http-status-codes";
 import {
   EnrollInstructorsInClassRequest,
   EnrollInstructorsInClassResponse,
-} from "../../../../proto/Messages_pb";
+} from "../../../../proto/ProductToEnrollMessages_pb";
 import { UniversalError } from "../../../errors/UniversalError";
 import { productWithEnrollClient } from "../../../utils/grpcClients";
 

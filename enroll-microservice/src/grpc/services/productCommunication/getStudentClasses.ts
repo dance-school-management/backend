@@ -2,7 +2,7 @@ import {
   GetStudentClassesRequest,
   GetStudentClassesResponse,
   StudentClass,
-} from "../../../../proto/Messages_pb";
+} from "../../../../proto/ProductToEnrollMessages_pb";
 import { sendUnaryData, ServerUnaryCall } from "@grpc/grpc-js";
 import prisma from "../../../utils/prisma";
 

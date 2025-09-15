@@ -3,7 +3,7 @@ import {
   CreateProfileRequest,
   CreateProfileResponse,
   Role as GrpcRole,
-} from "../../../../proto/Messages_pb";
+} from "../../../../proto/AuthToProfileMessages_pb";
 import prisma from "../../../utils/prisma";
 import { Role as PrismaRole } from "../../../../generated/client";
 import {

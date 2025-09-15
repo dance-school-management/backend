@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 (cd product-microservice && npx prisma format)
 (cd auth-microservice && npx prisma format)
 (cd enroll-microservice && npx prisma format)

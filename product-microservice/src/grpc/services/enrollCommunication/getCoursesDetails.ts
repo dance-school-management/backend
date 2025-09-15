@@ -3,7 +3,7 @@ import {
   CourseDetailsResponse,
   CourseIdsRequest,
   CoursesDetailsResponse,
-} from "../../../../proto/Messages_pb";
+} from "../../../../proto/EnrollToProductMessages_pb";
 import prisma from "../../../utils/prisma";
 
 export async function getCoursesDetails(

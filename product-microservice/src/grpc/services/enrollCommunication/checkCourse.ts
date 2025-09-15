@@ -3,7 +3,7 @@ import {
   CheckCourseRequest,
   CheckCourseResponse,
   CheckCourseResponseEntry,
-} from "../../../../proto/Messages_pb";
+} from "../../../../proto/EnrollToProductMessages_pb";
 import prisma from "../../../utils/prisma";
 import { UniversalError } from "../../../errors/UniversalError";
 import { StatusCodes } from "http-status-codes";

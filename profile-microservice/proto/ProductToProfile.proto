@@ -2,10 +2,10 @@ syntax = "proto3";
 
 package product_to_profile;
 
-import "Messages.proto";
+import "ProductToProfileMessages.proto";
 
 service ProductToProfile {
   // Important! This method does not get the 
   // data of instructors of the given ids, but those whose ids do not belong to given ids list
-  rpc GetOtherInstructorsData(profile_microservice.InstructorIdsRequest) returns (profile_microservice.InstructorsDataResponse);
+  rpc GetOtherInstructorsData(InstructorIdsRequest) returns (InstructorsDataResponse);
 };

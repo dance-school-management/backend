@@ -1,5 +1,5 @@
 import { StatusCodes } from "http-status-codes";
-import { CourseIdsRequest, CoursesDetailsResponse } from "../../../../proto/Messages_pb";
+import { CourseIdsRequest, CoursesDetailsResponse } from "../../../../proto/EnrollToProductMessages_pb";
 import { UniversalError } from "../../../errors/UniversalError";
 import { enrollToProductClient } from "../../../utils/grpcClients";
 import logger from "../../../utils/winston";

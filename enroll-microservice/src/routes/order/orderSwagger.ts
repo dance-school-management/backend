@@ -9,7 +9,9 @@
  *       and stores a ticket in the database with the `PENDING` status.  
  *       Returns the checkout session URL from Stripe.
  *     tags:
- *       - ClassOrders
+ *       - student
+ *         - order
+ *         - class
  *     security:
  *       - bearerAuth: []
  *     requestBody:

@@ -1,5 +1,5 @@
 import { StatusCodes } from "http-status-codes";
-import { CheckClassRequest, CheckResponse } from "../../../../proto/Messages_pb";
+import { CheckClassRequest, CheckResponse } from "../../../../proto/EnrollToProductMessages_pb";
 import { UniversalError } from "../../../errors/UniversalError";
 import { enrollToProductClient } from "../../../utils/grpcClients";
 import logger from "../../../utils/winston";

@@ -1,10 +1,10 @@
-import { Request } from "express";
+import { Request, Response } from "express";
 import { PaymentStatus } from "../../../../generated/client";
 import prisma from "../../../utils/prisma";
 import { stripe } from "../../../utils/stripe";
 import { StatusCodes } from "http-status-codes";
 
-export async function handleWebhook(req: any, res: any) {
+export async function handleWebhook(req: Request, res: Response) {
   console.log("webhook has been hit");
 
   const sig = req.headers["stripe-signature"];
@@ -25,7 +25,8 @@ export async function handleWebhook(req: any, res: any) {
     event = stripe.webhooks.constructEvent(req.body, sig, stripeWebhookSecret);
   } catch (err: any) {
     console.error("Webhook signature verification failed: ", err.message);
-    return res.sendStatus(StatusCodes.BAD_REQUEST);
+    res.sendStatus(StatusCodes.BAD_REQUEST);
+    return
   }
 
   if (event.type === "checkout.session.completed") {

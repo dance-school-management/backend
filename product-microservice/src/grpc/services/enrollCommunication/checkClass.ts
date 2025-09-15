@@ -2,7 +2,7 @@ import { sendUnaryData, ServerUnaryCall, status } from "@grpc/grpc-js";
 import {
   CheckClassRequest,
   CheckResponse,
-} from "../../../../proto/Messages_pb";
+} from "../../../../proto/EnrollToProductMessages_pb";
 import prisma from "../../../utils/prisma";
 import { ClassType } from "../../../../generated/client";
 import { UniversalError } from "../../../errors/UniversalError";

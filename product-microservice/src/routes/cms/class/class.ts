@@ -7,7 +7,7 @@ import {
   getClassDetails,
   getSchedule,
 } from "../../../controllers/cms/class";
-import { body, param } from "express-validator";
+import { body, param, query } from "express-validator";
 
 const router = Router();
 
@@ -28,8 +28,8 @@ router.post(
 );
 
 router.get(
-  "/schedule/:startDateFrom/:startDateTo",
-  param(["startDateFrom", "startDateTo"])
+  "/schedule",
+  query(["startDateFromQ", "startDateToQ"])
     .isISO8601()
     .withMessage("Dates must be of type ISO8601")
     .toDate(),
@@ -41,31 +41,19 @@ router.put("/status/edit", editClassStatus);
 router.get("/:id", getClassDetails);
 
 router.get(
-  "/available/classrooms/:startDate/:endDate",
-  [
-    param("startDate")
-      .isISO8601()
-      .withMessage("startDate must be ISO8601")
-      .toDate(),
-    param("endDate")
-      .isISO8601()
-      .withMessage("endDate must be ISO8601")
-      .toDate(),
-  ],
+  "/available/classrooms",
+  query(["startDateQ", "endDateQ"])
+    .isISO8601()
+    .withMessage("startDate and endDate must be ISO8601")
+    .toDate(),
   availableClassrooms,
 );
 router.get(
-  "/available/instructors/:startDate/:endDate",
-  [
-    param("startDate")
-      .isISO8601()
-      .withMessage("startDate must be ISO8601")
-      .toDate(),
-    param("endDate")
-      .isISO8601()
-      .withMessage("endDate must be ISO8601")
-      .toDate(),
-  ],
+  "/available/instructors",
+  query(["startDateQ", "endDateQ"])
+    .isISO8601()
+    .withMessage("startDate and endDate must be ISO8601")
+    .toDate(),
   availableInstructors,
 );
 

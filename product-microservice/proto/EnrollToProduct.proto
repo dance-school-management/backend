@@ -2,12 +2,12 @@ syntax = "proto3";
 
 package enroll_to_product;
 
-import "Messages.proto";
+import "EnrollToProductMessages.proto";
 
 service EnrollToProduct {
-  rpc CheckClass(product_microservice.CheckClassRequest) returns (product_microservice.CheckResponse) {};
-  rpc CheckCourse(product_microservice.CheckCourseRequest) returns (product_microservice.CheckCourseResponse) {};
+  rpc CheckClass(CheckClassRequest) returns (CheckResponse) {};
+  rpc CheckCourse(CheckCourseRequest) returns (CheckCourseResponse) {};
 
-  rpc GetClassesDetails (product_microservice.ClassIdsRequest) returns (product_microservice.ClassesDetailsResponse);
-  rpc GetCoursesDetails (product_microservice.CourseIdsRequest) returns (product_microservice.CoursesDetailsResponse);
+  rpc GetClassesDetails (ClassIdsRequest) returns (ClassesDetailsResponse);
+  rpc GetCoursesDetails (CourseIdsRequest) returns (CoursesDetailsResponse);
 }

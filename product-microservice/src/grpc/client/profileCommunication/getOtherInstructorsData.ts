@@ -1,5 +1,5 @@
 import { StatusCodes } from "http-status-codes";
-import { InstructorIdsRequest, InstructorsDataResponse } from "../../../../proto/Messages_pb";
+import { InstructorIdsRequest, InstructorsDataResponse } from "../../../../proto/ProductToProfileMessages_pb";
 import { UniversalError } from "../../../errors/UniversalError";
 import { productWithProfileClient } from "../../../utils/grpcClients";
 

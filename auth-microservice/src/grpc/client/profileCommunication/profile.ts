@@ -4,7 +4,7 @@ import {
   CreateProfileRequest,
   CreateProfileResponse,
   Role as GrpcRole,
-} from "../../../../proto/Messages_pb";
+} from "../../../../proto/AuthToProfileMessages_pb";
 import { Role as PrismaRole } from "../../../../generated/client";
 import logger from "../../../utils/winston";
 

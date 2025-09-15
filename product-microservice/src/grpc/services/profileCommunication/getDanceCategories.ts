@@ -6,7 +6,7 @@ import {
   DanceCategoriesIdsRequest,
   DanceCategory,
   GetDanceCategoriesResponse,
-} from "../../../../proto/Messages_pb";
+} from "../../../../proto/ProfileToProductMessages_pb";
 
 export async function getDanceCategories(
   call: ServerUnaryCall<DanceCategoriesIdsRequest, GetDanceCategoriesResponse>,

@@ -1,5 +1,5 @@
 import { StatusCodes } from "http-status-codes";
-import { GetStudentClassesRequest, GetStudentClassesResponse } from "../../../../proto/Messages_pb";
+import { GetStudentClassesRequest, GetStudentClassesResponse } from "../../../../proto/ProductToEnrollMessages_pb";
 import { UniversalError } from "../../../errors/UniversalError";
 import { productWithEnrollClient } from "../../../utils/grpcClients";
 

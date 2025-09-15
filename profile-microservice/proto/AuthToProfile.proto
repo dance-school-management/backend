@@ -2,8 +2,8 @@ syntax = "proto3";
 
 package auth_to_profile;
 
-import "Messages.proto";
+import "AuthToProfileMessages.proto";
 
 service AuthToProfile {
-  rpc CreateProfile(profile_microservice.CreateProfileRequest) returns (profile_microservice.CreateProfileResponse);
+  rpc CreateProfile(CreateProfileRequest) returns (CreateProfileResponse);
 }
