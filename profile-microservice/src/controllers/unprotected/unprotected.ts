@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 import prisma from "../../utils/prisma";
 import { Profile, Role } from "../../../generated/client";
-import { getDanceCategories } from "../../grpc/client/danceCategory";
+import { getDanceCategories } from "../../grpc/client/productCommunication/getDanceCategories";
 
 export async function getAllInstructors(
   req: Request<{}, {}, {}>,

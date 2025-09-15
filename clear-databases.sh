@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 (cd product-microservice && bash clear.sh)
 (cd auth-microservice && bash clear.sh)
 (cd enroll-microservice && bash clear.sh)

@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package profile_to_product;
+
+enum Role {
+  INSTRUCTOR = 0;
+  COORDINATOR = 1;
+  STUDENT = 2;
+  ADMINISTRATOR = 3;
+}
+
+message DanceCategoriesIdsRequest {
+  repeated int64 id = 1;
+};
+
+message DanceCategory {
+  int64 id = 1;
+  string name = 2;
+};
+
+message GetDanceCategoriesResponse {
+  repeated DanceCategory dance_categories = 1;
+};

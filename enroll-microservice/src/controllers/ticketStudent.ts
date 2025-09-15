@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import prisma from "../utils/prisma";
-import { getClassesDetails } from "../grpc/ticket/ticket";
+import { getClassesDetails } from "../grpc/client/productCommunication/getClassesDetails";
 
 export async function getStudentTickets(
   req: Request<{}, {}, {}> & { user?: any },
@@ -16,5 +16,24 @@ export async function getStudentTickets(
 
   const classesDetails = await getClassesDetails(classIds);
 
-  res.json({ tickets: classesDetails.classesdetailsList });
+  const result = classIds.map((classId) => {
+    const classDetails = classesDetails.classesdetailsList.find((classDetails) => classDetails.classId === classId)
+    const studentTicket = studentTickets.find((ticket) => ticket.classId === classId)
+    return {
+      classId,
+      name: classDetails?.name,
+      description: classDetails?.description,
+      startDate: classDetails?.startDate,
+      endDate: classDetails?.endDate,
+      classRoomName: classDetails?.classRoomName,
+      danceCategoryName: classDetails?.danceCategoryName,
+      advancementLevelName: classDetails?.advancementLevelName,
+      price: classDetails?.price,
+      paymentStatus: studentTicket?.paymentStatus,
+      attendaceStatus: studentTicket?.attendanceStatus,
+      attendaceLastUpdated: studentTicket?.attendanceLastUpdated
+    }
+  })
+
+  res.json({ tickets: result });
 }

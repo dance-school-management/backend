@@ -5,19 +5,12 @@ import { Class, ClassStatus } from "../../../generated/client";
 import { checkValidations } from "../../utils/errorHelpers";
 import { validationResult } from "express-validator";
 import { Warning } from "../../errors/Warning";
-import {
-  enrollInstructorsInClass,
-  getClassesInstructors,
-  getClassesStudents,
-  getInstructorsClasses,
-} from "../../grpc/client/enrollCommunication/class";
+import { enrollInstructorsInClass } from "../../grpc/client/enrollCommunication/enrollInstructorsInClass";
 import { UniversalError } from "../../errors/UniversalError";
-
-//  <!-- Controllers in this file -->
-// createClass
-// getSchedule
-// editClassStatus
-// getClassDetails
+import { getOtherInstructorsData } from "../../grpc/client/profileCommunication/getOtherInstructorsData";
+import { getInstructorsClasses } from "../../grpc/client/enrollCommunication/getInstructorsClasses";
+import { getClassesInstructors } from "../../grpc/client/enrollCommunication/getClassesInstructors";
+import { getClassesStudents } from "../../grpc/client/enrollCommunication/getClassesStudents";
 
 export async function createClass(
   req: Request<
@@ -196,13 +189,17 @@ async function deleteClass(id: number) {
 }
 
 export async function getSchedule(
-  req: Request<{ startDateFrom: Date; startDateTo: Date }, {}, {}>,
+  req: Request<{}, {}, {}, { startDateFromQ: string; startDateToQ: string }>,
   res: Response,
   next: NextFunction,
 ) {
   checkValidations(validationResult(req));
 
-  const { startDateFrom, startDateTo } = req.params;
+  const { startDateFromQ, startDateToQ } = req.query;
+
+  const startDateFrom = new Date(startDateFromQ)
+  const startDateTo = new Date(startDateToQ)
+
   const allClassesBetweenDates = await prisma.class.findMany({
     where: {
       startDate: {
@@ -343,4 +340,77 @@ export async function getClassDetails(
   };
 
   res.status(StatusCodes.OK).json(result);
+}
+
+export async function availableClassrooms(
+  req: Request<{}, {}, {}, { startDateQ: string; endDateQ: string }>,
+  res: Response,
+  next: NextFunction,
+) {
+  checkValidations(validationResult(req));
+
+  const { startDateQ, endDateQ } = req.query;
+
+  const startDate = new Date(startDateQ)
+  const endDate = new Date(endDateQ)
+
+  const busyClassrooms = await prisma.class.findMany({
+    where: {
+      startDate: { lte: endDate },
+      endDate: { gte: startDate },
+    },
+    select: {
+      classRoomId: true,
+    },
+    distinct: ["classRoomId"],
+  });
+
+  const busyClassroomIds = busyClassrooms.map((c) => c.classRoomId);
+
+  const freeClassrooms = await prisma.classRoom.findMany({
+    where: {
+      id: {
+        notIn: busyClassroomIds,
+      },
+    },
+  });
+
+  res.status(StatusCodes.OK).json({ freeClassrooms });
+}
+
+export async function availableInstructors(
+  req: Request<{}, {}, {}, { startDateQ: string; endDateQ: string }>,
+  res: Response,
+  next: NextFunction,
+) {
+  checkValidations(validationResult(req));
+
+  const { startDateQ, endDateQ } = req.query;
+
+  const startDate = new Date(startDateQ)
+  const endDate = new Date(endDateQ)
+
+  const classIdsOfClassesBetweenDates = await prisma.class.findMany({
+    where: {
+      startDate: { lte: endDate },
+      endDate: { gte: startDate },
+    },
+    select: {
+      id: true,
+    },
+  });
+
+  const classesInstructors = await getClassesInstructors(
+    classIdsOfClassesBetweenDates.map((item) => item.id),
+  );
+
+  const busyInstructorIds = classesInstructors.instructorsClassesIdsList.map(
+    (item) => item.instructorId,
+  );
+
+  const freeInstructors = await getOtherInstructorsData(busyInstructorIds);
+
+  res
+    .status(StatusCodes.OK)
+    .json({ freeInstructors: freeInstructors.instructorsdataList });
 }

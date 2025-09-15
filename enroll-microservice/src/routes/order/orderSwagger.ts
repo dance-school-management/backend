@@ -2,11 +2,18 @@
  * @swagger
  * /order/class:
  *   post:
- *     summary: Creates an order for a class (private class or theme party).
+ *     summary: Create a class order
+ *     description: >
+ *       Creates a new class order for the logged-in student.  
+ *       The endpoint checks seat availability, creates a payment session in Stripe,  
+ *       and stores a ticket in the database with the `PENDING` status.  
+ *       Returns the checkout session URL from Stripe.
  *     tags:
  *       - student
  *         - order
  *         - class
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -18,20 +25,21 @@
  *             properties:
  *               classId:
  *                 type: integer
- *                 description: id of the class to order.
  *                 example: 1
  *     responses:
  *       200:
- *         description: Successfully created order for class.
+ *         description: Payment session created
  *         content:
  *           application/json:
  *             schema:
  *               type: object
  *               properties:
- *                 message:
+ *                 sessionUrl:
  *                   type: string
- *                   example: "Order for class with 1 created successfully"
+ *                   format: uri
+ *                   example: "https://checkout.stripe.com/pay/cs_test_12345"
  */
+
 
 /**
  * @swagger
@@ -68,7 +76,7 @@
  *             schema:
  *               type: object
  *               properties:
- *                 message:
+ *                 url:
  *                   type: string
- *                   example: "Order created successfully"
+ *                   example: "https://checkout.stripe.com/pay/cs_test_12345"
  */

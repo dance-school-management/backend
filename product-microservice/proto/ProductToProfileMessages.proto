@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package product_to_profile;
+
+message InstructorData {
+  string id = 1;
+  string name = 2;
+}
+
+message InstructorsDataResponse {
+  repeated InstructorData instructorsData = 1;
+}
+
+message InstructorIdsRequest {
+  repeated string instructor_ids = 1;
+};

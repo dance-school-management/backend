@@ -1,0 +1,47 @@
+syntax = "proto3";
+
+package product_to_enroll;
+
+message ClassIdsRequest {
+  repeated int64 class_ids = 1;
+};
+
+message InstructorIdsRequest {
+  repeated string instructor_ids = 1;
+};
+
+message InstructorsClassesResponse {
+  repeated InstructorClass instructors_classes_ids = 1;
+};
+
+message StudentsClassesResponse {
+  repeated StudentClass students_classes_ids = 1;
+}
+
+message InstructorClass {
+  string instructor_id = 1;
+  int64 class_id = 2; 
+};
+
+message StudentClass {
+  string student_id = 1;
+  int64 class_id = 2;
+};
+
+message EnrollInstructorsInClassRequest {
+  int64 class_id = 1;
+  repeated string instructor_ids = 2;
+};
+
+message EnrollInstructorsInClassResponse {
+  bool success = 1;
+};
+
+
+message GetStudentClassesRequest {
+  string student_id = 1;
+}
+
+message GetStudentClassesResponse {
+  repeated StudentClass student_classes = 1;
+}

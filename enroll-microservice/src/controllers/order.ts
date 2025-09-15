@@ -1,5 +1,4 @@
 import { NextFunction, Request, Response } from "express";
-import { checkClass, checkCourse } from "../grpc/order/order";
 import {
   ClassTicket,
   CourseTicket,
@@ -10,6 +9,12 @@ import { validationResult } from "express-validator";
 import { StatusCodes } from "http-status-codes";
 import prisma from "../utils/prisma";
 import { UniversalError } from "../errors/UniversalError";
+import { checkClass } from "../grpc/client/productCommunication/checkClass";
+import { checkCourse } from "../grpc/client/productCommunication/checkCourse";
+import { stripe } from "../utils/stripe";
+import { getClassesDetails } from "../grpc/client/productCommunication/getClassesDetails";
+import { randomUUID } from "crypto";
+import { getCoursesDetails } from "../grpc/client/productCommunication/getCoursesDetails";
 
 export async function makeClassOrder(
   req: Request<object, object, ClassTicket> & { user?: any },
@@ -46,18 +51,46 @@ export async function makeClassOrder(
       [],
     );
   }
-  //TODO: connection with payment-microservice to create a transaction
+
+  const idempotencyKey = `checkout-class-${studentId}-${classId}`;
+
+  const theClass = (await getClassesDetails([classId])).classesdetailsList[0];
+
+  const price = theClass.price;
+
+  const session = await stripe.checkout.sessions.create(
+    {
+      mode: "payment",
+      success_url: "https://www.youtube.com/watch?v=0VE0zjlbD60",
+      cancel_url: "https://www.youtube.com/watch?v=t8lnCA8PHJM",
+      line_items: [
+        {
+          price_data: {
+            product_data: {
+              name: theClass.name,
+              description: theClass.description,
+            },
+            unit_amount: price * 100,
+            currency: "pln",
+          },
+          quantity: 1,
+        },
+      ],
+    },
+    { idempotencyKey },
+  );
+
   await prisma.classTicket.create({
     data: {
+      checkoutSessionId: session.id,
       classId,
       studentId,
       isConfirmed: false,
       paymentStatus: PaymentStatus.PENDING,
     },
   });
-  res
-    .status(StatusCodes.OK)
-    .json({ message: `Order for class with ${classId} created successfully` });
+
+  res.status(200).json({ sessionUrl: session.url });
 }
 export async function makeCourseOrder(
   req: Request<object, object, { courseId: number; groupNumber: number }> & {
@@ -102,6 +135,33 @@ export async function makeCourseOrder(
       );
     }
   });
+
+  const theCourse = (await getCoursesDetails([courseId])).coursesDetailsList[0];
+
+  const idempotencyKey = `checkout-course-${studentId}-${courseId}`;
+
+  const session = await stripe.checkout.sessions.create(
+    {
+      mode: "payment",
+      success_url: "https://www.youtube.com/watch?v=0VE0zjlbD60",
+      cancel_url: "https://www.youtube.com/watch?v=t8lnCA8PHJM",
+      line_items: [
+        {
+          price_data: {
+            product_data: {
+              name: theCourse.name,
+              description: theCourse.description,
+            },
+            unit_amount: Number((theCourse.price * 100).toFixed(2)),
+            currency: "pln",
+          },
+          quantity: 1,
+        },
+      ],
+    },
+    { idempotencyKey },
+  );
+
   try {
     await prisma.$transaction(async (tx) => {
       await tx.classTicket.createMany({
@@ -109,11 +169,12 @@ export async function makeCourseOrder(
           classId: classObj.classId,
           studentId,
           isConfirmed: false,
-          paymentStatus: PaymentStatus.PENDING,
+          paymentStatus: PaymentStatus.PART_OF_COURSE,
         })),
       });
       await tx.courseTicket.create({
         data: {
+          checkoutSessionId: session.id,
           courseId,
           studentId,
           paymentStatus: PaymentStatus.PENDING,
@@ -128,6 +189,5 @@ export async function makeCourseOrder(
     );
   }
 
-  // asks the payment-microservice for starting transaction and the result
-  res.status(StatusCodes.OK).json({ message: "Order created successfully" });
+  res.status(200).json({ sessionUrl: session.url })
 }

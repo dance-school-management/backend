@@ -21,6 +21,7 @@ enum AttendanceStatus {
 }
 
 model ClassTicket {
+  checkoutSessionId     String?          @unique
   studentId             String
   classId               Int
   isConfirmed           Boolean
@@ -33,9 +34,10 @@ model ClassTicket {
 }
 
 model CourseTicket {
-  studentId     String
-  courseId      Int
-  paymentStatus PaymentStatus
+  checkoutSessionId String        @unique
+  studentId         String
+  courseId          Int
+  paymentStatus     PaymentStatus
 
   @@id([studentId, courseId])
 }
@@ -43,6 +45,7 @@ model CourseTicket {
 enum PaymentStatus {
   PENDING
   PAID
+  PART_OF_COURSE
   REFUNDED
 }
 

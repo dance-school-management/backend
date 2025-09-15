@@ -9,11 +9,15 @@ import ticketRouter from "../routes/ticket/ticket";
 import { UniversalError } from "../errors/UniversalError";
 import { handleUserContext } from "../middlewares/handleUserContext";
 import { checkRole } from "../middlewares/checkRole";
+import webhookRouter from "../routes/stripe/webhooks/webhook"
 
 export function createApp() {
   const app = express();
   app.use(morgan("tiny"));
   app.use(helmet());
+
+  app.use("/stripe/webhook", webhookRouter)
+
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
   setupSwagger(app);

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 (bash clear-databases.sh)
 sleep 8
 (cd auth-microservice && bash seed.sh)

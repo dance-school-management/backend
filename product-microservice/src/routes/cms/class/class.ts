@@ -1,11 +1,13 @@
 import { Router } from "express";
 import {
+  availableClassrooms,
+  availableInstructors,
   createClass,
   editClassStatus,
   getClassDetails,
   getSchedule,
 } from "../../../controllers/cms/class";
-import { body, param } from "express-validator";
+import { body, param, query } from "express-validator";
 
 const router = Router();
 
@@ -26,8 +28,8 @@ router.post(
 );
 
 router.get(
-  "/:startDateFrom/:startDateTo",
-  param(["startDateFrom", "startDateTo"])
+  "/schedule",
+  query(["startDateFromQ", "startDateToQ"])
     .isISO8601()
     .withMessage("Dates must be of type ISO8601")
     .toDate(),
@@ -37,5 +39,22 @@ router.get(
 router.put("/status/edit", editClassStatus);
 
 router.get("/:id", getClassDetails);
+
+router.get(
+  "/available/classrooms",
+  query(["startDateQ", "endDateQ"])
+    .isISO8601()
+    .withMessage("startDate and endDate must be ISO8601")
+    .toDate(),
+  availableClassrooms,
+);
+router.get(
+  "/available/instructors",
+  query(["startDateQ", "endDateQ"])
+    .isISO8601()
+    .withMessage("startDate and endDate must be ISO8601")
+    .toDate(),
+  availableInstructors,
+);
 
 export default router;
