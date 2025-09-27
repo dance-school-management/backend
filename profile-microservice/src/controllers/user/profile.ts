@@ -93,3 +93,27 @@ export async function editProfile(
     );
   }
 }
+
+export async function getProfile(
+  req: Request<{}, {}, {}> & { user?: any },
+  res: Response,
+  next: NextFunction,
+) {
+  const id = req.user.id;
+
+  if (!id) {
+    throw new UniversalError(
+      StatusCodes.UNAUTHORIZED,
+      "User id missing in request",
+      [],
+    );
+  }
+
+  const response = await prisma.profile.findFirst({
+    where: {
+      id,
+    },
+  });
+
+  res.status(StatusCodes.OK).json({ userData: response });
+}

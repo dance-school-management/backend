@@ -13,8 +13,8 @@ async function main() {
     studentsJson,
     instructorsJson,
     administratorsJson,
-    generateFakeUsers(64, 67, Role.STUDENT),
-    generateFakeUsers(14, 16, Role.INSTRUCTOR),
+    generateFakeUsers(69, 62, Role.STUDENT),
+    generateFakeUsers(15, 15, Role.INSTRUCTOR),
     generateFakeUsers(4, 6, Role.COORDINATOR),
   );
 

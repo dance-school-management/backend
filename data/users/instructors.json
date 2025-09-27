@@ -25,5 +25,14 @@
     "first_name": "Sarah",
     "surname": "Kim",
     "role": "INSTRUCTOR"
+  },
+  {
+    "id": "14",
+    "email": "instructor4@example.com",
+    "password": "qwertyqwerty",
+    "name": "Tomas Wood",
+    "first_name": "Tomas",
+    "surname": "Wood",
+    "role": "INSTRUCTOR"
   }
 ]

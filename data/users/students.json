@@ -25,5 +25,50 @@
     "first_name": "Charlie",
     "surname": "Davis",
     "role": "STUDENT"
+  },
+  {
+    "id": "64",
+    "email": "student4@example.com",
+    "password": "qwertyqwerty",
+    "name": "Daniel Smith",
+    "first_name": "Daniel",
+    "surname": "Smith",
+    "role": "STUDENT"
+  },
+  {
+    "id": "65",
+    "email": "student5@example.com",
+    "password": "qwertyqwerty",
+    "name": "Emma Johnson",
+    "first_name": "Emma",
+    "surname": "Johnson",
+    "role": "STUDENT"
+  },
+  {
+    "id": "66",
+    "email": "student6@example.com",
+    "password": "qwertyqwerty",
+    "name": "Liam Brown",
+    "first_name": "Liam",
+    "surname": "Brown",
+    "role": "STUDENT"
+  },
+  {
+    "id": "67",
+    "email": "student7@example.com",
+    "password": "qwertyqwerty",
+    "name": "Olivia Wilson",
+    "first_name": "Olivia",
+    "surname": "Wilson",
+    "role": "STUDENT"
+  },
+  {
+    "id": "68",
+    "email": "student8@example.com",
+    "password": "qwertyqwerty",
+    "name": "Noah Taylor",
+    "first_name": "Noah",
+    "surname": "Taylor",
+    "role": "STUDENT"
   }
 ]

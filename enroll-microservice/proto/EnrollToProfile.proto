@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+package enroll_to_profile;
+
+import "EnrollToProfileMessages.proto";
+
+service EnrollToProfile {
+  rpc GetInstructorsData (InstructorsIdsRequest) returns (InstructorsDataResponse);
+}

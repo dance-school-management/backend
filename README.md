@@ -1,6 +1,10 @@
 # README INFO
 
-1. In every microservice you need .env.development with exact same items like in .env.development.example :) You can use script ```copy-envs-dev.sh```
+1. In every microservice you need .env.development with exact same items like in .env.development.example :) You can use script ```copy-envs-dev.sh```.
+
+> [!NOTE]
+You can use script ```bash compare-envs.sh``` (needs to be run with ```bash```, not ```sh```) to compare  ```.env.development``` and ```.env.development.example``` in each microservice.
+
 2. You need "db" folder with files:
 
 - auth-db-password.txt
@@ -13,7 +17,13 @@ You can use script ```create-files-with-db-password.sh```. It creates each of th
 
 1. To make gRPC work use script `generate-files-from-protos.sh` for macOS/linux, for windows use `generate-files-from-protos-Windows.sh`
 2. There has to be at least one migration for microservices locally. It is a little bit tricky. You have to start all microservices' databases in docker and use `bash migrate-all-prismas.sh`.
-3. To start all microservices - `docker compose -f 'docker-compose-dev.yml' up --build`
+3. To start all microservices - `run-docker-compose.sh`
+4. To setup stripe TEST payments locally:
+   1. Create a stripe account
+   2. In the stripe dashboard, find the TEST api key and paste it into .env.development of enroll-microservice
+   3. Install the stripe CLI (e.g. ```npm i -g stripe```)
+   4. Use command ```stripe listen --forward-to localhost:8000/enroll/stripe/webhook```
+   5. Copy the stripe webhook secret from the terminal and paste it into .env.development in enroll-microservice
 
 You can find swagger docs at:
 

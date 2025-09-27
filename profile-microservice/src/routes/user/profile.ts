@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response, Router } from "express";
-import { editProfile } from "../../controllers/user/profile";
+import { editProfile, getProfile } from "../../controllers/user/profile";
 import { body } from "express-validator";
 import upload from "../../utils/multer";
 const router = Router();
@@ -48,5 +48,7 @@ router.put(
   // },
   editProfile,
 );
+
+router.get("/profile", getProfile)
 
 export default router;

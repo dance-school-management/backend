@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package enroll_to_product;
 
+import "google/protobuf/timestamp.proto";
+
 message CheckClassRequest {
   int64 class_id = 1;
 };
@@ -60,4 +62,69 @@ message CourseDetailsResponse {
 
 message CoursesDetailsResponse {
   repeated CourseDetailsResponse courses_details = 1;
+}
+
+message CourseClassIds {
+  int64 course_id = 1;
+  int64 class_id = 2;
+  optional string course_name = 3;
+}
+
+message CoursesClassesIdsResponse {
+  repeated CourseClassIds courses_classes_ids = 1;
+}
+
+message DanceCategoryOfCourse {
+  int64 course_id = 1;
+  optional int64 dance_category_id = 2;
+  optional string dance_category_name = 3;
+  optional int64 advancement_level_id = 4;
+  optional string advancement_level_name = 5;
+}
+
+message DanceCategoriesOfCoursesResponse {
+  repeated DanceCategoryOfCourse dance_categories_of_courses = 1;
+}
+
+message GetSpentHoursDanceCategoriesRequest {
+  repeated int64 attended_classes_ids = 1;
+}
+
+message DanceCategorySpentHours {
+  string dance_category_name = 1;
+  float spent_hours = 2;
+}
+
+message GetSpentHoursDanceCategoriesResponse {
+  repeated DanceCategorySpentHours spent_hours_stats = 1;
+}
+
+message ClassInstructorIds {
+  string instructor_id = 1;
+  int64 class_id = 2;
+}
+
+message GetSpentHoursInstructorsRequest {
+  repeated ClassInstructorIds classes_instructors_ids = 1;
+}
+
+message InstructorSpentHours {
+  string instructor_id = 1;
+  float spent_hours = 2;
+}
+
+message GetSpentHoursInstructorsResponse {
+  repeated InstructorSpentHours spent_hours_stats = 1;
+}
+
+message CourseClass {
+  int64 course_id = 1;
+  int64 class_id = 2;
+  optional string course_name = 3;
+  google.protobuf.Timestamp class_end_date = 4;
+  google.protobuf.Timestamp class_start_date = 5;
+}
+
+message CoursesClassesResponse {
+  repeated CourseClass courses_classes = 1;
 }
