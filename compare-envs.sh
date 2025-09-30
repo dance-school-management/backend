@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 # compare-envs.sh
-# Porównuje .env.development z .env.development.example we wszystkich mikroserwisach pod bieżącym katalogiem.
-# Uruchamiaj ze ścieżki: backend/
+# Compares .env.development with .env.development.example across all microservices under the current directory.
+# Run from path: backend/
 
 set -u
 
-# Kolorki (jeśli terminal wspiera)
+# Colors (if terminal supports)
 RED="$(printf '\033[31m')"
 GREEN="$(printf '\033[32m')"
 YELLOW="$(printf '\033[33m')"
@@ -14,12 +14,12 @@ BOLD="$(printf '\033[1m')"
 RESET="$(printf '\033[0m')"
 
 extract_keys() {
-  # wyciąga nazwy kluczy z pliku .env (ignoruje komentarze, puste linie i 'export ')
-  # i zwraca posortowaną listę unikalnych kluczy
+  # extracts variable names from a .env file (ignores comments, empty lines and 'export ')
+  # returns a sorted list of unique keys
   local file="$1"
   sed -E '
-    s/^\s*export\s+//;        # usuń prefix "export "
-    s/\s*#.*$//;              # usuń trailing komentarz
+    s/^\s*export\s+//;        # remove "export " prefix
+    s/\s*#.*$//;              # remove trailing comment
   ' "$file" \
   | grep -E '^[[:space:]]*[A-Za-z_][A-Za-z0-9_]*=' \
   | sed -E 's/^\s*([A-Za-z_][A-Za-z0-9_]*)=.*/\1/' \
@@ -28,7 +28,7 @@ extract_keys() {
 }
 
 get_value() {
-  # pobiera wartość danego klucza z pliku .env (bez otaczających cudzysłowów)
+  # gets the value of a given key from a .env file (without surrounding quotes)
   local file="$1"
   local key="$2"
   local line
@@ -37,9 +37,9 @@ get_value() {
     printf ""
     return
   fi
-  line="${line#*=}"                 # po '='
-  line="${line%%[[:space:]]#*}"     # usuń trailing komentarz po spacji (zostawiamy # w wartościach bez spacji)
-  # usuń otaczające cudzysłowy jeśli są
+  line="${line#*=}"                 # strip everything before '='
+  line="${line%%[[:space:]]#*}"     # remove trailing comment (after space); keep '#' if inside value
+  # remove surrounding quotes if present
   line="$(printf '%s' "$line" | sed -E 's/^"(.*)"$/\1/; s/^'"'"'(.*)'"'"'$/\1/')"
   printf '%s' "$line"
 }
@@ -55,44 +55,44 @@ compare_pair() {
   echo "  development: ${dev}"
 
   if [[ ! -f "$example" || ! -f "$dev" ]]; then
-    echo "  ${YELLOW}⚠ Pominięto: brak jednej z par (.example / .development).${RESET}"
+    echo "  ${YELLOW}⚠ Skipped: missing one of the files (.example / .development).${RESET}"
     return
   fi
 
-  # Klucze
+  # Keys
   mapfile -t KEYS_EX < <(extract_keys "$example")
   mapfile -t KEYS_DEV < <(extract_keys "$dev")
 
-  # Tymczasowe pliki dla comm
+  # Temporary files for comm
   tmp_ex=$(mktemp)
   tmp_dev=$(mktemp)
   printf "%s\n" "${KEYS_EX[@]}" > "$tmp_ex"
   printf "%s\n" "${KEYS_DEV[@]}" > "$tmp_dev"
 
-  # 1) Brakujące w .env.development względem example
+  # 1) Keys missing in .env.development compared to example
   missing_in_dev=$(comm -23 "$tmp_ex" "$tmp_dev" || true)
-  # 2) Nadmiarowe w .env.development
+  # 2) Extra keys in .env.development
   extra_in_dev=$(comm -13 "$tmp_ex" "$tmp_dev" || true)
-  # 3) Wspólne klucze
+  # 3) Common keys
   common_keys=$(comm -12 "$tmp_ex" "$tmp_dev" || true)
 
   rm -f "$tmp_ex" "$tmp_dev"
 
   if [[ -n "$missing_in_dev" ]]; then
-    echo "  ${RED}✖ Brakujące w .env.development (są w .example):${RESET}"
+    echo "  ${RED}✖ Missing in .env.development (present in .example):${RESET}"
     printf '    - %s\n' $missing_in_dev
   else
-    echo "  ${GREEN}✔ Brakujących kluczy: 0${RESET}"
+    echo "  ${GREEN}✔ Missing keys: 0${RESET}"
   fi
 
   if [[ -n "$extra_in_dev" ]]; then
-    echo "  ${YELLOW}• Nadmiarowe w .env.development (nie ma w .example):${RESET}"
+    echo "  ${YELLOW}• Extra keys in .env.development (not in .example):${RESET}"
     printf '    - %s\n' $extra_in_dev
   else
-    echo "  ${GREEN}✔ Nadmiarowych kluczy: 0${RESET}"
+    echo "  ${GREEN}✔ Extra keys: 0${RESET}"
   fi
 
-  # Porównanie wartości wspólnych kluczy
+  # Compare values of common keys
   diff_count=0
   while IFS= read -r key; do
     [[ -z "$key" ]] && continue
@@ -100,7 +100,7 @@ compare_pair() {
     val_dev="$(get_value "$dev" "$key")"
     if [[ "$val_ex" != "$val_dev" ]]; then
       if (( diff_count == 0 )); then
-        echo "  ${YELLOW}• Różniące się wartości:${RESET}"
+        echo "  ${YELLOW}• Different values:${RESET}"
       fi
       diff_count=$((diff_count + 1))
       echo "    - ${BOLD}$key${RESET}"
@@ -110,7 +110,7 @@ compare_pair() {
   done <<< "$common_keys"
 
   if (( diff_count == 0 )); then
-    echo "  ${GREEN}✔ Wartości wspólnych kluczy są zgodne${RESET}"
+    echo "  ${GREEN}✔ All common key values match${RESET}"
   fi
 }
 
@@ -118,7 +118,8 @@ main() {
   local base="${1:-.}"
   local found_any=0
 
-  # Szukamy mikroserwisów w podkatalogach (np. *-microservice) – ale kryterium to obecność plików .env.*
+  # Look for microservices in subdirectories (e.g. *-microservice)
+  # – criterion is presence of .env.* files
   for dir in "$base"/*/ ; do
     [[ -d "$dir" ]] || continue
     ex_file="${dir}.env.development.example"
@@ -130,7 +131,7 @@ main() {
   done
 
   if [[ $found_any -eq 0 ]]; then
-    echo "${YELLOW}Nie znaleziono żadnych par plików .env.development(.example) w podkatalogach.${RESET}"
+    echo "${YELLOW}No .env.development(.example) pairs found in subdirectories.${RESET}"
     exit 1
   fi
 }

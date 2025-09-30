@@ -1,16 +1,16 @@
 import { Router } from "express";
 import {
-  coursesAttendanceProgress,
-  hoursSpentDanceCategories,
-  hoursSpentInstructors,
-  learntDanceCategories,
+  getCoursesAttendanceProgress,
+  getHoursSpentDanceCategories,
+  getHoursSpentInstructors,
+  getLearntDanceCategories,
 } from "../../controllers/student-progress/studentProgress";
 
 const router = Router();
 
-router.get("/learnt-dance-categories", learntDanceCategories);
-router.get("/courses-attendance-rates", coursesAttendanceProgress);
-router.get("/hours-spent/dance-categories", hoursSpentDanceCategories);
-router.get("/hours-spent/instructors", hoursSpentInstructors);
+router.get("/learnt-dance-categories", getLearntDanceCategories);
+router.get("/courses-attendance-rates", getCoursesAttendanceProgress);
+router.get("/hours-spent/dance-categories", getHoursSpentDanceCategories);
+router.get("/hours-spent/instructors", getHoursSpentInstructors);
 
 export default router;

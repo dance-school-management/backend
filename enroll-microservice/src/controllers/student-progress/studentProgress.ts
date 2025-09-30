@@ -11,7 +11,9 @@ import {
 } from "../../grpc/client/productCommunication/getSpentHours";
 import { getInstructorsData } from "../../grpc/client/profileCommunication/getInstructorsData";
 
-export async function learntDanceCategories(
+const MIN_ATTENDANCE_RATE_TO_PASS_COURSE = 0.5
+
+export async function getLearntDanceCategories(
   req: Request<{}, {}, {}> & { user?: any },
   res: Response,
 ) {
@@ -24,24 +26,24 @@ export async function learntDanceCategories(
     );
   }
 
-  const enrolledCourses = await prisma.courseTicket.findMany({
-    where: {
-      studentId,
-    },
-    select: {
-      courseId: true,
-    },
-  });
+  const enrolledCoursesIds = (
+    await prisma.courseTicket.findMany({
+      where: {
+        studentId,
+      },
+      select: {
+        courseId: true,
+      },
+    })
+  ).map((course) => course.courseId);
 
-  // Courses' ids of courses that the student is enrolled in
-  const enrolledCoursesIds = enrolledCourses.map((course) => course.courseId);
-
-  // [{courseId: 1, classId: 2}, {courseId: 1, classId: 3}, {courseId: 2, classId: 5, courseId: 2, classId: 7}]
+  // [{courseId: 1, classId: 2, classEndDate: Timestamp}, 
+  // {courseId: 1, classId: 3, classEndDate: Timestamp}, 
+  // {courseId: 2, classId: 5, classEndDate: Timestamp}, 
+  // {courseId: 2, classId: 7, classEndDate: Timestamp}]
   // Returns, in the above form, all pairs of classIds that belong to enrolledCourseIds
   const coursesClassesResponse = (await getCoursesClasses(enrolledCoursesIds))
     .coursesClassesList;
-
-  // const finishedCoursesIds = [];
 
   const coursesEndDatesMap = new Map();
 
@@ -62,38 +64,37 @@ export async function learntDanceCategories(
 
   const passedCoursesIds = [];
 
-  for (const courseId of finishedCoursesIds) {
-    const courseClassesIds = [
-      ...new Set(
-        coursesClassesResponse.filter((cc) => cc.courseId === courseId),
-      ),
-    ].map((cc) => cc.classId);
-    const attendance = await prisma.classTicket.findMany({
-      where: {
-        classId: {
-          in: courseClassesIds,
-        },
+  const allAttendance = await prisma.classTicket.findMany({
+    where: {
+      classId: {
+        in: [...new Set(coursesClassesResponse.map((cc) => cc.classId))],
       },
-    });
+    },
+  });
+
+  for (const courseId of finishedCoursesIds) {
+    const courseClassesIds = coursesClassesResponse
+      .filter((cc) => cc.courseId === courseId)
+      .map((cc) => cc.classId);
+
+    const attendance = allAttendance.filter((aa) =>
+      courseClassesIds.includes(aa.classId),
+    );
+
     if (
       attendance.filter((a) => a.attendanceStatus === AttendanceStatus.PRESENT)
         .length >=
-      0.5 * attendance.length
+      MIN_ATTENDANCE_RATE_TO_PASS_COURSE * attendance.length
     ) {
       passedCoursesIds.push(courseId);
     }
   }
-
-  console.log("finished courses ids: ", passedCoursesIds);
 
   const danceCategoriesOfCourses = (
     await getDanceCategoriesOfCourses(passedCoursesIds)
   ).danceCategoriesOfCoursesList;
 
   const withFinishedDate = danceCategoriesOfCourses.map((dcic) => {
-    console.log(
-      coursesClassesResponse.filter((cc) => cc.courseId === dcic.courseId),
-    );
     return {
       ...dcic,
       finishedDate: new Date(
@@ -145,7 +146,7 @@ export async function learntDanceCategories(
   res.status(StatusCodes.OK).json(withInstructors);
 }
 
-export async function coursesAttendanceProgress(
+export async function getCoursesAttendanceProgress(
   req: Request<{}, {}, {}> & { user?: any },
   res: Response,
 ) {
@@ -158,16 +159,16 @@ export async function coursesAttendanceProgress(
     );
   }
 
-  const enrolledCourses = await prisma.courseTicket.findMany({
-    where: {
-      studentId,
-    },
-    select: {
-      courseId: true,
-    },
-  });
-
-  const enrolledCoursesIds = enrolledCourses.map((course) => course.courseId);
+  const enrolledCoursesIds = (
+    await prisma.courseTicket.findMany({
+      where: {
+        studentId,
+      },
+      select: {
+        courseId: true,
+      },
+    })
+  ).map((course) => course.courseId);
 
   const coursesClassesRes = (await getCoursesClasses(enrolledCoursesIds))
     .coursesClassesList;
@@ -253,20 +254,22 @@ export async function coursesAttendanceProgress(
       },
     });
 
-    const coursesClassesEndDatesMap = new Map();
+    const coursesClassesStartDatesMap = new Map();
 
     coursesClasses.forEach((cc) => {
       if (
-        !coursesClassesEndDatesMap ||
-        coursesClassesEndDatesMap.get(cc.courseId) > cc.classStartDate.seconds
+        !coursesClassesStartDatesMap ||
+        coursesClassesStartDatesMap.get(cc.courseId) > cc.classStartDate.seconds
       ) {
-        coursesClassesEndDatesMap.set(cc.courseId, cc.classStartDate.seconds);
+        coursesClassesStartDatesMap.set(cc.courseId, cc.classStartDate.seconds);
       }
     });
 
+    
+
     const hasStarted = Boolean(
-      [...coursesClassesEndDatesMap.values()].find(
-        (classStartTime) => classStartTime < new Date().getTime() / 1000,
+      [...coursesClassesStartDatesMap.values()].find(
+        (classStartTime) => classStartTime < (new Date()).getTime() / 1000,
       ),
     );
 
@@ -287,7 +290,7 @@ export async function coursesAttendanceProgress(
   res.status(200).json({ courseAttendancesRates: attendanceRatios });
 }
 
-export async function hoursSpentDanceCategories(
+export async function getHoursSpentDanceCategories(
   req: Request<{}, {}, {}> & { user?: any },
   res: Response,
 ) {
@@ -321,7 +324,7 @@ export async function hoursSpentDanceCategories(
   res.status(StatusCodes.OK).json({ spentHoursStatsList: spentHours });
 }
 
-export async function hoursSpentInstructors(
+export async function getHoursSpentInstructors(
   req: Request<{}, {}, {}> & { user?: any },
   res: Response,
 ) {

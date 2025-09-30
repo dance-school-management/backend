@@ -21,7 +21,7 @@ You can use script ```create-files-with-db-password.sh```. It creates each of th
 4. To setup stripe TEST payments locally:
    1. Create a stripe account
    2. In the stripe dashboard, find the TEST api key and paste it into .env.development of enroll-microservice
-   3. Install the stripe CLI (e.g. ```npm i -g stripe```)
+   3. Install the stripe CLI. This is a simple CLI app. For example on the macOS it can be installed through homebrew. You can also install it with ```npm i -g stripe```.
    4. Use command ```stripe listen --forward-to localhost:8000/enroll/stripe/webhook```
    5. Copy the stripe webhook secret from the terminal and paste it into .env.development in enroll-microservice
 
