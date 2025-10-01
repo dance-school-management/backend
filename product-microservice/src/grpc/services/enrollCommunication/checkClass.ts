@@ -26,6 +26,9 @@ export async function checkClass(
         },
       },
     },
+    include: {
+      classTemplate: true
+    }
   });
   if (!classObj) {
     const err = new UniversalError(
@@ -34,6 +37,15 @@ export async function checkClass(
       [],
     );
     callback({ code: status.NOT_FOUND, details: JSON.stringify(err) });
+    return;
+  }
+  if (classObj.classTemplate.courseId) {
+    const err = new UniversalError(
+      StatusCodes.CONFLICT,
+      `This class with id ${classId} is part of course. You need to purchase the entire course.`,
+      [],
+    )
+    callback({ code: status.UNAVAILABLE, details: JSON.stringify(err) });
     return;
   }
   if (classObj.classStatus === ClassStatus.CANCELLED || classObj.classStatus === ClassStatus.POSTPONED) {

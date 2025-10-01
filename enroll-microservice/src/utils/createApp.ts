@@ -10,6 +10,7 @@ import { UniversalError } from "../errors/UniversalError";
 import { handleUserContext } from "../middlewares/handleUserContext";
 import { checkRole } from "../middlewares/checkRole";
 import webhookRouter from "../routes/stripe/webhooks/webhook"
+import progressRouter from "../routes/student-progress/studentProgress"
 
 export function createApp() {
   const app = express();
@@ -23,6 +24,7 @@ export function createApp() {
   setupSwagger(app);
   app.use(handleUserContext);
   app.use("/order", checkRole(["STUDENT"]), orderRouter);
+  app.use("/progress", checkRole(["STUDENT"]), progressRouter)
   app.use("/ticket/student", checkRole(["STUDENT"]), ticketRouter);
   app.use("/ticket/instructor", checkRole(["INSTRUCTOR"]), ticketRouter);
   app.get("/", (req, res) => {

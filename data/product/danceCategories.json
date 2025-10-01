@@ -1,32 +1,32 @@
 [
   {
     "id": 1,
-    "name": "Hip Hop",
-    "description": "A dynamic street dance style full of expression.",
+    "name": "ACRO GYMNASTICS",
+    "description": "A dynamic style combining strength, flexibility, and acrobatic elements. It emphasizes balance, coordination, and fluid transitions, often blending dance with athletic movements such as flips, jumps, and handstands.",
     "photoPath": "images/hiphop.jpg"
   },
   {
     "id": 2,
-    "name": "Ballet",
-    "description": "A classical dance technique characterized by precision and elegance.",
+    "name": "AFRO DANCE",
+    "description": "An energetic dance style rooted in African rhythms and movements, focusing on groove, expression, and powerful footwork.",
     "photoPath": "images/balet.jpg"
   },
   {
     "id": 3,
-    "name": "Salsa",
-    "description": "An energetic Latin American partner dance.",
+    "name": "HIP HOP",
+    "description": "A dynamic street dance style emphasizing rhythm, groove, and self-expression through freestyle and choreography.",
     "photoPath": "images/salsa.jpg"
   },
   {
     "id": 4,
-    "name": "Contemporary Dance",
+    "name": "CONTEMPORARY DANCE",
     "description": "A style blending ballet, modern dance, and improvisation with a focus on emotional expression.",
     "photoPath": "images/contemporary.jpg"
   },
   {
     "id": 5,
-    "name": "Jazz",
-    "description": "An energetic dance style using ballet techniques and rhythmic accents.",
+    "name": "BALLET",
+    "description": "Basics of ballet technique, learning ballet choreography.",
     "photoPath": "images/jazz.jpg"
   }
 ]

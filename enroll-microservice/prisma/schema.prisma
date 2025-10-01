@@ -24,7 +24,7 @@ model ClassTicket {
   checkoutSessionId     String?          @unique
   studentId             String
   classId               Int
-  isConfirmed           Boolean
+  isConfirmed           Boolean?
   attendanceStatus      AttendanceStatus @default(ABSENT)
   attendanceLastUpdated DateTime?
 

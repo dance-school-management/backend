@@ -10,4 +10,8 @@ service EnrollToProduct {
 
   rpc GetClassesDetails (ClassIdsRequest) returns (ClassesDetailsResponse);
   rpc GetCoursesDetails (CourseIdsRequest) returns (CoursesDetailsResponse);
+  rpc GetCoursesClasses (CourseIdsRequest) returns (CoursesClassesResponse);
+  rpc GetDanceCategoriesOfCourses (CourseIdsRequest) returns (DanceCategoriesOfCoursesResponse);
+  rpc GetSpentHoursDanceCategories (GetSpentHoursDanceCategoriesRequest) returns (GetSpentHoursDanceCategoriesResponse);
+  rpc GetSpentHoursInstructors (GetSpentHoursInstructorsRequest) returns (GetSpentHoursInstructorsResponse);
 }

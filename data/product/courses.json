@@ -1,8 +1,8 @@
 [
   {
     "id": 1,
-    "name": "Hip Hop for Beginners",
-    "description": "Basic hip-hop course focusing on rhythm and fundamental moves.",
+    "name": "ACRO GYMNASTICS",
+    "description": "Classes cover the advanced basics of rhythmic gymnastics and acrobatics. They include stretching, acrobatic elements: side flips, handstands, front and back transitions, flips, cradles, jumps, pullovers, bridges, elbow flexibility, etc. The classes develop proper technique for performing difficult acrobatic elements and emphasize the beautiful posture necessary for many dance techniques, such as Modern, Jazz, and Classical. During classes, the following are required: leggings, clean, fresh socks, a bodysuit or tight blouse, and hair tied up. Instructor from the Polish Gymnastics Association section",
     "danceCategoryId": 1,
     "advancementLevelId": 1,
     "courseStatus": "ONGOING",
@@ -10,8 +10,8 @@
   },
   {
     "id": 2,
-    "name": "Intermediate Ballet",
-    "description": "Ballet technique course with barre work and combinations.",
+    "name": "AFRO DANCE",
+    "description": "A dance characterized by energy, expression, rhythm, and connection to African culture. It requires bodywork and is characterized by a high degree of isolation.",
     "danceCategoryId": 2,
     "advancementLevelId": 2,
     "courseStatus": "SALE",
@@ -19,8 +19,8 @@
   },
   {
     "id": 3,
-    "name": "Advanced Salsa",
-    "description": "Intensive salsa course focused on partnering techniques and footwork.",
+    "name": "HIP HOP STREET DANCE",
+    "description": "Classes for children, teenagers, and adults of all skill levels teach the basics of hip-hop, funk, locking, old school, and house. They develop coordination and chest flexibility, and teach the basics of dance technique and movement in specific dance styles. During classes, dancers learn dance steps, techniques, and dance etudes or longer choreographies. The following is required for classes: comfortable clothing: leggings, tracksuit bottoms, short-sleeved top, changeable shoes with white or rubber soles (tennis shoes), a drink, and tied hair.",
     "danceCategoryId": 3,
     "advancementLevelId": 3,
     "courseStatus": "FINISHED",
@@ -28,18 +28,18 @@
   },
   {
     "id": 4,
-    "name": "Technical Jazz",
-    "description": "Course combining expression and technique, ideal for stage style development.",
-    "danceCategoryId": 5,
+    "name": "MODERN LYRICAL JAZZ JAZZ CONTEMPORARY",
+    "description": "The foundation of jazz, contemporary, and modern dance techniques is classical (ballet). However, these styles lack the rigid movements that characterize ballet. They allow for a great deal of freedom of movement, expression, and improvisation. They incorporate a high degree of dynamic movement. Characteristic features of jazz and modern dance include isolating individual body parts, moving them in various planes (largely on the floor) and at varying tempos. These techniques effectively develop all muscle groups, improve overall body fitness, flexibility, fluidity, and elasticity, and teach the expression of emotions and feelings. These styles are sometimes enhanced with acrobatic elements.",
+    "danceCategoryId": 4,
     "advancementLevelId": 2,
     "courseStatus": "SALE",
     "customPrice": 319.0
   },
   {
     "id": 5,
-    "name": "Contemporary Dance – Open Level",
-    "description": "Creative contemporary dance course open to all skill levels.",
-    "danceCategoryId": 4,
+    "name": "BALLET",
+    "description": "Basics of ballet technique, learning ballet choreography. Classics are the foundation of every dancer's skills. By participating in classes, children develop beautiful body posture, learn ballet technique, develop grace, learn body control, and proper movement. They also strengthen their muscles, allowing for high jumps and quick turns in body movements. Classical exercises stretch, improve flexibility, and strengthen muscles and tendons. During classes, the following is required: ballet skirt, bodysuit or tight blouse, leggings or tights, ballet shoes or socks, and hair tied up. Children participate in activities without their parents. Classes take place in a ballet hall with barre.",
+    "danceCategoryId": 5,
     "advancementLevelId": 1,
     "courseStatus": "HIDDEN",
     "customPrice": 289.5

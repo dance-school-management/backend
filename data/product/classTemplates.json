@@ -2,8 +2,8 @@
   {
     "id": 1,
     "courseId": 1,
-    "name": "Hip Hop – Rhythm Basics",
-    "description": "Introductory class focusing on rhythm and basic hip hop steps.",
+    "name": "Gymnastics – Strength & Flexibility",
+    "description": "Introductory class developing core strength, balance, and flexibility through basic gymnastic movements.",
     "price": 60.0,
     "currency": "PLN",
     "danceCategoryId": 1,
@@ -13,9 +13,21 @@
   },
   {
     "id": 2,
+    "courseId": 1,
+    "name": "Gymnastics – Acro Basics",
+    "description": "Beginner-friendly class focusing on rolls, handstands, and simple acrobatic techniques to build coordination.",
+    "price": 60.0,
+    "currency": "PLN",
+    "danceCategoryId": 1,
+    "advancementLevelId": 1,
+    "classType": "GROUP_CLASS",
+    "scheduleTileColor": "#FF5733"
+  },
+  {
+    "id": 3,
     "courseId": 2,
-    "name": "Ballet – Classical Technique",
-    "description": "Barre work, positions, and basic combinations.",
+    "name": "Afro Dance",
+    "description": "Introductory class exploring African-inspired rhythms, dynamic steps, and expressive movement combinations.",
     "price": 75.0,
     "currency": "PLN",
     "danceCategoryId": 2,
@@ -24,10 +36,10 @@
     "scheduleTileColor": "#C70039"
   },
   {
-    "id": 3,
+    "id": 4,
     "courseId": 3,
-    "name": "Salsa – Footwork and Styling",
-    "description": "Advanced salsa footwork and styling combinations.",
+    "name": "Hip Hop – Groove & Flow",
+    "description": "Introductory class focusing on rhythm, timing, and simple hip hop steps for beginners.",
     "price": 70.0,
     "currency": "PLN",
     "danceCategoryId": 3,
@@ -36,34 +48,58 @@
     "scheduleTileColor": "#FFC300"
   },
   {
-    "id": 4,
+    "id": 5,
+    "courseId": 3,
+    "name": "Hip Hop – Rhythm Basics",
+    "description": "Class emphasizing groove, body control, and natural hip hop flow through easy-to-follow combinations.",
+    "price": 45.0,
+    "currency": "PLN",
+    "danceCategoryId": 3,
+    "advancementLevelId": 3,
+    "classType": "GROUP_CLASS",
+    "scheduleTileColor": "#FFC300"
+  },
+  {
+    "id": 6,
+    "courseId": 3,
+    "name": "Hip Hop – Choreo Level Up",
+    "description": "Energetic session exploring dynamic hip hop choreography, performance skills, and self-expression.",
+    "price": 75.0,
+    "currency": "PLN",
+    "danceCategoryId": 3,
+    "advancementLevelId": 3,
+    "classType": "GROUP_CLASS",
+    "scheduleTileColor": "#FFC300"
+  },
+  {
+    "id": 7,
     "courseId": 4,
     "name": "Jazz – Technique and Isolations",
     "description": "Technical class focusing on isolations and expression.",
     "price": 65.0,
     "currency": "PLN",
-    "danceCategoryId": 5,
+    "danceCategoryId": 4,
     "advancementLevelId": 2,
     "classType": "GROUP_CLASS",
     "scheduleTileColor": "#900C3F"
   },
   {
-    "id": 5,
+    "id": 8,
     "courseId": 4,
     "name": "Jazz – Stage Choreography",
     "description": "Learning choreography for stage performances.",
-    "price": 65.0,
+    "price": 70.0,
     "currency": "PLN",
-    "danceCategoryId": 5,
+    "danceCategoryId": 4,
     "advancementLevelId": 2,
     "classType": "GROUP_CLASS",
     "scheduleTileColor": "#581845"
   },
   {
-    "id": 6,
+    "id": 9,
     "courseId": 5,
-    "name": "Contemporary – Movement Expression",
-    "description": "Classes developing body awareness and improvisation.",
+    "name": "Ballet – Barre Foundations",
+    "description": "Classes focusing on posture, alignment, and basic positions at the barre.",
     "price": 58.0,
     "currency": "PLN",
     "danceCategoryId": 4,
@@ -72,10 +108,10 @@
     "scheduleTileColor": "#33A1FF"
   },
   {
-    "id": 7,
+    "id": 10,
     "courseId": 5,
-    "name": "Contemporary – Floorwork Technique",
-    "description": "Focus on floorwork techniques and contact with the floor.",
+    "name": "Ballet – Center Technique",
+    "description": "Training in classical ballet movements, balance, and simple combinations in the center.",
     "price": 58.0,
     "currency": "PLN",
     "danceCategoryId": 4,
@@ -84,7 +120,7 @@
     "scheduleTileColor": "#1C6DD0"
   },
   {
-    "id": 8,
+    "id": 11,
     "courseId": null,
     "name": "Private Lesson – Ballet",
     "description": "Private ballet lesson tailored to the participant's level.",
@@ -96,7 +132,7 @@
     "scheduleTileColor": "#AA33CC"
   },
   {
-    "id": 9,
+    "id": 12,
     "courseId": null,
     "name": "Private Lesson – Salsa",
     "description": "Private salsa lesson – technique, styling, and improvisation.",
@@ -108,7 +144,7 @@
     "scheduleTileColor": "#CC8822"
   },
   {
-    "id": 10,
+    "id": 13,
     "courseId": null,
     "name": "Themed Dance Party – Latino Night",
     "description": "Latin dance night with a DJ and instructor.",
@@ -120,7 +156,7 @@
     "scheduleTileColor": "#FFD700"
   },
   {
-    "id": 11,
+    "id": 14,
     "courseId": null,
     "name": "Themed Party – Dance Fusion",
     "description": "Party-style class with elements of various dance styles.",
@@ -132,7 +168,7 @@
     "scheduleTileColor": "#00CED1"
   },
   {
-    "id": 12,
+    "id": 15,
     "courseId": null,
     "name": "Private Lesson – Contemporary",
     "description": "Private session focusing on expression and technique in contemporary dance.",

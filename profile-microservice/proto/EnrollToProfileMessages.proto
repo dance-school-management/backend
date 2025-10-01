@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package enroll_to_profile;
+
+message InstructorsIdsRequest {
+  repeated string instructors_ids = 1;
+}
+
+message InstructorData {
+  string instructor_id = 1;
+  string instructor_name = 2;
+  string instructor_surname = 3;
+}
+
+message InstructorsDataResponse {
+  repeated InstructorData instructors_data = 1;
+}

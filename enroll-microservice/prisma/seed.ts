@@ -25,7 +25,6 @@ async function main() {
           checkoutSessionId: classTicket.checkoutSessionId,
           studentId: classTicket.studentId,
           classId: classTicket.classId,
-          isConfirmed: classTicket.isConfirmed,
           paymentStatus: classTicket.paymentStatus as PaymentStatus,
           attendanceLastUpdated: classTicket.attendanceLastUpdated,
           attendanceStatus: classTicket.attendanceStatus as AttendanceStatus,
