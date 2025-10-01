@@ -1,4 +1,4 @@
-FROM python:3.11-slim
+FROM es-microservice-prebuilt:0.1.0
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \

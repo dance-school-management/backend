@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+package product_to_elasticsearch;
+
+service ProductToElasticsearch {
+  rpc AddCourse (AddCourseRequest) returns (AddCourseResponse);
+  rpc AddClassTemplate (AddClassTemplateRequest) returns (AddClassTemplateResponse);
+} 
+
+message AddClassTemplateRequest {
+  int64 class_template_id = 1;
+  string class_template_description = 2;
+  int64 dance_category_id = 3;
+  int64 advancement_level_id = 4;
+}
+
+message AddClassTemplateResponse {
+  string message = 1;
+}
+
+message AddCourseRequest {
+  int64 course_id = 1;
+  string course_description = 2;
+  int64 dance_category_id = 3;
+  int64 advancement_level_id = 4;
+}
+
+message AddCourseResponse {
+  string message = 1;
+}

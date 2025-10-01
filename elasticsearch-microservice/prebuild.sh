@@ -1,0 +1,1 @@
+docker build -t es-microservice-prebuilt:0.1.0 -f Dockerfile.prebuild .
