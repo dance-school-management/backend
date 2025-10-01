@@ -94,12 +94,12 @@ export async function getLearntDanceCategories(
     await getDanceCategoriesOfCourses(passedCoursesIds)
   ).danceCategoriesOfCoursesList;
 
-  const withFinishedDate = danceCategoriesOfCourses.map((dcic) => {
+  const withFinishedDate = danceCategoriesOfCourses.map((dcoc) => {
     return {
-      ...dcic,
+      ...dcoc,
       finishedDate: new Date(
         coursesClassesResponse
-          .filter((cc) => cc.courseId === dcic.courseId)
+          .filter((cc) => cc.courseId === dcoc.courseId)
           .reduce((acc, cc) =>
             cc.classEndDate.seconds > acc.classEndDate.seconds ? cc : acc,
           ).classEndDate.seconds * 1000,
