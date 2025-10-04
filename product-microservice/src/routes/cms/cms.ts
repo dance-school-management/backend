@@ -7,6 +7,7 @@ import classTemplateRouter from "../cms/classTemplate/classTemplate";
 import classRoomRouter from "../cms/classRoom/classRoom";
 import advancementLevelRouter from "./advancementLevel/advancementLevel";
 import aggregationsRouter from "../cms/aggregations/aggregations";
+import cancelOrPostponeRouter from "./cancelOrPostpone/cancelOrPostpone"
 
 const router = Router();
 
@@ -18,5 +19,6 @@ router.use("/course", courseRouter);
 router.use("/class_template", classTemplateRouter);
 router.use("/class_room", classRoomRouter);
 router.use("/aggregations", aggregationsRouter);
+router.use("/cancel-or-postpone", cancelOrPostponeRouter)
 
 export default router;

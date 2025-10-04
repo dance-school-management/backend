@@ -1,0 +1,1 @@
+export const NOTIFICATIONS_QUEUE = process.env.NOTIFICATIONS_QUEUE || "notifications-queue"

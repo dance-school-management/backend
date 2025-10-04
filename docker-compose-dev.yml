@@ -29,6 +29,8 @@ services:
     depends_on:
       product_db:
         condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
     networks:
       - microservices-network
   auth-microservice:
@@ -80,6 +82,8 @@ services:
       - /usr/src/app/node_modules
     depends_on:
       notification_db:
+        condition: service_healthy
+      rabbitmq:
         condition: service_healthy
     networks:
       - microservices-network
@@ -211,7 +215,24 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5 
-
+  rabbitmq:
+    image: rabbitmq:management
+    container_name: rabbitmq
+    environment:
+      - RABBITMQ_DEFAULT_USER=app
+      - RABBITMQ_DEFAULT_PASS=app
+    ports:
+      - 5672:5672
+      - 15672:15672
+    volumes: 
+      - ./rabbitmq/rabbitmq_data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - microservices-network
 
 volumes:
   product_data:
@@ -219,6 +240,7 @@ volumes:
   enroll_data:
   notification_data:
   profile_data:
+  rabbitmq_data:
 networks:
   microservices-network:
     driver: bridge
