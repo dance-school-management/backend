@@ -26,7 +26,7 @@ export function createApp() {
   app.use("/order", checkRole(["STUDENT"]), orderRouter);
   app.use("/progress", checkRole(["STUDENT"]), progressRouter)
   app.use("/ticket/student", checkRole(["STUDENT"]), ticketRouter);
-  app.use("/ticket/instructor", checkRole(["INSTRUCTOR"]), ticketRouter);
+  app.use("/ticket/coordinator", checkRole(["COORDINATOR"]), ticketRouter);
   app.get("/", (req, res) => {
     res.send("Hello from enroll-microservice");
   });

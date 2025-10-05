@@ -87,6 +87,7 @@ export async function makeClassOrder(
       studentId,
       isConfirmed: false,
       paymentStatus: PaymentStatus.PENDING,
+      qrCodeUUID: randomUUID()
     },
   });
 
@@ -170,6 +171,7 @@ export async function makeCourseOrder(
           studentId,
           isConfirmed: false,
           paymentStatus: PaymentStatus.PART_OF_COURSE,
+          qrCodeUUID: randomUUID()
         })),
       });
       await tx.courseTicket.create({

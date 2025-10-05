@@ -8,6 +8,8 @@ import prisma from "../../../utils/prisma";
 import { UniversalError } from "../../../errors/UniversalError";
 import { StatusCodes } from "http-status-codes";
 
+const DAYS_BEFORE_COURSE_START_TO_BLOCK_BUYING_TICKETS = 3;
+
 export async function checkCourse(
   call: ServerUnaryCall<CheckCourseRequest, CheckCourseResponse>,
   callback: sendUnaryData<CheckCourseResponse>,
@@ -19,6 +21,33 @@ export async function checkCourse(
   //     id: courseId,
   //   },
   // });
+
+  const courseClasses = await prisma.class.findMany({
+    where: {
+      classTemplate: {
+        courseId,
+      },
+    },
+  });
+  const firstClassStartDate = courseClasses.filter((cc) => cc.groupNumber === groupNumber).reduce(
+    (acc, cur) => (cur.startDate < acc ? cur.startDate : acc),
+    new Date(8640000000000000),
+  );
+  const date = new Date();
+  const threeDaysLater = new Date(
+    date.setDate(
+      date.getDate() + DAYS_BEFORE_COURSE_START_TO_BLOCK_BUYING_TICKETS,
+    ),
+  );
+  if (firstClassStartDate < threeDaysLater) {
+    const err = new UniversalError(
+      StatusCodes.CONFLICT,
+      `It is too late to buy this course with id ${courseId}`,
+      [],
+    );
+    callback({ code: status.UNAVAILABLE, details: JSON.stringify(err) });
+    return;
+  }
 
   const classesWithPeopleLimites = await prisma.classTemplate.findMany({
     where: {

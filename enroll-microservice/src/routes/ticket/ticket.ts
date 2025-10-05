@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { getStudentTickets } from "../../controllers/ticketStudent";
-import { scanTicket } from "../../controllers/ticketInstructor";
+import { scanTicket } from "../../controllers/ticketCoordinator";
 
 const router = Router();
 

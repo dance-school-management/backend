@@ -11,27 +11,6 @@
  *     responses:
  *       "200":
  *         description: Successfully retrieved student class details
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 type: object
- *                 properties:
- *                   name:
- *                     type: string
- *                     example: "Salsa Beginner"
- *                   startDate:
- *                     type: string
- *                     format: date-time
- *                     example: "2025-06-01T18:00:00.000Z"
- *                   endDate:
- *                     type: string
- *                     format: date-time
- *                     example: "2025-06-01T19:30:00.000Z"
- *                   classRoomName:
- *                     type: string
- *                     example: "Studio 1"
  *       "401":
  *         description: Unauthorized – user not authenticated
  *       "500":
@@ -41,13 +20,14 @@
 
 /**
  * @swagger
- * /ticket/instructor/scan:
+ * /ticket/coordinator/scan:
  *   post:
  *     summary: Mark student attendance by scanning ticket
  *     description: >
  *       Marks a student as present for a specific class by scanning their ticket.
- *       Requires valid `classId` and `studentId`.
+ *       Requires valid `classId`, `studentId` and `qrCodeUUID`.
  *       Fails if no ticket is found in the database.
+ *       If isConfirmation is set to `false`, attendance is not recorded. Otherwise, it is.
  *     tags:
  *       - instructor - tickets
  *     requestBody:
@@ -59,6 +39,8 @@
  *             required:
  *               - classId
  *               - studentId
+ *               - qrCodeUUID
+ *               - isConfirmation
  *             properties:
  *               classId:
  *                 type: integer
@@ -66,19 +48,18 @@
  *               studentId:
  *                 type: string
  *                 example: "user_abc123"
+ *               qrCodeUUID:
+ *                 type: string
+ *                 example: "some_uuid_1234"
+ *               isConfirmation:
+ *                 type: boolean
+ *                 example: false
+ * 
  *     responses:
  *       "200":
- *         description: Attendance recorded successfully
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: "Successfully recorded student's attendance"
+ *         description: Ticket valid or attendance recorded successfully
  *       "400":
- *         description: Ticket not found (invalid studentId or classId)
+ *         description: Ticket not found
  *       "500":
  *         description: Internal Server Error
  */

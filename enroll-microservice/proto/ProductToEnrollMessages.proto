@@ -26,6 +26,7 @@ message InstructorClass {
 message StudentClass {
   string student_id = 1;
   int64 class_id = 2;
+  string payment_status = 3;
 };
 
 message EnrollInstructorsInClassRequest {
@@ -44,4 +45,23 @@ message GetStudentClassesRequest {
 
 message GetStudentClassesResponse {
   repeated StudentClass student_classes = 1;
+}
+
+message MostPopularCoursesIdsRequest {
+
+}
+
+message InstructorData {
+  string instructor_id = 1;
+  string instructor_name = 2;
+  string instructor_surname = 3;
+}
+
+message MostPopularCourseResponse {
+  int64 course_id = 1;
+  repeated InstructorData instructors_data = 2;
+}
+
+message MostPopularCoursesIdsResponse {
+  repeated MostPopularCourseResponse courses_instructors = 1;
 }
