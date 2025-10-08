@@ -5,6 +5,7 @@ import { errorHandler } from "../middlewares/errorHandler";
 import morgan from "morgan";
 import helmet from "helmet";
 import notificationRouter from "../routes/notification/notification";
+import { handleUserContext } from "../middlewares/handleUserContext";
 
 export function createApp() {
   const app = express();
@@ -13,6 +14,7 @@ export function createApp() {
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
   setupSwagger(app);
+  app.use(handleUserContext);
   app.use("/notification", notificationRouter);
   app.use(errorHandler);
   app.get("/", (req, res) => {

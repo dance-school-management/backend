@@ -1,9 +1,7 @@
 import amqp, { Channel, ChannelModel } from "amqplib";
-import { NOTIFICATIONS_QUEUE } from "./queues";
-import { handleNotification } from "./handlers/handleNotification";
-import "dotenv/config"
+import "dotenv/config";
 
-class RabbitMQConsumer {
+export class RabbitMQConsumer {
   connection!: ChannelModel;
   channel!: Channel;
   private connected!: Boolean;
@@ -28,25 +26,37 @@ class RabbitMQConsumer {
     }
   }
 
-  async consume(queue: string, handleIncomingNotification: (msg: string) => any) {
+  async createQueue(queue: string) {
     if (!this.channel) {
-      await this.connect()
+      await this.connect();
     }
 
     await this.channel.assertQueue(queue, {
       durable: true,
     });
 
+    console.log(`✅ Queue "${queue}" has been created!`);
+  }
+
+  async consume(
+    queue: string,
+    handleIncomingNotification: (msg: string) => any,
+  ) {
+    if (!this.channel) {
+      await this.connect();
+    }
+
+    await this.createQueue(queue);
+
     this.channel.consume(
       queue,
       (msg) => {
-        {
-          if (!msg) {
-            return console.error(`Invalid incoming message`);
-          }
-          handleIncomingNotification(msg?.content?.toString());
-          this.channel.ack(msg);
+        console.log("Message received")
+        if (!msg) {
+          return console.error(`Invalid incoming message`);
         }
+        handleIncomingNotification(msg?.content?.toString());
+        this.channel.ack(msg);
       },
       {
         noAck: false,
@@ -54,7 +64,3 @@ class RabbitMQConsumer {
     );
   }
 }
-
-const rmqConsumer = new RabbitMQConsumer()
-
-rmqConsumer.consume(NOTIFICATIONS_QUEUE, handleNotification)

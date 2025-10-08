@@ -6,8 +6,9 @@ import {
   updateNotificationStatus,
   updateNotificationContent,
   deleteNotification,
-} from "../../controllers/notification";
+} from "../../controllers/notification/notification";
 import { body, query, param } from "express-validator";
+import { registerDevice } from "../../controllers/notification/registerDevice";
 
 const router = Router();
 
@@ -115,5 +116,7 @@ router.delete(
   param("id").isNumeric().withMessage("id must be a number").toInt(),
   deleteNotification,
 );
+
+router.post("/register", registerDevice)
 
 export default router;

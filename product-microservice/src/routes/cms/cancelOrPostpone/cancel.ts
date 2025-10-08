@@ -3,6 +3,6 @@ import { cancelClass } from "../../../controllers/cms/cancelOrPostpone";
 
 const router = Router();
 
-router.get("/test", cancelClass);
+router.post("/class", cancelClass);
 
 export default router;

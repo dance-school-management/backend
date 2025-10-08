@@ -282,3 +282,29 @@
  *       404:
  *         description: Notification not found
  */
+
+/**
+ * @swagger
+ * /notification/register:
+ *   post:
+ *     summary: Register a device to push notifications
+ *     tags:
+ *       - push notifications
+ *     requestBody:
+ *        required: true
+ *        content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - pushToken
+ *             properties:
+ *               pushToken:
+ *                 type: string
+ *                 example: abc_123
+ *     responses:
+ *       204:
+ *         description: Notification deleted successfully
+ *       404:
+ *         description: Notification not found
+ */

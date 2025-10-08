@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
 import { check, validationResult } from "express-validator";
 import { StatusCodes } from "http-status-codes";
-import prisma from "../utils/prisma";
-import { checkValidations } from "../utils/errorHelpers";
-import { ProductType } from "../../generated/client";
+import { ProductType } from "../../../generated/client";
+import { checkValidations } from "../../utils/errorHelpers";
+import prisma from "../../utils/prisma";
 
 export async function getNotifications(req: Request, res: Response) {
   checkValidations(validationResult(req));
@@ -18,7 +18,7 @@ export async function getNotifications(req: Request, res: Response) {
     ...(productType && {
       productType: ProductType[productType as keyof typeof ProductType],
     }),
-    ...(userId && { userId: Number(userId) }),
+    ...(userId && { userId: userId as string}),
     ...(sendDate && {
       sendDate: {
         gte: new Date(`${sendDate.toString().split("T")[0]}T00:00:00Z`),

@@ -94,7 +94,6 @@ enum ClassStatus {
   NORMAL
   CANCELLED
   POSTPONED
-  MAKE_UP
 }
 
 enum CourseStatus {

@@ -1,7 +1,7 @@
 import amqp, { Channel, ChannelModel } from "amqplib";
 import "dotenv/config"
 
-class RabbitmqProducer {
+export class RabbitmqProducer {
   connection!: ChannelModel;
   channel!: Channel;
   private connected!: Boolean;
@@ -39,5 +39,3 @@ class RabbitmqProducer {
     }
   }
 }
-
-export const rmqProducer = new RabbitmqProducer()
