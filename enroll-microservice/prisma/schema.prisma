@@ -24,7 +24,7 @@ model ClassTicket {
   checkoutSessionId     String?          @unique
   studentId             String
   classId               Int
-  qrCodeUUID            String?          @default("abc")  
+  qrCodeUUID            String         @default(uuid()) @unique
   isConfirmed           Boolean?
   attendanceStatus      AttendanceStatus @default(ABSENT)
   attendanceLastUpdated DateTime?

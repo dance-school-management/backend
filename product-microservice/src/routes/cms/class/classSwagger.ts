@@ -156,7 +156,7 @@
  *       Returns a list of classes scheduled between two start dates,
  *       including course info, group number, vacancies, category details, and class status.
  *     tags:
- *       - cms - Schedule
+ *       - cms - Schedule (deprecated)
  *     parameters:
  *       - in: query
  *         name: startDateFromQ

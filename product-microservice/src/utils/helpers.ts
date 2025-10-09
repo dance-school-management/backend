@@ -54,3 +54,64 @@ export async function getCoursesPrices(coursesIds: number[]) {
 
   return coursesPrices;
 }
+
+export async function getCoursesStartAndEndDates(coursesIds: number[]) {
+  const allCoursesClasses = await prisma.class.findMany({
+    where: {
+      classTemplate: {
+        courseId: {
+          in: coursesIds,
+        },
+      },
+    },
+    include: {
+      classTemplate: true,
+    },
+  });
+
+  const allGroupNumbers = [
+    ...new Set(allCoursesClasses.map((acc) => acc.groupNumber)),
+  ];
+
+  const result = coursesIds.map((ci) => {
+    const courseEndDates = allGroupNumbers
+      .map((gn) =>
+        allCoursesClasses.reduce((acc, cur) => {
+          if (
+            cur.classTemplate.courseId === ci &&
+            cur.groupNumber === gn &&
+            cur.endDate > acc.endDate
+          )
+            return cur;
+          else return acc;
+        }),
+      )
+      .map((csd) => ({
+        groupNumber: csd.groupNumber,
+        courseEndDate: csd.endDate,
+      }));
+    const courseStartDates = allGroupNumbers
+      .map((gn) =>
+        allCoursesClasses.reduce((acc, cur) => {
+          if (
+            cur.classTemplate.courseId === ci &&
+            cur.groupNumber === gn &&
+            cur.startDate < acc.startDate
+          )
+            return cur;
+          else return acc;
+        }),
+      )
+      .map((csd) => ({
+        groupNumber: csd.groupNumber,
+        courseStartDate: csd.startDate,
+      }));
+    return {
+      courseId: ci,
+      courseStartDates: courseStartDates,
+      courseEndDates: courseEndDates
+    };
+  });
+
+  return result
+}

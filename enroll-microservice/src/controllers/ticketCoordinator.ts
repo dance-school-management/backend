@@ -10,20 +10,15 @@ export async function scanTicket(
     {},
     {},
     {
-      classId: number;
-      studentId: string;
       qrCodeUUID: string;
-      isConfirmation: boolean;
     }
   > & { user?: any },
   res: Response,
 ) {
-  const { classId, studentId, qrCodeUUID, isConfirmation } = req.body;
+  const { qrCodeUUID } = req.body;
 
   const enrollment = await prisma.classTicket.findFirst({
     where: {
-      classId,
-      studentId,
       qrCodeUUID,
     },
   });
@@ -36,24 +31,45 @@ export async function scanTicket(
     );
   }
 
-  if (isConfirmation) {
+  const classDetails = (await getClassesDetails([enrollment.classId]))
+    .classesdetailsList[0];
+
+  res.status(StatusCodes.OK).json({
+    message: "TICKET VALID",
+    attendanceStatus: enrollment.attendanceStatus,
+    ...classDetails,
+  });
+}
+
+export async function recordStudentAttendance(
+  req: Request<
+    {},
+    {},
+    {
+      qrCodeUUID: string;
+    }
+  > & { user?: any },
+  res: Response,
+) {
+  const { qrCodeUUID } = req.body;
+
+  try {
     await prisma.classTicket.update({
       where: {
-        studentId_classId: {
-          studentId,
-          classId,
-        },
+        qrCodeUUID,
       },
       data: {
         attendanceStatus: AttendanceStatus.PRESENT,
         attendanceLastUpdated: new Date(),
       },
     });
+  } catch (error) {
+    throw new UniversalError(
+      StatusCodes.BAD_REQUEST,
+      "Failed to record student's attendance",
+      [],
+    );
   }
 
-  const classDetails = await getClassesDetails([classId])
-
-  res
-    .status(StatusCodes.OK)
-    .json({ message: isConfirmation ? "ATTENDANCE_RECORDED" : "TICKET_VALID", ...classDetails });
+  res.status(StatusCodes.OK).json({ message: "Student's attendance recorded" });
 }

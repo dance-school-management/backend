@@ -5,7 +5,7 @@ const router = Router();
 
 router.get("/", getSchedule);
 router.get("/personal", getSchedulePersonal);
-router.post("/search/courses", getSearchAndFilterCourses)
-router.post("/courses/classes", getCoursesClasses)
+router.get("/search/courses", getSearchAndFilterCourses)
+router.get("/courses/classes", getCoursesClasses)
 
 export default router;

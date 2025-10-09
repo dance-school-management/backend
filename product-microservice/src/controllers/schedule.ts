@@ -149,17 +149,20 @@ export async function getSearchAndFilterCourses(
   req: Request<
     object,
     object,
+    {},
     {
-      danceCategoryIds: number[];
-      advancementLevelIds: number[];
-      priceMin: number;
-      priceMax: number;
+      danceCategoryIds: string;
+      advancementLevelIds: string;
+      priceMin: string;
+      priceMax: string;
     }
   > & { user?: any },
   res: Response,
 ) {
-  const { danceCategoryIds, advancementLevelIds, priceMax, priceMin } =
-    req.body;
+  const priceMax = Number(req.query.priceMax);
+  const priceMin = Number(req.query.priceMin);
+  const danceCategoryIds = JSON.parse(req.query.danceCategoryIds);
+  const advancementLevelIds = JSON.parse(req.query.advancementLevelIds);
 
   const where = {
     ...(danceCategoryIds.length > 0
@@ -259,16 +262,10 @@ export async function getSearchAndFilterCourses(
 }
 
 export async function getCoursesClasses(
-  req: Request<
-    object,
-    object,
-    {
-      coursesIds: number[];
-    }
-  > & { user?: any },
+  req: Request<object, object, {}, { coursesIds: string }> & { user?: any },
   res: Response,
 ) {
-  const { coursesIds } = req.body;
+  const coursesIds = JSON.parse(req.query.coursesIds);
 
   const allClasses = await prisma.class.findMany({
     where: {
@@ -284,9 +281,9 @@ export async function getCoursesClasses(
           course: {
             include: {
               danceCategory: true,
-              advancementLevel: true
-            }
-          }
+              advancementLevel: true,
+            },
+          },
         },
       },
     },
@@ -309,17 +306,15 @@ export async function getCoursesClasses(
 
   const keys = [...coursesClassesMap.keys()];
 
-  const coursesPrices = await getCoursesPrices(coursesIds)
+  const coursesPrices = await getCoursesPrices(coursesIds);
 
   keys.forEach((k) =>
     result.push({
       courseData: {
         ...allClasses.find((ac) => ac.classTemplate.courseId === k)
           ?.classTemplate.course,
-        coursePrice: coursesPrices.find(
-          (cp) => cp.courseId === k,
-        )?.price,
-        customPrice: undefined
+        coursePrice: coursesPrices.find((cp) => cp.courseId === k)?.price,
+        customPrice: undefined,
       },
       classes: coursesClassesMap.get(k),
     }),

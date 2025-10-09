@@ -1,32 +1,41 @@
 import { StatusCodes } from "http-status-codes";
-import { MostPopularCoursesIdsRequest, MostPopularCoursesIdsResponse } from "../../../../proto/ProductToEnrollMessages_pb";
+import {
+  MostPopularCoursesIdsAndInstructorsResponse,
+  MostPopularCoursesIdsRequest,
+} from "../../../../proto/ProductToEnrollMessages_pb";
 import { UniversalError } from "../../../errors/UniversalError";
 import { productWithEnrollClient } from "../../../utils/grpcClients";
 
-
-export async function getMostPopularCoursesIds(): Promise<MostPopularCoursesIdsResponse.AsObject> {
+export async function getMostPopularCoursesIds(consideredCoursesIds: number[]): Promise<MostPopularCoursesIdsAndInstructorsResponse.AsObject> {
   return new Promise((resolve, reject) => {
-    const request = new MostPopularCoursesIdsRequest()
-    productWithEnrollClient.getMostPopularCoursesIds(request, (err, response) => {
-      console.log(err);
-      if (err) {
-        let unErr: UniversalError;
-        try {
-          const error = JSON.parse(err.details);
-          unErr = new UniversalError(
-            error.statusCode,
-            error.message,
-            error.errors,
-          );
-        } catch (parseError) {
-          console.error("Failed to parse gRPC error details:", parseError);
-          unErr = new UniversalError(StatusCodes.INTERNAL_SERVER_ERROR, "Internal Server Error", []);
+    const request = new MostPopularCoursesIdsRequest().setConsideredCoursesIdsList(consideredCoursesIds);
+    productWithEnrollClient.getMostPopularCoursesIds(
+      request,
+      (err, response) => {
+        console.log(err);
+        if (err) {
+          let unErr: UniversalError;
+          try {
+            const error = JSON.parse(err.details);
+            unErr = new UniversalError(
+              error.statusCode,
+              error.message,
+              error.errors,
+            );
+          } catch (parseError) {
+            console.error("Failed to parse gRPC error details:", parseError);
+            unErr = new UniversalError(
+              StatusCodes.INTERNAL_SERVER_ERROR,
+              "Internal Server Error",
+              [],
+            );
+          }
+          reject(unErr);
+          return;
         }
-        reject(unErr);
+        resolve(response.toObject());
         return;
-      }
-      resolve(response.toObject());
-      return;
-    });
+      },
+    );
   });
 }

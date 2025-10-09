@@ -1,9 +1,9 @@
 import { sendUnaryData, ServerUnaryCall } from "@grpc/grpc-js";
 import {
   InstructorData,
-  MostPopularCourseResponse,
+  MostPopularCourseIdAndInstructors,
+  MostPopularCoursesIdsAndInstructorsResponse,
   MostPopularCoursesIdsRequest,
-  MostPopularCoursesIdsResponse,
 } from "../../../../proto/ProductToEnrollMessages_pb";
 import prisma from "../../../utils/prisma";
 import { getCoursesClasses } from "../../client/productCommunication/getCoursesClasses";
@@ -12,11 +12,17 @@ import { getInstructorsData } from "../../client/profileCommunication/getInstruc
 export async function getMostPopularCoursesIds(
   call: ServerUnaryCall<
     MostPopularCoursesIdsRequest,
-    MostPopularCoursesIdsResponse
+    MostPopularCoursesIdsAndInstructorsResponse
   >,
-  callback: sendUnaryData<MostPopularCoursesIdsResponse>,
+  callback: sendUnaryData<MostPopularCoursesIdsAndInstructorsResponse>,
 ): Promise<void> {
+  const consideredCoursesIds = call.request.getConsideredCoursesIdsList()
   const coursesTicketsCount = await prisma.courseTicket.groupBy({
+    where: {
+      courseId: {
+        in: consideredCoursesIds
+      }
+    },
     by: ["courseId"],
     _count: {
       courseId: true,
@@ -78,20 +84,20 @@ export async function getMostPopularCoursesIds(
       courseInstructorsIds?.includes(aid.instructorId),
     );
 
-    const courseInstructorsDataProtobuf = new MostPopularCourseResponse()
-    courseInstructorsDataProtobuf.setCourseId(courseId)
+    const courseInstructorsDataProtobuf = new MostPopularCourseIdAndInstructors();
+    courseInstructorsDataProtobuf.setCourseId(courseId);
     const instructorsDataList = courseInstructorsData.map((cid) => {
-      const iid = new InstructorData()
-      iid.setInstructorId(cid.instructorId)
-      iid.setInstructorName(cid.instructorName)
-      iid.setInstructorSurname(cid.instructorSurname)
-      return iid
-    })
-    courseInstructorsDataProtobuf.setInstructorsDataList(instructorsDataList)
-    return courseInstructorsDataProtobuf
+      const iid = new InstructorData();
+      iid.setInstructorId(cid.instructorId);
+      iid.setInstructorName(cid.instructorName);
+      iid.setInstructorSurname(cid.instructorSurname);
+      return iid;
+    });
+    courseInstructorsDataProtobuf.setInstructorsDataList(instructorsDataList);
+    return courseInstructorsDataProtobuf;
   });
 
-  const response = new MostPopularCoursesIdsResponse()
-  response.setCoursesInstructorsList(responseProtobuf)
+  const response = new MostPopularCoursesIdsAndInstructorsResponse();
+  response.setCoursesInstructorsList(responseProtobuf);
   callback(null, response);
 }

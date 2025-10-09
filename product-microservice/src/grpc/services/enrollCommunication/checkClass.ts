@@ -57,6 +57,7 @@ export async function checkClass(
       .filter((cc) => cc.groupNumber === classObj.groupNumber)
       .reduce(
         (acc, cur) => (cur.startDate < acc ? cur.startDate : acc),
+        // Biggest date possible
         new Date(8640000000000000),
       );
     const date = new Date();

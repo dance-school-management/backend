@@ -21,15 +21,10 @@
 /**
  * @swagger
  * /ticket/coordinator/scan:
- *   post:
- *     summary: Mark student attendance by scanning ticket
- *     description: >
- *       Marks a student as present for a specific class by scanning their ticket.
- *       Requires valid `classId`, `studentId` and `qrCodeUUID`.
- *       Fails if no ticket is found in the database.
- *       If isConfirmation is set to `false`, attendance is not recorded. Otherwise, it is.
+ *   put:
+ *     summary: Scan ticket to mark student's attendance
  *     tags:
- *       - instructor - tickets
+ *       - coordinator - tickets
  *     requestBody:
  *       required: true
  *       content:
@@ -37,27 +32,44 @@
  *           schema:
  *             type: object
  *             required:
- *               - classId
- *               - studentId
  *               - qrCodeUUID
- *               - isConfirmation
  *             properties:
- *               classId:
- *                 type: integer
- *                 example: 12
- *               studentId:
- *                 type: string
- *                 example: "user_abc123"
  *               qrCodeUUID:
  *                 type: string
  *                 example: "some_uuid_1234"
- *               isConfirmation:
- *                 type: boolean
- *                 example: false
  * 
  *     responses:
  *       "200":
  *         description: Ticket valid or attendance recorded successfully
+ *       "400":
+ *         description: Ticket not found
+ *       "500":
+ *         description: Internal Server Error
+ */
+
+/**
+ * @swagger
+ * /ticket/coordinator/scan:
+ *   post:
+ *     summary: Scan ticket to check if it's valid
+ *     tags:
+ *       - coordinator - tickets
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - qrCodeUUID
+ *             properties:
+ *               qrCodeUUID:
+ *                 type: string
+ *                 example: "some_uuid_1234"
+ * 
+ *     responses:
+ *       "200":
+ *         description: Ticket valid
  *       "400":
  *         description: Ticket not found
  *       "500":

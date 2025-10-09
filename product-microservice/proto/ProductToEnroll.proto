@@ -11,5 +11,5 @@ service ProductToEnroll {
 
   rpc GetClassesStudents (ClassIdsRequest) returns (StudentsClassesResponse);
   rpc GetStudentClasses (GetStudentClassesRequest) returns (GetStudentClassesResponse);
-  rpc GetMostPopularCoursesIds (MostPopularCoursesIdsRequest) returns (MostPopularCoursesIdsResponse);
+  rpc GetMostPopularCoursesIds (MostPopularCoursesIdsRequest) returns (MostPopularCoursesIdsAndInstructorsResponse);
 }

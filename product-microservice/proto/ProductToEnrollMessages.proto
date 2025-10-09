@@ -48,7 +48,7 @@ message GetStudentClassesResponse {
 }
 
 message MostPopularCoursesIdsRequest {
-
+  repeated int64 considered_courses_ids = 1;
 }
 
 message InstructorData {
@@ -57,11 +57,11 @@ message InstructorData {
   string instructor_surname = 3;
 }
 
-message MostPopularCourseResponse {
+message MostPopularCourseIdAndInstructors {
   int64 course_id = 1;
   repeated InstructorData instructors_data = 2;
 }
 
-message MostPopularCoursesIdsResponse {
-  repeated MostPopularCourseResponse courses_instructors = 1;
+message MostPopularCoursesIdsAndInstructorsResponse {
+  repeated MostPopularCourseIdAndInstructors courses_instructors = 1;
 }
