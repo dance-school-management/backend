@@ -11,6 +11,8 @@ class SearchCourseRequest(BaseModel):
   searchQuery: str
   danceCategoryId: int
   advancementLevelId: int
+  priceMin: float
+  priceMax: float
   
 @app.get("/hello")
 async def hello():
@@ -31,7 +33,8 @@ async def searchCourse(request: SearchCourseRequest):
         "bool": {
             "must": [
                 {"term": {"dance_category_id": request.danceCategoryId}},
-                {"term": {"advancement_level_id": request.advancementLevelId}}
+                {"term": {"advancement_level_id": request.advancementLevelId}},
+                {"range": {"price": {"gte": request.priceMin, "lte": request.priceMax}}}
             ]
         }
     }

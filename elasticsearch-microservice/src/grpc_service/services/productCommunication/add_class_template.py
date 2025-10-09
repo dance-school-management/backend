@@ -13,7 +13,8 @@ def add_class_template(self, request: AddClassTemplateRequest, context):
         "description": request.class_template_description,
         "description_embedded": vector,
         "dance_category_id": request.dance_category_id,
-        "advancement_level_id": request.advancement_level_id
+        "advancement_level_id": request.advancement_level_id,
+        "price": request.price
       })
       res = esClient.index(index="courses", document=doc, refresh="wait_for")
       print(res)
