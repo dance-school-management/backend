@@ -56,6 +56,17 @@ export async function getSchedule(
           ...cd,
         };
       });
+    } else if (req.user?.role === "INSTRUCTOR") {
+      const instructorClasses = await getInstructorsClasses([req.user.id])
+      result = classesData.map((cd) => {
+        const instructorClass = instructorClasses.instructorsClassesIdsList.find(
+          (sc) => sc.classId === cd.id,
+        );
+        return {
+          owned: Boolean(instructorClass),
+          ...cd,
+        };
+      });
     } else {
       result = classesData;
     }
