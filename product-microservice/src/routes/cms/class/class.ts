@@ -5,7 +5,6 @@ import {
   createClass,
   editClassStatus,
   getClassDetails,
-  getSchedule,
 } from "../../../controllers/cms/class";
 import { body, param, query } from "express-validator";
 
@@ -25,15 +24,6 @@ router.post(
     .toDate(),
 
   createClass,
-);
-
-router.get(
-  "/schedule",
-  query(["startDateFromQ", "startDateToQ"])
-    .isISO8601()
-    .withMessage("Dates must be of type ISO8601")
-    .toDate(),
-  getSchedule,
 );
 
 router.put("/status/edit", editClassStatus);

@@ -6,16 +6,10 @@ import { AttendanceStatus } from "../../generated/client";
 import { getClassesDetails } from "../grpc/client/productCommunication/getClassesDetails";
 
 export async function scanTicket(
-  req: Request<
-    {},
-    {},
-    {
-      qrCodeUUID: string;
-    }
-  > & { user?: any },
+  req: Request<{}, {}, {}, { qrCodeUUID: string }> & { user?: any },
   res: Response,
 ) {
-  const { qrCodeUUID } = req.body;
+  const { qrCodeUUID } = req.query;
 
   const enrollment = await prisma.classTicket.findFirst({
     where: {

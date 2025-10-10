@@ -6,6 +6,6 @@ const router = Router();
 
 router.get("/", getStudentTickets);
 router.put("/scan", recordStudentAttendance);
-router.post("/scan", scanTicket)
+router.get("/scan", scanTicket)
 
 export default router;

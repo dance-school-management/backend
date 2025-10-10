@@ -50,23 +50,18 @@
 /**
  * @swagger
  * /ticket/coordinator/scan:
- *   post:
+ *   get:
  *     summary: Scan ticket to check if it's valid
  *     tags:
  *       - coordinator - tickets
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             required:
- *               - qrCodeUUID
- *             properties:
- *               qrCodeUUID:
- *                 type: string
- *                 example: "some_uuid_1234"
- * 
+ *     parameters:
+ *       - in: query
+ *         name: qrCodeUUID
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: UUID of the qr code
+ *         example: abc12934n1woni1fi
  *     responses:
  *       "200":
  *         description: Ticket valid

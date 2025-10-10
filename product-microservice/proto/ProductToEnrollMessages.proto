@@ -47,8 +47,9 @@ message GetStudentClassesResponse {
   repeated StudentClass student_classes = 1;
 }
 
-message MostPopularCoursesIdsRequest {
+message ConsideredCoursesIdsRequest {
   repeated int64 considered_courses_ids = 1;
+  int32 topK = 2;
 }
 
 message InstructorData {

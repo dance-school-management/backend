@@ -5,12 +5,17 @@ import prisma from "../../utils/prisma";
 import { getCoursesPrices } from "../../utils/helpers";
 
 export async function getMostPopularCourses(
-  req: Request<{}, {}, {}, { startDateFrom: string; startDateTo: string }> & {
+  req: Request<
+    {},
+    {},
+    {},
+    { startDateFrom: string; startDateTo: string; topK: number }
+  > & {
     user?: any;
   },
   res: Response,
 ) {
-  const { startDateFrom, startDateTo } = req.query;
+  const { startDateFrom, startDateTo, topK } = req.query;
 
   const consideredCoursesIds = (
     await prisma.class.findMany({
@@ -31,7 +36,7 @@ export async function getMostPopularCourses(
   );
 
   const mostPopularCoursesIdsWithInstructors = (
-    await getMostPopularCoursesIds(uniqueConsideredCoursesIds)
+    await getMostPopularCoursesIds(uniqueConsideredCoursesIds, topK)
   ).coursesInstructorsList;
 
   const mostPopularCoursesIds = mostPopularCoursesIdsWithInstructors.map(

@@ -25,6 +25,13 @@
  *           example: "2025-12-31T23:59:59Z"
  *         required: true
  *         description: End date of the range (inclusive)
+ *       - in: query
+ *         name: topK
+ *         schema:
+ *           type: integer
+ *           example: 10
+ *         required: true
+ *         description: (k) in "top k most popular courses" 
  *     responses:
  *       200:
  *         description: Successful response containing a list of the most popular courses.

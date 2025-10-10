@@ -1,9 +1,9 @@
 import { sendUnaryData, ServerUnaryCall } from "@grpc/grpc-js";
 import {
+  ConsideredCoursesIdsRequest,
   InstructorData,
   MostPopularCourseIdAndInstructors,
   MostPopularCoursesIdsAndInstructorsResponse,
-  MostPopularCoursesIdsRequest,
 } from "../../../../proto/ProductToEnrollMessages_pb";
 import prisma from "../../../utils/prisma";
 import { getCoursesClasses } from "../../client/productCommunication/getCoursesClasses";
@@ -11,12 +11,13 @@ import { getInstructorsData } from "../../client/profileCommunication/getInstruc
 
 export async function getMostPopularCoursesIds(
   call: ServerUnaryCall<
-    MostPopularCoursesIdsRequest,
+    ConsideredCoursesIdsRequest,
     MostPopularCoursesIdsAndInstructorsResponse
   >,
   callback: sendUnaryData<MostPopularCoursesIdsAndInstructorsResponse>,
 ): Promise<void> {
   const consideredCoursesIds = call.request.getConsideredCoursesIdsList()
+  const topK = call.request.getTopk()
   const coursesTicketsCount = await prisma.courseTicket.groupBy({
     where: {
       courseId: {
@@ -75,7 +76,7 @@ export async function getMostPopularCoursesIds(
 
   const result = coursesTicketsCount.slice(0, 10).map((ctc) => ctc.courseId);
 
-  const responseProtobuf = result.map((r) => {
+  const responseProtobuf = result.slice(0, topK).map((r) => {
     const courseId = r;
     const courseInstructorsIds = coursesInstructors.find(
       (ci) => ci.courseId === courseId,
