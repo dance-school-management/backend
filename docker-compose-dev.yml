@@ -227,6 +227,8 @@ services:
       interval: 10s
       timeout: 3s
       retries: 30
+    networks:
+      - microservices-network
   kibana:
     image: kibana:9.1.3
     environment:
@@ -236,6 +238,8 @@ services:
     depends_on:
       elasticsearch:
         condition: service_healthy
+    networks:
+      - microservices-network
   elasticsearch-microservice:
     build:
       dockerfile: Dockerfile
@@ -250,10 +254,13 @@ services:
     depends_on:
       elasticsearch:
         condition: service_healthy
+    env_file: ./elasticsearch-microservice/.env.development
     environment:
       - CHOKIDAR_USEPOLLING=1
       - WATCHPACK_POLLING=true
       - WATCHFILES_FORCE_POLLING=true
+    networks:
+      - microservices-network
 
 volumes:
   product_data:

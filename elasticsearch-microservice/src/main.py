@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from src.elastic import esClient
 from src.grpc_service.server import serve_gRPC
 from src.model import embed
+from src.grpc_client.productCommunication.getCoursesData import getCoursesData
 from pydantic import BaseModel
 import threading
 
@@ -32,8 +33,8 @@ async def searchCourse(request: SearchCourseRequest):
     "filter": {
         "bool": {
             "must": [
-                {"term": {"dance_category_id": request.danceCategoryId}},
-                {"term": {"advancement_level_id": request.advancementLevelId}},
+                {"term": {"dance_category.id": request.danceCategoryId}},
+                {"term": {"advancement_level.id": request.advancementLevelId}},
                 {"range": {"price": {"gte": request.priceMin, "lte": request.priceMax}}}
             ]
         }
@@ -41,8 +42,8 @@ async def searchCourse(request: SearchCourseRequest):
   }
 
   res = esClient.search(index="courses", knn=knn)
-  
-  return [{"description": hit["_source"]["description"], "score": hit["_score"]} for hit in res.body["hits"]["hits"]]
+
+  return [{"description": hit["_source"]["description"], "score": hit["_score"] } for hit in res.body["hits"]["hits"]]
 
 
 threading.Thread(target=serve_gRPC, daemon=True).start()

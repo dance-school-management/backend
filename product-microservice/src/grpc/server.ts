@@ -1,8 +1,9 @@
 import logger from "../utils/winston";
 import { Server, ServerCredentials } from "@grpc/grpc-js";
-import { EnrollToProductServerImpl, ProfileToProductServerImpl } from "./serverImpl";
+import { ElasticsearchToProductServerImpl, EnrollToProductServerImpl, ProfileToProductServerImpl } from "./serverImpl";
 import { EnrollToProductService } from "../../proto/EnrollToProduct_grpc_pb";
 import { ProfileToProductService } from "../../proto/ProfileToProduct_grpc_pb";
+import { ElasticsearchToProductService } from "../../proto/ElasticsearchToProduct_grpc_pb";
 const PORT = 50051;
 const HOST = "localhost";
 
@@ -10,6 +11,7 @@ export function createGrpcServer() {
   const server = new Server();
   server.addService(EnrollToProductService, EnrollToProductServerImpl);
   server.addService(ProfileToProductService, ProfileToProductServerImpl);
+  server.addService(ElasticsearchToProductService, ElasticsearchToProductServerImpl)
   server.bindAsync(
     `product-microservice:${PORT}`,
     ServerCredentials.createInsecure(),

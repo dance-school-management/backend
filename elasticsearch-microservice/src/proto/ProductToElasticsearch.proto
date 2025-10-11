@@ -7,12 +7,25 @@ service ProductToElasticsearch {
   rpc AddClassTemplate (AddClassTemplateRequest) returns (AddClassTemplateResponse);
 } 
 
+message DanceCategory {
+  int64 id = 1;
+  string name = 2;
+  string description = 3;
+}
+
+message AdvancementLevel {
+  int64 id = 1;
+  string name = 2;
+  string description = 3;
+}
+
 message AddClassTemplateRequest {
   int64 class_template_id = 1;
-  string class_template_description = 2;
-  int64 dance_category_id = 3;
-  int64 advancement_level_id = 4;
-  float price = 5;
+  string class_template_name = 2;
+  string class_template_description = 3;
+  float price = 4;
+  optional DanceCategory dance_category = 5;
+  optional AdvancementLevel advancement_level = 6;
 }
 
 message AddClassTemplateResponse {
@@ -21,10 +34,12 @@ message AddClassTemplateResponse {
 
 message AddCourseRequest {
   int64 course_id = 1;
-  string course_description = 2;
-  int64 dance_category_id = 3;
-  int64 advancement_level_id = 4;
-  float price = 5;
+  string course_name = 2;
+  string course_description = 3;
+  float price = 4;
+  optional DanceCategory dance_category = 5;
+  optional AdvancementLevel advancement_level = 6;
+  
 }
 
 message AddCourseResponse {
