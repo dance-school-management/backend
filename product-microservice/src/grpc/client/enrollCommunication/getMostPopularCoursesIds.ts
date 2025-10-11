@@ -1,17 +1,14 @@
 import { StatusCodes } from "http-status-codes";
-import {
-  ConsideredCoursesIdsRequest,
-  MostPopularCoursesIdsAndInstructorsResponse,
-} from "../../../../proto/ProductToEnrollMessages_pb";
+import { GetMostPopularCoursesIdsRequest, GetMostPopularCoursesIdsResponse } from "../../../../proto/ProductToEnrollMessages_pb";
 import { UniversalError } from "../../../errors/UniversalError";
 import { productWithEnrollClient } from "../../../utils/grpcClients";
 
 export async function getMostPopularCoursesIds(
   consideredCoursesIds: number[],
   topK: number,
-): Promise<MostPopularCoursesIdsAndInstructorsResponse.AsObject> {
+): Promise<GetMostPopularCoursesIdsResponse.AsObject> {
   return new Promise((resolve, reject) => {
-    const request = new ConsideredCoursesIdsRequest()
+    const request = new GetMostPopularCoursesIdsRequest()
       .setConsideredCoursesIdsList(consideredCoursesIds)
       .setTopk(topK);
     productWithEnrollClient.getMostPopularCoursesIds(

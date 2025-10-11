@@ -5,7 +5,6 @@ import { recordStudentAttendance, scanTicket } from "../../controllers/ticketCoo
 const router = Router();
 
 router.get("/", getStudentTickets);
-router.put("/scan", recordStudentAttendance);
-router.get("/scan", scanTicket)
+
 
 export default router;

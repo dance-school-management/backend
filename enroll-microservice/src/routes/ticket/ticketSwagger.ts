@@ -1,6 +1,6 @@
 /**
  * @swagger
- * /ticket/student:
+ * /ticket/retrieve:
  *   get:
  *     summary: Get all class tickets for the authenticated student
  *     description: >
@@ -20,7 +20,7 @@
 
 /**
  * @swagger
- * /ticket/coordinator/scan:
+ * /ticket/scan:
  *   put:
  *     summary: Scan ticket to mark student's attendance
  *     tags:
@@ -49,7 +49,7 @@
 
 /**
  * @swagger
- * /ticket/coordinator/scan:
+ * /ticket/scan:
  *   get:
  *     summary: Scan ticket to check if it's valid
  *     tags:

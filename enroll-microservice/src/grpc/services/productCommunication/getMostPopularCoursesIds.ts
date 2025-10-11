@@ -1,9 +1,9 @@
 import { sendUnaryData, ServerUnaryCall } from "@grpc/grpc-js";
 import {
-  ConsideredCoursesIdsRequest,
+  GetMostPopularCoursesIdsRequest,
+  GetMostPopularCoursesIdsResponse,
   InstructorData,
   MostPopularCourseIdAndInstructors,
-  MostPopularCoursesIdsAndInstructorsResponse,
 } from "../../../../proto/ProductToEnrollMessages_pb";
 import prisma from "../../../utils/prisma";
 import { getCoursesClasses } from "../../client/productCommunication/getCoursesClasses";
@@ -11,10 +11,10 @@ import { getInstructorsData } from "../../client/profileCommunication/getInstruc
 
 export async function getMostPopularCoursesIds(
   call: ServerUnaryCall<
-    ConsideredCoursesIdsRequest,
-    MostPopularCoursesIdsAndInstructorsResponse
+    GetMostPopularCoursesIdsRequest,
+    GetMostPopularCoursesIdsResponse
   >,
-  callback: sendUnaryData<MostPopularCoursesIdsAndInstructorsResponse>,
+  callback: sendUnaryData<GetMostPopularCoursesIdsResponse>,
 ): Promise<void> {
   const consideredCoursesIds = call.request.getConsideredCoursesIdsList()
   const topK = call.request.getTopk()
@@ -98,7 +98,7 @@ export async function getMostPopularCoursesIds(
     return courseInstructorsDataProtobuf;
   });
 
-  const response = new MostPopularCoursesIdsAndInstructorsResponse();
+  const response = new GetMostPopularCoursesIdsResponse();
   response.setCoursesInstructorsList(responseProtobuf);
   callback(null, response);
 }
