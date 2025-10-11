@@ -5,6 +5,7 @@ import {
 } from "../../../../proto/ProductToEnrollMessages_pb";
 import { sendUnaryData, ServerUnaryCall } from "@grpc/grpc-js";
 import prisma from "../../../utils/prisma";
+import { PaymentStatus } from "../../../../generated/client";
 
 export async function getStudentClasses(
   call: ServerUnaryCall<GetStudentClassesRequest, GetStudentClassesResponse>,
@@ -14,11 +15,12 @@ export async function getStudentClasses(
 
   const studentClasses = await prisma.classTicket.findMany({
     where: {
-      studentId,
+      studentId
     },
     select: {
       classId: true,
       studentId: true,
+      paymentStatus: true
     },
   });
 
@@ -26,6 +28,7 @@ export async function getStudentClasses(
     const sc = new StudentClass();
     sc.setClassId(item.classId);
     sc.setStudentId(item.studentId);
+    sc.setPaymentStatus(item.paymentStatus)
     return sc;
   });
 

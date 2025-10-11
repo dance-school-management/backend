@@ -86,7 +86,7 @@ export async function makeClassOrder(
       classId,
       studentId,
       isConfirmed: false,
-      paymentStatus: PaymentStatus.PENDING,
+      paymentStatus: PaymentStatus.PENDING
     },
   });
 
@@ -169,7 +169,7 @@ export async function makeCourseOrder(
           classId: classObj.classId,
           studentId,
           isConfirmed: false,
-          paymentStatus: PaymentStatus.PART_OF_COURSE,
+          paymentStatus: PaymentStatus.PART_OF_COURSE
         })),
       });
       await tx.courseTicket.create({

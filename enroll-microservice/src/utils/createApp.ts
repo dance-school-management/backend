@@ -5,7 +5,8 @@ import { errorHandler } from "../middlewares/errorHandler";
 import morgan from "morgan";
 import helmet from "helmet";
 import orderRouter from "../routes/order/order";
-import ticketRouter from "../routes/ticket/ticket";
+import ticketRetrieveRouter from "../routes/ticket/ticketRetrieve";
+import ticketScanRouter from "../routes/ticket/ticketScan"
 import { UniversalError } from "../errors/UniversalError";
 import { handleUserContext } from "../middlewares/handleUserContext";
 import { checkRole } from "../middlewares/checkRole";
@@ -25,8 +26,8 @@ export function createApp() {
   app.use(handleUserContext);
   app.use("/order", checkRole(["STUDENT"]), orderRouter);
   app.use("/progress", checkRole(["STUDENT"]), progressRouter)
-  app.use("/ticket/student", checkRole(["STUDENT"]), ticketRouter);
-  app.use("/ticket/instructor", checkRole(["INSTRUCTOR"]), ticketRouter);
+  app.use("/ticket/retrieve", checkRole(["STUDENT"]), ticketRetrieveRouter);
+  app.use("/ticket/scan", checkRole(["COORDINATOR"]), ticketScanRouter);
   app.get("/", (req, res) => {
     res.send("Hello from enroll-microservice");
   });

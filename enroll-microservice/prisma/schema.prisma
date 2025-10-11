@@ -20,10 +20,11 @@ enum AttendanceStatus {
   ABSENT
 }
 
-model ClassTicket {
+model ClassTicket {         
   checkoutSessionId     String?          @unique
   studentId             String
   classId               Int
+  qrCodeUUID            String         @default(uuid()) @unique
   isConfirmed           Boolean?
   attendanceStatus      AttendanceStatus @default(ABSENT)
   attendanceLastUpdated DateTime?
