@@ -15,6 +15,7 @@ const FRONTEND_URL = process.env.FRONTEND_URL;
 const AUTH_MICROSERVICE_URL = process.env.AUTH_MICROSERVICE_URL;
 const ENROLL_MICROSERVICE_URL = process.env.ENROLL_MICROSERVICE_URL;
 const PROFILE_MICROSERVICE_URL = process.env.PROFILE_MICROSERVICE_URL;
+const ELASTICSEARCH_MICROSERVICE_URL = process.env.ELASTICSEARCH_MICROSERVICE_URL;
 const NODE_ENV = process.env.NODE_ENV;
 
 app.use(
@@ -102,6 +103,30 @@ if (PROFILE_MICROSERVICE_URL) {
   }
   app.use("/profile/uploads", proxyMiddlewareProfileAdditional);
   app.use("/profile", authenticate(), proxyMiddlewareProfile);
+}
+
+if (ELASTICSEARCH_MICROSERVICE_URL) {
+  const proxyMiddlewareElasticsearch = createProxyMiddleware<Request, Response>({
+    target: ELASTICSEARCH_MICROSERVICE_URL,
+    changeOrigin: true,
+  });
+
+  const proxyMiddlewareElasticsearchAdditional = createProxyMiddleware<
+    Request,
+    Response
+  >({
+    target: ELASTICSEARCH_MICROSERVICE_URL,
+    changeOrigin: true,
+    pathRewrite: (path, req) => {
+      const currPath = req.originalUrl;
+      return currPath.replace("/elasticsearch", "");
+    },
+  });
+
+  if (NODE_ENV === "development") {
+    app.use("/elasticsearch/api-docs", proxyMiddlewareElasticsearchAdditional);
+  }
+  app.use("/elasticsearch", authenticate(), proxyMiddlewareElasticsearch);
 }
 
 app.get("/", (req: Request, res) => {
