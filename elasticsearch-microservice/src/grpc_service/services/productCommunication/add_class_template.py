@@ -1,4 +1,4 @@
-from src.elastic import esClient
+from src.elastic import esClientDocker
 from src.proto.ProductToElasticsearch_pb2 import AddClassTemplateRequest, AddClassTemplateResponse
 from src.model import embed
 import json
@@ -25,8 +25,8 @@ def add_class_template(self, request: AddClassTemplateRequest, context):
         },
         "price": request.price
       })
-      res = esClient.index(index="courses", document=doc, refresh="wait_for")
+      res = esClientDocker.index(index="class_templates", document=doc, refresh="wait_for")
       print(res)
-      return AddClassTemplateResponse(message="Course created successfully")
+      return AddClassTemplateResponse(message="Class template created successfully")
     except Exception as e:
       context.abort(grpc.StatusCode.INTERNAL, f"Unexpected error: {e}")

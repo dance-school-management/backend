@@ -1,4 +1,4 @@
-from src.elastic import esClient
+from src.elastic import esClientDocker
 from src.proto.ProductToElasticsearch_pb2 import AddCourseRequest, AddCourseResponse
 from src.model import embed
 import json
@@ -25,7 +25,7 @@ def add_course(self, request: AddCourseRequest, context):
         },
         "price": request.price
       })
-      res = esClient.index(index="courses", document=doc, refresh="wait_for")
+      res = esClientDocker.index(index="courses", document=doc, refresh="wait_for")
       print(res)
       return AddCourseResponse(message="Course created successfully")
     except Exception as e:

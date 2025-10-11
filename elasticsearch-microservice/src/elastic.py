@@ -1,3 +1,4 @@
 from elasticsearch import Elasticsearch
 
-esClient = Elasticsearch("http://elasticsearch:9200")
+esClientDocker = Elasticsearch("http://elasticsearch:9200")
+esClientHost = Elasticsearch("http://localhost:9200")
