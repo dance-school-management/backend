@@ -1,4 +1,4 @@
-FROM es-microservice-prebuilt:0.1.0
+FROM adam523/es-microservice-prebuilt:0.1.0
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
