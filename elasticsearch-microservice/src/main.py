@@ -1,4 +1,4 @@
-from typing import List, Literal
+from typing import List, Literal, Optional
 from fastapi import FastAPI, Depends, Query
 from src.elastic import esClientDocker
 from src.grpc_service.server import serve_gRPC
@@ -24,10 +24,12 @@ async def search(
   searchQuery: str = Query(..., example="Ballet for children"),
   danceCategoriesIds: List[int] = Query(..., example=[1, 2, 3, 5]),
   advancementLevelsIds: List[int] = Query(..., example=[1, 2]),
-  priceMin: float = Query(..., example=20),
-  priceMax: float = Query(..., example=300),
+  priceMin: Optional[float] = Query(None, example=20),
+  priceMax: Optional[float] = Query(None, example=300),
   topK: int = Query(..., example=5),
-  numCandidates: int = Query(..., example=50)
+  numCandidates: int = Query(..., example=50),
+  page: int = Query(..., example=1),
+  itemsPerPage: int = Query(..., example=5)
 ):
 
   query_vector = embed(searchQuery, is_query=True)
@@ -39,6 +41,12 @@ async def search(
 
   if len(advancementLevelsIds) > 0:
       filters.append({"terms": {"advancement_level.id": advancementLevelsIds}})
+
+  if priceMin == None:
+     priceMin = 0
+
+  if priceMax == None:
+     priceMax = 99999
 
   filters.append({
       "range": {
@@ -72,7 +80,7 @@ async def search(
 
   result.sort(key=lambda r: r["score"], reverse=True)
 
-  return result
+  return result[(page - 1) * itemsPerPage : page * itemsPerPage]
 
 
 threading.Thread(target=serve_gRPC, daemon=True).start()
