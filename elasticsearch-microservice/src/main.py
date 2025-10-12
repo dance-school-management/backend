@@ -21,7 +21,7 @@ async def hello():
 @app.get("/search")
 async def search(
   entity: Literal["courses", "class_templates"] = Query(),
-  searchQuery: str = Query(..., example="Ballet for children"),
+  searchQuery: str = Query("", example="Ballet for children"),
   danceCategoriesIds: List[int] = Query(..., example=[1, 2, 3, 5]),
   advancementLevelsIds: List[int] = Query(..., example=[1, 2]),
   priceMin: Optional[float] = Query(None, example=20),
@@ -31,6 +31,26 @@ async def search(
   page: int = Query(..., example=1),
   itemsPerPage: int = Query(..., example=5)
 ):
+
+  if not searchQuery:
+    
+    query = {
+      "from": (page - 1) * itemsPerPage,
+      "size": itemsPerPage,
+      "query": {
+          "match_all": {}
+      }
+    }
+
+    res = esClientDocker.search(index=entity, body=query)
+
+    result = []
+
+    for hit in res.body["hits"]["hits"]:
+      new_result = {k: v for k, v in hit["_source"].items() if k != "description_embedded"}
+      result.append(new_result)
+      
+    return result
 
   query_vector = embed(searchQuery, is_query=True)
 
