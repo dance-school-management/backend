@@ -15,6 +15,7 @@ import { stripe } from "../utils/stripe";
 import { getClassesDetails } from "../grpc/client/productCommunication/getClassesDetails";
 import { randomUUID } from "crypto";
 import { getCoursesDetails } from "../grpc/client/productCommunication/getCoursesDetails";
+import { convertDateToReadable } from "../utils/helpers";
 
 export async function makeClassOrder(
   req: Request<object, object, ClassTicket> & { user?: any },
@@ -58,17 +59,25 @@ export async function makeClassOrder(
 
   const price = theClass.price;
 
+  const startDate = new Date(theClass.startDate);
+  const endDate = new Date(theClass.endDate);
+
   const session = await stripe.checkout.sessions.create(
     {
       mode: "payment",
-      success_url: "https://www.youtube.com/watch?v=0VE0zjlbD60",
-      cancel_url: "https://www.youtube.com/watch?v=t8lnCA8PHJM",
+      payment_method_types: ["blik", "p24", "card"],
+      success_url: "http://localhost:3000/payment/success",
       line_items: [
         {
           price_data: {
             product_data: {
               name: theClass.name,
-              description: theClass.description,
+              description:
+                `start date: ${convertDateToReadable(startDate)} | ` +
+                `end date: ${convertDateToReadable(endDate)} | ` +
+                `dance category: ${theClass.danceCategoryName ?? "not provided"} | ` +
+                `advancement level: ${theClass.advancementLevelName ?? "not provided"} | ` +
+                `class description: ${theClass.description}`,
             },
             unit_amount: price * 100,
             currency: "pln",
@@ -86,7 +95,7 @@ export async function makeClassOrder(
       classId,
       studentId,
       isConfirmed: false,
-      paymentStatus: PaymentStatus.PENDING
+      paymentStatus: PaymentStatus.PENDING,
     },
   });
 
@@ -143,14 +152,17 @@ export async function makeCourseOrder(
   const session = await stripe.checkout.sessions.create(
     {
       mode: "payment",
-      success_url: "https://www.youtube.com/watch?v=0VE0zjlbD60",
-      cancel_url: "https://www.youtube.com/watch?v=t8lnCA8PHJM",
+      payment_method_types: ["blik", "p24", "card"],
+      success_url: "http://localhost:3000/payment/success",
       line_items: [
         {
           price_data: {
             product_data: {
               name: theCourse.name,
-              description: theCourse.description,
+              description:
+                `dance category: ${theCourse.danceCategoryName ?? "not provided"} | ` +
+                `advancement level: ${theCourse.advancementLevelName ?? "not provided"} | ` +
+                `course description: ${theCourse.description}`,
             },
             unit_amount: Number((theCourse.price * 100).toFixed(2)),
             currency: "pln",
@@ -169,7 +181,7 @@ export async function makeCourseOrder(
           classId: classObj.classId,
           studentId,
           isConfirmed: false,
-          paymentStatus: PaymentStatus.PART_OF_COURSE
+          paymentStatus: PaymentStatus.PART_OF_COURSE,
         })),
       });
       await tx.courseTicket.create({
@@ -189,5 +201,94 @@ export async function makeCourseOrder(
     );
   }
 
-  res.status(200).json({ sessionUrl: session.url })
+  res.status(200).json({ sessionUrl: session.url });
+}
+
+export async function getPaymentLink(
+  req: Request<{}, {}, {}, { classId?: number; courseId?: number }> & {
+    user?: any;
+  },
+  res: Response,
+) {
+  let userId;
+  if (req.user) {
+    userId = req.user.id;
+    if (req.user?.role !== "STUDENT") {
+      throw new UniversalError(
+        StatusCodes.UNAUTHORIZED,
+        `You are not authorized to access /order/payment-link as ${req.user?.role}`,
+        [],
+      );
+    }
+  } else {
+    throw new UniversalError(
+      StatusCodes.UNAUTHORIZED,
+      "Problems with authentication",
+      [],
+    );
+  }
+
+  const classIdQ = req.query.classId;
+  const courseIdQ = req.query.courseId;
+
+  if (classIdQ && courseIdQ) {
+    throw new UniversalError(
+      StatusCodes.BAD_REQUEST,
+      "Specify only one of the following parameters: classId, courseId",
+      [],
+    );
+  }
+
+  if (classIdQ) {
+    const classId = Number(classIdQ);
+    const paymentData = await prisma.classTicket.findFirst({
+      where: {
+        classId,
+        studentId: userId,
+      },
+    });
+
+    if (!paymentData)
+      throw new UniversalError(StatusCodes.BAD_REQUEST, "Ticket not found", []);
+
+    const sessionId = paymentData.checkoutSessionId;
+
+    if (!sessionId)
+      throw new UniversalError(
+        StatusCodes.BAD_REQUEST,
+        "Checkout session id is missing",
+        [],
+      );
+
+    const session = await stripe.checkout.sessions.retrieve(sessionId);
+
+    res.status(StatusCodes.OK).json({ url: session.url });
+  }
+
+  if (courseIdQ) {
+    const courseId = Number(courseIdQ)
+
+    const paymentData = await prisma.courseTicket.findFirst({
+      where: {
+        courseId,
+        studentId: userId,
+      },
+    });
+
+    if (!paymentData)
+      throw new UniversalError(StatusCodes.BAD_REQUEST, "Ticket not found", []);
+
+    const sessionId = paymentData.checkoutSessionId;
+
+    if (!sessionId)
+      throw new UniversalError(
+        StatusCodes.BAD_REQUEST,
+        "Checkout session id is missing",
+        [],
+      );
+
+    const session = await stripe.checkout.sessions.retrieve(sessionId);
+
+    res.status(StatusCodes.OK).json({ url: session.url });
+  }
 }
