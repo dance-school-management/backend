@@ -68,30 +68,39 @@
  *         name: danceCategoryIds
  *         required: true
  *         schema:
- *           type: string
- *           example: "[1, 2]"
- *         description: JSON array of dance category IDs (as stringified JSON)
+ *           type: array
+ *           items:
+ *              type: integer
+ *           example: [1,2]
  *       - in: query
  *         name: advancementLevelIds
  *         required: true
  *         schema:
- *           type: string
- *           example: "[1]"
- *         description: JSON array of advancement level IDs (as stringified JSON)
+ *           type: array
+ *           items:
+ *              type: integer
+ *           example: [1,2]
  *       - in: query
  *         name: priceMin
- *         required: true
+ *         required: false
  *         schema:
  *           type: number
  *           example: 200
- *         description: Minimum total course price
  *       - in: query
  *         name: priceMax
- *         required: true
+ *         required: false
  *         schema:
  *           type: number
  *           example: 3000
- *         description: Maximum total course price
+ *       - in: query
+ *         name: instructorsIds
+ *         required: true
+ *         schema:
+ *           type: array
+ *           items:
+ *             type: string
+ *           example: ["11", "12"]
+ *         
  *     responses:
  *       200:
  *         description: List of filtered courses
@@ -113,9 +122,10 @@
  *         name: coursesIds
  *         required: true
  *         schema:
- *           type: string
- *           example: "[1, 2]"
- *         description: JSON array of course IDs as a stringified array (e.g. "[1,2]")
+ *           type: array
+ *           items:
+ *             type: integer
+ *           example: [1, 2]
  *     responses:
  *       200:
  *         description: Successful response containing courses and their related classes

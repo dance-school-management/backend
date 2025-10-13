@@ -44,7 +44,7 @@ export async function getOtherInstructorsData(
       },
     });
     const response = new InstructorsDataResponse();
-    response.setInstructorsdataList(
+    response.setInstructorsDataList(
       instructors.map((instructor) => {
         const instructorData = new InstructorData();
         instructorData.setId(instructor.id);

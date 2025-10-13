@@ -342,5 +342,5 @@ export async function availableInstructors(
 
   res
     .status(StatusCodes.OK)
-    .json({ freeInstructors: freeInstructors.instructorsdataList });
+    .json({ freeInstructors: freeInstructors.instructorsDataList });
 }

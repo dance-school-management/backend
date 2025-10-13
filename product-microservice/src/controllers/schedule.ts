@@ -2,11 +2,13 @@ import { NextFunction, Request, Response } from "express";
 import prisma from "../utils/prisma";
 import { UniversalError } from "../errors/UniversalError";
 import { StatusCodes } from "http-status-codes";
-import { ClassStatus } from "../../generated/client";
+import { ClassStatus, Prisma } from "../../generated/client";
 import { getStudentClasses } from "../grpc/client/enrollCommunication/getStudentClasses";
 import { getInstructorsClasses } from "../grpc/client/enrollCommunication/getInstructorsClasses";
 import { CourseStatus } from "../../generated/client";
 import { getCoursesPrices } from "../utils/helpers";
+import { getClassesInstructors } from "../grpc/client/enrollCommunication/getClassesInstructors";
+import { getInstructorsData } from "../grpc/client/profileCommunication/getInstructorsData";
 
 interface GetScheduleParams {
   dateFrom: string;
@@ -57,11 +59,12 @@ export async function getSchedule(
         };
       });
     } else if (req.user?.role === "INSTRUCTOR") {
-      const instructorClasses = await getInstructorsClasses([req.user.id])
+      const instructorClasses = await getInstructorsClasses([req.user.id]);
       result = classesData.map((cd) => {
-        const instructorClass = instructorClasses.instructorsClassesIdsList.find(
-          (sc) => sc.classId === cd.id,
-        );
+        const instructorClass =
+          instructorClasses.instructorsClassesIdsList.find(
+            (sc) => sc.classId === cd.id,
+          );
         return {
           owned: Boolean(instructorClass),
           ...cd,
@@ -70,6 +73,48 @@ export async function getSchedule(
     } else {
       result = classesData;
     }
+
+    const classesIds = classesData.map((cd) => cd.id);
+
+    const classesInstructorsIds = (await getClassesInstructors(classesIds))
+      .instructorsClassesIdsList;
+
+    const instructorsData = (
+      await getInstructorsData([
+        ...new Set(classesInstructorsIds.map((ci) => ci.instructorId)),
+      ])
+    ).instructorsDataList;
+
+    // [{classId: 1, instructors: []}, {classId: 2, instructors: []}]
+
+    const classesInstructorsMap = new Map();
+
+    classesInstructorsIds.forEach((cii) => {
+      if (!classesInstructorsMap.get(cii.classId)) {
+        classesInstructorsMap.set(cii.classId, [cii.instructorId]);
+      } else {
+        classesInstructorsMap.set(cii.classId, [
+          ...classesInstructorsMap.get(cii.classId),
+          cii.instructorId,
+        ]);
+      }
+    });
+
+    const classesInstructors = classesIds.map((ci) => {
+      const instructorIds = classesInstructorsMap.get(ci) ?? [];
+      return {
+        classId: ci,
+        instructors: instructorsData.filter((iid) =>
+          instructorIds.includes(iid.id),
+        ),
+      };
+    });
+
+    result = result.map((r) => ({
+      instructors: classesInstructors.find((ci) => ci.classId === r.id)
+        ?.instructors,
+      ...r,
+    }));
 
     res.status(StatusCodes.OK).json(result);
   } catch (err: any) {
@@ -122,6 +167,7 @@ export async function getSchedulePersonal(
     );
   }
   const where: any = {
+    id: { in: classesIds },
     startDate: { lte: endDate },
     endDate: { gte: startDate },
     classStatus: { notIn: [ClassStatus.HIDDEN] },
@@ -141,8 +187,44 @@ export async function getSchedulePersonal(
       },
     });
 
+    const classesInstructorsIds = (await getClassesInstructors(classesIds))
+      .instructorsClassesIdsList;
+
+    const instructorsData = (
+      await getInstructorsData([
+        ...new Set(classesInstructorsIds.map((ci) => ci.instructorId)),
+      ])
+    ).instructorsDataList;
+
+    // [{classId: 1, instructors: []}, {classId: 2, instructors: []}]
+
+    const classesInstructorsMap = new Map();
+
+    classesInstructorsIds.forEach((cii) => {
+      if (!classesInstructorsMap.get(cii.classId)) {
+        classesInstructorsMap.set(cii.classId, [cii.instructorId]);
+      } else {
+        classesInstructorsMap.set(cii.classId, [
+          ...classesInstructorsMap.get(cii.classId),
+          cii.instructorId,
+        ]);
+      }
+    });
+
+    const classesInstructors = classesIds.map((ci) => {
+      const instructorIds = classesInstructorsMap.get(ci) ?? [];
+      return {
+        classId: ci,
+        instructors: instructorsData.filter((iid) =>
+          instructorIds.includes(iid.id),
+        ),
+      };
+    });
+
     const result = classesData.map((cd) => ({
       paymentStatus: paymentStatus,
+      instructors: classesInstructors.find((ci) => ci.classId === cd.id)
+        ?.instructors,
       ...cd,
     }));
 
@@ -162,8 +244,9 @@ export async function getSearchAndFilterCourses(
     object,
     {},
     {
-      danceCategoryIds: string;
-      advancementLevelIds: string;
+      danceCategoryIds: string[];
+      advancementLevelIds: string[];
+      instructorsIds: string[];
       priceMin: string;
       priceMax: string;
     }
@@ -172,8 +255,22 @@ export async function getSearchAndFilterCourses(
 ) {
   const priceMax = Number(req.query.priceMax);
   const priceMin = Number(req.query.priceMin);
-  const danceCategoryIds = JSON.parse(req.query.danceCategoryIds);
-  const advancementLevelIds = JSON.parse(req.query.advancementLevelIds);
+
+  const danceCategoryIdsQ = Array.isArray(req.query.danceCategoryIds)
+    ? req.query.danceCategoryIds
+    : [req.query.danceCategoryIds];
+
+  const advancementLevelIdsQ = Array.isArray(req.query.advancementLevelIds)
+    ? req.query.advancementLevelIds
+    : [req.query.advancementLevelIds];
+
+  const instructorsIdsQ = Array.isArray(req.query.instructorsIds)
+    ? req.query.instructorsIds
+    : [req.query.instructorsIds];
+
+  const danceCategoryIds = danceCategoryIdsQ.map((el) => Number(el));
+  const advancementLevelIds = advancementLevelIdsQ.map((el) => Number(el));
+  const instructorsIds = instructorsIdsQ;
 
   const where = {
     ...(danceCategoryIds.length > 0
@@ -214,6 +311,53 @@ export async function getSearchAndFilterCourses(
         },
       },
     },
+  });
+
+  const classesIds = coursesClasses.map((cc) => cc.id);
+
+  const classesInstructorsIds = (await getClassesInstructors(classesIds))
+    .instructorsClassesIdsList;
+
+  const instructorsData = (
+    await getInstructorsData([
+      ...new Set(classesInstructorsIds.map((ci) => ci.instructorId)),
+    ])
+  ).instructorsDataList;
+
+  // [{classId: 1, instructors: []}, {classId: 2, instructors: []}]
+
+  const classesInstructorsMap: Map<number | null | undefined, string[]> =
+    new Map();
+
+  classesInstructorsIds.forEach((cii) => {
+    const current = classesInstructorsMap.get(cii.classId) ?? [];
+    classesInstructorsMap.set(cii.classId, [...current, cii.instructorId]);
+  });
+
+  const classesInstructors = classesIds.map((ci) => {
+    const instructorIds = classesInstructorsMap.get(ci) ?? [];
+    return {
+      classId: ci,
+      instructors: instructorsData.filter((iid) =>
+        instructorIds.includes(iid.id),
+      ),
+    };
+  });
+
+  const coursesClassesInstructors = classesInstructors.map((ci) => ({
+    ...ci,
+    courseId: coursesClasses.find((cc) => cc.id === ci.classId)?.classTemplate
+      .courseId,
+  }));
+
+  const coursesInstructorsMap: Map<
+    number | null | undefined,
+    { id: string; name: string; surname: string }[]
+  > = new Map();
+
+  coursesClassesInstructors.forEach((cci) => {
+    const current = coursesInstructorsMap.get(cci.courseId) ?? [];
+    coursesInstructorsMap.set(cci.courseId, [...current, ...cci.instructors]);
   });
 
   const coursesClassesPricesMap: Map<number, number[]> = new Map();
@@ -263,22 +407,53 @@ export async function getSearchAndFilterCourses(
     },
   });
 
-  const result = resultCourses.map((rc) => ({
+  let result = resultCourses.map((rc) => ({
     ...rc,
     coursePrice: coursesFilteredByPrice.find((cfbp) => cfbp.courseId === rc.id)
       ?.price,
     customPrice: undefined,
   }));
+
+  result = result.map((r) => ({
+    ...r,
+    instructors: [
+      ...new Set(
+        (coursesInstructorsMap.get(r.id) ?? []).filter((inst) =>
+          instructorsIds.includes(inst.id),
+        ),
+      ),
+    ],
+  }));
+
   res.status(StatusCodes.OK).json(result);
 }
 
+type AllClassesType = Prisma.ClassGetPayload<{
+  include: {
+    classTemplate: {
+      include: {
+        course: {
+          include: {
+            danceCategory: true;
+            advancementLevel: true;
+          };
+        };
+      };
+    };
+  };
+}>[];
+
 export async function getCoursesClasses(
-  req: Request<object, object, {}, { coursesIds: string }> & { user?: any },
+  req: Request<object, object, {}, { coursesIds: string[] }> & { user?: any },
   res: Response,
 ) {
-  const coursesIds = JSON.parse(req.query.coursesIds);
+  const coursesIdsQ = Array.isArray(req.query.coursesIds)
+    ? req.query.coursesIds
+    : [req.query.coursesIds];
 
-  const allClasses = await prisma.class.findMany({
+  const coursesIds = coursesIdsQ.map((ci) => Number(ci));
+
+  const allClasses: AllClassesType = await prisma.class.findMany({
     where: {
       classTemplate: {
         courseId: {
@@ -300,17 +475,12 @@ export async function getCoursesClasses(
     },
   });
 
-  const coursesClassesMap = new Map();
+  const coursesClassesMap: Map<number | null | undefined, AllClassesType> =
+    new Map();
 
   allClasses.forEach((c) => {
-    if (!coursesClassesMap.get(c.classTemplate.courseId)) {
-      coursesClassesMap.set(c.classTemplate.courseId, [c]);
-    } else {
-      coursesClassesMap.set(c.classTemplate.courseId, [
-        ...coursesClassesMap.get(c.classTemplate.courseId),
-        c,
-      ]);
-    }
+    const current = coursesClassesMap.get(c.classTemplate.courseId) ?? [];
+    coursesClassesMap.set(c.classTemplate.courseId, [...current, c]);
   });
 
   const result: { courseData: any; classes: any[] }[] = [];
@@ -319,6 +489,42 @@ export async function getCoursesClasses(
 
   const coursesPrices = await getCoursesPrices(coursesIds);
 
+  const classesIds = allClasses.map((cl) => cl.id);
+
+  const classesInstructorsIds = (await getClassesInstructors(classesIds))
+    .instructorsClassesIdsList;
+
+  const instructorsData = (
+    await getInstructorsData([
+      ...new Set(classesInstructorsIds.map((ci) => ci.instructorId)),
+    ])
+  ).instructorsDataList;
+
+  // [{classId: 1, instructors: []}, {classId: 2, instructors: []}]
+
+  const classesInstructorsMap = new Map();
+
+  classesInstructorsIds.forEach((cii) => {
+    if (!classesInstructorsMap.get(cii.classId)) {
+      classesInstructorsMap.set(cii.classId, [cii.instructorId]);
+    } else {
+      classesInstructorsMap.set(cii.classId, [
+        ...classesInstructorsMap.get(cii.classId),
+        cii.instructorId,
+      ]);
+    }
+  });
+
+  const classesInstructors = classesIds.map((ci) => {
+    const instructorIds = classesInstructorsMap.get(ci) ?? [];
+    return {
+      classId: ci,
+      instructors: instructorsData.filter((iid) =>
+        instructorIds.includes(iid.id),
+      ),
+    };
+  });
+
   keys.forEach((k) =>
     result.push({
       courseData: {
@@ -326,8 +532,25 @@ export async function getCoursesClasses(
           ?.classTemplate.course,
         coursePrice: coursesPrices.find((cp) => cp.courseId === k)?.price,
         customPrice: undefined,
+        instructors: [
+          ...new Set(
+            classesInstructors
+              .filter((ci) =>
+                allClasses
+                  .filter((cc) => cc.classTemplate.courseId === k)
+                  .map((cc) => cc.id)
+                  .includes(ci.classId),
+              )
+              .flatMap((ci) => ci.instructors),
+          ),
+        ],
       },
-      classes: coursesClassesMap.get(k),
+      classes:
+        coursesClassesMap.get(k)?.map((cc) => ({
+          ...cc,
+          instructors: classesInstructors.find((ci) => ci.classId === cc.id)
+            ?.instructors,
+        })) ?? [],
     }),
   );
 
