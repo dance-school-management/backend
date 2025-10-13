@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { makeClassOrder, makeCourseOrder } from "../../controllers/order";
+import { getPaymentLink, makeClassOrder, makeCourseOrder } from "../../controllers/order";
 import { body } from "express-validator";
 import { UniversalError } from "../../errors/UniversalError";
 import { StatusCodes } from "http-status-codes";
@@ -64,5 +64,7 @@ router.post(
   body("courseId").isNumeric().withMessage("Course ID must be a number"),
   makeCourseOrder,
 );
+
+router.get("/payment-link", getPaymentLink)
 
 export default router;

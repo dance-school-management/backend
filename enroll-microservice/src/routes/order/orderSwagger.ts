@@ -80,3 +80,35 @@
  *                   type: string
  *                   example: "https://checkout.stripe.com/pay/cs_test_12345"
  */
+
+/**
+ * @swagger
+ * /order/payment-link:
+ *   get:
+ *     summary: Retrieve the checkout session url
+ *     tags:
+ *       - student - payment link
+ *     parameters:
+ *       - in: query
+ *         name: classId
+ *         required: false
+ *         schema:
+ *           type: integer
+ *           example: 56
+ *       - in: query
+ *         name: courseId
+ *         required: false
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Successfully created order for course.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 url:
+ *                   type: string
+ *                   example: "https://checkout.stripe.com/pay/cs_test_12345"
+ */
