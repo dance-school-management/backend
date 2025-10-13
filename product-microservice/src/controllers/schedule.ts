@@ -85,8 +85,6 @@ export async function getSchedule(
       ])
     ).instructorsDataList;
 
-    // [{classId: 1, instructors: []}, {classId: 2, instructors: []}]
-
     const classesInstructorsMap = new Map();
 
     classesInstructorsIds.forEach((cii) => {
@@ -195,8 +193,6 @@ export async function getSchedulePersonal(
         ...new Set(classesInstructorsIds.map((ci) => ci.instructorId)),
       ])
     ).instructorsDataList;
-
-    // [{classId: 1, instructors: []}, {classId: 2, instructors: []}]
 
     const classesInstructorsMap = new Map();
 
@@ -323,8 +319,6 @@ export async function getSearchAndFilterCourses(
       ...new Set(classesInstructorsIds.map((ci) => ci.instructorId)),
     ])
   ).instructorsDataList;
-
-  // [{classId: 1, instructors: []}, {classId: 2, instructors: []}]
 
   const classesInstructorsMap: Map<number | null | undefined, string[]> =
     new Map();
@@ -499,8 +493,6 @@ export async function getCoursesClasses(
       ...new Set(classesInstructorsIds.map((ci) => ci.instructorId)),
     ])
   ).instructorsDataList;
-
-  // [{classId: 1, instructors: []}, {classId: 2, instructors: []}]
 
   const classesInstructorsMap = new Map();
 

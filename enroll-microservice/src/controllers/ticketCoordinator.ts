@@ -35,7 +35,7 @@ export async function scanTicket(
 
     if (!sessionId) {
       res.status(StatusCodes.BAD_REQUEST).json({
-        message: "TICKET UNPAID",
+        message: "Ticket unpaid",
         ...classDetails,
       });
       return;
@@ -45,7 +45,7 @@ export async function scanTicket(
 
     if (session.payment_status !== "paid") {
       res.status(StatusCodes.BAD_REQUEST).json({
-        message: "TICKET UNPAID",
+        message: "Ticket unpaid",
         ...classDetails,
       });
       return;
@@ -72,7 +72,7 @@ export async function scanTicket(
 
       if (!courseSessionId) {
         res.status(StatusCodes.BAD_REQUEST).json({
-          message: "TICKET (COURSE) UNPAID",
+          message: "Ticket (course) unpaid",
           ...classDetails,
         });
         return;
@@ -82,7 +82,7 @@ export async function scanTicket(
 
       if (session.payment_status !== "paid") {
         res.status(StatusCodes.BAD_REQUEST).json({
-          message: "TICKET UNPAID",
+          message: "Ticket unpaid",
           ...classDetails,
         });
         return;
@@ -92,14 +92,14 @@ export async function scanTicket(
 
   if (enrollment.paymentStatus === PaymentStatus.REFUNDED) {
     res.status(StatusCodes.BAD_REQUEST).json({
-      message: "CLASS REFUNDED",
+      message: "Class refunded",
       ...classDetails,
     });
     return;
   }
 
   res.status(StatusCodes.OK).json({
-    message: "TICKET VALID AND PAID",
+    message: "Ticket valid and paid",
     attendanceStatus: enrollment.attendanceStatus,
     ...classDetails,
   });
