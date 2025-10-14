@@ -2,25 +2,25 @@
   {
     "id": 1,
     "name": "Mirror Room",
-    "peopleLimit": 20,
+    "peopleLimit": 10,
     "description": "Room with wall-to-wall mirrors, ideal for dance classes."
   },
   {
     "id": 2,
     "name": "Rhythm Studio",
-    "peopleLimit": 15,
+    "peopleLimit": 12,
     "description": "Cozy studio with good acoustics for rhythm and individual classes."
   },
   {
     "id": 3,
     "name": "Acrobatics Room",
-    "peopleLimit": 25,
+    "peopleLimit": 13,
     "description": "Spacious room equipped with mats and acrobatics equipment."
   },
   {
     "id": 4,
     "name": "Modern Room",
-    "peopleLimit": 18,
+    "peopleLimit": 11,
     "description": "Room with modern sound system and LED lighting."
   },
   {
@@ -38,13 +38,13 @@
   {
     "id": 7,
     "name": "Group Room A",
-    "peopleLimit": 30,
+    "peopleLimit": 13,
     "description": "Large room for organized groups, equipped with a projector."
   },
   {
     "id": 8,
     "name": "Group Room B",
-    "peopleLimit": 30,
+    "peopleLimit": 12,
     "description": "Twin room to Group Room A, adapted for large dance classes."
   }
 ]
