@@ -252,17 +252,24 @@ export async function getSearchAndFilterCourses(
   const priceMax = Number(req.query.priceMax);
   const priceMin = Number(req.query.priceMin);
 
-  const danceCategoryIdsQ = Array.isArray(req.query.danceCategoryIds)
-    ? req.query.danceCategoryIds
-    : [req.query.danceCategoryIds];
+  let danceCategoryIdsQ: string[] = [];
+  let advancementLevelIdsQ: string[] = [];
+  let instructorsIdsQ: string[] = [];
 
-  const advancementLevelIdsQ = Array.isArray(req.query.advancementLevelIds)
-    ? req.query.advancementLevelIds
-    : [req.query.advancementLevelIds];
+  if (req.query.danceCategoryIds)
+    danceCategoryIdsQ = Array.isArray(req.query.danceCategoryIds)
+      ? req.query.danceCategoryIds
+      : [req.query.danceCategoryIds];
 
-  const instructorsIdsQ = Array.isArray(req.query.instructorsIds)
-    ? req.query.instructorsIds
-    : [req.query.instructorsIds];
+  if (req.query.advancementLevelIds)
+    advancementLevelIdsQ = Array.isArray(req.query.advancementLevelIds)
+      ? req.query.advancementLevelIds
+      : [req.query.advancementLevelIds];
+
+  if (req.query.instructorsIds)
+    instructorsIdsQ = Array.isArray(req.query.instructorsIds)
+      ? req.query.instructorsIds
+      : [req.query.instructorsIds];
 
   const danceCategoryIds = danceCategoryIdsQ.map((el) => Number(el));
   const advancementLevelIds = advancementLevelIdsQ.map((el) => Number(el));
@@ -441,9 +448,12 @@ export async function getCoursesClasses(
   req: Request<object, object, {}, { coursesIds: string[] }> & { user?: any },
   res: Response,
 ) {
-  const coursesIdsQ = Array.isArray(req.query.coursesIds)
-    ? req.query.coursesIds
-    : [req.query.coursesIds];
+  let coursesIdsQ: string[] = [];
+
+  if (req.query.coursesIds)
+    coursesIdsQ = Array.isArray(req.query.coursesIds)
+      ? req.query.coursesIds
+      : [req.query.coursesIds];
 
   const coursesIds = coursesIdsQ.map((ci) => Number(ci));
 

@@ -66,7 +66,7 @@
  *     parameters:
  *       - in: query
  *         name: danceCategoryIds
- *         required: true
+ *         required: false
  *         schema:
  *           type: array
  *           items:
@@ -74,7 +74,7 @@
  *           example: [1,2]
  *       - in: query
  *         name: advancementLevelIds
- *         required: true
+ *         required: false
  *         schema:
  *           type: array
  *           items:
@@ -94,7 +94,7 @@
  *           example: 3000
  *       - in: query
  *         name: instructorsIds
- *         required: true
+ *         required: false
  *         schema:
  *           type: array
  *           items:
@@ -120,7 +120,7 @@
  *     parameters:
  *       - in: query
  *         name: coursesIds
- *         required: true
+ *         required: false
  *         schema:
  *           type: array
  *           items:
