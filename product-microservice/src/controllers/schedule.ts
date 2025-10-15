@@ -249,8 +249,8 @@ export async function getSearchAndFilterCourses(
   > & { user?: any },
   res: Response,
 ) {
-  const priceMax = Number(req.query.priceMax);
-  const priceMin = Number(req.query.priceMin);
+  const priceMax = req.query.priceMax ? Number(req.query.priceMax) : 999999;
+  const priceMin = req.query.priceMin ? Number(req.query.priceMin) : 0;
 
   let danceCategoryIdsQ: string[] = [];
   let advancementLevelIdsQ: string[] = [];

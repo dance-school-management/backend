@@ -43,5 +43,50 @@
     "advancementLevelId": 1,
     "courseStatus": "HIDDEN",
     "customPrice": 289.5
+  },
+  {
+    "id": 6,
+    "name": "FREE STYLE HIP HOP",
+    "description": "Developing solo dance skills, focusing on your own style, and improvising movement to the movement tasks provided by the instructor. Every hip-hop dancer over the age of 11 should acquire freestyle skills to be able to perform it independently and express themselves through dance. Only when a dancer can independently reproduce the music through movement can they begin to understand hip-hop. Classes intended for dancers who already know the basics of Hip Hop. Comfortable clothing and footwear are required for classes, and hair must be tied up.",
+    "danceCategoryId": 3,
+    "advancementLevelId": 1,
+    "courseStatus": "FINISHED",
+    "customPrice": 300
+  },
+  {
+    "id": 7,
+    "name": "BACHATA",
+    "description": "The music characteristic of this style gets your feet dancing from the very first notes. Our school offers solo classes for women and pair classes for couples and singles. Our bachata instructors are experienced and dedicated teachers who can reach even the most demanding students in a fun and engaging way.",
+    "danceCategoryId": 6,
+    "advancementLevelId": 1,
+    "courseStatus": "FINISHED",
+    "customPrice": 300
+  },
+  {
+    "id": 8,
+    "name": "TANGO ARGENTINA",
+    "description": "Time for classics in their most elegant form! Tango is a dance full of emotion, passion, and character, allowing you to discover a unique bond between partners. Every step, every glance, and every musical accent create a unique story on the dance floor. Why is it worth trying tango? You will learn elegant and characteristic tango steps. You will develop the ability to lead and follow in dance. You will feel the intensity and emotions that this unique style brings. You will experience the extraordinary atmosphere that makes tango timeless. Enjoy dancing and let yourself be carried away by the magic of tango – this journey full of emotions will stay with you for a long time!",
+    "danceCategoryId": 7,
+    "advancementLevelId": 2,
+    "courseStatus": "FINISHED",
+    "customPrice": 280
+  },
+  {
+    "id": 9,
+    "name": "HIGH HEELS",
+    "description": "Would you like to experience the magic of dancing in high heels and learn to express your power through movement? Karolina Gazela, known for her distinctive style and passion for dance, will guide you through the world of dancing in high heels. Whether you have experience dancing or are a beginner, our classes are for you. Karolina will introduce you to the world of high heels, showing you techniques, figures, and movements that will make you shine on the dance floor. It's not just about learning to dance; it's also an opportunity to express yourself, develop confidence, and enjoy movement. Classes with Karolina are an inspiring journey through the world of high heel dance, allowing you to discover the potential of your feminine expression. Join us for High Heels Classes with Karolina Gazela, and together we'll discover the potential of a dance style that will make you feel confident and sensual on any dance floor!",
+    "danceCategoryId": 8,
+    "advancementLevelId": 2,
+    "courseStatus": "FINISHED",
+    "customPrice": 350
+  },
+  {
+    "id": 10,
+    "name": "KIZOMBA FUSION",
+    "description": "Kizomba Fusion is a variation of traditional Angolan Kizomba that combines elements of other dance styles, such as Urban Kiz, Brazilian Zouk, and Bachata. The essence of Kizomba remains paramount: basic steps, connection, and fluidity, but we've added a Fusion element, which offers a wealth of additional possibilities and freedom in the selection of figures, focusing on their artistic interpretation.",
+    "danceCategoryId": 9,
+    "advancementLevelId": 1,
+    "courseStatus": "ONGOING",
+    "customPrice": 350
   }
 ]

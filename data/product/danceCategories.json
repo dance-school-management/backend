@@ -26,7 +26,31 @@
   {
     "id": 5,
     "name": "BALLET",
-    "description": "Basics of ballet technique, learning ballet choreography.",
-    "photoPath": "images/jazz.jpg"
+    "description": "A form of performing art that combines dance, music, and theater to tell stories or express emotions through precise choreography.",
+    "photoPath": "images/balet.jpg"
+  },
+  {
+    "id": 6,
+    "name": "BACHATA",
+    "description": "A sensual Caribbean dance originating from the Dominican Republic, characterized by closeness, fluid hip movements and a distinct yet simple basic step.",
+    "photoPath": "images/bachata.jpg"
+  },
+  {
+    "id": 7,
+    "name": "TANGO",
+    "description": "A passionate ballroom dance from Argentina and Uruguay, characterized by close contact between partners, sensuality and improvisation.",
+    "photoPath": "images/tango.jpg"
+  },
+  {
+    "id": 8,
+    "name": "HIGH HEELS",
+    "description": "A modern dance style performed in high heels, combining choreography, elegance and sensuality with elements of jazz, hip-hop and even vogue.",
+    "photoPath": "images/tango.jpg"
+  },
+  {
+    "id": 9,
+    "name": "KIZOMBA FUSION",
+    "description": "A dance form that combines the basics of traditional kizomba with elements of other styles such as Urban Kiz, Bachata, and even tango, creating a more flexible and artistic form.",
+    "photoPath": "images/tango.jpg"
   }
 ]
