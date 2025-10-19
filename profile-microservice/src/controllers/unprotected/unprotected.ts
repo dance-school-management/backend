@@ -3,6 +3,8 @@ import { StatusCodes } from "http-status-codes";
 import prisma from "../../utils/prisma";
 import { Profile, Role } from "../../../generated/client";
 import { getDanceCategories } from "../../grpc/client/productCommunication/getDanceCategories";
+import { getInstructorExperience } from "../../grpc/client/enrollCommunication/getInstructorExperience";
+import { UniversalError } from "../../errors/UniversalError";
 
 export async function getAllInstructors(
   req: Request<{}, {}, {}>,
@@ -59,6 +61,18 @@ export async function getInstructor(
       role: Role.INSTRUCTOR,
     },
   });
+
+  if (!instructor) {
+    throw new UniversalError(StatusCodes.CONFLICT, "Instructor not found", []);
+  }
+
+  const timeSpentForEachDCAndAL = (await getInstructorExperience(instructor?.id)).instructorExperienceList;
+
+  const instructorWithExperience = {
+    ...instructor,
+    experience: [...new Set(timeSpentForEachDCAndAL)]
+  }
+
   if (
     instructor?.favouriteDanceCategories &&
     instructor.favouriteDanceCategories.length > 0
@@ -67,7 +81,7 @@ export async function getInstructor(
       await getDanceCategories(instructor?.favouriteDanceCategories)
     ).danceCategoriesList;
     const instructorWithDanceCategoriesNames = {
-      ...instructor,
+      ...instructorWithExperience,
       favouriteDanceCategories: instructor.favouriteDanceCategories.map(
         (favId) =>
           danceCategoriesEntries.find(

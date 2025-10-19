@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package profile_to_enroll;
+
+message GetInstructorExperienceRequest {
+  string instructor_id = 1;
+}
+
+message InstructorExperience {
+  optional string dance_category_name = 2;
+  optional string advancement_level_name = 4;
+  float spent_hours = 5;
+}
+
+message GetInstructorExperienceResponse {
+  repeated InstructorExperience instructor_experience = 1;
+}
