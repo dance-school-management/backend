@@ -260,13 +260,20 @@ export async function getPaymentLink(
         [],
       );
 
-    const session = await stripe.checkout.sessions.retrieve(sessionId);
-
-    res.status(StatusCodes.OK).json({ url: session.url });
+    try {
+      const session = await stripe.checkout.sessions.retrieve(sessionId);
+      res.status(StatusCodes.OK).json({ url: session.url });
+    } catch (error) {
+      throw new UniversalError(
+        StatusCodes.NOT_FOUND,
+        "Checkout session not found",
+        [],
+      );
+    }
   }
 
   if (courseIdQ) {
-    const courseId = Number(courseIdQ)
+    const courseId = Number(courseIdQ);
 
     const paymentData = await prisma.courseTicket.findFirst({
       where: {
@@ -287,8 +294,15 @@ export async function getPaymentLink(
         [],
       );
 
-    const session = await stripe.checkout.sessions.retrieve(sessionId);
-
-    res.status(StatusCodes.OK).json({ url: session.url });
+    try {
+      const session = await stripe.checkout.sessions.retrieve(sessionId);
+      res.status(StatusCodes.OK).json({ url: session.url });
+    } catch (error) {
+      throw new UniversalError(
+        StatusCodes.NOT_FOUND,
+        "Checkout session not found",
+        [],
+      );
+    }
   }
 }
