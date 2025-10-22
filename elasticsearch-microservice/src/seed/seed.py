@@ -57,7 +57,7 @@ with open("../data/product/classTemplates.json", "r", encoding="utf-8") as f1, \
             "name": advancement_level["name"],
             "description": advancement_level["description"]
           } if advancement_level else None,
-          "price": class_template["price"]
+          "price": course["customPrice"]
         })
       
       esClientHost.index(index="courses", document=doc)

@@ -7,7 +7,7 @@ Why this model is a good choice?
 
 1) It has a 100% zero-shot value, which means it doesn't need to be trained for specific tasks
 2) It doesn't use a lot of memory
-3) It doesn't have a lot of parameteres, which means it processes the input quite fast
+3) It doesn't have a lot of parameters, which means it processes the input quite fast
 
 """
 
