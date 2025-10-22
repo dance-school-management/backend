@@ -1,5 +1,5 @@
 export interface MsgData {
-  userId: string;
+  userIds: string[];
   title: string;
   body: string;
   payload: Record<string, unknown>;

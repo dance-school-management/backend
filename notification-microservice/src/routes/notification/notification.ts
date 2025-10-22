@@ -3,6 +3,8 @@ import {
   getNotifications,
   getNotificationById,
   updateNotificationStatus,
+  createNotifications,
+  updateNotificationContent,
 } from "../../controllers/notification/notification";
 import { body, query, param } from "express-validator";
 import { registerDevice } from "../../controllers/notification/registerDevice";
@@ -38,32 +40,21 @@ router.get(
   getNotificationById,
 );
 
-// router.post(
-//   "/",
-//   body("productId")
-//     .isNumeric()
-//     .withMessage("productId must be a number")
-//     .toInt(),
-//   body("productType")
-//     .isString()
-//     .withMessage("productType must be a string")
-//     .isIn(["COURSE", "CLASS", "EVENT"])
-//     .withMessage(
-//       "productType must be one of the following: COURSE, CLASS, EVENT",
-//     ),
-//   body("userId").isNumeric().withMessage("userId must be a number").toInt(),
-//   body("title")
-//     .isString()
-//     .withMessage("title must be a string")
-//     .isLength({ min: 5, max: 100 })
-//     .withMessage("title must be between 5 and 100 characters"),
-//   body("description")
-//     .isString()
-//     .withMessage("description must be a string")
-//     .isLength({ min: 10, max: 1000 })
-//     .withMessage("description must be between 10 and 1000 characters"),
-//   createNotification,
-// );
+router.post(
+  "/",
+  body("userIds").isArray().withMessage("userId must be an array of strings"),
+  body("title")
+    .isString()
+    .withMessage("title must be a string")
+    .isLength({ min: 5, max: 100 })
+    .withMessage("title must be between 5 and 100 characters"),
+  body("body")
+    .isString()
+    .withMessage("description must be a string")
+    .isLength({ min: 10, max: 1000 })
+    .withMessage("description must be between 10 and 1000 characters"),
+  createNotifications,
+);
 
 router.put(
   "/status/:id",
@@ -72,23 +63,23 @@ router.put(
   updateNotificationStatus,
 );
 
-// router.put(
-//   "/:id",
-//   param("id").isNumeric().withMessage("id must be a number").toInt(),
-//   body("title")
-//     .optional()
-//     .isString()
-//     .withMessage("title must be a string")
-//     .isLength({ min: 5, max: 100 })
-//     .withMessage("title must be between 5 and 100 characters"),
-//   body("description")
-//     .optional()
-//     .isString()
-//     .withMessage("description must be a string")
-//     .isLength({ min: 10, max: 1000 })
-//     .withMessage("description must be between 10 and 1000 characters"),
-//   updateNotificationContent,
-// );
+router.put(
+  "/:id",
+  param("id").isNumeric().withMessage("id must be a number").toInt(),
+  body("title")
+    .optional()
+    .isString()
+    .withMessage("title must be a string")
+    .isLength({ min: 5, max: 100 })
+    .withMessage("title must be between 5 and 100 characters"),
+  body("body")
+    .optional()
+    .isString()
+    .withMessage("body must be a string")
+    .isLength({ min: 10, max: 1000 })
+    .withMessage("body must be between 10 and 1000 characters"),
+  updateNotificationContent,
+);
 
 // router.delete(
 //   "/:id",

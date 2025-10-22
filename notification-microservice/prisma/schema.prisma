@@ -15,18 +15,29 @@ datasource db {
 }
 
 model PushToken {
-  userId      String      @id @unique
-  token       String      @unique
-  notifications Notification[]
+  userId String @id @unique
+  token  String @unique
+
+  notifications NotificationsOnTokens[]
 }
 
 model Notification {
-  id          Int          @id @default(autoincrement())
-  userId      String
-  user        PushToken    @relation(fields: [userId], references: [userId])
-  title       String
-  body        String
-  hasBeenRead Boolean      @default(false)
-  sendDate    DateTime     @default(now())
-  payload     Json
+  id       Int      @id @default(autoincrement())
+  title    String
+  body     String
+  sendDate DateTime @default(now())
+  payload  Json
+
+  tokens NotificationsOnTokens[]
+}
+
+model NotificationsOnTokens {
+  userId         String
+  notificationId Int
+  hasBeenRead    Boolean @default(false)
+
+  notification Notification @relation(fields: [notificationId], references: [id], onDelete: Cascade)
+  pushToken    PushToken    @relation(fields: [userId], references: [userId], onDelete: Cascade)
+
+  @@id([userId, notificationId])
 }

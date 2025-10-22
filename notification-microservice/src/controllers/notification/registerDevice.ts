@@ -12,8 +12,6 @@ export async function registerDevice(
     return;
   }
 
-  console.log(req.user.role);
-
   const { pushToken } = req.body;
   if (!Expo.isExpoPushToken(pushToken)) {
     res.status(StatusCodes.BAD_REQUEST).json("Invalid push token");

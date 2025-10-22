@@ -64,15 +64,15 @@ export async function cancelClass(
     await getClassesInstructors([classId])
   ).instructorsClassesIdsList.map((ic) => ic.instructorId);
 
-  const message: MsgData[] = [...classStudentsIds, ...classInstructorsIds].map((uid) => ({
-    userId: uid,
+  const message: MsgData = {
+    userIds: [...classStudentsIds, ...classInstructorsIds],
     title: `Cancelled class - ${theClass?.classTemplate.name}`,
     body: `Class ${theClass?.classTemplate.name} planned at ${theClass?.startDate.toDateString()} - ${theClass?.endDate.toDateString()} has been CANCELLED. Go to its ticket page to see available actions. Reason for cancellation: ${reason}`,
     payload: {
-      "event": "CANCELLED_CLASS",
-      "classId": classId
-    }
-  }));
+      event: "CANCELLED_CLASS",
+      classId: classId,
+    },
+  };
 
   sendPushNotifications(message);
   res.sendStatus(StatusCodes.OK);
@@ -143,15 +143,15 @@ export async function postponeClass(
     await getClassesInstructors([classId])
   ).instructorsClassesIdsList.map((ic) => ic.instructorId);
 
-  const message: MsgData[] = [...classStudentsIds, ...classInstructorsIds].map((uid) => ({
-    userId: uid,
+  const message: MsgData = {
+    userIds: [...classStudentsIds, ...classInstructorsIds],
     title: `Postponed class - ${theClass?.classTemplate.name}`,
     body: `Class ${theClass?.classTemplate.name} planned at ${theClass?.startDate.toDateString()} - ${theClass?.endDate.toDateString()} has been POSTPONED to ${newStartDate.toDateString()} - ${newEndDate.toDateString()}. Go to its ticket page to see available actions. Reason for postponement: ${reason}`,
     payload: {
-      "event": "POSTPONED_CLASS",
-      "classId": classId
-    }
-  }));
+      event: "POSTPONED_CLASS",
+      classId: classId,
+    },
+  };
 
   sendPushNotifications(message);
   res.sendStatus(StatusCodes.OK);

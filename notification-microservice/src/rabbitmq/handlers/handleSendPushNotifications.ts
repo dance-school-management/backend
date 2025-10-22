@@ -6,25 +6,31 @@ import { MsgData } from "../types";
 // Saves notification to database and sends a notification to a user
 // only if the user is registered for notifications
 export const handleSendPushNotifications = async (msg: string) => {
-  const msgData: MsgData[] = JSON.parse(msg);
+  const msgData: MsgData = JSON.parse(msg);
 
   console.log(msgData);
 
-  msgData.forEach(async (md) => {
+  const notification = await prisma.notification.create({
+    data: {
+      body: msgData.body,
+      payload: Object(msgData.payload),
+      title: msgData.title,
+    },
+  });
+
+  msgData.userIds.forEach(async (uid) => {
     const isUserRegisteredForNotifications = Boolean(
       await prisma.pushToken.findFirst({
         where: {
-          userId: md.userId,
+          userId: uid,
         },
       }),
     );
     if (isUserRegisteredForNotifications)
-      await prisma.notification.create({
+      await prisma.notificationsOnTokens.create({
         data: {
-          body: md.body,
-          payload: Object(md.payload),
-          title: md.title,
-          userId: md.userId,
+          notificationId: notification.id,
+          userId: uid,
         },
       });
   });
@@ -32,15 +38,20 @@ export const handleSendPushNotifications = async (msg: string) => {
   const pushTokens = await prisma.pushToken.findMany({
     where: {
       userId: {
-        in: msgData.map((md) => md.userId),
+        in: msgData.userIds,
       },
     },
   });
 
-  const pushTokensMessages = msgData.map((md) => {
-    const token = pushTokens.find((pt) => pt.userId === md.userId)?.token;
+  const pushTokensMessages = msgData.userIds.map((uid) => {
+    const token = pushTokens.find((pt) => pt.userId === uid)?.token;
     if (!token) return null;
-    return { ...md, token };
+    return {
+      title: msgData.title,
+      body: msgData.body,
+      payload: msgData.payload,
+      token,
+    };
   });
 
   const messages: ExpoPushMessage[] = pushTokensMessages

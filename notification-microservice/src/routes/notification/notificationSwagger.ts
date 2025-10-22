@@ -8,18 +8,12 @@
  *         id:
  *           type: integer
  *           example: 1
- *         userId:
- *           type: string
- *           example: "65"
  *         title:
  *           type: string
  *           example: Nowy kurs dostępny
  *         body:
  *           type: string
  *           example: Sprawdź nasz najnowszy kurs taneczny!
- *         hasBeenRead:
- *           type: boolean
- *           example: false
  *         sendDate:
  *           type: string
  *           format: date-time
@@ -33,7 +27,7 @@
  * @swagger
  * /notification:
  *   get:
- *     summary: Get notifications with optional filtering
+ *     summary: Get notifications with filter by sendDate
  *     tags:
  *       - Notification
  *     parameters:
@@ -115,6 +109,86 @@
  *           application/json:
  *             schema:
  *               $ref: "#/components/schemas/Notification"
+ *       404:
+ *         description: Notification not found
+ */
+
+/**
+ * @swagger
+ * /notification:
+ *   post:
+ *     summary: Create a new notification
+ *     tags:
+ *       - Notification
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - userIds
+ *               - title
+ *               - body
+ *             properties:
+ *               userIds:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                 example: ["65", "13"]
+ *               title:
+ *                 type: string
+ *                 example: Nowy kurs dostępny
+ *               body:
+ *                 type: string
+ *                 example: Sprawdź nasz najnowszy kurs taneczny!
+ *     responses:
+ *       201:
+ *         description: Notification created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/Notification"
+ *       400:
+ *         description: Validation error
+ */
+
+/**
+ * @swagger
+ * /notification/{id}:
+ *   put:
+ *     summary: Update notification content
+ *     tags:
+ *       - Notification
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: Notification ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               title:
+ *                 type: string
+ *                 example: Zaktualizowany tytuł
+ *               body:
+ *                 type: string
+ *                 example: Zaktualizowana treść powiadomienia
+ *     responses:
+ *       200:
+ *         description: Notification updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/Notification"
+ *       400:
+ *         description: Validation error
  *       404:
  *         description: Notification not found
  */
