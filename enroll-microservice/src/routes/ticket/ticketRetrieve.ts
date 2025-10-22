@@ -1,10 +1,10 @@
 import { Router } from "express";
-import { getStudentTickets } from "../../controllers/ticketStudent";
-import { recordStudentAttendance, scanTicket } from "../../controllers/ticketCoordinator";
+import { getStudentCourseTickets, getStudentTickets } from "../../controllers/ticketStudent";
 
 const router = Router();
 
 router.get("/", getStudentTickets);
+router.get("/courses", getStudentCourseTickets)
 
 
 export default router;

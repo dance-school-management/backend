@@ -70,3 +70,52 @@
  *       "500":
  *         description: Internal Server Error
  */
+
+/**
+ * @swagger
+ * /ticket/retrieve/courses:
+ *   get:
+ *     summary: Get all course tickets for the logged-in student
+ *     description: Returns a list of all course tickets assigned to the authenticated student, including course details and payment status.
+ *     tags:
+ *       - student - ticket
+ *     responses:
+ *       200:
+ *         description: List of student's course tickets
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 tickets:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       courseId:
+ *                         type: string
+ *                         example: "c12345"
+ *                       name:
+ *                         type: string
+ *                         example: "Salsa Beginners"
+ *                       description:
+ *                         type: string
+ *                         example: "An introductory salsa course for beginners."
+ *                       danceCategoryName:
+ *                         type: string
+ *                         example: "Salsa"
+ *                       advancementLevelName:
+ *                         type: string
+ *                         example: "Beginner"
+ *                       price:
+ *                         type: number
+ *                         example: 250
+ *                       paymentStatus:
+ *                         type: string
+ *                         enum: [PAID, UNPAID, PENDING]
+ *                         example: "PAID"
+ *       401:
+ *         description: Unauthorized - missing or invalid token
+ *       500:
+ *         description: Internal server error
+ */
