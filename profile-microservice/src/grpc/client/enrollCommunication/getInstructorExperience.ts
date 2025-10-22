@@ -1,18 +1,21 @@
 import {
-  DanceCategoriesIdsRequest,
-  GetDanceCategoriesResponse,
-} from "../../../../proto/ProfileToProductMessages_pb";
+  GetInstructorExperienceRequest,
+  GetInstructorExperienceResponse,
+} from "../../../../proto/ProfileToEnrollMessages_pb";
 import { UniversalError } from "../../../errors/UniversalError";
-import { profileToProductClient } from "../../../utils/grpcClients";
+import { profileToEnrollClient } from "../../../utils/grpcClients";
 
-export async function getDanceCategories(
-  danceCategoriesIds: number[],
-): Promise<GetDanceCategoriesResponse.AsObject> {
+export async function getInstructorExperience(
+  instructorId: string,
+  dateFrom: string,
+  dateTo: string,
+): Promise<GetInstructorExperienceResponse.AsObject> {
   return new Promise((resolve, reject) => {
-    const request = new DanceCategoriesIdsRequest().setIdList(
-      danceCategoriesIds,
-    );
-    profileToProductClient.getDanceCategories(request, (err, response) => {
+    const request = new GetInstructorExperienceRequest()
+      .setInstructorId(instructorId)
+      .setDateFrom(dateFrom)
+      .setDateTo(dateTo);
+    profileToEnrollClient.getInstructorExperience(request, (err, response) => {
       console.log(err);
       if (err) {
         let unErr: UniversalError;
