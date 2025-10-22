@@ -2,6 +2,7 @@ import { Router } from "express";
 import {
   getNotifications,
   getNotificationById,
+  updateNotificationStatus,
 } from "../../controllers/notification/notification";
 import { body, query, param } from "express-validator";
 import { registerDevice } from "../../controllers/notification/registerDevice";
@@ -64,12 +65,12 @@ router.get(
 //   createNotification,
 // );
 
-// router.put(
-//   "/status/:id",
-//   param("id").isNumeric().withMessage("id must be a number").toInt(),
-//   body("hasBeenRead").isBoolean().withMessage("hasBeenRead must be a boolean"),
-//   updateNotificationStatus,
-// );
+router.put(
+  "/status/:id",
+  param("id").isNumeric().withMessage("id must be a number").toInt(),
+  body("hasBeenRead").isBoolean().withMessage("hasBeenRead must be a boolean"),
+  updateNotificationStatus,
+);
 
 // router.put(
 //   "/:id",

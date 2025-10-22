@@ -42,12 +42,14 @@
  *         schema:
  *           type: string
  *           format: date-time
+ *           example: 2025-10-11T00:00:00Z
  *         description: Min send date
-*        - in: query
+ *       - in: query
  *         name: dateTo
  *         schema:
  *           type: string
  *           format: date-time
+ *           example: 2026-05-31T23:59:59Z
  *         description: Max send date
  *       - in: query
  *         name: page
