@@ -51,7 +51,12 @@ export async function getAllInstructors(
 }
 
 export async function getInstructor(
-  req: Request<Profile>,
+  req: Request<
+    Profile,
+    {},
+    {},
+    { experienceDateFrom: string; experienceDateTo: string }
+  >,
   res: Response,
   next: NextFunction,
 ) {
@@ -66,12 +71,18 @@ export async function getInstructor(
     throw new UniversalError(StatusCodes.CONFLICT, "Instructor not found", []);
   }
 
-  const timeSpentForEachDCAndAL = (await getInstructorExperience(instructor?.id)).instructorExperienceList;
+  const timeSpentForEachDCAndAL = (
+    await getInstructorExperience(
+      instructor?.id,
+      req.query.experienceDateFrom,
+      req.query.experienceDateTo,
+    )
+  ).instructorExperienceList;
 
   const instructorWithExperience = {
     ...instructor,
-    experience: [...new Set(timeSpentForEachDCAndAL)]
-  }
+    experience: [...new Set(timeSpentForEachDCAndAL)],
+  };
 
   if (
     instructor?.favouriteDanceCategories &&
