@@ -15,26 +15,18 @@ datasource db {
 }
 
 model PushToken {
-  userId      String      @id
-  token       String
+  userId      String      @id @unique
+  token       String      @unique
   notifications Notification[]
 }
 
 model Notification {
   id          Int          @id @default(autoincrement())
-  productId   Int
   userId      String
   user        PushToken    @relation(fields: [userId], references: [userId])
-  productType ProductType
   title       String
-  description String
+  body        String
   hasBeenRead Boolean      @default(false)
   sendDate    DateTime     @default(now())
-}
-
-
-enum ProductType {
-  COURSE
-  EVENT
-  CLASS
+  payload     Json
 }

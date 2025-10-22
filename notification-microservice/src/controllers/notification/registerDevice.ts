@@ -9,15 +9,15 @@ export async function registerDevice(
 ) {
   if (!req.user) {
     res.status(StatusCodes.UNAUTHORIZED).json("User is not authorized");
-    return
+    return;
   }
 
-  console.log(req.user.role)
+  console.log(req.user.role);
 
   const { pushToken } = req.body;
   if (!Expo.isExpoPushToken(pushToken)) {
     res.status(StatusCodes.BAD_REQUEST).json("Invalid push token");
-    return
+    return;
   }
 
   await prisma.pushToken.create({

@@ -1,31 +1,40 @@
 import { Request, Response } from "express";
 import { check, validationResult } from "express-validator";
 import { StatusCodes } from "http-status-codes";
-import { ProductType } from "../../../generated/client";
 import { checkValidations } from "../../utils/errorHelpers";
 import prisma from "../../utils/prisma";
 
-export async function getNotifications(req: Request, res: Response) {
+export async function getNotifications(
+  req: Request<
+    {},
+    {},
+    {},
+    { dateFrom: string; dateTo: string; page?: number; limit?: number }
+  > & { user?: any },
+  res: Response,
+) {
   checkValidations(validationResult(req));
   const page = Number(req.query.page) || 1;
   const limit = Number(req.query.limit) || 10;
   const skip = (page - 1) * limit;
+  let dateFrom;
+  let dateTo;
+  if (req.query.dateFrom && req.query.dateTo) {
+    dateFrom = new Date(req.query.dateFrom);
+    dateTo = new Date(req.query.dateTo);
+  }
 
-  const { productId, productType, userId, sendDate, hasBeenRead } = req.query;
+  const userId = req.user?.id;
 
   const where = {
-    ...(productId && { productId: Number(productId) }),
-    ...(productType && {
-      productType: ProductType[productType as keyof typeof ProductType],
-    }),
-    ...(userId && { userId: userId as string}),
-    ...(sendDate && {
-      sendDate: {
-        gte: new Date(`${sendDate.toString().split("T")[0]}T00:00:00Z`),
-        lte: new Date(`${sendDate.toString().split("T")[0]}T23:59:59Z`),
-      },
-    }),
-    ...(hasBeenRead && { hasBeenRead: hasBeenRead === "true" }),
+    ...(dateFrom &&
+      dateTo && {
+        sendDate: {
+          gte: dateFrom,
+          lte: dateTo,
+        },
+      }),
+    ...(userId && { userId: req.user.id }),
   };
 
   const [notifications, total] = await Promise.all([
@@ -65,39 +74,39 @@ export async function getNotificationById(req: Request, res: Response) {
   res.status(StatusCodes.OK).json(notification);
 }
 
-export async function createNotification(req: Request, res: Response) {
-  checkValidations(validationResult(req));
+// export async function createNotification(req: Request, res: Response) {
+//   checkValidations(validationResult(req));
 
-  const { productId, productType, userId, title, description } = req.body;
+//   const { productId, productType, userId, title, description } = req.body;
 
-  const notification = await prisma.notification.create({
-    data: {
-      productId,
-      productType,
-      userId,
-      title,
-      description,
-    },
-  });
-  res.status(StatusCodes.OK).json(notification);
-}
+//   const notification = await prisma.notification.create({
+//     data: {
+//       productId,
+//       productType,
+//       userId,
+//       title,
+//       description,
+//     },
+//   });
+//   res.status(StatusCodes.OK).json(notification);
+// }
 
-export async function updateNotificationContent(req: Request, res: Response) {
-  checkValidations(validationResult(req));
-  const { id } = req.params;
-  const { title, description } = req.body;
+// export async function updateNotificationContent(req: Request, res: Response) {
+//   checkValidations(validationResult(req));
+//   const { id } = req.params;
+//   const { title, description } = req.body;
 
-  const data = {
-    ...(title && { title }),
-    ...(description && { description }),
-  };
+//   const data = {
+//     ...(title && { title }),
+//     ...(description && { description }),
+//   };
 
-  const notification = await prisma.notification.update({
-    where: { id: Number(id) },
-    data,
-  });
-  res.status(StatusCodes.OK).json(notification);
-}
+//   const notification = await prisma.notification.update({
+//     where: { id: Number(id) },
+//     data,
+//   });
+//   res.status(StatusCodes.OK).json(notification);
+// }
 
 export async function updateNotificationStatus(req: Request, res: Response) {
   checkValidations(validationResult(req));
@@ -113,11 +122,11 @@ export async function updateNotificationStatus(req: Request, res: Response) {
   res.status(StatusCodes.OK).json(notification);
 }
 
-export async function deleteNotification(req: Request, res: Response) {
-  checkValidations(validationResult(req));
-  const { id } = req.params;
-  await prisma.notification.delete({
-    where: { id: Number(id) },
-  });
-  res.status(StatusCodes.OK).json({ message: "Notification deleted" });
-}
+// export async function deleteNotification(req: Request, res: Response) {
+//   checkValidations(validationResult(req));
+//   const { id } = req.params;
+//   await prisma.notification.delete({
+//     where: { id: Number(id) },
+//   });
+//   res.status(StatusCodes.OK).json({ message: "Notification deleted" });
+// }

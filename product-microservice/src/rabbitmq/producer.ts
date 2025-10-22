@@ -12,7 +12,7 @@ export class RabbitmqProducer {
     try {
       console.log(`⌛️ Connecting to Rabbit-MQ Server`);
       this.connection = await amqp.connect(
-        `amqp://${process.env.RMQ_USER}:${process.env.RMQ_PASS}@rabbitmq:5672`,
+        `amqp://${process.env.RMQ_USER}:${process.env.RMQ_PASS}@${process.env.RMQ_HOST}:${process.env.RMQ_PORT}`,
       );
 
       console.log(`✅ Rabbit MQ Connection is ready`);
@@ -27,12 +27,12 @@ export class RabbitmqProducer {
 
   async createQueue(queue: string) {
     if (!this.channel) {
-      await this.connect()
+      await this.connect();
     }
 
     await this.channel.assertQueue(queue, {
-      durable: true
-    })
+      durable: true,
+    });
 
     console.log(`✅ Queue "${queue}" has been created!`);
   }
@@ -43,7 +43,7 @@ export class RabbitmqProducer {
         await this.connect();
       }
 
-      await this.createQueue(queue)
+      await this.createQueue(queue);
 
       this.channel.sendToQueue(queue, Buffer.from(JSON.stringify(message)));
     } catch (error) {

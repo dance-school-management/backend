@@ -126,7 +126,6 @@ if (NOTIFICATION_MICROSERVICE_URL) {
   if (NODE_ENV === "development") {
     app.use("/notification/api-docs", proxyMiddlewareNotificationAdditional);
   }
-  app.use("/notification/uploads", proxyMiddlewareNotificationAdditional);
   app.use("/notification", authenticate(), proxyMiddlewareNotification);
 }
 

@@ -1,19 +1,11 @@
+import { ExpoPushMessage } from "expo-server-sdk";
 import { expo } from "../../index";
-import { ProductType } from "../../../generated/client";
 import prisma from "../../utils/prisma";
+import { MsgData } from "../types";
 
-interface MsgData {
-  productId: number;
-  userId: string;
-  productType: ProductType;
-  title: string;
-  description: string;
-}
-
-
-// Saves notification to database and sends a notification ta a user 
+// Saves notification to database and sends a notification to a user
 // only if the user is registered for notifications
-export const handleSendPushNotification = async (msg: string) => {
+export const handleSendPushNotifications = async (msg: string) => {
   const msgData: MsgData[] = JSON.parse(msg);
 
   console.log(msgData);
@@ -29,9 +21,8 @@ export const handleSendPushNotification = async (msg: string) => {
     if (isUserRegisteredForNotifications)
       await prisma.notification.create({
         data: {
-          productId: md.productId,
-          description: md.description,
-          productType: md.productType,
+          body: md.body,
+          payload: Object(md.payload),
           title: md.title,
           userId: md.userId,
         },
@@ -52,28 +43,27 @@ export const handleSendPushNotification = async (msg: string) => {
     return { ...md, token };
   });
 
-  const messages = pushTokensMessages
+  const messages: ExpoPushMessage[] = pushTokensMessages
     .map((ptm) => {
       if (ptm)
         return {
           to: ptm.token,
           sound: "default",
           title: ptm.title,
-          body: ptm.description,
+          body: ptm.body,
+          data: ptm.payload,
         };
       else return null;
     })
     .filter((item) => item !== null);
 
   const chunks = expo.chunkPushNotifications(messages);
-  const tickets = [];
 
   for (const chunk of chunks) {
     try {
-      const ticketChunk = await expo.sendPushNotificationsAsync(chunk);
-      tickets.push(...ticketChunk);
+      await expo.sendPushNotificationsAsync(chunk);
     } catch (error) {
-      console.error("Błąd wysyłania:", error);
+      console.error("Error sending:", error);
     }
   }
 

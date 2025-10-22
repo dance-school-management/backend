@@ -1,5 +1,5 @@
 import amqp, { Channel, ChannelModel } from "amqplib";
-import "dotenv/config"
+import "dotenv/config";
 
 export class RabbitmqProducer {
   connection!: ChannelModel;
@@ -13,7 +13,7 @@ export class RabbitmqProducer {
     try {
       console.log(`⌛️ Connecting to Rabbit-MQ Server`);
       this.connection = await amqp.connect(
-        `amqp://${process.env.RMQ_USER}:${process.env.RMQ_PASS}@rabbitmq:5672`,
+        `amqp://${process.env.RMQ_USER}:${process.env.RMQ_PASS}@${process.env.RMQ_HOST}:${process.env.RMQ_PORT}`,
       );
 
       console.log(`✅ Rabbit MQ Connection is ready`);

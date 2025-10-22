@@ -2,7 +2,7 @@ import Expo from "expo-server-sdk";
 import { RabbitMQConsumer } from "./rabbitmq/consumer";
 import { RabbitmqProducer } from "./rabbitmq/producer";
 import { createApp } from "./utils/createApp";
-import { handleSendPushNotification } from "./rabbitmq/handlers/handleSendPushNotification";
+import { handleSendPushNotifications } from "./rabbitmq/handlers/handleSendPushNotifications";
 import { SEND_PUSH_NOTIFICATION_QUEUE } from "./rabbitmq/queues";
 
 const PORT = process.env.PORT || 8001;
@@ -16,7 +16,7 @@ const rmqConsumer = new RabbitMQConsumer();
 
 rmqConsumer.consume(
   SEND_PUSH_NOTIFICATION_QUEUE,
-  handleSendPushNotification,
+  handleSendPushNotifications,
 );
 
 app.listen(PORT, () => {

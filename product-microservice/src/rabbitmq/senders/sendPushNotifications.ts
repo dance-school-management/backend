@@ -1,14 +1,7 @@
 import { rmqProducer } from "../..";
 import { SEND_PUSH_NOTIFICATION_QUEUE } from "../queues";
+import { MsgData } from "../types";
 
-export interface PushNotificationMsgData {
-  productId: number;
-  userId: string;
-  productType: "COURSE" | "CLASS" | "EVENT";
-  title: string;
-  description: string;
-}
-
-export async function sendPushNotifications(msg: PushNotificationMsgData[]) {
+export async function sendPushNotifications(msg: MsgData[]) {
   rmqProducer.sendToQueue(SEND_PUSH_NOTIFICATION_QUEUE, msg);
 }
