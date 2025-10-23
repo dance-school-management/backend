@@ -3,9 +3,8 @@ import { validationResult } from "express-validator";
 import { StatusCodes } from "http-status-codes";
 import { checkValidations } from "../../utils/errorHelpers";
 import prisma from "../../utils/prisma";
-import { ExpoPushMessage } from "expo-server-sdk";
-import { expo } from "../../index";
 import { UniversalError } from "../../errors/UniversalError";
+import { sendPushNotifications } from "../../utils/helpers";
 
 export async function getNotifications(
   req: Request<
@@ -37,14 +36,14 @@ export async function getNotifications(
               lte: dateTo,
             },
           }),
-        tokens: {
+        notificationsOnUsers: {
           some: {
             userId: req.user?.id,
           },
         },
       },
       include: {
-        tokens: {
+        notificationsOnUsers: {
           where: {
             userId: req.user?.id,
           },
@@ -69,7 +68,7 @@ export async function getNotifications(
               lte: dateTo,
             },
           }),
-        tokens: {
+        notificationsOnUsers: {
           some: {
             userId: req.user?.id,
           },
@@ -80,8 +79,8 @@ export async function getNotifications(
 
   const formattedNotifications = notifications.map((n) => ({
     ...n,
-    hasBeenRead: n.tokens[0]?.hasBeenRead ?? false,
-    tokens: undefined,
+    hasBeenRead: n.notificationsOnUsers[0]?.hasBeenRead ?? false,
+    notificationsOnUsers: undefined,
   }));
 
   res.status(StatusCodes.OK).json({
@@ -101,9 +100,12 @@ export async function getNotificationById(
   console.log("getNotificationById");
   const { id } = req.params;
   const notification = await prisma.notification.findUnique({
-    where: { id: Number(id), tokens: { some: { userId: req.user?.id } } },
+    where: {
+      id: Number(id),
+      notificationsOnUsers: { some: { userId: req.user?.id } },
+    },
     include: {
-      tokens: {
+      notificationsOnUsers: {
         where: {
           userId: req.user?.id,
         },
@@ -120,15 +122,23 @@ export async function getNotificationById(
 
   const formattedNotification = {
     ...notification,
-    hasBeenRead: notification?.tokens[0]?.hasBeenRead ?? false,
-    tokens: undefined,
+    hasBeenRead: notification?.notificationsOnUsers[0]?.hasBeenRead ?? false,
+    notificationsOnUsers: undefined,
   };
 
   res.status(StatusCodes.OK).json(formattedNotification);
 }
 
 export async function createNotifications(
-  req: Request<{}, {}, { userIds: string[]; title: string; body: string }>,
+  req: Request<
+    {},
+    {},
+    {
+      userIds: string[];
+      title: string;
+      body: string;
+    }
+  >,
   res: Response,
 ) {
   checkValidations(validationResult(req));
@@ -143,62 +153,24 @@ export async function createNotifications(
     },
   });
 
-  for (const userId of userIds) {
-    const isUserRegisteredForNotifications = Boolean(
-      await prisma.pushToken.findFirst({
-        where: {
-          userId,
+  const usersRegisteredForNotifications = (
+    await prisma.user.findMany({
+      where: {
+        id: {
+          in: userIds,
         },
-      }),
-    );
-    if (isUserRegisteredForNotifications) {
-      await prisma.notificationsOnTokens.create({
-        data: {
-          notificationId: notification.id,
-          userId: userId,
-        },
-      });
-    }
-  }
-
-  const pushTokens = await prisma.pushToken.findMany({
-    where: {
-      userId: {
-        in: userIds,
       },
-    },
-  });
-
-  const pushTokensMessages = userIds.map((uid) => {
-    const token = pushTokens.find((pt) => pt.userId === uid)?.token;
-    if (!token) return null;
-    return { title, body, token };
-  });
-
-  const messages: ExpoPushMessage[] = pushTokensMessages
-    .map((ptm) => {
-      if (ptm)
-        return {
-          to: ptm.token,
-          sound: "default",
-          title: ptm.title,
-          body: ptm.body,
-        };
-      else return null;
     })
-    .filter((item) => item !== null);
+  ).map((user) => user.id);
 
-  const chunks = expo.chunkPushNotifications(messages);
+  await prisma.notificationsOnUsers.createMany({
+    data: usersRegisteredForNotifications.map((userId) => ({
+      notificationId: notification.id,
+      userId,
+    })),
+  });
 
-  for (const chunk of chunks) {
-    try {
-      await expo.sendPushNotificationsAsync(chunk);
-    } catch (error) {
-      console.error("Error sending:", error);
-    }
-  }
-
-  console.log("Push notifications sent");
+  await sendPushNotifications(usersRegisteredForNotifications, title, body, {});
 
   res
     .status(StatusCodes.OK)
@@ -223,54 +195,24 @@ export async function updateNotificationContent(
     data,
   });
 
-  const userIds = (
-    await prisma.notificationsOnTokens.findMany({
-      where: {
-        notificationId: Number(id),
-      },
-    })
-  ).map((item) => item.userId);
+  const userIds = [
+    ...new Set(
+      (
+        await prisma.notificationsOnUsers.findMany({
+          where: {
+            notificationId: Number(id),
+          },
+        })
+      ).map((item) => item.userId),
+    ),
+  ];
 
-  const pushTokens = await prisma.pushToken.findMany({
-    where: {
-      userId: {
-        in: userIds,
-      },
-    },
-  });
-
-  const pushTokensMessages = userIds.map((uid) => {
-    const token = pushTokens.find((pt) => pt.userId === uid)?.token;
-    if (!token) return null;
-    return {
-      title: "Notification update",
-      body: "One of your notifications was updated",
-      token,
-    };
-  });
-
-  const messages: ExpoPushMessage[] = pushTokensMessages
-    .map((ptm) => {
-      if (ptm)
-        return {
-          to: ptm.token,
-          sound: "default",
-          title: ptm.title,
-          body: ptm.body,
-        };
-      else return null;
-    })
-    .filter((item) => item !== null);
-
-  const chunks = expo.chunkPushNotifications(messages);
-
-  for (const chunk of chunks) {
-    try {
-      await expo.sendPushNotificationsAsync(chunk);
-    } catch (error) {
-      console.error("Error sending:", error);
-    }
-  }
+  await sendPushNotifications(
+    userIds,
+    "Notification update",
+    "One of your notifications was updated",
+    {},
+  );
 
   res.status(StatusCodes.OK).json(notification);
 }
@@ -284,7 +226,7 @@ export async function updateNotificationStatus(
   const { hasBeenRead } = req.body;
 
   const exists = Boolean(
-    await prisma.notificationsOnTokens.findFirst({
+    await prisma.notificationsOnUsers.findFirst({
       where: {
         userId: req.user?.id,
         notificationId: Number(id),
@@ -300,7 +242,7 @@ export async function updateNotificationStatus(
     );
   }
 
-  const notification = await prisma.notificationsOnTokens.update({
+  const notification = await prisma.notificationsOnUsers.update({
     where: {
       userId_notificationId: {
         userId: req.user?.id,

@@ -239,15 +239,13 @@
  *   post:
  *     summary: Register a device to push notifications
  *     tags:
- *       - push notifications
+ *       - Notification
  *     requestBody:
- *        required: true
+ *        required: false
  *        content:
  *         application/json:
  *           schema:
  *             type: object
- *             required:
- *               - pushToken
  *             properties:
  *               pushToken:
  *                 type: string

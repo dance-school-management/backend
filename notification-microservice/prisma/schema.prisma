@@ -14,11 +14,12 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model PushToken {
-  userId String @id @unique
-  token  String @unique
+model User {
+  id                       String  @id @unique
+  token                    String? @unique
+  hasDisabledNotifications Boolean @default(false)
 
-  notifications NotificationsOnTokens[]
+  notificationsOnUsers NotificationsOnUsers[]
 }
 
 model Notification {
@@ -28,16 +29,16 @@ model Notification {
   sendDate DateTime @default(now())
   payload  Json
 
-  tokens NotificationsOnTokens[]
+  notificationsOnUsers NotificationsOnUsers[]
 }
 
-model NotificationsOnTokens {
+model NotificationsOnUsers {
   userId         String
   notificationId Int
   hasBeenRead    Boolean @default(false)
 
   notification Notification @relation(fields: [notificationId], references: [id], onDelete: Cascade)
-  pushToken    PushToken    @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@id([userId, notificationId])
 }

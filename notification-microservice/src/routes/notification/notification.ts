@@ -7,7 +7,7 @@ import {
   updateNotificationContent,
 } from "../../controllers/notification/notification";
 import { body, query, param } from "express-validator";
-import { registerDevice } from "../../controllers/notification/registerDevice";
+import { register } from "../../controllers/notification/register";
 
 const router = Router();
 
@@ -87,6 +87,6 @@ router.put(
 //   deleteNotification,
 // );
 
-router.post("/register", registerDevice);
+router.post("/register", register);
 
 export default router;
