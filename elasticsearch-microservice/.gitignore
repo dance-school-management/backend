@@ -1,0 +1,7 @@
+.venv/
+es_data/
+*pb2.py
+*pb2_grpc.py
+*pb2.pyi
+.env.development
+__pycache__

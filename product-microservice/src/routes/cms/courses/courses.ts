@@ -1,6 +1,6 @@
 import { Router } from "express";
 import {
-  addCourse,
+  createCourse,
   deleteCourse,
   editCourse,
   getCourseDetails,
@@ -15,7 +15,7 @@ router.post("/", getCourses);
 router.post(
   "/new",
   body(["name"]).notEmpty().withMessage("Name must not be empty"),
-  addCourse,
+  createCourse,
 );
 
 router.put(

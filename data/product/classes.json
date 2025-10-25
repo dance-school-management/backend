@@ -5,7 +5,7 @@
     "groupNumber": 1,
     "startDate": "2025-09-29T13:00:00",
     "endDate": "2025-09-29T14:30:00",
-    "peopleLimit": 15,
+    "peopleLimit": 4,
     "classRoomId": 1,
     "classStatus": "NORMAL"
   },
@@ -15,7 +15,7 @@
     "groupNumber": 1,
     "startDate": "2025-10-06T13:00:00",
     "endDate": "2025-10-06T14:30:00",
-    "peopleLimit": 15,
+    "peopleLimit": 4,
     "classRoomId": 1,
     "classStatus": "NORMAL"
   },
@@ -25,7 +25,7 @@
     "groupNumber": 1,
     "startDate": "2025-10-13T13:00:00",
     "endDate": "2025-10-13T14:30:00",
-    "peopleLimit": 15,
+    "peopleLimit": 4,
     "classRoomId": 1,
     "classStatus": "NORMAL"
   },
@@ -35,7 +35,7 @@
     "groupNumber": 1,
     "startDate": "2025-10-20T13:00:00",
     "endDate": "2025-10-20T14:30:00",
-    "peopleLimit": 15,
+    "peopleLimit": 4,
     "classRoomId": 1,
     "classStatus": "NORMAL"
   },
@@ -45,7 +45,7 @@
     "groupNumber": 1,
     "startDate": "2025-10-27T13:00:00",
     "endDate": "2025-10-27T14:30:00",
-    "peopleLimit": 15,
+    "peopleLimit": 4,
     "classRoomId": 1,
     "classStatus": "NORMAL"
   },
@@ -55,7 +55,7 @@
     "groupNumber": 1,
     "startDate": "2025-11-03T13:00:00",
     "endDate": "2025-11-03T14:30:00",
-    "peopleLimit": 15,
+    "peopleLimit": 4,
     "classRoomId": 1,
     "classStatus": "NORMAL"
   },
@@ -65,7 +65,7 @@
     "groupNumber": 1,
     "startDate": "2025-11-24T13:00:00",
     "endDate": "2025-11-24T14:30:00",
-    "peopleLimit": 15,
+    "peopleLimit": 6,
     "classRoomId": 4,
     "classStatus": "NORMAL"
   },
@@ -75,7 +75,7 @@
     "groupNumber": 1,
     "startDate": "2025-12-01T13:00:00",
     "endDate": "2025-12-01T14:30:00",
-    "peopleLimit": 15,
+    "peopleLimit": 6,
     "classRoomId": 4,
     "classStatus": "NORMAL"
   },
@@ -85,7 +85,7 @@
     "groupNumber": 1,
     "startDate": "2025-12-08T13:00:00",
     "endDate": "2025-12-08T14:30:00",
-    "peopleLimit": 15,
+    "peopleLimit": 6,
     "classRoomId": 4,
     "classStatus": "NORMAL"
   },
@@ -95,7 +95,7 @@
     "groupNumber": 1,
     "startDate": "2025-12-15T13:00:00",
     "endDate": "2025-12-15T14:30:00",
-    "peopleLimit": 15,
+    "peopleLimit": 6,
     "classRoomId": 4,
     "classStatus": "NORMAL"
   },
@@ -105,7 +105,7 @@
     "groupNumber": 1,
     "startDate": "2026-01-12T13:00:00",
     "endDate": "2026-01-12T14:30:00",
-    "peopleLimit": 15,
+    "peopleLimit": 6,
     "classRoomId": 4,
     "classStatus": "NORMAL"
   },
@@ -115,7 +115,7 @@
     "groupNumber": 1,
     "startDate": "2026-01-19T13:00:00",
     "endDate": "2026-01-19T14:30:00",
-    "peopleLimit": 15,
+    "peopleLimit": 6,
     "classRoomId": 4,
     "classStatus": "NORMAL"
   },
@@ -125,7 +125,7 @@
     "groupNumber": 1,
     "startDate": "2025-02-09T13:00:00",
     "endDate": "2025-02-09T14:30:00",
-    "peopleLimit": 15,
+    "peopleLimit": 6,
     "classRoomId": 4,
     "classStatus": "NORMAL"
   },
@@ -135,7 +135,7 @@
     "groupNumber": 1,
     "startDate": "2026-03-10T17:00:00",
     "endDate": "2026-03-10T18:30:00",
-    "peopleLimit": 19,
+    "peopleLimit": 4,
     "classRoomId": 7,
     "classStatus": "NORMAL"
   },
@@ -145,7 +145,7 @@
     "groupNumber": 1,
     "startDate": "2026-03-17T17:00:00",
     "endDate": "2026-03-17T18:30:00",
-    "peopleLimit": 19,
+    "peopleLimit": 4,
     "classRoomId": 7,
     "classStatus": "NORMAL"
   },
@@ -155,7 +155,7 @@
     "groupNumber": 1,
     "startDate": "2026-03-24T17:00:00",
     "endDate": "2026-03-24T18:30:00",
-    "peopleLimit": 19,
+    "peopleLimit": 4,
     "classRoomId": 7,
     "classStatus": "NORMAL"
   },
@@ -165,7 +165,7 @@
     "groupNumber": 1,
     "startDate": "2026-04-03T17:00:00",
     "endDate": "2026-04-03T18:30:00",
-    "peopleLimit": 19,
+    "peopleLimit": 4,
     "classRoomId": 7,
     "classStatus": "NORMAL"
   },
@@ -175,7 +175,7 @@
     "groupNumber": 1,
     "startDate": "2026-04-10T17:00:00",
     "endDate": "2026-04-10T18:30:00",
-    "peopleLimit": 19,
+    "peopleLimit": 4,
     "classRoomId": 7,
     "classStatus": "NORMAL"
   },
@@ -185,7 +185,7 @@
     "groupNumber": 1,
     "startDate": "2025-07-01T17:00:00",
     "endDate": "2025-07-01T18:30:00",
-    "peopleLimit": 19,
+    "peopleLimit": 5,
     "classRoomId": 3,
     "classStatus": "NORMAL"
   },
@@ -195,7 +195,7 @@
     "groupNumber": 1,
     "startDate": "2025-07-08T17:00:00",
     "endDate": "2025-07-08T18:30:00",
-    "peopleLimit": 19,
+    "peopleLimit": 5,
     "classRoomId": 3,
     "classStatus": "NORMAL"
   },
@@ -205,7 +205,7 @@
     "groupNumber": 1,
     "startDate": "2025-07-15T17:00:00",
     "endDate": "2025-07-15T18:30:00",
-    "peopleLimit": 19,
+    "peopleLimit": 5,
     "classRoomId": 3,
     "classStatus": "NORMAL"
   },
@@ -215,7 +215,7 @@
     "groupNumber": 1,
     "startDate": "2025-07-22T17:00:00",
     "endDate": "2025-07-22T18:30:00",
-    "peopleLimit": 19,
+    "peopleLimit": 5,
     "classRoomId": 3,
     "classStatus": "NORMAL"
   },
@@ -225,7 +225,7 @@
     "groupNumber": 1,
     "startDate": "2025-07-29T17:00:00",
     "endDate": "2025-07-29T18:30:00",
-    "peopleLimit": 19,
+    "peopleLimit": 5,
     "classRoomId": 3,
     "classStatus": "NORMAL"
   },
@@ -235,7 +235,7 @@
     "groupNumber": 1,
     "startDate": "2025-08-04T17:00:00",
     "endDate": "2025-08-04T18:30:00",
-    "peopleLimit": 19,
+    "peopleLimit": 6,
     "classRoomId": 3,
     "classStatus": "NORMAL"
   },
@@ -245,7 +245,7 @@
     "groupNumber": 1,
     "startDate": "2025-08-11T17:00:00",
     "endDate": "2025-08-11T18:30:00",
-    "peopleLimit": 19,
+    "peopleLimit": 6,
     "classRoomId": 3,
     "classStatus": "NORMAL"
   },
@@ -255,7 +255,7 @@
     "groupNumber": 1,
     "startDate": "2025-08-18T17:00:00",
     "endDate": "2025-08-18T18:30:00",
-    "peopleLimit": 19,
+    "peopleLimit": 6,
     "classRoomId": 3,
     "classStatus": "NORMAL"
   },
@@ -265,7 +265,7 @@
     "groupNumber": 1,
     "startDate": "2025-08-25T17:00:00",
     "endDate": "2025-08-25T18:30:00",
-    "peopleLimit": 19,
+    "peopleLimit": 6,
     "classRoomId": 3,
     "classStatus": "NORMAL"
   },
@@ -275,7 +275,7 @@
     "groupNumber": 1,
     "startDate": "2025-09-01T17:00:00",
     "endDate": "2025-09-01T18:30:00",
-    "peopleLimit": 19,
+    "peopleLimit": 4,
     "classRoomId": 3,
     "classStatus": "NORMAL"
   },
@@ -285,7 +285,7 @@
     "groupNumber": 1,
     "startDate": "2025-09-08T17:00:00",
     "endDate": "2025-09-08T18:30:00",
-    "peopleLimit": 19,
+    "peopleLimit": 4,
     "classRoomId": 3,
     "classStatus": "NORMAL"
   },
@@ -295,7 +295,7 @@
     "groupNumber": 1,
     "startDate": "2025-09-15T17:00:00",
     "endDate": "2025-09-15T18:30:00",
-    "peopleLimit": 19,
+    "peopleLimit": 4,
     "classRoomId": 3,
     "classStatus": "NORMAL"
   },
@@ -305,7 +305,7 @@
     "groupNumber": 1,
     "startDate": "2025-09-22T17:00:00",
     "endDate": "2025-09-22T18:30:00",
-    "peopleLimit": 19,
+    "peopleLimit": 4,
     "classRoomId": 3,
     "classStatus": "NORMAL"
   },
@@ -315,7 +315,7 @@
     "groupNumber": 1,
     "startDate": "2026-03-12T17:00:00",
     "endDate": "2026-03-12T18:30:00",
-    "peopleLimit": 19,
+    "peopleLimit": 5,
     "classRoomId": 3,
     "classStatus": "NORMAL"
   },
@@ -325,7 +325,7 @@
     "groupNumber": 1,
     "startDate": "2026-03-19T17:00:00",
     "endDate": "2026-03-19T18:30:00",
-    "peopleLimit": 19,
+    "peopleLimit": 5,
     "classRoomId": 3,
     "classStatus": "NORMAL"
   },
@@ -335,7 +335,7 @@
     "groupNumber": 1,
     "startDate": "2026-03-26T17:00:00",
     "endDate": "2026-03-26T18:30:00",
-    "peopleLimit": 19,
+    "peopleLimit": 5,
     "classRoomId": 3,
     "classStatus": "NORMAL"
   },
@@ -345,7 +345,7 @@
     "groupNumber": 1,
     "startDate": "2026-04-02T17:00:00",
     "endDate": "2026-04-02T18:30:00",
-    "peopleLimit": 19,
+    "peopleLimit": 5,
     "classRoomId": 3,
     "classStatus": "NORMAL"
   },
@@ -355,7 +355,7 @@
     "groupNumber": 1,
     "startDate": "2026-04-09T17:00:00",
     "endDate": "2026-04-09T18:30:00",
-    "peopleLimit": 19,
+    "peopleLimit": 5,
     "classRoomId": 3,
     "classStatus": "NORMAL"
   },
@@ -365,7 +365,7 @@
     "groupNumber": 1,
     "startDate": "2026-04-16T17:00:00",
     "endDate": "2026-04-16T18:30:00",
-    "peopleLimit": 19,
+    "peopleLimit": 5,
     "classRoomId": 3,
     "classStatus": "NORMAL"
   },
@@ -375,7 +375,7 @@
     "groupNumber": 1,
     "startDate": "2026-04-23T17:00:00",
     "endDate": "2026-04-23T18:30:00",
-    "peopleLimit": 19,
+    "peopleLimit": 5,
     "classRoomId": 3,
     "classStatus": "NORMAL"
   },
@@ -385,7 +385,7 @@
     "groupNumber": 1,
     "startDate": "2026-05-04T17:00:00",
     "endDate": "2026-05-04T18:30:00",
-    "peopleLimit": 19,
+    "peopleLimit": 6,
     "classRoomId": 3,
     "classStatus": "NORMAL"
   },
@@ -395,7 +395,7 @@
     "groupNumber": 1,
     "startDate": "2026-05-11T17:00:00",
     "endDate": "2026-05-11T18:30:00",
-    "peopleLimit": 19,
+    "peopleLimit": 6,
     "classRoomId": 3,
     "classStatus": "NORMAL"
   },
@@ -405,7 +405,7 @@
     "groupNumber": 1,
     "startDate": "2026-05-18T17:00:00",
     "endDate": "2026-05-18T18:30:00",
-    "peopleLimit": 19,
+    "peopleLimit": 6,
     "classRoomId": 3,
     "classStatus": "NORMAL"
   },
@@ -415,7 +415,7 @@
     "groupNumber": 1,
     "startDate": "2026-05-25T17:00:00",
     "endDate": "2026-05-25T18:30:00",
-    "peopleLimit": 19,
+    "peopleLimit": 6,
     "classRoomId": 3,
     "classStatus": "NORMAL"
   },
@@ -425,7 +425,7 @@
     "groupNumber": 1,
     "startDate": "2026-06-03T17:00:00",
     "endDate": "2026-06-03T18:30:00",
-    "peopleLimit": 19,
+    "peopleLimit": 6,
     "classRoomId": 3,
     "classStatus": "NORMAL"
   },
@@ -435,7 +435,7 @@
     "groupNumber": 1,
     "startDate": "2026-06-10T17:00:00",
     "endDate": "2026-06-10T18:30:00",
-    "peopleLimit": 19,
+    "peopleLimit": 6,
     "classRoomId": 3,
     "classStatus": "NORMAL"
   },
@@ -445,7 +445,7 @@
     "groupNumber": 1,
     "startDate": "2026-06-17T17:00:00",
     "endDate": "2026-06-17T18:30:00",
-    "peopleLimit": 19,
+    "peopleLimit": 6,
     "classRoomId": 3,
     "classStatus": "NORMAL"
   },
@@ -455,7 +455,7 @@
     "groupNumber": 1,
     "startDate": "2026-06-18T17:00:00",
     "endDate": "2026-06-18T18:30:00",
-    "peopleLimit": 19,
+    "peopleLimit": 5,
     "classRoomId": 3,
     "classStatus": "HIDDEN"
   },
@@ -465,7 +465,7 @@
     "groupNumber": 1,
     "startDate": "2026-06-24T17:00:00",
     "endDate": "2026-06-24T18:30:00",
-    "peopleLimit": 19,
+    "peopleLimit": 5,
     "classRoomId": 3,
     "classStatus": "HIDDEN"
   },
@@ -475,7 +475,7 @@
     "groupNumber": 1,
     "startDate": "2026-06-30T17:00:00",
     "endDate": "2026-06-30T18:30:00",
-    "peopleLimit": 19,
+    "peopleLimit": 5,
     "classRoomId": 3,
     "classStatus": "HIDDEN"
   },
@@ -485,7 +485,7 @@
     "groupNumber": 1,
     "startDate": "2026-07-14T17:00:00",
     "endDate": "2026-07-14T18:30:00",
-    "peopleLimit": 19,
+    "peopleLimit": 6,
     "classRoomId": 3,
     "classStatus": "HIDDEN"
   },
@@ -495,7 +495,7 @@
     "groupNumber": 1,
     "startDate": "2026-07-21T17:00:00",
     "endDate": "2026-07-21T18:30:00",
-    "peopleLimit": 19,
+    "peopleLimit": 6,
     "classRoomId": 3,
     "classStatus": "HIDDEN"
   },
@@ -505,7 +505,7 @@
     "groupNumber": 1,
     "startDate": "2026-02-11T17:00:00",
     "endDate": "2026-02-11T18:30:00",
-    "peopleLimit": 19,
+    "peopleLimit": 4,
     "classRoomId": 3,
     "classStatus": "NORMAL"
   },
@@ -515,7 +515,7 @@
     "groupNumber": 1,
     "startDate": "2026-02-14T17:00:00",
     "endDate": "2026-02-14T18:30:00",
-    "peopleLimit": 19,
+    "peopleLimit": 4,
     "classRoomId": 3,
     "classStatus": "NORMAL"
   },
@@ -525,7 +525,7 @@
     "groupNumber": 1,
     "startDate": "2026-04-11T17:00:00",
     "endDate": "2026-04-11T18:30:00",
-    "peopleLimit": 19,
+    "peopleLimit": 5,
     "classRoomId": 3,
     "classStatus": "HIDDEN"
   },
@@ -535,7 +535,7 @@
     "groupNumber": 1,
     "startDate": "2026-05-05T17:00:00",
     "endDate": "2026-05-05T18:30:00",
-    "peopleLimit": 19,
+    "peopleLimit": 6,
     "classRoomId": 3,
     "classStatus": "HIDDEN"
   },
@@ -545,7 +545,7 @@
     "groupNumber": 1,
     "startDate": "2025-12-12T17:00:00",
     "endDate": "2025-12-12T18:30:00",
-    "peopleLimit": 19,
+    "peopleLimit": 7,
     "classRoomId": 3,
     "classStatus": "NORMAL"
   },
@@ -555,7 +555,507 @@
     "groupNumber": 1,
     "startDate": "2025-11-13T17:00:00",
     "endDate": "2025-11-13T18:30:00",
-    "peopleLimit": 19,
+    "peopleLimit": 6,
+    "classRoomId": 3,
+    "classStatus": "NORMAL"
+  },
+  {
+    "id": 57,
+    "classTemplateId": 16,
+    "groupNumber": 1,
+    "startDate": "2025-05-10T16:00:00",
+    "endDate": "2025-05-10T17:30:00",
+    "peopleLimit": 5,
+    "classRoomId": 3,
+    "classStatus": "NORMAL"
+  },
+  {
+    "id": 58,
+    "classTemplateId": 16,
+    "groupNumber": 1,
+    "startDate": "2025-05-17T16:00:00",
+    "endDate": "2025-05-17T17:30:00",
+    "peopleLimit": 5,
+    "classRoomId": 3,
+    "classStatus": "NORMAL"
+  },
+  {
+    "id": 59,
+    "classTemplateId": 16,
+    "groupNumber": 1,
+    "startDate": "2025-05-24T16:00:00",
+    "endDate": "2025-05-24T17:30:00",
+    "peopleLimit": 5,
+    "classRoomId": 3,
+    "classStatus": "NORMAL"
+  },
+  {
+    "id": 60,
+    "classTemplateId": 16,
+    "groupNumber": 1,
+    "startDate": "2025-05-31T16:00:00",
+    "endDate": "2025-05-31T17:30:00",
+    "peopleLimit": 5,
+    "classRoomId": 3,
+    "classStatus": "NORMAL"
+  },
+  {
+    "id": 61,
+    "classTemplateId": 17,
+    "groupNumber": 1,
+    "startDate": "2025-06-14T16:00:00",
+    "endDate": "2025-06-14T17:30:00",
+    "peopleLimit": 4,
+    "classRoomId": 3,
+    "classStatus": "NORMAL"
+  },
+  {
+    "id": 62,
+    "classTemplateId": 17,
+    "groupNumber": 1,
+    "startDate": "2025-06-21T16:00:00",
+    "endDate": "2025-06-21T17:30:00",
+    "peopleLimit": 4,
+    "classRoomId": 7,
+    "classStatus": "NORMAL"
+  },
+  {
+    "id": 63,
+    "classTemplateId": 17,
+    "groupNumber": 1,
+    "startDate": "2025-06-28T16:00:00",
+    "endDate": "2025-06-28T17:30:00",
+    "peopleLimit": 4,
+    "classRoomId": 7,
+    "classStatus": "NORMAL"
+  },
+  {
+    "id": 64,
+    "classTemplateId": 18,
+    "groupNumber": 1,
+    "startDate": "2025-05-19T12:00:00",
+    "endDate": "2025-05-19T13:30:00",
+    "peopleLimit": 6,
+    "classRoomId": 7,
+    "classStatus": "NORMAL"
+  },
+  {
+    "id": 65,
+    "classTemplateId": 18,
+    "groupNumber": 1,
+    "startDate": "2025-05-26T12:00:00",
+    "endDate": "2025-05-26T13:30:00",
+    "peopleLimit": 6,
+    "classRoomId": 7,
+    "classStatus": "NORMAL"
+  },
+  {
+    "id": 66,
+    "classTemplateId": 18,
+    "groupNumber": 1,
+    "startDate": "2025-06-02T12:00:00",
+    "endDate": "2025-06-02T13:30:00",
+    "peopleLimit": 6,
+    "classRoomId": 7,
+    "classStatus": "NORMAL"
+  },
+  {
+    "id": 67,
+    "classTemplateId": 18,
+    "groupNumber": 1,
+    "startDate": "2025-06-09T12:00:00",
+    "endDate": "2025-06-09T13:30:00",
+    "peopleLimit": 6,
+    "classRoomId": 7,
+    "classStatus": "NORMAL"
+  },
+  {
+    "id": 68,
+    "classTemplateId": 18,
+    "groupNumber": 1,
+    "startDate": "2025-06-16T12:00:00",
+    "endDate": "2025-06-16T13:30:00",
+    "peopleLimit": 6,
+    "classRoomId": 7,
+    "classStatus": "NORMAL"
+  },
+  {
+    "id": 69,
+    "classTemplateId": 19,
+    "groupNumber": 1,
+    "startDate": "2025-06-25T13:00:00",
+    "endDate": "2025-06-25T14:30:00",
+    "peopleLimit": 6,
+    "classRoomId": 7,
+    "classStatus": "NORMAL"
+  },
+  {
+    "id": 70,
+    "classTemplateId": 19,
+    "groupNumber": 1,
+    "startDate": "2025-07-02T13:00:00",
+    "endDate": "2025-07-02T14:30:00",
+    "peopleLimit": 6,
+    "classRoomId": 7,
+    "classStatus": "NORMAL"
+  },
+  {
+    "id": 71,
+    "classTemplateId": 19,
+    "groupNumber": 1,
+    "startDate": "2025-07-09T13:00:00",
+    "endDate": "2025-07-09T14:30:00",
+    "peopleLimit": 6,
+    "classRoomId": 7,
+    "classStatus": "NORMAL"
+  },
+  {
+    "id": 72,
+    "classTemplateId": 19,
+    "groupNumber": 1,
+    "startDate": "2025-07-16T13:00:00",
+    "endDate": "2025-07-16T14:30:00",
+    "peopleLimit": 6,
+    "classRoomId": 7,
+    "classStatus": "NORMAL"
+  },
+  {
+    "id": 73,
+    "classTemplateId": 19,
+    "groupNumber": 1,
+    "startDate": "2025-07-23T13:00:00",
+    "endDate": "2025-07-23T14:30:00",
+    "peopleLimit": 6,
+    "classRoomId": 7,
+    "classStatus": "NORMAL"
+  },
+  {
+    "id": 74,
+    "classTemplateId": 19,
+    "groupNumber": 1,
+    "startDate": "2025-07-30T13:00:00",
+    "endDate": "2025-07-30T14:30:00",
+    "peopleLimit": 6,
+    "classRoomId": 7,
+    "classStatus": "NORMAL"
+  },
+  {
+    "id": 75,
+    "classTemplateId": 20,
+    "groupNumber": 1,
+    "startDate": "2025-05-30T18:00:00",
+    "endDate": "2025-05-30T20:30:00",
+    "peopleLimit": 5,
+    "classRoomId": 6,
+    "classStatus": "NORMAL"
+  },
+  {
+    "id": 76,
+    "classTemplateId": 20,
+    "groupNumber": 1,
+    "startDate": "2025-06-07T18:00:00",
+    "endDate": "2025-06-07T20:30:00",
+    "peopleLimit": 5,
+    "classRoomId": 6,
+    "classStatus": "NORMAL"
+  },
+  {
+    "id": 77,
+    "classTemplateId": 20,
+    "groupNumber": 1,
+    "startDate": "2025-06-14T18:00:00",
+    "endDate": "2025-06-14T20:30:00",
+    "peopleLimit": 5,
+    "classRoomId": 6,
+    "classStatus": "NORMAL"
+  },
+  {
+    "id": 78,
+    "classTemplateId": 20,
+    "groupNumber": 1,
+    "startDate": "2025-06-21T18:00:00",
+    "endDate": "2025-06-21T20:30:00",
+    "peopleLimit": 5,
+    "classRoomId": 6,
+    "classStatus": "NORMAL"
+  },
+  {
+    "id": 79,
+    "classTemplateId": 20,
+    "groupNumber": 1,
+    "startDate": "2025-06-28T18:00:00",
+    "endDate": "2025-06-28T20:30:00",
+    "peopleLimit": 5,
+    "classRoomId": 6,
+    "classStatus": "NORMAL"
+  },
+  {
+    "id": 80,
+    "classTemplateId": 20,
+    "groupNumber": 1,
+    "startDate": "2025-07-14T18:00:00",
+    "endDate": "2025-07-14T20:30:00",
+    "peopleLimit": 5,
+    "classRoomId": 6,
+    "classStatus": "NORMAL"
+  },
+  {
+    "id": 81,
+    "classTemplateId": 20,
+    "groupNumber": 1,
+    "startDate": "2025-07-21T18:00:00",
+    "endDate": "2025-07-21T20:30:00",
+    "peopleLimit": 5,
+    "classRoomId": 6,
+    "classStatus": "NORMAL"
+  },
+  {
+    "id": 82,
+    "classTemplateId": 20,
+    "groupNumber": 1,
+    "startDate": "2025-07-28T18:00:00",
+    "endDate": "2025-07-28T20:30:00",
+    "peopleLimit": 5,
+    "classRoomId": 6,
+    "classStatus": "NORMAL"
+  },
+  {
+    "id": 83,
+    "classTemplateId": 21,
+    "groupNumber": 1,
+    "startDate": "2025-05-28T18:00:00",
+    "endDate": "2025-05-28T20:30:00",
+    "peopleLimit": 6,
+    "classRoomId": 5,
+    "classStatus": "NORMAL"
+  },
+  {
+    "id": 84,
+    "classTemplateId": 21,
+    "groupNumber": 1,
+    "startDate": "2025-06-04T18:00:00",
+    "endDate": "2025-06-04T20:30:00",
+    "peopleLimit": 6,
+    "classRoomId": 5,
+    "classStatus": "NORMAL"
+  },
+  {
+    "id": 85,
+    "classTemplateId": 21,
+    "groupNumber": 1,
+    "startDate": "2025-06-11T18:00:00",
+    "endDate": "2025-06-11T20:30:00",
+    "peopleLimit": 6,
+    "classRoomId": 5,
+    "classStatus": "NORMAL"
+  },
+  {
+    "id": 86,
+    "classTemplateId": 21,
+    "groupNumber": 1,
+    "startDate": "2025-06-18T18:00:00",
+    "endDate": "2025-06-18T20:30:00",
+    "peopleLimit": 6,
+    "classRoomId": 5,
+    "classStatus": "NORMAL"
+  },
+  {
+    "id": 87,
+    "classTemplateId": 21,
+    "groupNumber": 1,
+    "startDate": "2025-06-25T18:00:00",
+    "endDate": "2025-06-25T20:30:00",
+    "peopleLimit": 6,
+    "classRoomId": 5,
+    "classStatus": "NORMAL"
+  },
+  {
+    "id": 88,
+    "classTemplateId": 21,
+    "groupNumber": 1,
+    "startDate": "2025-07-02T18:00:00",
+    "endDate": "2025-07-02T20:30:00",
+    "peopleLimit": 6,
+    "classRoomId": 5,
+    "classStatus": "NORMAL"
+  },
+  {
+    "id": 89,
+    "classTemplateId": 21,
+    "groupNumber": 1,
+    "startDate": "2025-07-09T18:00:00",
+    "endDate": "2025-07-09T20:30:00",
+    "peopleLimit": 6,
+    "classRoomId": 5,
+    "classStatus": "NORMAL"
+  },
+  {
+    "id": 90,
+    "classTemplateId": 21,
+    "groupNumber": 1,
+    "startDate": "2025-07-16T18:00:00",
+    "endDate": "2025-07-16T20:30:00",
+    "peopleLimit": 6,
+    "classRoomId": 5,
+    "classStatus": "NORMAL"
+  },
+  {
+    "id": 91,
+    "classTemplateId": 21,
+    "groupNumber": 1,
+    "startDate": "2025-07-23T18:00:00",
+    "endDate": "2025-07-23T20:30:00",
+    "peopleLimit": 6,
+    "classRoomId": 5,
+    "classStatus": "NORMAL"
+  },
+  {
+    "id": 92,
+    "classTemplateId": 21,
+    "groupNumber": 1,
+    "startDate": "2025-08-04T18:00:00",
+    "endDate": "2025-08-04T20:30:00",
+    "peopleLimit": 6,
+    "classRoomId": 5,
+    "classStatus": "NORMAL"
+  },
+  {
+    "id": 93,
+    "classTemplateId": 21,
+    "groupNumber": 1,
+    "startDate": "2025-08-11T18:00:00",
+    "endDate": "2025-08-11T20:30:00",
+    "peopleLimit": 6,
+    "classRoomId": 5,
+    "classStatus": "NORMAL"
+  },
+  {
+    "id": 94,
+    "classTemplateId": 22,
+    "groupNumber": 1,
+    "startDate": "2025-10-06T15:00:00",
+    "endDate": "2025-10-06T17:30:00",
+    "peopleLimit": 5,
+    "classRoomId": 4,
+    "classStatus": "NORMAL"
+  },
+  {
+    "id": 95,
+    "classTemplateId": 22,
+    "groupNumber": 1,
+    "startDate": "2025-10-13T15:00:00",
+    "endDate": "2025-10-13T17:30:00",
+    "peopleLimit": 5,
+    "classRoomId": 4,
+    "classStatus": "NORMAL"
+  },
+  {
+    "id": 96,
+    "classTemplateId": 22,
+    "groupNumber": 1,
+    "startDate": "2025-10-27T15:00:00",
+    "endDate": "2025-10-27T17:30:00",
+    "peopleLimit": 5,
+    "classRoomId": 4,
+    "classStatus": "NORMAL"
+  },
+  {
+    "id": 97,
+    "classTemplateId": 22,
+    "groupNumber": 1,
+    "startDate": "2025-11-15T15:00:00",
+    "endDate": "2025-11-15T17:30:00",
+    "peopleLimit": 5,
+    "classRoomId": 4,
+    "classStatus": "NORMAL"
+  },
+  {
+    "id": 98,
+    "classTemplateId": 22,
+    "groupNumber": 1,
+    "startDate": "2025-11-29T15:00:00",
+    "endDate": "2025-11-29T17:30:00",
+    "peopleLimit": 5,
+    "classRoomId": 4,
+    "classStatus": "NORMAL"
+  },
+  {
+    "id": 99,
+    "classTemplateId": 22,
+    "groupNumber": 1,
+    "startDate": "2025-12-15T15:00:00",
+    "endDate": "2025-12-15T17:30:00",
+    "peopleLimit": 5,
+    "classRoomId": 4,
+    "classStatus": "NORMAL"
+  },
+  {
+    "id": 100,
+    "classTemplateId": 23,
+    "groupNumber": 1,
+    "startDate": "2026-01-10T15:00:00",
+    "endDate": "2026-01-10T17:30:00",
+    "peopleLimit": 5,
+    "classRoomId": 3,
+    "classStatus": "NORMAL"
+  },
+  {
+    "id": 101,
+    "classTemplateId": 23,
+    "groupNumber": 1,
+    "startDate": "2026-01-17T15:00:00",
+    "endDate": "2026-01-17T17:30:00",
+    "peopleLimit": 5,
+    "classRoomId": 3,
+    "classStatus": "NORMAL"
+  },
+  {
+    "id": 102,
+    "classTemplateId": 23,
+    "groupNumber": 1,
+    "startDate": "2026-01-24T15:00:00",
+    "endDate": "2026-01-24T17:30:00",
+    "peopleLimit": 5,
+    "classRoomId": 3,
+    "classStatus": "NORMAL"
+  },
+  {
+    "id": 103,
+    "classTemplateId": 23,
+    "groupNumber": 1,
+    "startDate": "2026-02-10T15:00:00",
+    "endDate": "2026-02-10T17:30:00",
+    "peopleLimit": 5,
+    "classRoomId": 3,
+    "classStatus": "NORMAL"
+  },
+  {
+    "id": 104,
+    "classTemplateId": 24,
+    "groupNumber": 1,
+    "startDate": "2026-02-17T15:00:00",
+    "endDate": "2026-02-17T17:30:00",
+    "peopleLimit": 5,
+    "classRoomId": 3,
+    "classStatus": "NORMAL"
+  },
+  {
+    "id": 105,
+    "classTemplateId": 24,
+    "groupNumber": 1,
+    "startDate": "2026-02-24T15:00:00",
+    "endDate": "2026-02-24T17:30:00",
+    "peopleLimit": 5,
+    "classRoomId": 3,
+    "classStatus": "NORMAL"
+  },
+  {
+    "id": 106,
+    "classTemplateId": 24,
+    "groupNumber": 1,
+    "startDate": "2026-03-03T15:00:00",
+    "endDate": "2026-03-03T17:30:00",
+    "peopleLimit": 5,
     "classRoomId": 3,
     "classStatus": "NORMAL"
   }

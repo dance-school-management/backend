@@ -1,0 +1,38 @@
+syntax = "proto3";
+
+package elasticsearch_to_product;
+
+service ElasticsearchToProduct {
+  rpc GetCoursesData (CoursesIdsRequest) returns (GetCoursesDataResponse);
+  rpc GetClassTemplatesData (ClassTemplatesIdsRequest) returns (GetClassTemplatesDataResponse);
+}
+
+message CoursesIdsRequest {
+  repeated int64 courses_ids = 1;
+}
+
+message CourseData {
+  int64 course_id = 1;
+  string course_name = 2;
+  optional string dance_category_name = 3;
+  optional string advancement_level_name = 4;
+}
+
+message GetCoursesDataResponse {
+  repeated CourseData courses_data = 1;
+}
+
+message ClassTemplatesIdsRequest {
+  repeated int64 classes_templates_ids = 1;
+}
+
+message ClassTemplateData {
+  int64 class_template_id = 1;
+  string class_template_name = 2;
+  optional string dance_category_name = 3;
+  optional string advancement_level_name = 4;
+}
+
+message GetClassTemplatesDataResponse {
+  repeated ClassTemplateData classes_templates_data = 1;
+}

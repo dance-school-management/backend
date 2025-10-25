@@ -21,6 +21,7 @@ export async function getStudentTickets(
     const studentTicket = studentTickets.find((ticket) => ticket.classId === classId)
     return {
       classId,
+      qrCodeUUID: studentTicket?.qrCodeUUID,
       name: classDetails?.name,
       description: classDetails?.description,
       startDate: classDetails?.startDate,

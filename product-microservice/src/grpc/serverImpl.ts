@@ -1,5 +1,8 @@
+import { IElasticsearchToProductServer } from "../../proto/ElasticsearchToProduct_grpc_pb";
 import { IEnrollToProductServer } from "../../proto/EnrollToProduct_grpc_pb";
 import { IProfileToProductServer } from "../../proto/ProfileToProduct_grpc_pb";
+import { getClassTemplatesData } from "./services/elasticsearchCommunication/getClassTemplatesData";
+import { getCoursesData } from "./services/elasticsearchCommunication/getCoursesData";
 import { checkClass } from "./services/enrollCommunication/checkClass";
 import { checkCourse } from "./services/enrollCommunication/checkCourse";
 import { getClassesDetails } from "./services/enrollCommunication/getClassesDetails";
@@ -23,3 +26,8 @@ export const EnrollToProductServerImpl: IEnrollToProductServer = {
   getSpentHoursDanceCategories: getSpentHoursDanceCategories,
   getSpentHoursInstructors: getSpentHoursInstructors
 };
+
+export const ElasticsearchToProductServerImpl: IElasticsearchToProductServer = {
+  getCoursesData: getCoursesData,
+  getClassTemplatesData: getClassTemplatesData
+}

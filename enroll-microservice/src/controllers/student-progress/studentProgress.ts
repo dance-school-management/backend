@@ -258,14 +258,12 @@ export async function getCoursesAttendanceProgress(
 
     coursesClasses.forEach((cc) => {
       if (
-        !coursesClassesStartDatesMap ||
+        !coursesClassesStartDatesMap.get(cc.courseId) ||
         coursesClassesStartDatesMap.get(cc.courseId) > cc.classStartDate.seconds
       ) {
         coursesClassesStartDatesMap.set(cc.courseId, cc.classStartDate.seconds);
       }
     });
-
-    
 
     const hasStarted = Boolean(
       [...coursesClassesStartDatesMap.values()].find(

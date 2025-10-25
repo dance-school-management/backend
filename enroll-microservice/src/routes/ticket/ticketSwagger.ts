@@ -1,6 +1,6 @@
 /**
  * @swagger
- * /ticket/student:
+ * /ticket/retrieve:
  *   get:
  *     summary: Get all class tickets for the authenticated student
  *     description: >
@@ -11,27 +11,6 @@
  *     responses:
  *       "200":
  *         description: Successfully retrieved student class details
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 type: object
- *                 properties:
- *                   name:
- *                     type: string
- *                     example: "Salsa Beginner"
- *                   startDate:
- *                     type: string
- *                     format: date-time
- *                     example: "2025-06-01T18:00:00.000Z"
- *                   endDate:
- *                     type: string
- *                     format: date-time
- *                     example: "2025-06-01T19:30:00.000Z"
- *                   classRoomName:
- *                     type: string
- *                     example: "Studio 1"
  *       "401":
  *         description: Unauthorized – user not authenticated
  *       "500":
@@ -41,15 +20,11 @@
 
 /**
  * @swagger
- * /ticket/instructor/scan:
- *   post:
- *     summary: Mark student attendance by scanning ticket
- *     description: >
- *       Marks a student as present for a specific class by scanning their ticket.
- *       Requires valid `classId` and `studentId`.
- *       Fails if no ticket is found in the database.
+ * /ticket/scan:
+ *   put:
+ *     summary: Scan ticket to mark student's attendance
  *     tags:
- *       - instructor - tickets
+ *       - coordinator - tickets
  *     requestBody:
  *       required: true
  *       content:
@@ -57,28 +32,41 @@
  *           schema:
  *             type: object
  *             required:
- *               - classId
- *               - studentId
+ *               - qrCodeUUID
  *             properties:
- *               classId:
- *                 type: integer
- *                 example: 12
- *               studentId:
+ *               qrCodeUUID:
  *                 type: string
- *                 example: "user_abc123"
+ *                 example: "some_uuid_1234"
+ * 
  *     responses:
  *       "200":
- *         description: Attendance recorded successfully
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: "Successfully recorded student's attendance"
+ *         description: Ticket valid or attendance recorded successfully
  *       "400":
- *         description: Ticket not found (invalid studentId or classId)
+ *         description: Ticket not found
+ *       "500":
+ *         description: Internal Server Error
+ */
+
+/**
+ * @swagger
+ * /ticket/scan:
+ *   get:
+ *     summary: Scan ticket to check if it's valid
+ *     tags:
+ *       - coordinator - tickets
+ *     parameters:
+ *       - in: query
+ *         name: qrCodeUUID
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: UUID of the qr code
+ *         example: abc12934n1woni1fi
+ *     responses:
+ *       "200":
+ *         description: Ticket valid
+ *       "400":
+ *         description: Ticket not found
  *       "500":
  *         description: Internal Server Error
  */

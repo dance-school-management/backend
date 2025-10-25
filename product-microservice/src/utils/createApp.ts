@@ -10,6 +10,7 @@ import { UniversalError } from "../errors/UniversalError";
 import { handleUserContext } from "../middlewares/handleUserContext";
 import { checkRole } from "../middlewares/checkRole";
 import scheduleRouter from "../routes/schedule/schedule";
+import pricingRouter from "../routes/pricing/pricing"
 
 export function createApp() {
   const app = express();
@@ -25,6 +26,7 @@ export function createApp() {
   app.use("/uploads", express.static(path.resolve("uploads")));
   app.use("/cms", checkRole(["COORDINATOR"]), cmsRouter);
   app.use("/schedule", scheduleRouter);
+  app.use("/pricing", pricingRouter);
   app.get("/", (req, res) => {
     res.send("Hello from product-microservice1");
   });

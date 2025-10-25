@@ -311,7 +311,7 @@
     "paymentStatus": "PART_OF_COURSE",
     "checkoutSessionId": "cs_test_63_13"
   },
-  
+
   {
     "studentId": "62",
     "classId": 14,
@@ -935,5 +935,957 @@
     "attendanceLastUpdated": null,
     "paymentStatus": "PART_OF_COURSE",
     "checkoutSessionId": "cs_test_65_45"
+  },
+
+  {
+    "studentId": "65",
+    "classId": 57,
+    "attendanceStatus": "PRESENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_65_57"
+  },
+  {
+    "studentId": "65",
+    "classId": 58,
+    "attendanceStatus": "PRESENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_65_58"
+  },
+  {
+    "studentId": "65",
+    "classId": 59,
+    "attendanceStatus": "PRESENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_65_59"
+  },
+  {
+    "studentId": "65",
+    "classId": 60,
+    "attendanceStatus": "PRESENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_65_60"
+  },
+  {
+    "studentId": "65",
+    "classId": 61,
+    "attendanceStatus": "PRESENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_65_61"
+  },
+  {
+    "studentId": "65",
+    "classId": 62,
+    "attendanceStatus": "PRESENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_65_62"
+  },
+  {
+    "studentId": "65",
+    "classId": 63,
+    "attendanceStatus": "PRESENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_65_63"
+  },
+  {
+    "studentId": "65",
+    "classId": 64,
+    "attendanceStatus": "PRESENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_65_64"
+  },
+  {
+    "studentId": "65",
+    "classId": 65,
+    "attendanceStatus": "ABSENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_65_65"
+  },
+  {
+    "studentId": "65",
+    "classId": 66,
+    "attendanceStatus": "ABSENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_65_66"
+  },
+  {
+    "studentId": "65",
+    "classId": 67,
+    "attendanceStatus": "PRESENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_65_67"
+  },
+  {
+    "studentId": "65",
+    "classId": 68,
+    "attendanceStatus": "PRESENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_65_68"
+  },
+  {
+    "studentId": "65",
+    "classId": 69,
+    "attendanceStatus": "PRESENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_65_69"
+  },
+  {
+    "studentId": "65",
+    "classId": 70,
+    "attendanceStatus": "PRESENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_65_70"
+  },
+  {
+    "studentId": "65",
+    "classId": 71,
+    "attendanceStatus": "PRESENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_65_71"
+  },
+  {
+    "studentId": "65",
+    "classId": 72,
+    "attendanceStatus": "PRESENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_65_72"
+  },
+  {
+    "studentId": "65",
+    "classId": 73,
+    "attendanceStatus": "PRESENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_65_73"
+  },
+  {
+    "studentId": "65",
+    "classId": 74,
+    "attendanceStatus": "PRESENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_65_74"
+  },
+  {
+    "studentId": "65",
+    "classId": 75,
+    "attendanceStatus": "PRESENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_65_75"
+  },
+  {
+    "studentId": "65",
+    "classId": 76,
+    "attendanceStatus": "PRESENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_65_76"
+  },
+  {
+    "studentId": "65",
+    "classId": 77,
+    "attendanceStatus": "PRESENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_65_77"
+  },
+  {
+    "studentId": "65",
+    "classId": 78,
+    "attendanceStatus": "PRESENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_65_78"
+  },
+  {
+    "studentId": "65",
+    "classId": 79,
+    "attendanceStatus": "ABSENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_65_79"
+  },
+  {
+    "studentId": "65",
+    "classId": 80,
+    "attendanceStatus": "PRESENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_65_80"
+  },
+  {
+    "studentId": "65",
+    "classId": 81,
+    "attendanceStatus": "PRESENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_65_81"
+  },
+  {
+    "studentId": "65",
+    "classId": 82,
+    "attendanceStatus": "PRESENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_65_82"
+  },
+  {
+    "studentId": "65",
+    "classId": 83,
+    "attendanceStatus": "PRESENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_65_83"
+  },
+  {
+    "studentId": "65",
+    "classId": 84,
+    "attendanceStatus": "PRESENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_65_84"
+  },
+  {
+    "studentId": "65",
+    "classId": 85,
+    "attendanceStatus": "PRESENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_65_85"
+  },
+  {
+    "studentId": "65",
+    "classId": 86,
+    "attendanceStatus": "PRESENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_65_86"
+  },
+  {
+    "studentId": "65",
+    "classId": 87,
+    "attendanceStatus": "PRESENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_65_87"
+  },
+  {
+    "studentId": "65",
+    "classId": 88,
+    "attendanceStatus": "PRESENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_65_88"
+  },
+  {
+    "studentId": "65",
+    "classId": 89,
+    "attendanceStatus": "PRESENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_65_89"
+  },
+  {
+    "studentId": "65",
+    "classId": 90,
+    "attendanceStatus": "PRESENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_65_90"
+  },
+  {
+    "studentId": "65",
+    "classId": 91,
+    "attendanceStatus": "PRESENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_65_91"
+  },
+  {
+    "studentId": "65",
+    "classId": 92,
+    "attendanceStatus": "PRESENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_65_92"
+  },
+  {
+    "studentId": "65",
+    "classId": 93,
+    "attendanceStatus": "PRESENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_65_93"
+  },
+  {
+    "studentId": "65",
+    "classId": 94,
+    "attendanceStatus": "PRESENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_65_94"
+  },
+  {
+    "studentId": "65",
+    "classId": 95,
+    "attendanceStatus": "PRESENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_65_95"
+  },
+  {
+    "studentId": "65",
+    "classId": 96,
+    "attendanceStatus": "ABSENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_65_96"
+  },
+  {
+    "studentId": "65",
+    "classId": 97,
+    "attendanceStatus": "ABSENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_65_97"
+  },
+  {
+    "studentId": "65",
+    "classId": 98,
+    "attendanceStatus": "ABSENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_65_98"
+  },
+  {
+    "studentId": "65",
+    "classId": 99,
+    "attendanceStatus": "ABSENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_65_99"
+  },
+  {
+    "studentId": "65",
+    "classId": 100,
+    "attendanceStatus": "ABSENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_65_100"
+  },
+  {
+    "studentId": "65",
+    "classId": 101,
+    "attendanceStatus": "ABSENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_65_101"
+  },
+  {
+    "studentId": "65",
+    "classId": 102,
+    "attendanceStatus": "ABSENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_65_102"
+  },
+  {
+    "studentId": "65",
+    "classId": 103,
+    "attendanceStatus": "ABSENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_65_103"
+  },
+  {
+    "studentId": "65",
+    "classId": 104,
+    "attendanceStatus": "ABSENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_65_104"
+  },
+  {
+    "studentId": "65",
+    "classId": 105,
+    "attendanceStatus": "ABSENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_65_105"
+  },
+  {
+    "studentId": "65",
+    "classId": 106,
+    "attendanceStatus": "ABSENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_65_106"
+  },
+
+  {
+    "studentId": "64",
+    "classId": 57,
+    "attendanceStatus": "PRESENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_64_57"
+  },
+  {
+    "studentId": "64",
+    "classId": 58,
+    "attendanceStatus": "PRESENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_64_58"
+  },
+  {
+    "studentId": "64",
+    "classId": 59,
+    "attendanceStatus": "PRESENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_64_59"
+  },
+  {
+    "studentId": "64",
+    "classId": 60,
+    "attendanceStatus": "PRESENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_64_60"
+  },
+  {
+    "studentId": "64",
+    "classId": 61,
+    "attendanceStatus": "PRESENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_64_61"
+  },
+  {
+    "studentId": "64",
+    "classId": 62,
+    "attendanceStatus": "PRESENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_64_62"
+  },
+  {
+    "studentId": "64",
+    "classId": 63,
+    "attendanceStatus": "PRESENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_64_63"
+  },
+
+  {
+    "studentId": "67",
+    "classId": 57,
+    "attendanceStatus": "PRESENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_67_57"
+  },
+  {
+    "studentId": "67",
+    "classId": 58,
+    "attendanceStatus": "PRESENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_67_58"
+  },
+  {
+    "studentId": "67",
+    "classId": 59,
+    "attendanceStatus": "PRESENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_67_59"
+  },
+  {
+    "studentId": "67",
+    "classId": 60,
+    "attendanceStatus": "PRESENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_67_60"
+  },
+  {
+    "studentId": "67",
+    "classId": 61,
+    "attendanceStatus": "PRESENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_67_61"
+  },
+  {
+    "studentId": "67",
+    "classId": 62,
+    "attendanceStatus": "PRESENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_67_62"
+  },
+  {
+    "studentId": "67",
+    "classId": 63,
+    "attendanceStatus": "PRESENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_67_63"
+  },
+
+  {
+    "studentId": "63",
+    "classId": 64,
+    "attendanceStatus": "PRESENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_63_64"
+  },
+  {
+    "studentId": "63",
+    "classId": 65,
+    "attendanceStatus": "PRESENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_63_65"
+  },
+  {
+    "studentId": "63",
+    "classId": 66,
+    "attendanceStatus": "PRESENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_63_66"
+  },
+  {
+    "studentId": "63",
+    "classId": 67,
+    "attendanceStatus": "PRESENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_63_67"
+  },
+  {
+    "studentId": "63",
+    "classId": 68,
+    "attendanceStatus": "PRESENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_63_68"
+  },
+  {
+    "studentId": "63",
+    "classId": 69,
+    "attendanceStatus": "PRESENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_63_69"
+  },
+  {
+    "studentId": "63",
+    "classId": 70,
+    "attendanceStatus": "PRESENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_63_70"
+  },
+  {
+    "studentId": "63",
+    "classId": 71,
+    "attendanceStatus": "PRESENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_63_71"
+  },
+  {
+    "studentId": "63",
+    "classId": 72,
+    "attendanceStatus": "PRESENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_63_72"
+  },
+  {
+    "studentId": "63",
+    "classId": 73,
+    "attendanceStatus": "PRESENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_63_73"
+  },
+  {
+    "studentId": "63",
+    "classId": 74,
+    "attendanceStatus": "PRESENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_63_74"
+  },
+
+  {
+    "studentId": "64",
+    "classId": 75,
+    "attendanceStatus": "PRESENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_64_75"
+  },
+  {
+    "studentId": "64",
+    "classId": 76,
+    "attendanceStatus": "PRESENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_64_76"
+  },
+  {
+    "studentId": "64",
+    "classId": 77,
+    "attendanceStatus": "PRESENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_64_77"
+  },
+  {
+    "studentId": "64",
+    "classId": 78,
+    "attendanceStatus": "PRESENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_64_78"
+  },
+  {
+    "studentId": "64",
+    "classId": 79,
+    "attendanceStatus": "PRESENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_64_79"
+  },
+  {
+    "studentId": "64",
+    "classId": 80,
+    "attendanceStatus": "PRESENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_64_80"
+  },
+  {
+    "studentId": "64",
+    "classId": 81,
+    "attendanceStatus": "PRESENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_64_81"
+  },
+  {
+    "studentId": "64",
+    "classId": 82,
+    "attendanceStatus": "PRESENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_64_82"
+  },
+
+  {
+    "studentId": "67",
+    "classId": 83,
+    "attendanceStatus": "PRESENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_67_83"
+  },
+  {
+    "studentId": "67",
+    "classId": 84,
+    "attendanceStatus": "PRESENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_67_84"
+  },
+  {
+    "studentId": "67",
+    "classId": 85,
+    "attendanceStatus": "PRESENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_67_85"
+  },
+  {
+    "studentId": "67",
+    "classId": 86,
+    "attendanceStatus": "PRESENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_67_86"
+  },
+  {
+    "studentId": "67",
+    "classId": 87,
+    "attendanceStatus": "PRESENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_67_87"
+  },
+  {
+    "studentId": "67",
+    "classId": 88,
+    "attendanceStatus": "PRESENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_67_88"
+  },
+  {
+    "studentId": "67",
+    "classId": 89,
+    "attendanceStatus": "PRESENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_67_89"
+  },
+  {
+    "studentId": "67",
+    "classId": 90,
+    "attendanceStatus": "PRESENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_67_90"
+  },
+  {
+    "studentId": "67",
+    "classId": 91,
+    "attendanceStatus": "PRESENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_67_91"
+  },
+  {
+    "studentId": "67",
+    "classId": 92,
+    "attendanceStatus": "PRESENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_67_92"
+  },
+  {
+    "studentId": "67",
+    "classId": 93,
+    "attendanceStatus": "PRESENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_67_93"
+  },
+
+  {
+    "studentId": "64",
+    "classId": 83,
+    "attendanceStatus": "PRESENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_64_83"
+  },
+  {
+    "studentId": "64",
+    "classId": 84,
+    "attendanceStatus": "PRESENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_64_84"
+  },
+  {
+    "studentId": "64",
+    "classId": 85,
+    "attendanceStatus": "PRESENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_64_85"
+  },
+  {
+    "studentId": "64",
+    "classId": 86,
+    "attendanceStatus": "PRESENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_64_86"
+  },
+  {
+    "studentId": "64",
+    "classId": 87,
+    "attendanceStatus": "PRESENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_64_87"
+  },
+  {
+    "studentId": "64",
+    "classId": 88,
+    "attendanceStatus": "PRESENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_64_88"
+  },
+  {
+    "studentId": "64",
+    "classId": 89,
+    "attendanceStatus": "PRESENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_64_89"
+  },
+  {
+    "studentId": "64",
+    "classId": 90,
+    "attendanceStatus": "PRESENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_64_90"
+  },
+  {
+    "studentId": "64",
+    "classId": 91,
+    "attendanceStatus": "PRESENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_64_91"
+  },
+  {
+    "studentId": "64",
+    "classId": 92,
+    "attendanceStatus": "PRESENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_64_92"
+  },
+  {
+    "studentId": "64",
+    "classId": 93,
+    "attendanceStatus": "PRESENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_64_93"
+  },
+
+  {
+    "studentId": "68",
+    "classId": 94,
+    "attendanceStatus": "PRESENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_68_94"
+  },
+  {
+    "studentId": "68",
+    "classId": 95,
+    "attendanceStatus": "PRESENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_68_95"
+  },
+  {
+    "studentId": "68",
+    "classId": 96,
+    "attendanceStatus": "PRESENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_68_96"
+  },
+  {
+    "studentId": "68",
+    "classId": 97,
+    "attendanceStatus": "PRESENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_68_97"
+  },
+  {
+    "studentId": "68",
+    "classId": 98,
+    "attendanceStatus": "PRESENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_68_98"
+  },
+  {
+    "studentId": "68",
+    "classId": 99,
+    "attendanceStatus": "PRESENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_68_99"
+  },
+  {
+    "studentId": "68",
+    "classId": 100,
+    "attendanceStatus": "PRESENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_68_100"
+  },
+  {
+    "studentId": "68",
+    "classId": 101,
+    "attendanceStatus": "PRESENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_68_101"
+  },
+  {
+    "studentId": "68",
+    "classId": 102,
+    "attendanceStatus": "PRESENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_68_102"
+  },
+  {
+    "studentId": "68",
+    "classId": 103,
+    "attendanceStatus": "PRESENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_68_103"
+  },
+  {
+    "studentId": "68",
+    "classId": 104,
+    "attendanceStatus": "PRESENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_68_104"
+  },
+  {
+    "studentId": "68",
+    "classId": 105,
+    "attendanceStatus": "PRESENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_68_105"
+  },
+  {
+    "studentId": "68",
+    "classId": 106,
+    "attendanceStatus": "PRESENT",
+    "attendanceLastUpdated": null,
+    "paymentStatus": "PART_OF_COURSE",
+    "checkoutSessionId": "cs_test_68_106"
   }
 ]

@@ -61,6 +61,21 @@
  *         schema:
  *           type: string
  *         description: The unique identifier of the instructor
+ *       - in: query
+ *         name: experienceDateFrom
+ *         required: false
+ *         schema:
+ *           type: string
+ *           format: date-time
+ *           example: "2025-12-12T00:00:00Z"
+ *       - in: query
+ *         name: experienceDateTo
+ *         required: false
+ *         schema:
+ *           type: string
+ *           format: date-time
+ *           example: "2026-01-12T00:00:00Z"
+ * 
  *     responses:
  *       "200":
  *         description: Successfully retrieved instructor

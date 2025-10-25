@@ -4,6 +4,9 @@ import { enrollInstructorsInClass } from "./services/productCommunication/enroll
 import { getClassesStudents } from "./services/productCommunication/getClassesStudents";
 import { getStudentClasses } from "./services/productCommunication/getStudentClasses";
 import { IProductToEnrollServer } from "../../proto/ProductToEnroll_grpc_pb";
+import { getMostPopularCoursesIds } from "./services/productCommunication/getMostPopularCoursesIds";
+import { IProfileToEnrollServer } from "../../proto/ProfileToEnroll_grpc_pb";
+import { getInstructorExperience } from "./services/profileCommuncation/getInstructorExperience";
 
 export const ProductToEnrollServerImp: IProductToEnrollServer = {
   getInstructorsClasses: getInstructorsClasses,
@@ -11,4 +14,9 @@ export const ProductToEnrollServerImp: IProductToEnrollServer = {
   enrollInstructorsInClass: enrollInstructorsInClass,
   getClassesStudents: getClassesStudents,
   getStudentClasses: getStudentClasses,
+  getMostPopularCoursesIds: getMostPopularCoursesIds
 };
+
+export const ProfileToEnrollServerImp: IProfileToEnrollServer = {
+  getInstructorExperience: getInstructorExperience
+}

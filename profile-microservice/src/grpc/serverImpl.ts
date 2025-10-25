@@ -4,9 +4,11 @@ import { getOtherInstructorsData } from "./services/productCommunication/getOthe
 import { createProfile } from "./services/authCommunication/createProfile";
 import { IEnrollToProfileServer } from "../../proto/EnrollToProfile_grpc_pb";
 import { getInstructorsData } from "./services/enrollCommunication/getInstructorsData";
+import { getInstructorsData as gid } from "./services/productCommunication/getInstructorsData";
 
 export const ProductToProfileServerImpl: IProductToProfileServer = {
-  getOtherInstructorsData: getOtherInstructorsData
+  getOtherInstructorsData: getOtherInstructorsData,
+  getInstructorsData: gid
 }
 
 export const AuthToProfileServerImpl: IAuthToProfileServer = {

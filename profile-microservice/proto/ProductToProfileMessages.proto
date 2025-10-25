@@ -5,10 +5,11 @@ package product_to_profile;
 message InstructorData {
   string id = 1;
   string name = 2;
+  string surname = 3;
 }
 
 message InstructorsDataResponse {
-  repeated InstructorData instructorsData = 1;
+  repeated InstructorData instructors_data = 1;
 }
 
 message InstructorIdsRequest {
