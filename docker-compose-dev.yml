@@ -231,6 +231,8 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    networks:
+      - microservices-network
   elasticsearch:
     image: elasticsearch:9.1.3
     container_name: elasticsearch

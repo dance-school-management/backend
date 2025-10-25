@@ -32,6 +32,8 @@ You can find swagger docs at:
 - localhost:8000/auth/2/api-docs
 - localhost:8000/enroll/api-docs
 - localhost:8000/profile/api-docs
+- localhost:8000/notification/api-docs
+- localhost:8000/elasticsearch/api-docs
 
 Authentication (2 places):
 

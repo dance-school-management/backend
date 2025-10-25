@@ -16,7 +16,8 @@ const AUTH_MICROSERVICE_URL = process.env.AUTH_MICROSERVICE_URL;
 const ENROLL_MICROSERVICE_URL = process.env.ENROLL_MICROSERVICE_URL;
 const PROFILE_MICROSERVICE_URL = process.env.PROFILE_MICROSERVICE_URL;
 const NOTIFICATION_MICROSERVICE_URL = process.env.NOTIFICATION_MICROSERVICE_URL;
-const ELASTICSEARCH_MICROSERVICE_URL = process.env.ELASTICSEARCH_MICROSERVICE_URL;
+const ELASTICSEARCH_MICROSERVICE_URL =
+  process.env.ELASTICSEARCH_MICROSERVICE_URL;
 const NODE_ENV = process.env.NODE_ENV;
 
 app.use(
@@ -121,18 +122,21 @@ if (NOTIFICATION_MICROSERVICE_URL) {
     pathRewrite: (path, req) => {
       const currPath = req.originalUrl;
       return currPath.replace("/notification", "");
-    }
-  })
+    },
+  });
   if (NODE_ENV === "development") {
     app.use("/notification/api-docs", proxyMiddlewareNotificationAdditional);
   }
   app.use("/notification", authenticate(), proxyMiddlewareNotification);
+}
 
 if (ELASTICSEARCH_MICROSERVICE_URL) {
-  const proxyMiddlewareElasticsearch = createProxyMiddleware<Request, Response>({
-    target: ELASTICSEARCH_MICROSERVICE_URL,
-    changeOrigin: true,
-  });
+  const proxyMiddlewareElasticsearch = createProxyMiddleware<Request, Response>(
+    {
+      target: ELASTICSEARCH_MICROSERVICE_URL,
+      changeOrigin: true,
+    },
+  );
 
   const proxyMiddlewareElasticsearchAdditional = createProxyMiddleware<
     Request,
@@ -145,7 +149,7 @@ if (ELASTICSEARCH_MICROSERVICE_URL) {
       return currPath.replace("/elasticsearch", "");
     },
   });
-  
+
   if (NODE_ENV === "development") {
     app.use("/elasticsearch/api-docs", proxyMiddlewareElasticsearchAdditional);
   }
