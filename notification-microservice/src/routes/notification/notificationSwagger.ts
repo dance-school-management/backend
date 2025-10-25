@@ -256,3 +256,94 @@
  *       404:
  *         description: Notification not found
  */
+
+/**
+ * @swagger
+ * /notification/toggle:
+ *   post:
+ *     summary: Enable or disable notifications for the current user
+ *     description: Allows the authenticated user to enable or disable notifications.
+ *     tags: 
+ *       - Notification     
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - enable
+ *             properties:
+ *               enable:
+ *                 type: boolean
+ *                 example: true
+ *     responses:
+ *       200:
+ *         description: Notification settings updated successfully.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 notificationsEnabilityStatus:
+ *                   type: boolean
+ *                   example: true
+ *       409:
+ *         description: User is not registered for notifications.
+ *       500:
+ *         description: Server error.
+ */
+
+/**
+ * @swagger
+ * /notification/status:
+ *   get:
+ *     summary: Get user's notification registration status
+ *     description: Returns information about whether the user is registered and has enabled push notifications.
+ *     tags: 
+ *       - Notification
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved user's notification status.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 isRegistered:
+ *                   type: boolean
+ *                   example: true
+ *                 hasEnabledNotifications:
+ *                   type: boolean
+ *                   example: true
+ *                 isRegisteredForPushNotifications:
+ *                   type: boolean
+ *                   example: true
+ *       500:
+ *         description: Server error.
+ */
+
+/**
+ * @swagger
+ * /notification/push/unregister:
+ *   put:
+ *     summary: Unregister user from push notifications
+ *     description: Removes the user's Expo push token and disables further push notifications.
+ *     tags: 
+ *       - Notification
+ *     responses:
+ *       200:
+ *         description: Successfully unregistered from push notifications.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Successfully unregistered from push notifications
+ *       409:
+ *         description: User is not registered for any notifications.
+ *       500:
+ *         description: Server error.
+ */

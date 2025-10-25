@@ -23,6 +23,7 @@ export const handleSendPushNotifications = async (msg: string) => {
         id: {
           in: msgData.userIds,
         },
+        hasEnabledNotifications: true
       },
     })
   ).map((user) => user.id);

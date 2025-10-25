@@ -3,7 +3,7 @@ import amqp, { Channel, ChannelModel } from "amqplib";
 export class RabbitmqProducer {
   connection!: ChannelModel;
   channel!: Channel;
-  private connected!: Boolean;
+  private connected!: boolean;
 
   async connect() {
     if (this.connected && this.channel) return;

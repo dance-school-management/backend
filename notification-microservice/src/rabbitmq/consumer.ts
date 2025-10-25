@@ -4,7 +4,7 @@ import "dotenv/config";
 export class RabbitMQConsumer {
   connection!: ChannelModel;
   channel!: Channel;
-  private connected!: Boolean;
+  private connected!: boolean;
 
   async connect() {
     if (this.connected && this.channel) return;

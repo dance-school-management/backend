@@ -5,6 +5,8 @@ import { checkValidations } from "../../utils/errorHelpers";
 import prisma from "../../utils/prisma";
 import { UniversalError } from "../../errors/UniversalError";
 import { sendPushNotifications } from "../../utils/helpers";
+import { expo } from "../..";
+import Expo from "expo-server-sdk";
 
 export async function getNotifications(
   req: Request<
@@ -159,6 +161,7 @@ export async function createNotifications(
         id: {
           in: userIds,
         },
+        hasEnabledNotifications: true
       },
     })
   ).map((user) => user.id);
@@ -264,3 +267,57 @@ export async function updateNotificationStatus(
 //   });
 //   res.status(StatusCodes.OK).json({ message: "Notification deleted" });
 // }
+
+export async function toggleEnableNotifications(
+  req: Request<{}, {}, { enable: boolean }> & { user?: any },
+  res: Response,
+) {
+  const { enable } = req.body;
+
+  const user = await prisma.user.findFirst({
+    where: {
+      id: req.user?.id,
+    },
+  });
+
+  if (!user) {
+    throw new UniversalError(
+      StatusCodes.CONFLICT,
+      "You are not registered for notifications",
+      [],
+    );
+  }
+
+  await prisma.user.update({
+    where: {
+      id: req.user?.id,
+    },
+    data: {
+      hasEnabledNotifications: enable,
+    },
+  });
+
+  res.status(StatusCodes.OK).json({ notificationsEnabilityStatus: enable });
+}
+
+export async function getIsRegisteredForNotifications(
+  req: Request & { user?: any },
+  res: Response,
+) {
+  const user = await prisma.user.findFirst({
+    where: {
+      id: req.user?.id,
+    },
+  });
+
+  let isTokenValid = false;
+
+  if (user?.token)
+    isTokenValid = Expo.isExpoPushToken(user?.token);
+
+  res.status(StatusCodes.OK).json({
+    isRegistered: Boolean(user),
+    hasEnabledNotifications: user?.hasEnabledNotifications,
+    isRegisteredForPushNotifications: isTokenValid,
+  });
+}

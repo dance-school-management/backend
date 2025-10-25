@@ -17,7 +17,7 @@ datasource db {
 model User {
   id                       String  @id @unique
   token                    String? @unique
-  hasDisabledNotifications Boolean @default(false)
+  hasEnabledNotifications  Boolean @default(true)
 
   notificationsOnUsers NotificationsOnUsers[]
 }

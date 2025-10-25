@@ -5,9 +5,14 @@ import {
   updateNotificationStatus,
   createNotifications,
   updateNotificationContent,
+  toggleEnableNotifications,
+  getIsRegisteredForNotifications,
 } from "../../controllers/notification/notification";
 import { body, query, param } from "express-validator";
-import { register } from "../../controllers/notification/register";
+import {
+  register,
+  unregisterFromPushNotifications,
+} from "../../controllers/notification/register";
 
 const router = Router();
 
@@ -33,6 +38,8 @@ router.get(
     .toInt(),
   getNotifications,
 );
+
+router.get("/status", getIsRegisteredForNotifications);
 
 router.get(
   "/:id",
@@ -88,5 +95,7 @@ router.put(
 // );
 
 router.post("/register", register);
+router.post("/toggle", toggleEnableNotifications);
+router.put("/push/unregister", unregisterFromPushNotifications);
 
 export default router;
