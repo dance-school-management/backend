@@ -105,7 +105,7 @@ if (PROFILE_MICROSERVICE_URL) {
 }
 
 app.get("/", (req: Request, res) => {
-  res.send("Hello from api-gateway");
+  res.send(`Hello from api-gateway`);
 });
 
 app.use((req: Request, res) => {

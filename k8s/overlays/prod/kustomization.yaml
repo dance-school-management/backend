@@ -1,0 +1,12 @@
+resources:
+- ../../base
+
+configMapGenerator:
+- name: api-gateway-config
+  files:
+  - api-gateway.properties
+
+images:
+- name: backend-api-gateway
+  newName: backend-api-gateway
+
