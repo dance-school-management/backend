@@ -118,11 +118,11 @@
  *                   startDate:
  *                     type: string
  *                     format: date-time
- *                     example: "2025-10-21T17:00:00Z"
+ *                     example: "2025-11-21T17:00:00Z"
  *                   endDate:
  *                     type: string
  *                     format: date-time
- *                     example: "2025-10-21T18:00:00Z"
+ *                     example: "2025-11-21T18:00:00Z"
  *                   groupNumber:
  *                     type: integer
  *                     example: 1

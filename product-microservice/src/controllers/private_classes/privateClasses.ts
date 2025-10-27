@@ -6,6 +6,10 @@ import { StatusCodes } from "http-status-codes";
 import { UniversalError } from "../../errors/UniversalError";
 import { getClassesInstructors } from "../../grpc/client/enrollCommunication/getClassesInstructors";
 import { ClassStatus } from "../../../generated/client";
+import { EnrollStudentsAndInstructorInPrivateClassMsgData } from "../../rabbitmq/types";
+import { EnrollStudentsAndInstructorInPrivateClass } from "../../rabbitmq/senders/enrollStudentsAndInstructorInPrivateClass";
+import { getClassesStudents } from "../../grpc/client/enrollCommunication/getClassesStudents";
+import { hasIntersection, intersectSets } from "../../utils/helpers";
 
 export async function createPrivateClassTemplate(
   req: Request<{}, {}, { classTemplateData: ClassTemplate }> & {
@@ -34,18 +38,18 @@ export async function createPrivateClassTemplate(
 }
 
 export async function createPrivateClass(
-  req: Request<{}, {}, { classData: Class, studentIds: string[] }> & {
+  req: Request<{}, {}, { classData: Class; studentIds: string[] }> & {
     user?: any;
   },
   res: Response,
 ) {
-  const { classData } = req.body;
+  const { classData, studentIds } = req.body;
 
   const theClassTemplate = await prisma.classTemplate.findFirst({
     where: {
-      id: classData.classTemplateId
-    }
-  })
+      id: classData.classTemplateId,
+    },
+  });
 
   if (theClassTemplate?.classType !== "PRIVATE_CLASS") {
     throw new UniversalError(
@@ -66,7 +70,9 @@ export async function createPrivateClass(
     },
   });
 
-  if (overlappingClasses?.some((oc) => oc.classRoomId === classData.classRoomId)) {
+  if (
+    overlappingClasses?.some((oc) => oc.classRoomId === classData.classRoomId)
+  ) {
     throw new UniversalError(
       StatusCodes.CONFLICT,
       "The given classroom is occupied in the specified timespan",
@@ -74,7 +80,9 @@ export async function createPrivateClass(
     );
   }
 
-  const occupiedInstructors = (await getClassesInstructors(overlappingClasses.map((oc) => oc.id))).instructorsClassesIdsList.map((ic) => ic.instructorId)
+  const occupiedInstructors = (
+    await getClassesInstructors(overlappingClasses.map((oc) => oc.id))
+  ).instructorsClassesIdsList.map((ic) => ic.instructorId);
 
   if (occupiedInstructors.includes(req.user?.instructorId)) {
     throw new UniversalError(
@@ -84,7 +92,23 @@ export async function createPrivateClass(
     );
   }
 
-  await prisma.class.create({
+  const occupiedStudentsSet = new Set(
+    (
+      await getClassesStudents(overlappingClasses.map((oc) => oc.id))
+    ).studentsClassesIdsList.map((sci) => sci.studentId),
+  );
+
+  const studentIdsSet = new Set(studentIds);
+
+  if (hasIntersection<string>(occupiedStudentsSet, studentIdsSet)) {
+    throw new UniversalError(
+      StatusCodes.CONFLICT,
+      `Students ${[...intersectSets<string>(occupiedStudentsSet, studentIdsSet)]} have overlapping classes`,
+      [],
+    );
+  }
+
+  const newClass = await prisma.class.create({
     data: {
       classRoomId: classData.classRoomId,
       classStatus: ClassStatus.NORMAL,
@@ -93,9 +117,16 @@ export async function createPrivateClass(
       endDate: classData.endDate,
       groupNumber: classData.groupNumber,
       peopleLimit: classData.peopleLimit,
-    }
-  })
+    },
+  });
 
-  res.sendStatus(StatusCodes.OK)
+  const msg: EnrollStudentsAndInstructorInPrivateClassMsgData = {
+    classId: newClass.id,
+    instructorIds: [req.user?.id],
+    studentIds,
+  };
 
+  await EnrollStudentsAndInstructorInPrivateClass(msg);
+
+  res.status(StatusCodes.OK).json(newClass);
 }

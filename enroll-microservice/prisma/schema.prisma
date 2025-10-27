@@ -25,7 +25,6 @@ model ClassTicket {
   studentId             String
   classId               Int
   qrCodeUUID            String         @default(uuid()) @unique
-  isConfirmed           Boolean?
   attendanceStatus      AttendanceStatus @default(ABSENT)
   attendanceLastUpdated DateTime?
 
@@ -35,7 +34,7 @@ model ClassTicket {
 }
 
 model CourseTicket {
-  checkoutSessionId String        @unique
+  checkoutSessionId String?        @unique
   studentId         String
   courseId          Int
   paymentStatus     PaymentStatus

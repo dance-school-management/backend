@@ -1,11 +1,19 @@
 import { Router } from "express";
-import { getPaymentLink, makeClassOrder, makeCourseOrder } from "../../controllers/order";
+import {
+  makeClassOrder,
+  makeCourseOrder,
+  payForClass,
+  payForCourse,
+} from "../../controllers/order";
 import { body } from "express-validator";
 import { UniversalError } from "../../errors/UniversalError";
 import { StatusCodes } from "http-status-codes";
 import prisma from "../../utils/prisma";
 
 const router = Router();
+
+router.post("/class/pay", payForClass);
+router.post("/course/pay", payForCourse);
 
 router.post(
   "/class",
@@ -64,7 +72,5 @@ router.post(
   body("courseId").isNumeric().withMessage("Course ID must be a number"),
   makeCourseOrder,
 );
-
-router.get("/payment-link", getPaymentLink)
 
 export default router;

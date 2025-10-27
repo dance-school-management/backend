@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import prisma from "../utils/prisma";
 import { getClassesDetails } from "../grpc/client/productCommunication/getClassesDetails";
+import { PaymentStatus } from "../../generated/client";
 
 export async function getStudentTickets(
   req: Request<{}, {}, {}> & { user?: any },
@@ -16,12 +17,41 @@ export async function getStudentTickets(
 
   const classesDetails = await getClassesDetails(classIds);
 
+  const courseIds = [...new Set(classesDetails.classesdetailsList
+    .map((cd) => cd.courseId))]
+    .filter((item) => item !== undefined);
+
+  const coursesTickets = await prisma.courseTicket.findMany({
+    where: {
+      courseId: {
+        in: courseIds,
+      },
+    },
+  });
+
   const result = classIds.map((classId) => {
-    const classDetails = classesDetails.classesdetailsList.find((classDetails) => classDetails.classId === classId)
-    const studentTicket = studentTickets.find((ticket) => ticket.classId === classId)
+    const classDetails = classesDetails.classesdetailsList.find(
+      (classDetails) => classDetails.classId === classId,
+    );
+    const studentTicket = studentTickets.find(
+      (ticket) => ticket.classId === classId,
+    );
+    const courseTicket = coursesTickets.find(
+      (ct) => ct.courseId === classDetails?.courseId,
+    );
+
+    let qrCodeUUID = null;
+    if (
+      studentTicket?.paymentStatus === PaymentStatus.PAID ||
+      (studentTicket?.paymentStatus === PaymentStatus.PART_OF_COURSE &&
+        courseTicket?.paymentStatus === PaymentStatus.PAID)
+    ) {
+      qrCodeUUID = studentTicket.qrCodeUUID;
+    }
+
     return {
       classId,
-      qrCodeUUID: studentTicket?.qrCodeUUID,
+      qrCodeUUID,
       name: classDetails?.name,
       description: classDetails?.description,
       startDate: classDetails?.startDate,
@@ -31,10 +61,11 @@ export async function getStudentTickets(
       advancementLevelName: classDetails?.advancementLevelName,
       price: classDetails?.price,
       paymentStatus: studentTicket?.paymentStatus,
+      coursePaymentStatus: courseTicket ? courseTicket.paymentStatus : null,
       attendaceStatus: studentTicket?.attendanceStatus,
-      attendaceLastUpdated: studentTicket?.attendanceLastUpdated
-    }
-  })
+      attendaceLastUpdated: studentTicket?.attendanceLastUpdated,
+    };
+  });
 
   res.json({ tickets: result });
 }

@@ -1,9 +1,5 @@
-import { NextFunction, Request, Response } from "express";
-import {
-  ClassTicket,
-  CourseTicket,
-  PaymentStatus,
-} from "../../generated/client";
+import { Request, Response } from "express";
+import { ClassTicket, PaymentStatus } from "../../generated/client";
 import { checkValidations } from "../utils/errorHelpers";
 import { validationResult } from "express-validator";
 import { StatusCodes } from "http-status-codes";
@@ -13,9 +9,8 @@ import { checkClass } from "../grpc/client/productCommunication/checkClass";
 import { checkCourse } from "../grpc/client/productCommunication/checkCourse";
 import { stripe } from "../utils/stripe";
 import { getClassesDetails } from "../grpc/client/productCommunication/getClassesDetails";
-import { randomUUID } from "crypto";
 import { getCoursesDetails } from "../grpc/client/productCommunication/getCoursesDetails";
-import { convertDateToReadable } from "../utils/helpers";
+import { createClassCheckoutSession, createCourseCheckoutSession } from "../utils/helpers";
 
 export async function makeClassOrder(
   req: Request<object, object, ClassTicket> & { user?: any },
@@ -53,54 +48,82 @@ export async function makeClassOrder(
     );
   }
 
-  const idempotencyKey = `checkout-class-${studentId}-${classId}`;
-
   const theClass = (await getClassesDetails([classId])).classesdetailsList[0];
-
-  const price = theClass.price;
-
-  const startDate = new Date(theClass.startDate);
-  const endDate = new Date(theClass.endDate);
-
-  const session = await stripe.checkout.sessions.create(
-    {
-      mode: "payment",
-      payment_method_types: ["blik", "p24", "card"],
-      success_url: "http://localhost:3000/payment/success",
-      line_items: [
-        {
-          price_data: {
-            product_data: {
-              name: theClass.name,
-              description:
-                `start date: ${convertDateToReadable(startDate)} | ` +
-                `end date: ${convertDateToReadable(endDate)} | ` +
-                `dance category: ${theClass.danceCategoryName ?? "not provided"} | ` +
-                `advancement level: ${theClass.advancementLevelName ?? "not provided"} | ` +
-                `class description: ${theClass.description}`,
-            },
-            unit_amount: price * 100,
-            currency: "pln",
-          },
-          quantity: 1,
-        },
-      ],
-    },
-    { idempotencyKey },
-  );
 
   await prisma.classTicket.create({
     data: {
-      checkoutSessionId: session.id,
       classId,
       studentId,
-      isConfirmed: false,
       paymentStatus: PaymentStatus.PENDING,
     },
   });
 
-  res.status(200).json({ sessionUrl: session.url });
+  res.status(200).json({
+    className: theClass.name,
+    classDescription: theClass.description,
+    classStartDate: theClass.startDate,
+    classEndDate: theClass.endDate,
+    classPrice: theClass.price,
+    classDanceCategory: theClass.danceCategoryName,
+    classAdvancementLevel: theClass.advancementLevelName,
+  });
 }
+
+export async function payForClass(
+  req: Request<object, object, { classId: number }> & { user?: any },
+  res: Response,
+) {
+  const { classId } = req.body;
+  const studentId = req.user?.id;
+
+  const classTicket = await prisma.classTicket.findFirst({
+    where: {
+      classId,
+      studentId,
+    },
+  });
+
+  if (!classTicket) {
+    throw new UniversalError(
+      StatusCodes.CONFLICT,
+      "You are not enrolled for this class",
+      [],
+    );
+  }
+
+  if (classTicket.paymentStatus === "PART_OF_COURSE") {
+    throw new UniversalError(
+      StatusCodes.CONFLICT,
+      "This class has been bought as part of a course. You should pay for the entire course if you haven't already",
+      [],
+    );
+  }
+
+  if (classTicket.paymentStatus === "PAID") {
+    throw new UniversalError(
+      StatusCodes.CONFLICT,
+      "You have already paid for this class",
+      [],
+    );
+  }
+
+  if (!classTicket.checkoutSessionId) {
+    const session = await createClassCheckoutSession(classId, studentId);
+    res.status(StatusCodes.OK).json({ url: session.url });
+  } else {
+    try {
+      const session = await stripe.checkout.sessions.retrieve(
+        classTicket.checkoutSessionId,
+      );
+
+      res.status(StatusCodes.OK).json({ url: session.url });
+    } catch (error) {
+      const session = await createClassCheckoutSession(classId, studentId);
+      res.status(StatusCodes.OK).json({ url: session.url });
+    }
+  }
+}
+
 export async function makeCourseOrder(
   req: Request<object, object, { courseId: number; groupNumber: number }> & {
     user?: any;
@@ -145,48 +168,17 @@ export async function makeCourseOrder(
     }
   });
 
-  const theCourse = (await getCoursesDetails([courseId])).coursesDetailsList[0];
-
-  const idempotencyKey = `checkout-course-${studentId}-${courseId}`;
-
-  const session = await stripe.checkout.sessions.create(
-    {
-      mode: "payment",
-      payment_method_types: ["blik", "p24", "card"],
-      success_url: "http://localhost:3000/payment/success",
-      line_items: [
-        {
-          price_data: {
-            product_data: {
-              name: theCourse.name,
-              description:
-                `dance category: ${theCourse.danceCategoryName ?? "not provided"} | ` +
-                `advancement level: ${theCourse.advancementLevelName ?? "not provided"} | ` +
-                `course description: ${theCourse.description}`,
-            },
-            unit_amount: Number((theCourse.price * 100).toFixed(2)),
-            currency: "pln",
-          },
-          quantity: 1,
-        },
-      ],
-    },
-    { idempotencyKey },
-  );
-
   try {
     await prisma.$transaction(async (tx) => {
       await tx.classTicket.createMany({
         data: classes.map((classObj) => ({
           classId: classObj.classId,
           studentId,
-          isConfirmed: false,
           paymentStatus: PaymentStatus.PART_OF_COURSE,
         })),
       });
       await tx.courseTicket.create({
         data: {
-          checkoutSessionId: session.id,
           courseId,
           studentId,
           paymentStatus: PaymentStatus.PENDING,
@@ -201,94 +193,60 @@ export async function makeCourseOrder(
     );
   }
 
-  res.status(200).json({ sessionUrl: session.url });
+  const courseDetails = (await getCoursesDetails([courseId])).coursesDetailsList[0]
+
+  res.status(200).json({
+    courseName: courseDetails.name,
+    courseDescription: courseDetails.description,
+    courseDanceCategory: courseDetails.danceCategoryName,
+    courseAdvancementLevel: courseDetails.advancementLevelName,
+    coursePrice: courseDetails.price
+  });
 }
 
-export async function getPaymentLink(
-  req: Request<{}, {}, {}, { classId?: number; courseId?: number }> & {
-    user?: any;
-  },
+export async function payForCourse(
+  req: Request<object, object, { courseId: number }> & { user?: any },
   res: Response,
 ) {
-  let userId;
-  if (req.user) {
-    userId = req.user.id;
-    if (req.user?.role !== "STUDENT") {
-      throw new UniversalError(
-        StatusCodes.UNAUTHORIZED,
-        `You are not authorized to access /order/payment-link as ${req.user?.role}`,
-        [],
-      );
-    }
+  const { courseId } = req.body;
+  const studentId = req.user?.id;
+
+  const courseTicket = await prisma.courseTicket.findFirst({
+    where: {
+      courseId,
+      studentId,
+    },
+  });
+
+  if (!courseTicket) {
+    throw new UniversalError(
+      StatusCodes.CONFLICT,
+      "You are not enrolled for this course",
+      [],
+    );
+  }
+
+  if (courseTicket.paymentStatus === "PAID") {
+    throw new UniversalError(
+      StatusCodes.CONFLICT,
+      "You have already paid for this course",
+      [],
+    );
+  }
+
+  if (!courseTicket.checkoutSessionId) {
+    const session = await createCourseCheckoutSession(courseId, studentId);
+    res.status(StatusCodes.OK).json({ url: session.url });
   } else {
-    throw new UniversalError(
-      StatusCodes.UNAUTHORIZED,
-      "Problems with authentication",
-      [],
-    );
-  }
-
-  const classIdQ = req.query.classId;
-  const courseIdQ = req.query.courseId;
-
-  if (classIdQ && courseIdQ) {
-    throw new UniversalError(
-      StatusCodes.BAD_REQUEST,
-      "Specify only one of the following parameters: classId, courseId",
-      [],
-    );
-  }
-
-  if (classIdQ) {
-    const classId = Number(classIdQ);
-    const paymentData = await prisma.classTicket.findFirst({
-      where: {
-        classId,
-        studentId: userId,
-      },
-    });
-
-    if (!paymentData)
-      throw new UniversalError(StatusCodes.BAD_REQUEST, "Ticket not found", []);
-
-    const sessionId = paymentData.checkoutSessionId;
-
-    if (!sessionId)
-      throw new UniversalError(
-        StatusCodes.BAD_REQUEST,
-        "Checkout session id is missing",
-        [],
+    try {
+      const session = await stripe.checkout.sessions.retrieve(
+        courseTicket.checkoutSessionId,
       );
 
-    const session = await stripe.checkout.sessions.retrieve(sessionId);
-
-    res.status(StatusCodes.OK).json({ url: session.url });
-  }
-
-  if (courseIdQ) {
-    const courseId = Number(courseIdQ)
-
-    const paymentData = await prisma.courseTicket.findFirst({
-      where: {
-        courseId,
-        studentId: userId,
-      },
-    });
-
-    if (!paymentData)
-      throw new UniversalError(StatusCodes.BAD_REQUEST, "Ticket not found", []);
-
-    const sessionId = paymentData.checkoutSessionId;
-
-    if (!sessionId)
-      throw new UniversalError(
-        StatusCodes.BAD_REQUEST,
-        "Checkout session id is missing",
-        [],
-      );
-
-    const session = await stripe.checkout.sessions.retrieve(sessionId);
-
-    res.status(StatusCodes.OK).json({ url: session.url });
+      res.status(StatusCodes.OK).json({ url: session.url });
+    } catch (error) {
+      const session = await createCourseCheckoutSession(courseId, studentId);
+      res.status(StatusCodes.OK).json({ url: session.url });
+    }
   }
 }
