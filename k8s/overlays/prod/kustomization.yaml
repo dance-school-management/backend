@@ -1,5 +1,6 @@
 resources:
 - ../../base
+- namespace.yaml
 
 configMapGenerator:
 - name: api-gateway-config
@@ -9,4 +10,3 @@ configMapGenerator:
 images:
 - name: backend-api-gateway
   newName: backend-api-gateway
-

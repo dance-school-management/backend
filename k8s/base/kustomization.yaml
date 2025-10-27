@@ -1,2 +1,3 @@
 resources:
-- api-gateway
+# - api-gateway
+- product-db

@@ -1,3 +1,6 @@
+namespace: dev-backend
 resources:
 - ../../base
-- ./api-gateway
+- namespace.yaml
+# - ./api-gateway
+- ./product-db
