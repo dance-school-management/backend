@@ -1,7 +1,8 @@
 import logger from "../utils/winston";
 import { Server, ServerCredentials } from "@grpc/grpc-js";
-import { ProductToEnrollServerImp } from "./serverImpl";
+import { ProductToEnrollServerImp, ProfileToEnrollServerImp } from "./serverImpl";
 import { ProductToEnrollService } from "../../proto/ProductToEnroll_grpc_pb";
+import { ProfileToEnrollService } from "../../proto/ProfileToEnroll_grpc_pb";
 
 const PORT = 50051;
 const HOST = "enroll-microservice";
@@ -10,6 +11,7 @@ const GRPC_URL = process.env.GRPC_URL || `${HOST}:${PORT}`;
 export function createGrpcServer() {
   const server = new Server();
   server.addService(ProductToEnrollService, ProductToEnrollServerImp);
+  server.addService(ProfileToEnrollService, ProfileToEnrollServerImp)
   server.bindAsync(
     GRPC_URL,
     ServerCredentials.createInsecure(),

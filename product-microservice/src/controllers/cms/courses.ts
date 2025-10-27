@@ -8,6 +8,7 @@ import { validationResult } from "express-validator";
 import { UniversalError } from "../../errors/UniversalError";
 import { Warning } from "../../errors/Warning";
 import { ClassType } from "../../../generated/client";
+import { addCourse } from "../../grpc/client/elasticsearchCommunication/addCourse";
 
 interface GetCourseFilter {
   danceCategoryIds: number[] | null;
@@ -64,7 +65,7 @@ export async function getCourses(
   res.status(StatusCodes.OK).json(result);
 }
 
-export async function addCourse(
+export async function createCourse(
   req: Request<{}, {}, { name: string; isConfirmation: boolean }>,
   res: Response,
 ) {
