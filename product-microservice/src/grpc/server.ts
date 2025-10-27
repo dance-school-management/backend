@@ -1,17 +1,22 @@
 import logger from "../utils/winston";
 import { Server, ServerCredentials } from "@grpc/grpc-js";
-import { EnrollToProductServerImpl, ProfileToProductServerImpl } from "./serverImpl";
+import {
+  EnrollToProductServerImpl,
+  ProfileToProductServerImpl,
+} from "./serverImpl";
 import { EnrollToProductService } from "../../proto/EnrollToProduct_grpc_pb";
 import { ProfileToProductService } from "../../proto/ProfileToProduct_grpc_pb";
+import "dotenv/config";
 const PORT = 50051;
-const HOST = "localhost";
+const PRODUCT_GRPC =
+  process.env.PRODUCT_MICROSERVICE_GRPC_URL || `product-microservice:${PORT}`;
 
 export function createGrpcServer() {
   const server = new Server();
   server.addService(EnrollToProductService, EnrollToProductServerImpl);
   server.addService(ProfileToProductService, ProfileToProductServerImpl);
   server.bindAsync(
-    `product-microservice:${PORT}`,
+    PRODUCT_GRPC,
     ServerCredentials.createInsecure(),
     (err, port) => {
       if (err) {

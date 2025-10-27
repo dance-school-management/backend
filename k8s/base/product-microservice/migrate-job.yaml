@@ -1,0 +1,21 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: product-microservice-migrate
+spec:
+  template:
+    spec:
+      containers:
+      - name: product-microservice-migrate
+        image: backend-product-microservice
+        command: [ "/bin/sh", "-c" ]
+        args:
+        - |
+          npm run db:deploy
+        envFrom:
+        - secretRef:
+            name: product-microservice-secret
+        - configMapRef:
+            name: product-microservice-config
+      restartPolicy: OnFailure
+  backoffLimit: 4

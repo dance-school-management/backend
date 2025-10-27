@@ -42,7 +42,7 @@ export function authenticate() {
       if (AUTH_FLAG === "false") {
         const fakeUser = {
           id: "provided-fake-id-string124",
-          role: "STUDENT",
+          role: "COORDINATOR",
         };
         req.headers["user-context"] = Buffer.from(
           JSON.stringify(fakeUser),

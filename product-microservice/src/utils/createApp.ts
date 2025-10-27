@@ -28,7 +28,7 @@ export function createApp() {
   app.use("/schedule", scheduleRouter);
   app.use("/pricing", pricingRouter);
   app.get("/", (req, res) => {
-    res.send("Hello from product-microservice1");
+    res.send("Hello from product-microservice");
   });
   app.use((req, res) => {
     throw new UniversalError(404, "Endpoint not found", []);

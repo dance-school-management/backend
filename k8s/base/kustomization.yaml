@@ -1,3 +1,4 @@
 resources:
-# - api-gateway
+- api-gateway
 - product-db
+- product-microservice

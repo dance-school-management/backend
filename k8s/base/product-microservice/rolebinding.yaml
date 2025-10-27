@@ -1,0 +1,11 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: product-microservice-job-access-binding
+subjects:
+  - kind: ServiceAccount
+    name: product-microservice-sa
+roleRef:
+  kind: Role
+  name: product-microservice-job-access
+  apiGroup: rbac.authorization.k8s.io
