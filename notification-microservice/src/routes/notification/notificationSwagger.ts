@@ -8,66 +8,43 @@
  *         id:
  *           type: integer
  *           example: 1
- *         productId:
- *           type: integer
- *           example: 123
- *         productType:
- *           type: string
- *           enum: [COURSE, CLASS, EVENT]
- *           example: COURSE
- *         userId:
- *           type: integer
- *           example: 456
  *         title:
  *           type: string
  *           example: Nowy kurs dostępny
- *         description:
+ *         body:
  *           type: string
  *           example: Sprawdź nasz najnowszy kurs taneczny!
- *         hasBeenRead:
- *           type: boolean
- *           example: false
  *         sendDate:
  *           type: string
  *           format: date-time
  *           example: 2023-05-15T10:00:00Z
+ *         payload:
+ *           type: json
+ *           example: {"Hello": "World"}
  */
 
 /**
  * @swagger
  * /notification:
  *   get:
- *     summary: Get notifications with optional filtering
+ *     summary: Get notifications with filter by sendDate
  *     tags:
  *       - Notification
  *     parameters:
  *       - in: query
- *         name: productId
- *         schema:
- *           type: integer
- *         description: Filter by product ID
- *       - in: query
- *         name: productType
- *         schema:
- *           type: string
- *           enum: [COURSE, CLASS, EVENT]
- *         description: Filter by product type
- *       - in: query
- *         name: userId
- *         schema:
- *           type: integer
- *         description: Filter by user ID
- *       - in: query
- *         name: hasBeenRead
- *         schema:
- *           type: boolean
- *         description: Filter by read status
- *       - in: query
- *         name: sendDate
+ *         name: dateFrom
  *         schema:
  *           type: string
  *           format: date-time
- *         description: Filter by send date (YYYY-MM-DDTHH:MM:SSZ)
+ *           example: 2025-10-11T00:00:00Z
+ *         description: Min send date
+ *       - in: query
+ *         name: dateTo
+ *         schema:
+ *           type: string
+ *           format: date-time
+ *           example: 2026-05-31T23:59:59Z
+ *         description: Max send date
  *       - in: query
  *         name: page
  *         schema:
@@ -113,53 +90,6 @@
 
 /**
  * @swagger
- * /notification:
- *   post:
- *     summary: Create a new notification
- *     tags:
- *       - Notification
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             required:
- *               - productId
- *               - productType
- *               - userId
- *               - title
- *               - description
- *             properties:
- *               productId:
- *                 type: integer
- *                 example: 123
- *               productType:
- *                 type: string
- *                 enum: [COURSE, CLASS, EVENT]
- *                 example: COURSE
- *               userId:
- *                 type: integer
- *                 example: 456
- *               title:
- *                 type: string
- *                 example: Nowy kurs dostępny
- *               description:
- *                 type: string
- *                 example: Sprawdź nasz najnowszy kurs taneczny!
- *     responses:
- *       201:
- *         description: Notification created successfully
- *         content:
- *           application/json:
- *             schema:
- *               $ref: "#/components/schemas/Notification"
- *       400:
- *         description: Validation error
- */
-
-/**
- * @swagger
  * /notification/{id}:
  *   get:
  *     summary: Get notification by ID
@@ -181,6 +111,46 @@
  *               $ref: "#/components/schemas/Notification"
  *       404:
  *         description: Notification not found
+ */
+
+/**
+ * @swagger
+ * /notification:
+ *   post:
+ *     summary: Create a new notification
+ *     tags:
+ *       - Notification
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - userIds
+ *               - title
+ *               - body
+ *             properties:
+ *               userIds:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                 example: ["65", "13"]
+ *               title:
+ *                 type: string
+ *                 example: Nowy kurs dostępny
+ *               body:
+ *                 type: string
+ *                 example: Sprawdź nasz najnowszy kurs taneczny!
+ *     responses:
+ *       201:
+ *         description: Notification created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/Notification"
+ *       400:
+ *         description: Validation error
  */
 
 /**
@@ -207,7 +177,7 @@
  *               title:
  *                 type: string
  *                 example: Zaktualizowany tytuł
- *               description:
+ *               body:
  *                 type: string
  *                 example: Zaktualizowana treść powiadomienia
  *     responses:
@@ -262,23 +232,118 @@
  *         description: Notification not found
  */
 
+
 /**
  * @swagger
- * /notification/{id}:
- *   delete:
- *     summary: Delete a notification
+ * /notification/register:
+ *   post:
+ *     summary: Register a device to push notifications
  *     tags:
  *       - Notification
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: integer
- *         description: Notification ID
+ *     requestBody:
+ *        required: false
+ *        content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               pushToken:
+ *                 type: string
+ *                 example: abc_123
  *     responses:
  *       204:
  *         description: Notification deleted successfully
  *       404:
  *         description: Notification not found
+ */
+
+/**
+ * @swagger
+ * /notification/toggle:
+ *   post:
+ *     summary: Enable or disable notifications for the current user
+ *     description: Allows the authenticated user to enable or disable notifications.
+ *     tags: 
+ *       - Notification     
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - enable
+ *             properties:
+ *               enable:
+ *                 type: boolean
+ *                 example: true
+ *     responses:
+ *       200:
+ *         description: Notification settings updated successfully.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 notificationsEnabilityStatus:
+ *                   type: boolean
+ *                   example: true
+ *       409:
+ *         description: User is not registered for notifications.
+ *       500:
+ *         description: Server error.
+ */
+
+/**
+ * @swagger
+ * /notification/status:
+ *   get:
+ *     summary: Get user's notification registration status
+ *     description: Returns information about whether the user is registered and has enabled push notifications.
+ *     tags: 
+ *       - Notification
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved user's notification status.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 isRegistered:
+ *                   type: boolean
+ *                   example: true
+ *                 hasEnabledNotifications:
+ *                   type: boolean
+ *                   example: true
+ *                 isRegisteredForPushNotifications:
+ *                   type: boolean
+ *                   example: true
+ *       500:
+ *         description: Server error.
+ */
+
+/**
+ * @swagger
+ * /notification/push/unregister:
+ *   put:
+ *     summary: Unregister user from push notifications
+ *     description: Removes the user's Expo push token and disables further push notifications.
+ *     tags: 
+ *       - Notification
+ *     responses:
+ *       200:
+ *         description: Successfully unregistered from push notifications.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Successfully unregistered from push notifications
+ *       409:
+ *         description: User is not registered for any notifications.
+ *       500:
+ *         description: Server error.
  */
