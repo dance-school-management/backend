@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: product-db
+spec:
+  selector:
+    matchLabels:
+      app: product-db
+  serviceName: product-db-service
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: product-db
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+      - name: product-db
+        image: postgres:17
+        ports:
+        - containerPort: 5432
+        envFrom:
+        - secretRef:
+            name: product-db-secret
+        volumeMounts:
+        - name: product-db-storage
+          mountPath: /var/lib/postgresql/data
+  volumeClaimTemplates:
+  - metadata:
+      name: product-db-storage
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 350Mi

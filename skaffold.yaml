@@ -1,0 +1,27 @@
+apiVersion: skaffold/v4beta13
+kind: Config
+metadata:
+  name: backend
+build:
+  artifacts:
+  - image: backend-api-gateway
+    context: ./api-gateway
+    docker:
+      dockerfile: docker/k8s/dev/Dockerfile
+    sync:
+      manual:
+      - src: 'src/**/*.ts'
+        dest: .
+      - src: 'package.json'
+        dest: .
+      - src: 'package-lock.json'
+        dest: .
+manifests:
+  kustomize:
+    paths:
+    - k8s/overlays/dev
+portForward:
+- resourceType: service
+  resourceName: api-gateway-service
+  port: 80
+  localPort: 8000

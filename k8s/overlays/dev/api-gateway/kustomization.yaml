@@ -1,0 +1,4 @@
+configMapGenerator:
+- name: api-gateway-config
+  envs:
+    - api-gateway.properties
