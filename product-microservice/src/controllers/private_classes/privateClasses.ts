@@ -10,6 +10,7 @@ import { EnrollStudentsAndInstructorInPrivateClassMsgData } from "../../rabbitmq
 import { EnrollStudentsAndInstructorInPrivateClass } from "../../rabbitmq/senders/enrollStudentsAndInstructorInPrivateClass";
 import { getClassesStudents } from "../../grpc/client/enrollCommunication/getClassesStudents";
 import { hasIntersection, intersectSets } from "../../utils/helpers";
+import { getStudentsProfiles } from "../../grpc/client/profileCommunication/getStudentsProfiles";
 
 export async function createPrivateClassTemplate(
   req: Request<{}, {}, { classTemplateData: ClassTemplate }> & {
@@ -43,7 +44,9 @@ export async function createPrivateClass(
   },
   res: Response,
 ) {
-  const { classData, studentIds } = req.body;
+  const { classData } = req.body;
+
+  const studentIds = [...new Set(req.body.studentIds)]
 
   const theClassTemplate = await prisma.classTemplate.findFirst({
     where: {
@@ -101,9 +104,15 @@ export async function createPrivateClass(
   const studentIdsSet = new Set(studentIds);
 
   if (hasIntersection<string>(occupiedStudentsSet, studentIdsSet)) {
+    const occupiedStudentsList = (
+      await getStudentsProfiles([
+        ...intersectSets<string>(occupiedStudentsSet, studentIdsSet),
+      ])
+    ).studentProfilesList;
+
     throw new UniversalError(
       StatusCodes.CONFLICT,
-      `Students ${[...intersectSets<string>(occupiedStudentsSet, studentIdsSet)]} have overlapping classes`,
+      `Students ${occupiedStudentsList.map((ost) => ost.firstName + " " + ost.lastName).join(", ")} have overlapping classes`,
       [],
     );
   }
