@@ -9,6 +9,12 @@ import { UniversalError } from "../../errors/UniversalError";
 import { Warning } from "../../errors/Warning";
 import { ClassType } from "../../../generated/client";
 import { addCourse } from "../../grpc/client/elasticsearchCommunication/addCourse";
+import { CourseDocument, esClient } from "../../elasticsearch/client";
+import {
+  getCoursesPrices,
+  getCoursesStartAndEndDates,
+} from "../../utils/helpers";
+import { embed } from "../../grpc/client/aiCommunication/embed";
 
 interface GetCourseFilter {
   danceCategoryIds: number[] | null;
@@ -118,9 +124,10 @@ export async function editCourse(req: Request<{}, {}, Course>, res: Response) {
     description,
     danceCategoryId,
     advancementLevelId,
-    customPrice,
     courseStatus,
   } = req.body;
+
+  const customPrice = req.body.customPrice as unknown as number;
 
   const editedCourse = await prisma.course.update({
     where: {
@@ -135,6 +142,52 @@ export async function editCourse(req: Request<{}, {}, Course>, res: Response) {
       courseStatus,
     },
   });
+
+  let danceCategory = null;
+  if (danceCategoryId)
+    danceCategory = await prisma.danceCategory.findFirst({
+      where: {
+        id: danceCategoryId,
+      },
+    });
+  let advancementLevel = null;
+  if (advancementLevelId)
+    advancementLevel = await prisma.advancementLevel.findFirst({
+      where: {
+        id: advancementLevelId,
+      },
+    });
+
+  if (courseStatus !== CourseStatus.HIDDEN) {
+    let price = 0;
+    if (customPrice) price = customPrice;
+    else {
+      price = (await getCoursesPrices([id]))[0].price;
+    }
+
+    const dates = (await getCoursesStartAndEndDates([id]))[0];
+    const startDate = dates.courseStartDates.reduce((acc, cur) =>
+      cur.courseStartDate < acc.courseStartDate ? cur : acc,
+    ).courseStartDate;
+
+    const endDate = dates.courseEndDates.reduce((acc, cur) =>
+      cur.courseEndDate > acc.courseEndDate ? cur : acc,
+    ).courseEndDate;
+
+    const doc: CourseDocument = {
+      name,
+      description,
+      danceCategory,
+      advancementLevel,
+      price,
+      startDate: new Date(startDate),
+      endDate: new Date(endDate),
+      descriptionEmbedded: (await embed(description, false)).embeddingList
+    };
+
+    esClient.index({ index: "courses", id: String(id), document: doc });
+  }
+
   res.status(StatusCodes.OK).json(editedCourse);
 }
 

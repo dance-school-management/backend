@@ -11,7 +11,6 @@ export const esClient = new Client({
 })
 
 export interface CourseDocument {
-  id: number
   name: string
   description: string
   descriptionEmbedded: number[]
@@ -31,7 +30,6 @@ export interface CourseDocument {
 }
 
 export interface ClassTemplateDocument {
-  id: number
   name: string
   description: string
   descriptionEmbedded: number[]

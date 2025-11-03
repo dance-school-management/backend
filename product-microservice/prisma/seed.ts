@@ -152,10 +152,10 @@ async function main() {
       );
     }
   }
-  if (await esClient.indices.exists({index: "class_templates"}))
-    await esClient.indices.delete({index: "class_templates"})
-  if (await esClient.indices.exists({index: "courses"}))
-    await esClient.indices.delete({index: "courses"})
+  if (await esClient.indices.exists({ index: "class_templates" }))
+    await esClient.indices.delete({ index: "class_templates" });
+  if (await esClient.indices.exists({ index: "courses" }))
+    await esClient.indices.delete({ index: "courses" });
 
   for (const classTemplate of classTemplatesJson) {
     const descEmbedded = (await embed(classTemplate.description, false))
@@ -167,7 +167,6 @@ async function main() {
       (al) => al.id === classTemplate.advancementLevelId,
     );
     const doc: ClassTemplateDocument = {
-      id: classTemplate.id,
       name: classTemplate.name,
       description: classTemplate.description,
       descriptionEmbedded: descEmbedded,
@@ -187,7 +186,11 @@ async function main() {
         : null,
       price: classTemplate.price,
     };
-    await esClient.index({ index: "class_templates", document: doc });
+    await esClient.index({
+      index: "class_templates",
+      id: String(classTemplate.id),
+      document: doc,
+    });
   }
 
   for (const course of coursesJson) {
@@ -243,7 +246,6 @@ async function main() {
     );
 
     const doc: CourseDocument = {
-      id: course.id,
       name: course.name,
       description: course.description,
       descriptionEmbedded: descEmbedded,
@@ -263,9 +265,13 @@ async function main() {
         : null,
       price,
       startDate,
-      endDate
+      endDate,
     };
-    await esClient.index({ index: "courses", document: doc });
+    await esClient.index({
+      index: "courses",
+      id: String(course.id),
+      document: doc,
+    });
   }
 }
 
