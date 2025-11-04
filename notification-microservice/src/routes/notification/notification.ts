@@ -7,6 +7,7 @@ import {
   updateNotificationContent,
   toggleEnableNotifications,
   getIsRegisteredForNotifications,
+  updateNotificationsStatus,
 } from "../../controllers/notification/notification";
 import { body, query, param } from "express-validator";
 import {
@@ -61,6 +62,13 @@ router.post(
     .isLength({ min: 10, max: 1000 })
     .withMessage("description must be between 10 and 1000 characters"),
   createNotifications,
+);
+
+router.put(
+  "/status/many",
+  body("ids").isArray().withMessage("ids must be an array of numbers"),
+  body("hasBeenRead").isBoolean().withMessage("hasBeenRead must be a boolean"),
+  updateNotificationsStatus,
 );
 
 router.put(

@@ -232,6 +232,53 @@
  *         description: Notification not found
  */
 
+/**
+ * @swagger
+ * /notification/status/many:
+ *   put:
+ *     summary: Update notifications read status
+ *     description: Updates the `hasBeenRead` status for multiple notifications belonging to the authenticated user.
+ *     tags:
+ *       - Notification
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - ids
+ *               - hasBeenRead
+ *             properties:
+ *               ids:
+ *                 type: array
+ *                 items:
+ *                   type: integer
+ *                 example: [1, 2, 3]
+ *                 description: IDs of notifications to update.
+ *               hasBeenRead:
+ *                 type: boolean
+ *                 example: true
+ *                 description: The new read status (true = read, false = unread).
+ *     responses:
+ *       200:
+ *         description: Successfully updated notifications status.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 count:
+ *                   type: integer
+ *                   example: 3
+ *                   description: Number of notifications updated.
+ *       400:
+ *         description: Bad request (invalid input data).
+ *       401:
+ *         description: Unauthorized (user not authenticated).
+ *       500:
+ *         description: Internal server error.
+ */
 
 /**
  * @swagger

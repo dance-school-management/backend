@@ -161,7 +161,7 @@ export async function createNotifications(
         id: {
           in: userIds,
         },
-        hasEnabledNotifications: true
+        hasEnabledNotifications: true,
       },
     })
   ).map((user) => user.id);
@@ -259,6 +259,31 @@ export async function updateNotificationStatus(
   res.status(StatusCodes.OK).json(notification);
 }
 
+export async function updateNotificationsStatus(
+  req: Request<{}, {}, { ids: number[]; hasBeenRead: boolean }> & {
+    user?: any;
+  },
+  res: Response,
+) {
+  const { ids, hasBeenRead } = req.body;
+
+  const result = await prisma.notificationsOnUsers.updateMany({
+    where: {
+      notificationId: {
+        in: ids,
+      },
+      userId: req.user?.id,
+    },
+    data: {
+      hasBeenRead,
+    },
+  });
+
+  res.status(StatusCodes.OK).json({
+    updatedNotifications: result.count,
+  });
+}
+
 // export async function deleteNotification(req: Request, res: Response) {
 //   checkValidations(validationResult(req));
 //   const { id } = req.params;
@@ -312,8 +337,7 @@ export async function getIsRegisteredForNotifications(
 
   let isTokenValid = false;
 
-  if (user?.token)
-    isTokenValid = Expo.isExpoPushToken(user?.token);
+  if (user?.token) isTokenValid = Expo.isExpoPushToken(user?.token);
 
   res.status(StatusCodes.OK).json({
     isRegistered: Boolean(user),
