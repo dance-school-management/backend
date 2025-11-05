@@ -195,46 +195,7 @@
 
 /**
  * @swagger
- * /notification/status/{id}:
- *   put:
- *     summary: Update notification read status
- *     tags:
- *       - Notification
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: integer
- *         description: Notification ID
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             required:
- *               - hasBeenRead
- *             properties:
- *               hasBeenRead:
- *                 type: boolean
- *                 example: true
- *     responses:
- *       200:
- *         description: Notification status updated successfully
- *         content:
- *           application/json:
- *             schema:
- *               $ref: "#/components/schemas/Notification"
- *       400:
- *         description: Validation error
- *       404:
- *         description: Notification not found
- */
-
-/**
- * @swagger
- * /notification/status/many:
+ * /notification/status:
  *   put:
  *     summary: Update notifications read status
  *     description: Updates the `hasBeenRead` status for multiple notifications belonging to the authenticated user.

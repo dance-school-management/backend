@@ -220,45 +220,6 @@ export async function updateNotificationContent(
   res.status(StatusCodes.OK).json(notification);
 }
 
-export async function updateNotificationStatus(
-  req: Request<{ id: string }, {}, { hasBeenRead: boolean }> & { user?: any },
-  res: Response,
-) {
-  checkValidations(validationResult(req));
-  const { id } = req.params;
-  const { hasBeenRead } = req.body;
-
-  const exists = Boolean(
-    await prisma.notificationsOnUsers.findFirst({
-      where: {
-        userId: req.user?.id,
-        notificationId: Number(id),
-      },
-    }),
-  );
-
-  if (!exists) {
-    throw new UniversalError(
-      StatusCodes.NOT_FOUND,
-      "Failed to update notification status - notification not found",
-      [],
-    );
-  }
-
-  const notification = await prisma.notificationsOnUsers.update({
-    where: {
-      userId_notificationId: {
-        userId: req.user?.id,
-        notificationId: Number(id),
-      },
-    },
-    data: {
-      hasBeenRead,
-    },
-  });
-  res.status(StatusCodes.OK).json(notification);
-}
-
 export async function updateNotificationsStatus(
   req: Request<{}, {}, { ids: number[]; hasBeenRead: boolean }> & {
     user?: any;

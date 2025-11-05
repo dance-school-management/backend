@@ -2,7 +2,6 @@ import { Router } from "express";
 import {
   getNotifications,
   getNotificationById,
-  updateNotificationStatus,
   createNotifications,
   updateNotificationContent,
   toggleEnableNotifications,
@@ -65,17 +64,10 @@ router.post(
 );
 
 router.put(
-  "/status/many",
+  "/status",
   body("ids").isArray().withMessage("ids must be an array of numbers"),
   body("hasBeenRead").isBoolean().withMessage("hasBeenRead must be a boolean"),
   updateNotificationsStatus,
-);
-
-router.put(
-  "/status/:id",
-  param("id").isNumeric().withMessage("id must be a number").toInt(),
-  body("hasBeenRead").isBoolean().withMessage("hasBeenRead must be a boolean"),
-  updateNotificationStatus,
 );
 
 router.put(
