@@ -2,11 +2,11 @@ import { Router } from "express";
 import {
   getNotifications,
   getNotificationById,
-  updateNotificationStatus,
   createNotifications,
   updateNotificationContent,
   toggleEnableNotifications,
   getIsRegisteredForNotifications,
+  updateNotificationsStatus,
 } from "../../controllers/notification/notification";
 import { body, query, param } from "express-validator";
 import {
@@ -64,10 +64,10 @@ router.post(
 );
 
 router.put(
-  "/status/:id",
-  param("id").isNumeric().withMessage("id must be a number").toInt(),
+  "/status",
+  body("ids").isArray().withMessage("ids must be an array of numbers"),
   body("hasBeenRead").isBoolean().withMessage("hasBeenRead must be a boolean"),
-  updateNotificationStatus,
+  updateNotificationsStatus,
 );
 
 router.put(
