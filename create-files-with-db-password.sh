@@ -6,7 +6,7 @@ fi
 
 cd db || exit 1
 
-MICROSERVICES_NAMES=("auth" "enroll" "notification" "product" "profile")
+MICROSERVICES_NAMES=("auth" "enroll" "notification" "product" "profile" "blog")
 
 for name in ${MICROSERVICES_NAMES[@]}; do
   FILE_NAME="${name}-db-password.txt"
