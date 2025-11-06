@@ -25,8 +25,8 @@ export function createApp() {
   // Public routes (no authentication required)
   app.use("/blog/public", publicRouter);
 
-  // Authenticated routes - admin/coordinator for most, admin only for update
-  app.use("/blog/posts", postRouter);
+  // Authenticated routes - admin/coordinator
+  app.use("/blog/posts", checkRole(["ADMINISTRATOR", "COORDINATOR"]), postRouter);
 
   app.get("/", (req, res) => {
     res.send("Hello from blog-microservice");
