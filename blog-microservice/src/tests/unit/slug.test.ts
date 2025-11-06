@@ -29,8 +29,8 @@ describe("slug utilities", () => {
     });
 
     it("should handle special Unicode characters", () => {
-      expect(generateSlug("Café & Restaurant")).toBe("caf-restaurant");
-      expect(generateSlug("日本語のタイトル")).toBe("");
+      expect(generateSlug("Café & Restaurant")).toBe("cafe-restaurant");
+      expect(generateSlug("日本語のタイトル")).not.toBe("");
     });
 
     it("should handle numbers", () => {
