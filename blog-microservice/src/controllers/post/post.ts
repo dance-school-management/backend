@@ -44,15 +44,15 @@ export async function createPost(
   checkValidations(validationResult(req));
 
   const { title, content, excerpt, tags = [], status = "draft" } = req.body;
-  // const authorId = req.user?.id;
+  const authorId = req.user?.id;
 
-  // if (!authorId) {
-  //   throw new UniversalError(
-  //     StatusCodes.UNAUTHORIZED,
-  //     "User context not found",
-  //     [],
-  //   );
-  // }
+  if (!authorId) {
+    throw new UniversalError(
+      StatusCodes.UNAUTHORIZED,
+      "User context not found",
+      [],
+    );
+  }
 
   // Generate slug from title
   const baseSlug = generateSlug(title);
@@ -78,7 +78,7 @@ export async function createPost(
       excerpt,
       tags: tags || [],
       status,
-      authorId: "user-123",
+      authorId: authorId,
       readingTime,
       isPinned: false,
       pinnedUntil: null,
@@ -98,15 +98,6 @@ export async function updatePost(
   next: NextFunction,
 ) {
   checkValidations(validationResult(req));
-
-  // Check if user is ADMIN (admin only for updates)
-  // if (req.user?.role !== "ADMIN" && req.user?.role !== "COORDINATOR") {
-  //   throw new UniversalError(
-  //     StatusCodes.UNAUTHORIZED,
-  //     "Only ADMIN or COORDINATOR can update posts",
-  //     [],
-  //   );
-  // }
 
   const { idOrSlug } = req.params;
   const { title, content, excerpt, tags, status } = req.body;
