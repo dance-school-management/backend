@@ -3,13 +3,13 @@
  */
 export function createMockUserContext(user: {
   id: string;
-  role?: string;
-  email?: string;
+  role: string;
+  email: string;
 }): string {
   const userContext = {
     id: user.id,
-    role: user.role || "ADMIN",
-    email: user.email || "test@example.com",
+    role: user.role,
+    email: user.email,
   };
   return Buffer.from(JSON.stringify(userContext)).toString("base64");
 }

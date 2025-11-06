@@ -15,6 +15,21 @@ import "./postSwagger";
 
 const router = Router();
 
+const tagsValidator = body("tags")
+  .optional()
+  .isArray()
+  .withMessage("Tags must be an array")
+  .custom((tags) => {
+    if (tags && !Array.isArray(tags)) {
+      return false;
+    }
+    if (tags && tags.length > 0) {
+      return tags.every((tag: any) => typeof tag === "string" && tag.length > 0);
+    }
+    return true;
+  })
+  .withMessage("Tags must be an array of non-empty strings");
+
 /**
  * POST /blog/posts
  * Create a new blog post
@@ -36,20 +51,7 @@ router.post(
     .withMessage("Excerpt is required")
     .isLength({ min: 1, max: 1000 })
     .withMessage("Excerpt must be between 1 and 1000 characters"),
-  body("tags")
-    .optional()
-    .isArray()
-    .withMessage("Tags must be an array")
-    .custom((tags) => {
-      if (tags && !Array.isArray(tags)) {
-        return false;
-      }
-      if (tags && tags.length > 0) {
-        return tags.every((tag: any) => typeof tag === "string" && tag.length > 0);
-      }
-      return true;
-    })
-    .withMessage("Tags must be an array of non-empty strings"),
+  tagsValidator,
   body("status")
     .optional()
     .isIn(["draft", "published"])
@@ -85,20 +87,7 @@ router.patch(
     .withMessage("Excerpt cannot be empty")
     .isLength({ min: 1, max: 1000 })
     .withMessage("Excerpt must be between 1 and 1000 characters"),
-  body("tags")
-    .optional()
-    .isArray()
-    .withMessage("Tags must be an array")
-    .custom((tags) => {
-      if (tags && !Array.isArray(tags)) {
-        return false;
-      }
-      if (tags && tags.length > 0) {
-        return tags.every((tag: any) => typeof tag === "string" && tag.length > 0);
-      }
-      return true;
-    })
-    .withMessage("Tags must be an array of non-empty strings"),
+  tagsValidator,
   body("status")
     .optional()
     .isIn(["draft", "published"])
@@ -223,4 +212,3 @@ router.get(
 );
 
 export default router;
-

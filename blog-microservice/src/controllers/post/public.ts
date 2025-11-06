@@ -98,22 +98,6 @@ export async function getPublicPosts(
     return post;
   });
 
-  // Sort: pinned posts first (where isPinned=true && pinnedUntil >= now), then by publishedAt desc
-  filteredPosts.sort((a, b) => {
-    const aIsCurrentlyPinned =
-      a.isPinned && a.pinnedUntil && a.pinnedUntil >= now;
-    const bIsCurrentlyPinned =
-      b.isPinned && b.pinnedUntil && b.pinnedUntil >= now;
-
-    if (aIsCurrentlyPinned && !bIsCurrentlyPinned) return -1;
-    if (!aIsCurrentlyPinned && bIsCurrentlyPinned) return 1;
-
-    // Both pinned or both not pinned - sort by publishedAt desc
-    const aDate = a.publishedAt ? new Date(a.publishedAt).getTime() : 0;
-    const bDate = b.publishedAt ? new Date(b.publishedAt).getTime() : 0;
-    return bDate - aDate;
-  });
-
   res.status(StatusCodes.OK).json({
     data: filteredPosts,
     pagination: {
