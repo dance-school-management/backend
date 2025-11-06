@@ -1,11 +1,8 @@
 import { PrismaClient } from "../generated/client";
-import logger from "../src/utils/winston";
 
 const prisma = new PrismaClient();
 
 async function main() {
-  // Seed blog posts here if needed
-  // Example:
   await prisma.blogPost.create({
     data: {
       title: "Welcome to Our Blog",

@@ -7,7 +7,6 @@ import { UniversalError } from "../../errors/UniversalError";
 import { generateSlug, generateUniqueSlug } from "../../utils/slug";
 import { calculateReadingTime } from "../../utils/readingTime";
 import { PostStatus } from "../../../generated/client";
-import { ExValError } from "../../errors/ExValError";
 
 interface CreatePostBody {
   title: string;

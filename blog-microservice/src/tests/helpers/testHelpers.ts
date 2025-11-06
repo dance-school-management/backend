@@ -1,5 +1,3 @@
-import { Request } from "express";
-
 /**
  * Create a mock user context header for testing
  */
