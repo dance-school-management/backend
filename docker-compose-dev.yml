@@ -105,6 +105,23 @@ services:
         condition: service_healthy
     networks:
       - microservices-network
+  blog-microservice:
+    build:
+      context: ./blog-microservice
+      dockerfile: docker/dev/Dockerfile
+      target: final
+    ports:
+      - "8006:8006"
+    env_file:
+      - ./blog-microservice/.env.development
+    volumes:
+      - ./blog-microservice/:/usr/src/app
+      - /usr/src/app/node_modules
+    depends_on:
+      blog_db:
+        condition: service_healthy
+    networks:
+      - microservices-network
   product_db:
     image: postgres:latest
     restart: always
@@ -214,6 +231,27 @@ services:
       test: [ "CMD", "pg_isready" ]
       interval: 10s
       timeout: 5s
+      retries: 5
+  blog_db:
+    image: postgres:17.6
+    user: postgres
+    secrets:
+      - blog_db
+    environment:
+      POSTGRES_DB: blog
+      POSTGRES_PASSWORD_FILE: /run/secrets/blog_db
+    ports:
+      - "5439:5432"
+    volumes:
+      - blog_data:/var/lib/postgresql/data
+    networks:
+      - microservices-network
+    expose:
+      - 5432
+    healthcheck:
+      test: [ "CMD", "pg_isready" ]
+      interval: 10s
+      timeout: 5s
       retries: 5 
   rabbitmq:
     image: rabbitmq:management
@@ -291,6 +329,7 @@ volumes:
   enroll_data:
   notification_data:
   profile_data:
+  blog_data:
   rabbitmq_data:
 networks:
   microservices-network:
@@ -306,3 +345,5 @@ secrets:
     file: db/notification-db-password.txt
   profile_db:
     file: db/profile-db-password.txt
+  blog_db:
+    file: db/blog-db-password.txt
