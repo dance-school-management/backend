@@ -138,12 +138,8 @@ router.patch(
     .withMessage("pinnedUntil is required")
     .isISO8601()
     .withMessage("pinnedUntil must be a valid ISO8601 date string")
-    .custom((pinnedUntil) => {
-      if (new Date(pinnedUntil) < new Date()) {
-        return false;
-      }
-      return true;
-    })
+    .toDate()
+    .custom((pinnedUntil) => pinnedUntil > new Date())
     .withMessage("pinnedUntil must be in the future"),
   pinPost,
 );
