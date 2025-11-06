@@ -19,7 +19,7 @@ export function handleUserContext(
   } catch {
     logger.info({
       level: "info",
-      message: `Error while parsing user context:`,
+      message: `Error while parsing user context.`,
     });
   }
   _next();

@@ -233,7 +233,8 @@ services:
       timeout: 5s
       retries: 5
   blog_db:
-    image: postgres:17.6
+    image: postgres:latest
+    restart: always
     user: postgres
     secrets:
       - blog_db
