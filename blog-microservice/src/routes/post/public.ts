@@ -26,10 +26,12 @@ router.get(
     .toInt(),
   query("q")
     .optional()
+    .trim()
     .isLength({ min: 1 })
     .withMessage("Search query cannot be empty"),
   query("tag")
     .optional()
+    .trim()
     .isLength({ min: 1 })
     .withMessage("Tag cannot be empty"),
   getPublicPosts,
