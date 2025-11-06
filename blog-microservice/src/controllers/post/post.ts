@@ -299,12 +299,6 @@ export async function pinPost(
     );
   }
 
-  // If already pinned, return 204
-  if (existingPost.isPinned) {
-    res.status(StatusCodes.NO_CONTENT).send();
-    return;
-  }
-
   await prisma.blogPost.update({
     where: { id: existingPost.id },
     data: {
