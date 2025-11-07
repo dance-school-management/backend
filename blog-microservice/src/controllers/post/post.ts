@@ -185,7 +185,7 @@ export async function publishPost(
   checkValidations(validationResult(req));
 
   const { idOrSlug } = req.params;
-  const publishedAt = req.body?.publishedAt ? new Date(req.body?.publishedAt) : new Date();
+  const publishedAt = req.body?.publishedAt ?? new Date();
 
   const existingPost = await prisma.blogPost.findFirst({
     where: {
