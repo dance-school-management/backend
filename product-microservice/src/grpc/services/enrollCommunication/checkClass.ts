@@ -78,12 +78,11 @@ export async function checkClass(
     }
   }
   if (
-    classObj.classStatus === ClassStatus.CANCELLED ||
-    classObj.classStatus === ClassStatus.POSTPONED
+    classObj.classStatus === ClassStatus.CANCELLED
   ) {
     const err = new UniversalError(
       StatusCodes.CONFLICT,
-      `This class with id ${classId} is cancelled or postponed`,
+      `This class with id ${classId} is cancelled`,
       [],
     );
     callback({ code: status.UNAVAILABLE, details: JSON.stringify(err) });

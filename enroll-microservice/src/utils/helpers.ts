@@ -1,6 +1,5 @@
 import { getClassesDetails } from "../grpc/client/productCommunication/getClassesDetails";
 import { getCoursesDetails } from "../grpc/client/productCommunication/getCoursesDetails";
-import prisma from "./prisma";
 import { stripe } from "./stripe";
 
 export function convertDateToReadable(date: Date) {
@@ -29,7 +28,7 @@ export async function createClassCheckoutSession(
     {
       mode: "payment",
       payment_method_types: ["blik", "p24", "card"],
-      success_url: "http://localhost:3000/payment/success",
+      success_url: `http://localhost:3000/payment/success?classId=${theClass.classId}`,
       line_items: [
         {
           price_data: {
@@ -48,28 +47,22 @@ export async function createClassCheckoutSession(
           quantity: 1,
         },
       ],
+      metadata: {
+        classId,
+        studentId,
+        productType: 'CLASS'
+      },
     },
     { idempotencyKey },
   );
 
-  await prisma.classTicket.update({
-    where: {
-      studentId_classId: {
-        studentId,
-        classId,
-      },
-    },
-    data: {
-      checkoutSessionId: session.id,
-    },
-  });
-
-  return session;
+  return { session, classData: theClass };
 }
 
 export async function createCourseCheckoutSession(
   courseId: number,
   studentId: string,
+  groupNumber: number,
 ) {
   const theCourse = (await getCoursesDetails([courseId])).coursesDetailsList[0];
 
@@ -96,21 +89,15 @@ export async function createCourseCheckoutSession(
           quantity: 1,
         },
       ],
+      metadata: {
+        groupNumber,
+        courseId,
+        studentId,
+        productType: 'COURSE'
+      },
     },
     { idempotencyKey },
   );
 
-  await prisma.courseTicket.update({
-    where: {
-      studentId_courseId: {
-        courseId,
-        studentId,
-      },
-    },
-    data: {
-      checkoutSessionId: session.id,
-    },
-  });
-
-  return session
+  return { session, courseData: theCourse };
 }

@@ -2,8 +2,6 @@ import { Router } from "express";
 import {
   makeClassOrder,
   makeCourseOrder,
-  payForClass,
-  payForCourse,
 } from "../../controllers/order";
 import { body } from "express-validator";
 import { UniversalError } from "../../errors/UniversalError";
@@ -11,9 +9,6 @@ import { StatusCodes } from "http-status-codes";
 import prisma from "../../utils/prisma";
 
 const router = Router();
-
-router.post("/class/pay", payForClass);
-router.post("/course/pay", payForCourse);
 
 router.post(
   "/class",

@@ -4,9 +4,9 @@
  *   post:
  *     summary: Create a class order
  *     description: >
- *       Creates a new class order for the logged-in student.  
- *       The endpoint checks seat availability, stores a ticket in the database  
- *       with the `PENDING` payment status, and returns the class details.
+ *       Creates a new order for a single class for the logged-in student.  
+ *       The endpoint verifies that the class exists, checks seat availability,  
+ *       creates a pending payment record, and returns details about the class and the Stripe session.
  *     tags:
  *       - student - order - class
  *     requestBody:
@@ -20,15 +20,20 @@
  *             properties:
  *               classId:
  *                 type: integer
+ *                 description: ID of the class to order
  *                 example: 1
  *     responses:
  *       200:
- *         description: Class order created and details returned
+ *         description: Class order created successfully
  *         content:
  *           application/json:
  *             schema:
  *               type: object
  *               properties:
+ *                 sessionUrl:
+ *                   type: string
+ *                   format: uri
+ *                   example: "https://checkout.stripe.com/pay/cs_test_12345"
  *                 className:
  *                   type: string
  *                   example: "Salsa Beginners"
@@ -55,53 +60,7 @@
  *       400:
  *         description: Class is full or invalid class ID
  *       401:
- *         description: Unauthorized – authentication problem
- *       500:
- *         description: Internal server error
- */
-
-/**
- * @swagger
- * /order/class/pay:
- *   post:
- *     summary: Create or retrieve Stripe Checkout Session for class payment
- *     description: >
- *       Initiates payment for a class that the logged-in student is enrolled in.  
- *       The endpoint checks if the student has already paid, or if the class was part of a course.  
- *       If no checkout session exists, it creates a new Stripe Checkout Session.  
- *       Returns the Stripe Checkout URL for payment.
- *     tags:
- *       - student - order - class
- *     security:
- *       - bearerAuth: []
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             required:
- *               - classId
- *             properties:
- *               classId:
- *                 type: integer
- *                 example: 1
- *     responses:
- *       200:
- *         description: Checkout session successfully created or retrieved
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 url:
- *                   type: string
- *                   format: uri
- *                   example: "https://checkout.stripe.com/pay/cs_test_12345"
- *       401:
  *         description: Unauthorized – authentication required
- *       409:
- *         description: Conflict – class already paid, part of a course, or not enrolled
  *       500:
  *         description: Internal server error
  */
@@ -113,9 +72,8 @@
  *     summary: Create a course order
  *     description: >
  *       Creates a new course order for the logged-in student.  
- *       The endpoint checks seat availability in all classes of the selected course,  
- *       creates pending class and course tickets in the database,  
- *       and returns details about the ordered course.
+ *       The endpoint checks seat availability across all classes within the course,  
+ *       creates a pending payment record, and returns detailed course information along with a Stripe session URL.
  *     tags:
  *       - student - order - course
  *     requestBody:
@@ -130,12 +88,12 @@
  *             properties:
  *               courseId:
  *                 type: integer
- *                 description: The ID of the course to order.
+ *                 description: ID of the course to order
  *                 example: 1
  *               groupNumber:
  *                 type: integer
- *                 description: Group number identifying the set of classes.
- *                 example: 2
+ *                 description: Group number identifying the set of classes
+ *                 example: 1
  *     responses:
  *       200:
  *         description: Course order successfully created
@@ -144,6 +102,10 @@
  *             schema:
  *               type: object
  *               properties:
+ *                 sessionUrl:
+ *                   type: string
+ *                   format: uri
+ *                   example: "https://checkout.stripe.com/pay/cs_test_67890"
  *                 courseName:
  *                   type: string
  *                   example: "Salsa Intensive Course"
@@ -160,54 +122,9 @@
  *                   type: number
  *                   example: 600
  *       400:
- *         description: One or more classes in the course are already full
+ *         description: One or more classes in the course are full
  *       401:
  *         description: Unauthorized – authentication required
- *       500:
- *         description: Internal server error – failed to create course order
- */
-
-/**
- * @swagger
- * /order/course/pay:
- *   post:
- *     summary: Create or retrieve Stripe Checkout Session for course payment
- *     description: >
- *       Initiates payment for a course that the logged-in student is enrolled in.  
- *       The endpoint checks if the student has already paid for the course.  
- *       If no checkout session exists, a new Stripe Checkout Session is created.  
- *       Returns the Stripe Checkout URL for payment.
- *     tags:
- *       - student - order - course
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             required:
- *               - courseId
- *             properties:
- *               courseId:
- *                 type: integer
- *                 description: The ID of the course to pay for.
- *                 example: 1
- *     responses:
- *       200:
- *         description: Checkout session successfully created or retrieved
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 url:
- *                   type: string
- *                   format: uri
- *                   example: "https://checkout.stripe.com/pay/cs_test_12345"
- *       401:
- *         description: Unauthorized – authentication required
- *       409:
- *         description: Conflict – course already paid or not enrolled
  *       500:
  *         description: Internal server error
  */

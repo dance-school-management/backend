@@ -17,9 +17,9 @@ export async function getStudentTickets(
 
   const classesDetails = await getClassesDetails(classIds);
 
-  const courseIds = [...new Set(classesDetails.classesdetailsList
-    .map((cd) => cd.courseId))]
-    .filter((item) => item !== undefined);
+  const courseIds = [
+    ...new Set(classesDetails.classesdetailsList.map((cd) => cd.courseId)),
+  ].filter((item) => item !== undefined);
 
   const coursesTickets = await prisma.courseTicket.findMany({
     where: {
@@ -43,10 +43,9 @@ export async function getStudentTickets(
     let qrCodeUUID = null;
     if (
       studentTicket?.paymentStatus === PaymentStatus.PAID ||
-      (studentTicket?.paymentStatus === PaymentStatus.PART_OF_COURSE &&
-        courseTicket?.paymentStatus === PaymentStatus.PAID)
+      courseTicket?.paymentStatus === PaymentStatus.PAID
     ) {
-      qrCodeUUID = studentTicket.qrCodeUUID;
+      qrCodeUUID = studentTicket?.qrCodeUUID;
     }
 
     return {
@@ -61,9 +60,11 @@ export async function getStudentTickets(
       advancementLevelName: classDetails?.advancementLevelName,
       price: classDetails?.price,
       paymentStatus: studentTicket?.paymentStatus,
-      coursePaymentStatus: courseTicket ? courseTicket.paymentStatus : null,
-      attendaceStatus: studentTicket?.attendanceStatus,
-      attendaceLastUpdated: studentTicket?.attendanceLastUpdated,
+      coursePaymentStatus: courseTicket
+        ? courseTicket?.paymentStatus
+        : null,
+      attendanceStatus: studentTicket?.attendanceStatus,
+      attendanceLastUpdated: studentTicket?.attendanceLastUpdated,
     };
   });
 
