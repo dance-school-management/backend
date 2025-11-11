@@ -50,6 +50,7 @@ export async function getStudentTickets(
 
     return {
       classId,
+      classType: classDetails?.classType,
       qrCodeUUID,
       name: classDetails?.name,
       description: classDetails?.description,

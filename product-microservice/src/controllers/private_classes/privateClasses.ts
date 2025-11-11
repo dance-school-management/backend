@@ -20,7 +20,7 @@ export async function createPrivateClassTemplate(
 ) {
   const { classTemplateData } = req.body;
 
-  await prisma.classTemplate.create({
+  const createdClassTemplate = await prisma.classTemplate.create({
     data: {
       name: classTemplateData.name,
       description: classTemplateData.description,
@@ -33,9 +33,10 @@ export async function createPrivateClassTemplate(
     },
   });
 
-  res
-    .status(StatusCodes.OK)
-    .json({ message: "Class template for private class created" });
+  res.status(StatusCodes.OK).json({
+    message: "Class template for private class created",
+    classTemplateData: createdClassTemplate,
+  });
 }
 
 export async function createPrivateClass(
@@ -46,7 +47,7 @@ export async function createPrivateClass(
 ) {
   const { classData } = req.body;
 
-  const studentIds = [...new Set(req.body.studentIds)]
+  const studentIds = [...new Set(req.body.studentIds)];
 
   const theClassTemplate = await prisma.classTemplate.findFirst({
     where: {

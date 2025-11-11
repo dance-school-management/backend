@@ -21,7 +21,7 @@
  *               classId:
  *                 type: integer
  *                 description: ID of the class to order
- *                 example: 1
+ *                 example: 56
  *     responses:
  *       200:
  *         description: Class order created successfully
@@ -89,7 +89,7 @@
  *               courseId:
  *                 type: integer
  *                 description: ID of the course to order
- *                 example: 1
+ *                 example: 4
  *               groupNumber:
  *                 type: integer
  *                 description: Group number identifying the set of classes
@@ -127,4 +127,75 @@
  *         description: Unauthorized – authentication required
  *       500:
  *         description: Internal server error
+ */
+
+/**
+ * @swagger
+ * /order/class/private/pay:
+ *   post:
+ *     summary: Initiate payment for a private dance class
+ *     description: >
+ *       Creates or retrieves a Stripe Checkout session for a private class payment.  
+ *       The user must be authenticated and already enrolled for the given class.  
+ *       Returns a Stripe session URL that can be used to complete the payment.
+ *     tags:
+ *       - student - payments
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - classId
+ *             properties:
+ *               classId:
+ *                 type: integer
+ *                 example: 107
+ *                 description: Unique identifier of the class the user wants to pay for.
+ *     responses:
+ *       200:
+ *         description: Successfully created or retrieved Stripe Checkout session.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 sessionUrl:
+ *                   type: string
+ *                   format: uri
+ *                   example: "https://checkout.stripe.com/c/pay/cs_test_12345"
+ *                   description: URL to redirect the user to Stripe Checkout.
+ *                 className:
+ *                   type: string
+ *                   example: "Bachata Private with Anna"
+ *                 classDescription:
+ *                   type: string
+ *                   example: "One-on-one private class focusing on body movement and musicality."
+ *                 classStartDate:
+ *                   type: string
+ *                   format: date-time
+ *                   example: "2025-11-15T18:00:00.000Z"
+ *                 classEndDate:
+ *                   type: string
+ *                   format: date-time
+ *                   example: "2025-11-15T19:00:00.000Z"
+ *                 classPrice:
+ *                   type: number
+ *                   example: 150
+ *                 classDanceCategory:
+ *                   type: string
+ *                   example: "Bachata"
+ *                 classAdvancementLevel:
+ *                   type: string
+ *                   example: "Intermediate"
+ *       400:
+ *         description: Invalid checkout session in database or malformed request.
+ *       401:
+ *         description: User not authenticated.
+ *       409:
+ *         description: Conflict due to invalid payment state (already paid, refunded, wrong class type, etc.)
+ *       500:
+ *         description: Internal server error.
+ *
  */
