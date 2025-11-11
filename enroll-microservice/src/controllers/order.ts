@@ -11,6 +11,7 @@ import {
   createClassCheckoutSession,
   createCourseCheckoutSession,
 } from "../utils/helpers";
+import { PaymentStatus } from "../../generated/client";
 
 export async function makeClassOrder(
   req: Request<object, object, ClassTicket> & { user?: any },
@@ -49,21 +50,76 @@ export async function makeClassOrder(
     );
   }
 
-  const { session, classData } = await createClassCheckoutSession(
-    classId,
-    studentId,
-  );
-
-  res.status(200).json({
-    sessionUrl: session.url,
-    className: classData.name,
-    classDescription: classData.description,
-    classStartDate: classData.startDate,
-    classEndDate: classData.endDate,
-    classPrice: classData.price,
-    classDanceCategory: classData.danceCategoryName,
-    classAdvancementLevel: classData.advancementLevelName,
+  const existingReservation = await prisma.classTicket.findFirst({
+    where: {
+      classId,
+      studentId,
+    },
   });
+
+  if (existingReservation?.paymentStatus === PaymentStatus.PAID) {
+    throw new UniversalError(
+      StatusCodes.CONFLICT,
+      "Class ticket already paid",
+      [],
+    );
+  }
+
+  if (existingReservation?.paymentStatus === PaymentStatus.REFUNDED) {
+    throw new UniversalError(StatusCodes.CONFLICT, "Class ticket refunded", []);
+  }
+
+  if (existingReservation?.paymentStatus === PaymentStatus.PART_OF_COURSE) {
+    throw new UniversalError(
+      StatusCodes.CONFLICT,
+      "Class is bought as part of course. You need to pay for the entire course.",
+      [],
+    );
+  }
+
+  if (
+    existingReservation?.expiresAt &&
+    existingReservation?.expiresAt < new Date()
+  ) {
+    throw new UniversalError(
+      StatusCodes.CONFLICT,
+      "Checkout session has expired. Try again later.",
+      [],
+    );
+  }
+
+  if (!existingReservation) {
+    const expiresAt = new Date(new Date().getTime() + 35 * 1000 * 60);
+
+    await prisma.$transaction(async (tx) => {
+      await tx.classTicket.create({
+        data: {
+          classId,
+          studentId,
+          paymentStatus: PaymentStatus.PENDING,
+          expiresAt,
+        },
+      });
+
+      const { session, classData } = await createClassCheckoutSession(
+        classId,
+        studentId,
+      );
+
+      res.status(StatusCodes.OK).json({
+        sessionUrl: session.url,
+        className: classData.name,
+        classDescription: classData.description,
+        classStartDate: classData.startDate,
+        classEndDate: classData.endDate,
+        classPrice: classData.price,
+        classDanceCategory: classData.danceCategoryName,
+        classAdvancementLevel: classData.advancementLevelName,
+      });
+    });
+  }
+
+  res.status(StatusCodes.BAD_REQUEST);
 }
 
 export async function makeCourseOrder(
@@ -110,18 +166,77 @@ export async function makeCourseOrder(
     }
   });
 
-  const { session, courseData } = await createCourseCheckoutSession(
-    courseId,
-    studentId,
-    groupNumber,
-  );
-
-  res.status(200).json({
-    sessionUrl: session.url,
-    courseName: courseData.name,
-    courseDescription: courseData.description,
-    courseDanceCategory: courseData.danceCategoryName,
-    courseAdvancementLevel: courseData.advancementLevelName,
-    coursePrice: courseData.price,
+  const existingReservation = await prisma.courseTicket.findFirst({
+    where: {
+      courseId,
+      studentId,
+    },
   });
+
+  if (existingReservation?.paymentStatus === PaymentStatus.PAID) {
+    throw new UniversalError(
+      StatusCodes.CONFLICT,
+      "Course ticket already paid",
+      [],
+    );
+  }
+
+  if (existingReservation?.paymentStatus === PaymentStatus.REFUNDED) {
+    throw new UniversalError(
+      StatusCodes.CONFLICT,
+      "Course ticket refunded",
+      [],
+    );
+  }
+
+  if (
+    existingReservation?.expiresAt &&
+    existingReservation?.expiresAt < new Date()
+  ) {
+    throw new UniversalError(
+      StatusCodes.CONFLICT,
+      "Checkout session has expired. Try again later.",
+      [],
+    );
+  }
+
+  if (!existingReservation) {
+    const expiresAt = new Date(new Date().getTime() + 35 * 1000 * 60);
+
+    await prisma.$transaction(async (tx) => {
+      await tx.courseTicket.create({
+        data: {
+          courseId,
+          studentId,
+          paymentStatus: PaymentStatus.PENDING,
+          expiresAt,
+        },
+      });
+
+      await tx.classTicket.createMany({
+        data: classes.map((classObj) => ({
+          classId: classObj.classId,
+          studentId,
+          paymentStatus: PaymentStatus.PART_OF_COURSE,
+        })),
+      });
+
+      const { session, courseData } = await createCourseCheckoutSession(
+        courseId,
+        studentId,
+        groupNumber,
+      );
+
+      res.status(StatusCodes.OK).json({
+        sessionUrl: session.url,
+        courseName: courseData.name,
+        courseDescription: courseData.description,
+        coursePrice: courseData.price,
+        courseDanceCategory: courseData.danceCategoryName,
+        courseAdvancementLevel: courseData.advancementLevelName,
+      });
+    });
+  }
+
+  res.status(StatusCodes.BAD_REQUEST);
 }

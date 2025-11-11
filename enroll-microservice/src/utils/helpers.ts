@@ -14,7 +14,7 @@ export function convertDateToReadable(date: Date) {
 
 export async function createClassCheckoutSession(
   classId: number,
-  studentId: string,
+  studentId: string
 ) {
   const theClass = (await getClassesDetails([classId])).classesdetailsList[0];
 
@@ -52,6 +52,7 @@ export async function createClassCheckoutSession(
         studentId,
         productType: 'CLASS'
       },
+      expires_at: Math.floor((Date.now() + 31 * 60 * 1000) / 1000)
     },
     { idempotencyKey },
   );
@@ -62,7 +63,7 @@ export async function createClassCheckoutSession(
 export async function createCourseCheckoutSession(
   courseId: number,
   studentId: string,
-  groupNumber: number,
+  groupNumber: number
 ) {
   const theCourse = (await getCoursesDetails([courseId])).coursesDetailsList[0];
 
@@ -95,6 +96,7 @@ export async function createCourseCheckoutSession(
         studentId,
         productType: 'COURSE'
       },
+      expires_at: Math.floor((Date.now() + 31 * 60 * 1000) / 1000)
     },
     { idempotencyKey },
   );

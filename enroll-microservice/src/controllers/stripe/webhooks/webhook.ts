@@ -2,9 +2,7 @@ import { Request, Response } from "express";
 import prisma from "../../../utils/prisma";
 import { stripe } from "../../../utils/stripe";
 import { StatusCodes } from "http-status-codes";
-import { checkClass } from "../../../grpc/client/productCommunication/checkClass";
 import { UniversalError } from "../../../errors/UniversalError";
-import { checkCourse } from "../../../grpc/client/productCommunication/checkCourse";
 import { PaymentStatus } from "../../../../generated/client";
 
 export async function handleWebhook(req: Request, res: Response) {
@@ -45,117 +43,30 @@ export async function handleWebhook(req: Request, res: Response) {
     const metadata = session.metadata;
     if (session.payment_status === "paid") {
       if (metadata?.productType === "CLASS") {
-        const response = await checkClass(Number(metadata?.classId!));
-        const classLimit = response.peopleLimit;
-        const classCount = await prisma.classTicket.aggregate({
+        await prisma.classTicket.update({
           where: {
-            classId: Number(metadata?.classId!),
-          },
-          _count: {
-            studentId: true,
-          },
-        });
-
-        if (classCount._count.studentId >= classLimit) {
-          await stripe.refunds.create({
-            payment_intent: session.payment_intent as string,
-            reason: "duplicate",
-          });
-
-          await prisma.classTicket.create({
-            data: {
-              classId: Number(metadata?.classId!),
-              studentId: metadata?.studentId!,
-              paymentIntentId: session.payment_intent as string,
-              paymentStatus: PaymentStatus.REFUNDED,
+            studentId_classId: {
+              classId: Number(metadata.classId!),
+              studentId: metadata.studentId!,
             },
-          });
-
-          throw new UniversalError(
-            StatusCodes.BAD_REQUEST,
-            `Limit of people attending the class was just reached. Your ticket is cancelled and you got a refund.`,
-            [],
-          );
-        }
-
-        await prisma.classTicket.create({
+          },
           data: {
-            classId: Number(metadata?.classId!),
-            studentId: metadata?.studentId!,
             paymentIntentId: session.payment_intent as string,
             paymentStatus: PaymentStatus.PAID,
           },
         });
       } else if (metadata?.productType === "COURSE") {
-        const response = await checkCourse(
-          Number(metadata?.courseId!),
-          Number(metadata?.groupNumber!),
-        );
-
-        const classes = response.peopleLimitsList;
-        const currentTickets = await prisma.classTicket.groupBy({
+        await prisma.courseTicket.update({
           where: {
-            classId: {
-              in: classes.map((classObj) => classObj.classId),
+            studentId_courseId: {
+              studentId: metadata.studentId!,
+              courseId: Number(metadata.courseId!),
             },
           },
-          by: "classId",
-          _count: {
-            studentId: true,
+          data: {
+            paymentIntentId: session.payment_intent as string,
+            paymentStatus: PaymentStatus.PAID,
           },
-        });
-
-        let limitExceeded = false;
-
-        for (const currentTicket of currentTickets) {
-          const classLimit = classes.find(
-            (classObj) => classObj.classId === currentTicket.classId,
-          )?.peopleLimit;
-          if (classLimit && currentTicket._count.studentId >= classLimit) {
-            limitExceeded = true;
-            break;
-          }
-        }
-
-        if (limitExceeded) {
-          await stripe.refunds.create({
-            payment_intent: session.payment_intent as string,
-            reason: "duplicate",
-          });
-
-          await prisma.courseTicket.create({
-            data: {
-              courseId: Number(metadata?.courseId!),
-              studentId: metadata?.studentId!,
-              paymentIntentId: session.payment_intent as string,
-              paymentStatus: PaymentStatus.REFUNDED,
-            },
-          });
-
-          throw new UniversalError(
-            StatusCodes.BAD_REQUEST,
-            `Limit of people attending the course was just reached. Your ticket is cancelled and you got a refund.`,
-            [],
-          );
-        }
-
-        await prisma.$transaction(async (tx) => {
-          await tx.courseTicket.create({
-            data: {
-              courseId: Number(metadata?.courseId!),
-              studentId: metadata?.studentId!,
-              paymentIntentId: session.payment_intent as string,
-              paymentStatus: PaymentStatus.PAID,
-            },
-          });
-
-          await tx.classTicket.createMany({
-            data: classes.map((classObj) => ({
-              classId: classObj.classId,
-              studentId: metadata?.studentId!,
-              paymentStatus: PaymentStatus.PART_OF_COURSE
-            })),
-          });
         });
       }
     }

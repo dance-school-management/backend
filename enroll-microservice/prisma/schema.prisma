@@ -30,6 +30,8 @@ model ClassTicket {
   paymentStatus         PaymentStatus
   paymentIntentId       String?
 
+  expiresAt             DateTime?
+
   @@id([studentId, classId])
 }
 
@@ -38,7 +40,9 @@ model CourseTicket {
   courseId          Int
 
   paymentStatus     PaymentStatus
-  paymentIntentId   String
+  paymentIntentId   String?
+
+  expiresAt         DateTime
 
   @@id([studentId, courseId])
 }

@@ -22,7 +22,6 @@ async function main() {
         },
         update: {},
         create: {
-          checkoutSessionId: classTicket.checkoutSessionId,
           studentId: classTicket.studentId,
           classId: classTicket.classId,
           paymentStatus: classTicket.paymentStatus as PaymentStatus,
@@ -48,10 +47,11 @@ async function main() {
         },
         update: {},
         create: {
-          checkoutSessionId: courseTicket.checkoutSessionId,
           studentId: courseTicket.studentId,
           courseId: courseTicket.courseId,
           paymentStatus: courseTicket.paymentStatus as PaymentStatus,
+          paymentIntentId: courseTicket.paymentIntentId,
+          expiresAt: new Date("2025-11-12T15:00:00")
         },
       });
     } catch (error: any) {

@@ -35,6 +35,29 @@ export async function checkClass(
     callback({ code: status.NOT_FOUND, details: JSON.stringify(err) });
     return;
   }
+
+  if (classObj.classStatus === ClassStatus.HIDDEN) {
+    const err = new UniversalError(
+      StatusCodes.CONFLICT,
+      `This class is hidden. You can't buy a ticket for it!`,
+      [],
+    );
+    callback({ code: status.UNAVAILABLE, details: JSON.stringify(err) });
+    return;
+  }
+
+  if (
+    classObj.classStatus === ClassStatus.CANCELLED
+  ) {
+    const err = new UniversalError(
+      StatusCodes.CONFLICT,
+      `This class with id ${classId} is cancelled`,
+      [],
+    );
+    callback({ code: status.UNAVAILABLE, details: JSON.stringify(err) });
+    return;
+  }
+
   if (classObj.startDate < new Date()) {
     const err = new UniversalError(
       StatusCodes.NOT_FOUND,
@@ -77,17 +100,7 @@ export async function checkClass(
       return;
     }
   }
-  if (
-    classObj.classStatus === ClassStatus.CANCELLED
-  ) {
-    const err = new UniversalError(
-      StatusCodes.CONFLICT,
-      `This class with id ${classId} is cancelled`,
-      [],
-    );
-    callback({ code: status.UNAVAILABLE, details: JSON.stringify(err) });
-    return;
-  }
+  
   const res = new CheckResponse().setPeopleLimit(classObj.peopleLimit);
   callback(null, res);
 }

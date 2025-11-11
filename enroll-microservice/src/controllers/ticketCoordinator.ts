@@ -29,12 +29,49 @@ export async function scanTicket(
   const classDetails = (await getClassesDetails([enrollment.classId]))
     .classesdetailsList[0];
 
+  if (enrollment.paymentStatus === PaymentStatus.PENDING) {
+    res.status(StatusCodes.BAD_REQUEST).json({
+      message: "Class not paid",
+      ...classDetails,
+    });
+    return;
+  }
+
   if (enrollment.paymentStatus === PaymentStatus.REFUNDED) {
     res.status(StatusCodes.BAD_REQUEST).json({
       message: "Class refunded",
       ...classDetails,
     });
     return;
+  }
+
+  if (enrollment.paymentStatus === PaymentStatus.PART_OF_COURSE) {
+    if (!classDetails.courseId) {
+      res.status(StatusCodes.BAD_REQUEST).json({
+        message:
+          "Ticket invalid. This ticket is part of course and course ticket not found.",
+        ...classDetails,
+      });
+      return;
+    }
+
+    const courseTicket = await prisma.courseTicket.findUnique({
+      where: {
+        studentId_courseId: {
+          studentId: req.user?.id,
+          courseId: classDetails.courseId,
+        },
+      },
+    });
+
+    if (courseTicket?.paymentStatus !== PaymentStatus.PAID) {
+      res.status(StatusCodes.BAD_REQUEST).json({
+        message:
+          "Ticket invalid. This ticket is part of course and course ticket not paid.",
+        ...classDetails,
+      });
+      return;
+    }
   }
 
   res.status(StatusCodes.OK).json({
