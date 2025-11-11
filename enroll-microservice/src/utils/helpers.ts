@@ -2,6 +2,8 @@ import { getClassesDetails } from "../grpc/client/productCommunication/getClasse
 import { getCoursesDetails } from "../grpc/client/productCommunication/getCoursesDetails";
 import { stripe } from "./stripe";
 
+const SUCCESS_URL = process.env.SUCCESS_URL;
+
 export function convertDateToReadable(date: Date) {
   return date.toLocaleString("pl-PL", {
     day: "2-digit",
@@ -28,7 +30,7 @@ export async function createClassCheckoutSession(
     {
       mode: "payment",
       payment_method_types: ["blik", "p24", "card"],
-      success_url: `http://localhost:3000/payment/success?classId=${theClass.classId}`,
+      success_url: `${SUCCESS_URL}?classId=${theClass.classId}`,
       line_items: [
         {
           price_data: {
@@ -73,7 +75,7 @@ export async function createCourseCheckoutSession(
     {
       mode: "payment",
       payment_method_types: ["blik", "p24", "card"],
-      success_url: "http://localhost:3000/payment/success",
+      success_url: `${SUCCESS_URL}?courseId=${courseId}`,
       line_items: [
         {
           price_data: {
