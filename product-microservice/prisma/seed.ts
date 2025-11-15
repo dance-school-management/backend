@@ -17,6 +17,7 @@ import {
   esClient,
 } from "../src/elasticsearch/client";
 import { embed } from "../src/grpc/client/aiCommunication/embed";
+import client from "../generated/client/client";
 
 const prisma = new PrismaClient();
 
@@ -152,10 +153,22 @@ async function main() {
       );
     }
   }
-  if (await esClient.indices.exists({ index: "class_templates" }))
-    await esClient.indices.delete({ index: "class_templates" });
-  if (await esClient.indices.exists({ index: "courses" }))
-    await esClient.indices.delete({ index: "courses" });
+
+  await esClient.indices.create({
+    index: "courses",
+    mappings: {
+      properties: {
+        startDate: {
+          type: "date",
+          format: "strict_date_optional_time||epoch_millis",
+        },
+        endDate: {
+          type: "date",
+          format: "strict_date_optional_time||epoch_millis",
+        },
+      },
+    },
+  });
 
   for (const classTemplate of classTemplatesJson) {
     const descEmbedded = (await embed(classTemplate.description, false))
@@ -235,7 +248,7 @@ async function main() {
       ),
     );
 
-    const minDate = new Date(8640000000000000);
+    const minDate = new Date(0);
 
     const endDate = new Date(
       courseClasses.reduce(
