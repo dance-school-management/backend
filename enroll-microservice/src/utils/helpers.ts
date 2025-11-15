@@ -37,10 +37,10 @@ export async function createClassCheckoutSession(
             product_data: {
               name: theClass.name,
               description:
-                `start date: ${convertDateToReadable(startDate)} | ` +
-                `end date: ${convertDateToReadable(endDate)} | ` +
-                `dance category: ${theClass.danceCategoryName ?? "not provided"} | ` +
-                `advancement level: ${theClass.advancementLevelName ?? "not provided"} | ` +
+                `start date: ${convertDateToReadable(startDate)} ||| ` +
+                `end date: ${convertDateToReadable(endDate)} ||| ` +
+                `dance category: ${theClass.danceCategoryName ?? "not provided"} ||| ` +
+                `advancement level: ${theClass.advancementLevelName ?? "not provided"} ||| ` +
                 `class description: ${theClass.description}`,
             },
             unit_amount: price * 100,
