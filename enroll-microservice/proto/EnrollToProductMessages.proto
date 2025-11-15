@@ -41,6 +41,7 @@ message ClassDetails {
   optional string advancement_level_name = 8;
   float price = 9;
   optional int64 course_id = 10;
+  string class_type = 11;
 }
 
 message ClassesDetailsResponse {

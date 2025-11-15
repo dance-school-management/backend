@@ -1,8 +1,9 @@
 import { Request, Response } from "express";
-import { PaymentStatus } from "../../../../generated/client";
 import prisma from "../../../utils/prisma";
 import { stripe } from "../../../utils/stripe";
 import { StatusCodes } from "http-status-codes";
+import { UniversalError } from "../../../errors/UniversalError";
+import { PaymentStatus } from "../../../../generated/client";
 
 export async function handleWebhook(req: Request, res: Response) {
   console.log("webhook has been hit");
@@ -10,7 +11,11 @@ export async function handleWebhook(req: Request, res: Response) {
   const sig = req.headers["stripe-signature"];
 
   if (!sig) {
-    throw new Error("Stripe signature missing in request");
+    throw new UniversalError(
+      StatusCodes.BAD_REQUEST,
+      "Stripe signature missing in request",
+      [],
+    );
   }
 
   let event;
@@ -18,7 +23,11 @@ export async function handleWebhook(req: Request, res: Response) {
   const stripeWebhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
   if (!stripeWebhookSecret) {
-    throw new Error("Stripe webhook secret not provided");
+    throw new UniversalError(
+      StatusCodes.BAD_REQUEST,
+      "Stripe webhook secret not provided",
+      [],
+    );
   }
 
   try {
@@ -26,42 +35,36 @@ export async function handleWebhook(req: Request, res: Response) {
   } catch (err: any) {
     console.error("Webhook signature verification failed: ", err.message);
     res.sendStatus(StatusCodes.BAD_REQUEST);
-    return
+    return;
   }
 
   if (event.type === "checkout.session.completed") {
     const session = event.data.object;
-    console.log("Checkout completed: ", session.id, session.payment_status);
+    const metadata = session.metadata;
     if (session.payment_status === "paid") {
-      const theClassTicket = await prisma.classTicket.findFirst({
-        where: {
-          checkoutSessionId: session.id,
-        },
-      });
-
-      if (theClassTicket) {
+      if (metadata?.productType === "CLASS") {
         await prisma.classTicket.update({
           where: {
-            checkoutSessionId: session.id,
+            studentId_classId: {
+              classId: Number(metadata.classId!),
+              studentId: metadata.studentId!,
+            },
           },
           data: {
+            paymentIntentId: session.payment_intent as string,
             paymentStatus: PaymentStatus.PAID,
           },
         });
-      }
-
-      const theCourseTicket = await prisma.courseTicket.findFirst({
-        where: {
-          checkoutSessionId: session.id,
-        },
-      });
-
-      if (theCourseTicket) {
+      } else if (metadata?.productType === "COURSE") {
         await prisma.courseTicket.update({
           where: {
-            checkoutSessionId: session.id,
+            studentId_courseId: {
+              studentId: metadata.studentId!,
+              courseId: Number(metadata.courseId!),
+            },
           },
           data: {
+            paymentIntentId: session.payment_intent as string,
             paymentStatus: PaymentStatus.PAID,
           },
         });

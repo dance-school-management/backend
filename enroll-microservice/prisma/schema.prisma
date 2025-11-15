@@ -21,33 +21,42 @@ enum AttendanceStatus {
 }
 
 model ClassTicket {         
-  checkoutSessionId     String?          @unique
   studentId             String
   classId               Int
   qrCodeUUID            String         @default(uuid()) @unique
-  isConfirmed           Boolean?
   attendanceStatus      AttendanceStatus @default(ABSENT)
   attendanceLastUpdated DateTime?
 
-  paymentStatus PaymentStatus
+  paymentStatus         PaymentStatus
+  paymentIntentId       String?
+
+  checkoutSessionId     String?
+
+  expiresAt             DateTime?
 
   @@id([studentId, classId])
 }
 
 model CourseTicket {
-  checkoutSessionId String        @unique
   studentId         String
   courseId          Int
+
   paymentStatus     PaymentStatus
+  paymentIntentId   String?
+
+  checkoutSessionId String?
+
+  expiresAt         DateTime
 
   @@id([studentId, courseId])
 }
 
 enum PaymentStatus {
-  PENDING
   PAID
-  PART_OF_COURSE
   REFUNDED
+  PART_OF_COURSE
+  // PENDING is used only for private classes - instructor enrolls the student with payment status PENDING
+  PENDING
 }
 
 model ClassesOnInstructors {

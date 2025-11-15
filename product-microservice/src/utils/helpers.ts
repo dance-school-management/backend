@@ -115,3 +115,16 @@ export async function getCoursesStartAndEndDates(coursesIds: number[]) {
 
   return result
 }
+
+export function hasIntersection<T>(a: Set<T>, b: Set<T>): boolean {
+  for (const item of a) {
+    if (b.has(item)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+export function intersectSets<T>(a: Set<T>, b: Set<T>): Set<T> {
+  return new Set([...a].filter(x => b.has(x)));
+}

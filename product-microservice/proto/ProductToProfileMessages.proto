@@ -15,3 +15,16 @@ message InstructorsDataResponse {
 message InstructorIdsRequest {
   repeated string instructor_ids = 1;
 };
+
+message GetStudentsProfilesRequest {
+  repeated string student_ids = 1;
+}
+
+message StudentProfile {
+  string first_name = 1;
+  string last_name = 2;
+}
+
+message GetStudentsProfilesResponse {
+  repeated StudentProfile student_profiles = 1;
+}
