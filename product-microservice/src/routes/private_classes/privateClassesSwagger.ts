@@ -6,8 +6,6 @@
  *     description: Creates a new private class template (ClassTemplate) in the database.
  *     tags:
  *       - private classes
- *     security:
- *       - bearerAuth: []  # jeśli endpoint wymaga autoryzacji JWT
  *     requestBody:
  *       required: true
  *       content:
