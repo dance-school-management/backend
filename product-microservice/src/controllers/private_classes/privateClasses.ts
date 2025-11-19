@@ -6,11 +6,12 @@ import { StatusCodes } from "http-status-codes";
 import { UniversalError } from "../../errors/UniversalError";
 import { getClassesInstructors } from "../../grpc/client/enrollCommunication/getClassesInstructors";
 import { ClassStatus } from "../../../generated/client";
-import { EnrollStudentsAndInstructorInPrivateClassMsgData } from "../../rabbitmq/types";
+import { EnrollStudentsAndInstructorInPrivateClassMsgData, NotificationMsgData } from "../../rabbitmq/types";
 import { EnrollStudentsAndInstructorInPrivateClass } from "../../rabbitmq/senders/enrollStudentsAndInstructorInPrivateClass";
 import { getClassesStudents } from "../../grpc/client/enrollCommunication/getClassesStudents";
 import { hasIntersection, intersectSets } from "../../utils/helpers";
 import { getStudentsProfiles } from "../../grpc/client/profileCommunication/getStudentsProfiles";
+import { sendPushNotifications } from "../../rabbitmq/senders/sendPushNotifications";
 
 export async function createPrivateClassTemplate(
   req: Request<{}, {}, { classTemplateData: ClassTemplate }> & {
@@ -137,6 +138,18 @@ export async function createPrivateClass(
   };
 
   await EnrollStudentsAndInstructorInPrivateClass(msg);
+
+  const message: NotificationMsgData = {
+    userIds: studentIds,
+    title: `Invitation for class - ${theClassTemplate.name}`,
+    body: `You have been invited for a private class ${theClassTemplate.name}, which starts at ${newClass.startDate.toDateString()}. You can accept the invitation by paying for the class in the app.`,
+    payload: {
+      event: "CLASS_INVITATION",
+      classId: newClass.id,
+    },
+  };
+
+  await sendPushNotifications(message);
 
   res.status(StatusCodes.OK).json(newClass);
 }

@@ -28,11 +28,9 @@ model ClassTicket {
   attendanceLastUpdated DateTime?
 
   paymentStatus         PaymentStatus
-  paymentIntentId       String?
+  paymentIntentId       String?          @unique
 
-  checkoutSessionId     String?
-
-  expiresAt             DateTime?
+  checkoutSessionId     String?          @unique
 
   @@id([studentId, classId])
 }
@@ -42,11 +40,9 @@ model CourseTicket {
   courseId          Int
 
   paymentStatus     PaymentStatus
-  paymentIntentId   String?
+  paymentIntentId   String?       @unique
 
-  checkoutSessionId String?
-
-  expiresAt         DateTime
+  checkoutSessionId String?       @unique
 
   @@id([studentId, courseId])
 }

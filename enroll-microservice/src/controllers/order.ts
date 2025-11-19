@@ -40,57 +40,23 @@ export async function makeClassOrder(
   const classDetails = (await getClassesDetails([classId]))
     .classesdetailsList[0];
 
-  const classTicketsExceptCourseCount = await prisma.classTicket.aggregate({
+  const currentClassTicketsCount = await prisma.classTicket.aggregate({
     where: {
       classId,
-      OR: [
-        {
-          paymentStatus: PaymentStatus.PENDING,
-          expiresAt: {
-            gt: new Date(),
-          },
-        },
-        {
-          paymentStatus: PaymentStatus.PAID,
-        },
-      ],
+      paymentStatus: {
+        in: [
+          PaymentStatus.PAID,
+          PaymentStatus.PENDING,
+          PaymentStatus.PART_OF_COURSE,
+        ],
+      },
     },
     _count: {
       studentId: true,
     },
   });
 
-  const classTicketsWithinCourseCount = await prisma.courseTicket.aggregate({
-    where: {
-      courseId: classDetails.courseId,
-      OR: [
-        {
-          paymentStatus: PaymentStatus.PENDING,
-          expiresAt: {
-            gt: new Date(),
-          },
-        },
-        {
-          paymentStatus: PaymentStatus.PAID,
-        },
-      ],
-    },
-    _count: {
-      studentId: true,
-    },
-  });
-
-  const classTicketsCount =
-    classTicketsExceptCourseCount._count.studentId +
-    classTicketsWithinCourseCount._count.studentId;
-
-  if (classTicketsCount >= classLimit) {
-    throw new UniversalError(
-      StatusCodes.BAD_REQUEST,
-      `This class with id ${classId} is already full`,
-      [],
-    );
-  }
+  const classTicketsCount = currentClassTicketsCount._count.studentId;
 
   const existingReservation = await prisma.classTicket.findFirst({
     where: {
@@ -98,6 +64,14 @@ export async function makeClassOrder(
       studentId,
     },
   });
+
+  if (!existingReservation && classTicketsCount >= classLimit) {
+    throw new UniversalError(
+      StatusCodes.BAD_REQUEST,
+      `This class with id ${classId} is already full`,
+      [],
+    );
+  }
 
   if (existingReservation?.paymentStatus === PaymentStatus.PAID) {
     throw new UniversalError(
@@ -119,17 +93,6 @@ export async function makeClassOrder(
     );
   }
 
-  if (
-    existingReservation?.expiresAt &&
-    existingReservation?.expiresAt < new Date()
-  ) {
-    throw new UniversalError(
-      StatusCodes.CONFLICT,
-      "Checkout session has expired. Try again later.",
-      [],
-    );
-  }
-
   if (!existingReservation) {
     const expiresAt = new Date(new Date().getTime() + 35 * 1000 * 60);
 
@@ -143,7 +106,6 @@ export async function makeClassOrder(
           classId,
           studentId,
           paymentStatus: PaymentStatus.PENDING,
-          expiresAt,
           checkoutSessionId: session.id,
         },
       });
@@ -223,30 +185,14 @@ export async function makeCourseOrder(
   const currentCourseTickets = await prisma.courseTicket.aggregate({
     where: {
       courseId,
-      OR: [
-        {
-          paymentStatus: PaymentStatus.PAID,
-        },
-        {
-          paymentStatus: PaymentStatus.PENDING,
-          expiresAt: {
-            gt: new Date(),
-          },
-        },
-      ],
+      paymentStatus: {
+        in: [PaymentStatus.PAID, PaymentStatus.PENDING],
+      },
     },
     _count: {
       studentId: true,
     },
   });
-
-  if (currentCourseTickets._count.studentId >= minPeopleLimit) {
-    throw new UniversalError(
-      StatusCodes.CONFLICT,
-      "Maximum number of course participants has been reached",
-      [],
-    );
-  }
 
   const existingReservation = await prisma.courseTicket.findFirst({
     where: {
@@ -254,6 +200,17 @@ export async function makeCourseOrder(
       studentId,
     },
   });
+
+  if (
+    !existingReservation &&
+    currentCourseTickets._count.studentId >= minPeopleLimit
+  ) {
+    throw new UniversalError(
+      StatusCodes.CONFLICT,
+      "Maximum number of course participants has been reached",
+      [],
+    );
+  }
 
   if (existingReservation?.paymentStatus === PaymentStatus.PAID) {
     throw new UniversalError(
@@ -271,20 +228,7 @@ export async function makeCourseOrder(
     );
   }
 
-  if (
-    existingReservation?.expiresAt &&
-    existingReservation?.expiresAt < new Date()
-  ) {
-    throw new UniversalError(
-      StatusCodes.CONFLICT,
-      "Checkout session has expired. Try again later.",
-      [],
-    );
-  }
-
   if (!existingReservation) {
-    const expiresAt = new Date(new Date().getTime() + 35 * 1000 * 60);
-
     await prisma.$transaction(async (tx) => {
       const { session, courseData } = await createCourseCheckoutSession(
         courseId,
@@ -296,7 +240,6 @@ export async function makeCourseOrder(
           courseId,
           studentId,
           paymentStatus: PaymentStatus.PENDING,
-          expiresAt,
           checkoutSessionId: session.id,
         },
       });
@@ -396,7 +339,7 @@ export async function payForPrivateClass(
   if (!enrollment) {
     throw new UniversalError(
       StatusCodes.CONFLICT,
-      "You are not enrolled for this class",
+      "You are not enrolled for this class or your enrollment has expired",
       [],
     );
   }
@@ -470,11 +413,33 @@ export async function payForPrivateClass(
         classAdvancementLevel: classDetails.advancementLevelName,
       });
     } catch (error) {
-      throw new UniversalError(
-        StatusCodes.BAD_REQUEST,
-        "Checkout session not found.",
-        [],
+      const { session, classData } = await createClassCheckoutSession(
+        classId,
+        studentId,
       );
+
+      await prisma.classTicket.update({
+        where: {
+          studentId_classId: {
+            classId,
+            studentId,
+          },
+        },
+        data: {
+          checkoutSessionId: session.id,
+        },
+      });
+
+      res.status(StatusCodes.OK).json({
+        sessionUrl: session.url,
+        className: classData.name,
+        classDescription: classData.description,
+        classStartDate: classData.startDate,
+        classEndDate: classData.endDate,
+        classPrice: classData.price,
+        classDanceCategory: classData.danceCategoryName,
+        classAdvancementLevel: classData.advancementLevelName,
+      });
     }
   }
 }

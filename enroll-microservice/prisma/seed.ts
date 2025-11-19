@@ -50,8 +50,7 @@ async function main() {
           studentId: courseTicket.studentId,
           courseId: courseTicket.courseId,
           paymentStatus: courseTicket.paymentStatus as PaymentStatus,
-          paymentIntentId: courseTicket.paymentIntentId,
-          expiresAt: new Date("2025-11-12T15:00:00")
+          paymentIntentId: courseTicket.paymentIntentId
         },
       });
     } catch (error: any) {

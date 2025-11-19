@@ -4,6 +4,8 @@ import { stripe } from "../../../utils/stripe";
 import { StatusCodes } from "http-status-codes";
 import { UniversalError } from "../../../errors/UniversalError";
 import { PaymentStatus } from "../../../../generated/client";
+import { getCoursesClasses } from "../../../grpc/client/productCommunication/getCoursesClasses";
+import { getClassesDetails } from "../../../grpc/client/productCommunication/getClassesDetails";
 
 export async function handleWebhook(req: Request, res: Response) {
   console.log("webhook has been hit");
@@ -67,6 +69,65 @@ export async function handleWebhook(req: Request, res: Response) {
             paymentIntentId: session.payment_intent as string,
             paymentStatus: PaymentStatus.PAID,
           },
+        });
+      }
+    }
+  }
+
+  if (event.type === "checkout.session.expired") {
+    const session = event.data.object;
+
+    const potentialClassTicket = await prisma.classTicket.findFirst({
+      where: {
+        checkoutSessionId: session.id,
+      },
+    });
+
+    if (potentialClassTicket) {
+      const classType = (
+        await getClassesDetails([potentialClassTicket.classId])
+      ).classesdetailsList[0].classType;
+
+      if (classType === "PRIVATE_CLASS") {
+        res.sendStatus(200);
+        return
+      }
+
+      if (potentialClassTicket.paymentStatus === PaymentStatus.PENDING) {
+        await prisma.classTicket.delete({
+          where: {
+            checkoutSessionId: session.id,
+          },
+        });
+      }
+    }
+
+    const potentialCourseTicket = await prisma.courseTicket.findFirst({
+      where: {
+        checkoutSessionId: session.id,
+      },
+    });
+
+    if (potentialCourseTicket) {
+      if (potentialCourseTicket.paymentStatus === PaymentStatus.PENDING) {
+        const courseClassesIds = (
+          await getCoursesClasses([potentialCourseTicket.courseId])
+        ).coursesClassesList.map((cc) => cc.classId);
+
+        await prisma.$transaction(async (tx) => {
+          await tx.courseTicket.delete({
+            where: {
+              checkoutSessionId: session.id,
+            },
+          });
+
+          await tx.classTicket.deleteMany({
+            where: {
+              classId: {
+                in: courseClassesIds,
+              },
+            },
+          });
         });
       }
     }
