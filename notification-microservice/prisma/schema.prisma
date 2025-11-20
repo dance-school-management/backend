@@ -9,6 +9,11 @@ generator client {
   output   = "../generated/client"
 }
 
+generator pdfErd {
+  provider = "prisma-erd-generator"
+  output = "../../../Praca-inzynierska-zespol-10/pdf/notification-ERD.pdf"
+}
+
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
