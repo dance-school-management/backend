@@ -1,6 +1,6 @@
 /**
  * @swagger
- * /search:
+ * /advanced-search:
  *   get:
  *     summary: Semantic + filtered search on class_templates or courses index
  *     description: >
@@ -9,7 +9,7 @@
  *       Pagination and candidate limits can be configured.  
  *       If `searchQuery` is missing, a default semantic query `"dance class or course"` is used.
  *     tags:
- *       - search
+ *       - search - elastic
  *     parameters:
  *       - in: query
  *         name: index

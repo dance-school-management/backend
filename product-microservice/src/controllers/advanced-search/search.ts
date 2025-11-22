@@ -134,7 +134,8 @@ export async function search(
         any
       >;
       return {
-        document: document,
+        productId: Number(hit._id),
+        record: document,
         score: hit._score,
       };
     })
@@ -142,5 +143,8 @@ export async function search(
 
   res
     .status(StatusCodes.OK)
-    .json(response.slice((page - 1) * itemsPerPage, page * itemsPerPage));
+    .json({
+      result: response.slice((page - 1) * itemsPerPage, page * itemsPerPage),
+      total: result.hits.hits.length,
+    });
 }

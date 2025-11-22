@@ -78,35 +78,39 @@ export async function createClassTemplate(
     },
   });
 
-  let danceCategory = null;
-  if (danceCategoryId)
-    danceCategory = await prisma.danceCategory.findFirst({
-      where: {
-        id: danceCategoryId,
-      },
-    });
-  let advancementLevel = null;
-  if (advancementLevelId)
-    advancementLevel = await prisma.advancementLevel.findFirst({
-      where: {
-        id: advancementLevelId,
-      },
-    });
+  try {
+    let danceCategory = null;
+    if (danceCategoryId)
+      danceCategory = await prisma.danceCategory.findFirst({
+        where: {
+          id: danceCategoryId,
+        },
+      });
+    let advancementLevel = null;
+    if (advancementLevelId)
+      advancementLevel = await prisma.advancementLevel.findFirst({
+        where: {
+          id: advancementLevelId,
+        },
+      });
 
-  const doc: ClassTemplateDocument = {
-    name,
-    description,
-    danceCategory,
-    advancementLevel,
-    price: price,
-    descriptionEmbedded: (await embed(description, false)).embeddingList,
-  };
+    const doc: ClassTemplateDocument = {
+      name,
+      description,
+      danceCategory,
+      advancementLevel,
+      price: price,
+      descriptionEmbedded: (await embed(description, false)).embeddingList,
+    };
 
-  await esClient.index({
-    index: "class_templates",
-    id: String(createdClassTemplate.id),
-    document: doc,
-  });
+    await esClient.index({
+      index: "class_templates",
+      id: String(createdClassTemplate.id),
+      document: doc,
+    });
+  } catch (err) {
+    console.error("Failed to replicate class template to elasticsearch: ", err);
+  }
 
   res.status(StatusCodes.CREATED).json(createdClassTemplate);
 }
@@ -166,36 +170,39 @@ export async function editClassTemplate(
       scheduleTileColor,
     },
   });
+  try {
+    let danceCategory = null;
+    if (danceCategoryId)
+      danceCategory = await prisma.danceCategory.findFirst({
+        where: {
+          id: danceCategoryId,
+        },
+      });
+    let advancementLevel = null;
+    if (advancementLevelId)
+      advancementLevel = await prisma.advancementLevel.findFirst({
+        where: {
+          id: advancementLevelId,
+        },
+      });
 
-  let danceCategory = null;
-  if (danceCategoryId)
-    danceCategory = await prisma.danceCategory.findFirst({
-      where: {
-        id: danceCategoryId,
-      },
+    const editedDoc: ClassTemplateDocument = {
+      name,
+      description,
+      danceCategory,
+      advancementLevel,
+      descriptionEmbedded: (await embed(description, false)).embeddingList,
+      price: price,
+    };
+
+    await esClient.index({
+      index: "class_templates",
+      id: String(id),
+      document: editedDoc,
     });
-  let advancementLevel = null;
-  if (advancementLevelId)
-    advancementLevel = await prisma.advancementLevel.findFirst({
-      where: {
-        id: advancementLevelId,
-      },
-    });
-
-  const editedDoc: ClassTemplateDocument = {
-    name,
-    description,
-    danceCategory,
-    advancementLevel,
-    descriptionEmbedded: (await embed(description, false)).embeddingList,
-    price: price,
-  };
-
-  await esClient.index({
-    index: "class_templates",
-    id: String(id),
-    document: editedDoc,
-  });
+  } catch (err) {
+    console.error("Failed to edit class template in elasticsearch: ", err);
+  }
 
   res.status(StatusCodes.OK).json(editedClassTemplate);
 }

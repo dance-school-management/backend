@@ -143,51 +143,54 @@ export async function editCourse(req: Request<{}, {}, Course>, res: Response) {
     },
   });
 
-  let danceCategory = null;
-  if (danceCategoryId)
-    danceCategory = await prisma.danceCategory.findFirst({
-      where: {
-        id: danceCategoryId,
-      },
-    });
-  let advancementLevel = null;
-  if (advancementLevelId)
-    advancementLevel = await prisma.advancementLevel.findFirst({
-      where: {
-        id: advancementLevelId,
-      },
-    });
+  try {
+    let danceCategory = null;
+    if (danceCategoryId)
+      danceCategory = await prisma.danceCategory.findFirst({
+        where: {
+          id: danceCategoryId,
+        },
+      });
+    let advancementLevel = null;
+    if (advancementLevelId)
+      advancementLevel = await prisma.advancementLevel.findFirst({
+        where: {
+          id: advancementLevelId,
+        },
+      });
 
-  if (courseStatus !== CourseStatus.HIDDEN) {
-    let price = 0;
-    if (customPrice) price = customPrice;
-    else {
-      price = (await getCoursesPrices([id]))[0].price;
+    if (courseStatus !== CourseStatus.HIDDEN) {
+      let price = 0;
+      if (customPrice) price = customPrice;
+      else {
+        price = (await getCoursesPrices([id]))[0].price;
+      }
+
+      const dates = (await getCoursesStartAndEndDates([id]))[0];
+      const startDate = dates.courseStartDates.reduce((acc, cur) =>
+        cur.courseStartDate < acc.courseStartDate ? cur : acc,
+      ).courseStartDate;
+
+      const endDate = dates.courseEndDates.reduce((acc, cur) =>
+        cur.courseEndDate > acc.courseEndDate ? cur : acc,
+      ).courseEndDate;
+
+      const doc: CourseDocument = {
+        name,
+        description,
+        danceCategory,
+        advancementLevel,
+        price,
+        startDate: new Date(startDate),
+        endDate: new Date(endDate),
+        descriptionEmbedded: (await embed(description, false)).embeddingList,
+      };
+
+      esClient.index({ index: "courses", id: String(id), document: doc });
     }
-
-    const dates = (await getCoursesStartAndEndDates([id]))[0];
-    const startDate = dates.courseStartDates.reduce((acc, cur) =>
-      cur.courseStartDate < acc.courseStartDate ? cur : acc,
-    ).courseStartDate;
-
-    const endDate = dates.courseEndDates.reduce((acc, cur) =>
-      cur.courseEndDate > acc.courseEndDate ? cur : acc,
-    ).courseEndDate;
-
-    const doc: CourseDocument = {
-      name,
-      description,
-      danceCategory,
-      advancementLevel,
-      price,
-      startDate: new Date(startDate),
-      endDate: new Date(endDate),
-      descriptionEmbedded: (await embed(description, false)).embeddingList
-    };
-
-    esClient.index({ index: "courses", id: String(id), document: doc });
+  } catch (err) {
+    console.error("Failed to replicate course to elasticsearch: ", err);
   }
-
   res.status(StatusCodes.OK).json(editedCourse);
 }
 

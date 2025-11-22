@@ -11,7 +11,8 @@ import { handleUserContext } from "../middlewares/handleUserContext";
 import { checkRole } from "../middlewares/checkRole";
 import scheduleRouter from "../routes/schedule/schedule";
 import pricingRouter from "../routes/pricing/pricing";
-import searchRouter from "../routes/advanced-search/search";
+import advancedSearchRouter from "../routes/advanced-search/search";
+import searchRouter from "../routes/search/search"
 import privateClassesRouter from "../routes/private_classes/privateClasses";
 
 export function createApp() {
@@ -27,6 +28,7 @@ export function createApp() {
   app.use("/cms", checkRole(["COORDINATOR"]), cmsRouter);
   app.use("/schedule", scheduleRouter);
   app.use("/pricing", pricingRouter);
+  app.use("/advanced-search", advancedSearchRouter);
   app.use("/search", searchRouter);
   app.use("/private-class", checkRole(["INSTRUCTOR"]), privateClassesRouter);
   app.get("/", (req, res) => {
