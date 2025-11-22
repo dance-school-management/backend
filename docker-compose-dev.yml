@@ -272,6 +272,20 @@ services:
       retries: 5
     networks:
       - microservices-network
+
+  ai-microservice:
+    container_name: ai-microservice
+    image: ai-microservice
+    build:
+      dockerfile: dev.Dockerfile
+      context: ./ai-microservice
+    volumes:
+      - ./ai-microservice/src:/usr/src/app/src
+    ports: 
+      - 50057:50057
+    networks:
+      - microservices-network
+
   elasticsearch:
     image: elasticsearch:9.1.3
     container_name: elasticsearch
@@ -302,27 +316,26 @@ services:
         condition: service_healthy
     networks:
       - microservices-network
-  elasticsearch-microservice:
-    build:
-      dockerfile: Dockerfile
-      context: ./elasticsearch-microservice
-    container_name: elasticsearch-microservice
-    image: elasticsearch-microservice
-    ports:
-      - 8007:8007
-      - 50057:50057
-    volumes:
-      - ./elasticsearch-microservice:/usr/src/app
-    depends_on:
-      elasticsearch:
-        condition: service_healthy
-    env_file: ./elasticsearch-microservice/.env.development
-    environment:
-      - CHOKIDAR_USEPOLLING=1
-      - WATCHPACK_POLLING=true
-      - WATCHFILES_FORCE_POLLING=true
-    networks:
-      - microservices-network
+  # elasticsearch-microservice:
+  #   build:
+  #     dockerfile: Dockerfile
+  #     context: ./elasticsearch-microservice
+  #   container_name: elasticsearch-microservice
+  #   image: elasticsearch-microservice
+  #   ports:
+  #     - 8007:8007
+  #   volumes:
+  #     - ./elasticsearch-microservice:/usr/src/app
+  #   depends_on:
+  #     elasticsearch:
+  #       condition: service_healthy
+  #   env_file: ./elasticsearch-microservice/.env.development
+  #   environment:
+  #     - CHOKIDAR_USEPOLLING=1
+  #     - WATCHPACK_POLLING=true
+  #     - WATCHFILES_FORCE_POLLING=true
+  #   networks:
+  #     - microservices-network
 
 volumes:
   product_data:

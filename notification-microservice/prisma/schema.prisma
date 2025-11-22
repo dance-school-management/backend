@@ -10,9 +10,9 @@ generator client {
 }
 
 generator pdfErd {
-  provider = "prisma-erd-generator"
+  provider      = "prisma-erd-generator"
   mermaidConfig = "mermaidConfig.js"
-  output = "erd/erd.md"
+  output        = "erd/erd.md"
 }
 
 datasource db {
@@ -21,9 +21,9 @@ datasource db {
 }
 
 model User {
-  id                       String  @id @unique
-  token                    String? @unique
-  hasEnabledNotifications  Boolean @default(true)
+  id                      String  @id @unique
+  token                   String? @unique
+  hasEnabledNotifications Boolean @default(true)
 
   notificationsOnUsers NotificationsOnUsers[]
 }
