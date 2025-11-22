@@ -12,7 +12,8 @@ generator client {
 
 generator pdfErd {
   provider = "prisma-erd-generator"
-  output = "../../../Praca-inzynierska-zespol-10/pdf/profile-ERD.pdf"
+  mermaidConfig = "mermaidConfig.js"
+  output = "erd/erd.md"
 }
 
 datasource db {
