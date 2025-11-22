@@ -186,10 +186,17 @@ export async function editCourse(req: Request<{}, {}, Course>, res: Response) {
         descriptionEmbedded: (await embed(description, false)).embeddingList,
       };
 
-      esClient.index({ index: "courses", id: String(id), document: doc });
+      esClient
+        .index({ index: "courses", id: String(id), document: doc })
+        .catch((err) =>
+          console.log(
+            "Failed to replicate/edit course to/in elasticsearch: ",
+            err,
+          ),
+        );
     }
   } catch (err) {
-    console.error("Failed to replicate course to elasticsearch: ", err);
+    console.log("Failed to replicate/edit course to/in elasticsearch: ", err);
   }
   res.status(StatusCodes.OK).json(editedCourse);
 }

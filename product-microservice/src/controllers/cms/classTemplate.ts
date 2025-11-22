@@ -103,13 +103,20 @@ export async function createClassTemplate(
       descriptionEmbedded: (await embed(description, false)).embeddingList,
     };
 
-    await esClient.index({
-      index: "class_templates",
-      id: String(createdClassTemplate.id),
-      document: doc,
-    });
+    esClient
+      .index({
+        index: "class_templates",
+        id: String(createdClassTemplate.id),
+        document: doc,
+      })
+      .catch((err) =>
+        console.log(
+          "Failed to replicate/edit course to/in elasticsearch: ",
+          err,
+        ),
+      );
   } catch (err) {
-    console.error("Failed to replicate class template to elasticsearch: ", err);
+    console.log("Failed to replicate class template to elasticsearch: ", err);
   }
 
   res.status(StatusCodes.CREATED).json(createdClassTemplate);
@@ -170,6 +177,7 @@ export async function editClassTemplate(
       scheduleTileColor,
     },
   });
+
   try {
     let danceCategory = null;
     if (danceCategoryId)
@@ -195,13 +203,20 @@ export async function editClassTemplate(
       price: price,
     };
 
-    await esClient.index({
-      index: "class_templates",
-      id: String(id),
-      document: editedDoc,
-    });
+    esClient
+      .index({
+        index: "class_templates",
+        id: String(id),
+        document: editedDoc,
+      })
+      .catch((err) =>
+        console.log(
+          "Failed to replicate/edit course to/in elasticsearch: ",
+          err,
+        ),
+      );
   } catch (err) {
-    console.error("Failed to edit class template in elasticsearch: ", err);
+    console.log("Failed to edit class template in elasticsearch: ", err);
   }
 
   res.status(StatusCodes.OK).json(editedClassTemplate);
