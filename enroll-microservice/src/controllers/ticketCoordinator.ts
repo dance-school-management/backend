@@ -5,7 +5,6 @@ import { UniversalError } from "../errors/UniversalError";
 import { AttendanceStatus } from "../../generated/client";
 import { getClassesDetails } from "../grpc/client/productCommunication/getClassesDetails";
 import { PaymentStatus } from "../../generated/client";
-import { stripe } from "../utils/stripe";
 
 export async function scanTicket(
   req: Request<{}, {}, {}, { qrCodeUUID: string }> & { user?: any },
@@ -31,63 +30,11 @@ export async function scanTicket(
     .classesdetailsList[0];
 
   if (enrollment.paymentStatus === PaymentStatus.PENDING) {
-    const sessionId = enrollment.checkoutSessionId;
-
-    if (!sessionId) {
-      res.status(StatusCodes.BAD_REQUEST).json({
-        message: "Ticket unpaid",
-        ...classDetails,
-      });
-      return;
-    }
-
-    const session = await stripe.checkout.sessions.retrieve(sessionId);
-
-    if (session.payment_status !== "paid") {
-      res.status(StatusCodes.BAD_REQUEST).json({
-        message: "Ticket unpaid",
-        ...classDetails,
-      });
-      return;
-    }
-  }
-
-  if (enrollment.paymentStatus === PaymentStatus.PART_OF_COURSE) {
-    const theCourse = await prisma.courseTicket.findFirst({
-      where: {
-        courseId: classDetails.courseId,
-      },
+    res.status(StatusCodes.BAD_REQUEST).json({
+      message: "Class not paid",
+      ...classDetails,
     });
-
-    if (!theCourse) {
-      throw new UniversalError(
-        StatusCodes.BAD_REQUEST,
-        "Course of the class not found",
-        [],
-      );
-    }
-
-    if (theCourse.paymentStatus === PaymentStatus.PENDING) {
-      const courseSessionId = theCourse.checkoutSessionId;
-
-      if (!courseSessionId) {
-        res.status(StatusCodes.BAD_REQUEST).json({
-          message: "Ticket (course) unpaid",
-          ...classDetails,
-        });
-        return;
-      }
-
-      const session = await stripe.checkout.sessions.retrieve(courseSessionId);
-
-      if (session.payment_status !== "paid") {
-        res.status(StatusCodes.BAD_REQUEST).json({
-          message: "Ticket unpaid",
-          ...classDetails,
-        });
-        return;
-      }
-    }
+    return;
   }
 
   if (enrollment.paymentStatus === PaymentStatus.REFUNDED) {
@@ -96,6 +43,35 @@ export async function scanTicket(
       ...classDetails,
     });
     return;
+  }
+
+  if (enrollment.paymentStatus === PaymentStatus.PART_OF_COURSE) {
+    if (!classDetails.courseId) {
+      res.status(StatusCodes.BAD_REQUEST).json({
+        message:
+          "Ticket invalid. This ticket is part of course and course ticket not found.",
+        ...classDetails,
+      });
+      return;
+    }
+
+    const courseTicket = await prisma.courseTicket.findUnique({
+      where: {
+        studentId_courseId: {
+          studentId: req.user?.id,
+          courseId: classDetails.courseId,
+        },
+      },
+    });
+
+    if (courseTicket?.paymentStatus !== PaymentStatus.PAID) {
+      res.status(StatusCodes.BAD_REQUEST).json({
+        message:
+          "Ticket invalid. This ticket is part of course and course ticket not paid.",
+        ...classDetails,
+      });
+      return;
+    }
   }
 
   res.status(StatusCodes.OK).json({

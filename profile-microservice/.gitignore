@@ -10,3 +10,6 @@ uploads
 proto/*
 !proto/*.proto
 !proto/*.sh
+prisma/**/*.md
+prisma/**/*.mmd
+prisma/**/*.pdf
