@@ -90,7 +90,7 @@ export async function handleWebhook(req: Request, res: Response) {
 
       if (classType === "PRIVATE_CLASS") {
         res.sendStatus(200);
-        return
+        return;
       }
 
       if (potentialClassTicket.paymentStatus === PaymentStatus.PENDING) {
@@ -132,4 +132,5 @@ export async function handleWebhook(req: Request, res: Response) {
       }
     }
   }
+  res.sendStatus(StatusCodes.OK);
 }
