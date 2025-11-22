@@ -161,7 +161,7 @@ export async function createNotifications(
         id: {
           in: userIds,
         },
-        hasEnabledNotifications: true
+        hasEnabledNotifications: true,
       },
     })
   ).map((user) => user.id);
@@ -220,43 +220,29 @@ export async function updateNotificationContent(
   res.status(StatusCodes.OK).json(notification);
 }
 
-export async function updateNotificationStatus(
-  req: Request<{ id: string }, {}, { hasBeenRead: boolean }> & { user?: any },
+export async function updateNotificationsStatus(
+  req: Request<{}, {}, { ids: number[]; hasBeenRead: boolean }> & {
+    user?: any;
+  },
   res: Response,
 ) {
-  checkValidations(validationResult(req));
-  const { id } = req.params;
-  const { hasBeenRead } = req.body;
+  const { ids, hasBeenRead } = req.body;
 
-  const exists = Boolean(
-    await prisma.notificationsOnUsers.findFirst({
-      where: {
-        userId: req.user?.id,
-        notificationId: Number(id),
-      },
-    }),
-  );
-
-  if (!exists) {
-    throw new UniversalError(
-      StatusCodes.NOT_FOUND,
-      "Failed to update notification status - notification not found",
-      [],
-    );
-  }
-
-  const notification = await prisma.notificationsOnUsers.update({
+  const result = await prisma.notificationsOnUsers.updateMany({
     where: {
-      userId_notificationId: {
-        userId: req.user?.id,
-        notificationId: Number(id),
+      notificationId: {
+        in: ids,
       },
+      userId: req.user?.id,
     },
     data: {
       hasBeenRead,
     },
   });
-  res.status(StatusCodes.OK).json(notification);
+
+  res.status(StatusCodes.OK).json({
+    updatedNotifications: result.count,
+  });
 }
 
 // export async function deleteNotification(req: Request, res: Response) {
@@ -312,8 +298,7 @@ export async function getIsRegisteredForNotifications(
 
   let isTokenValid = false;
 
-  if (user?.token)
-    isTokenValid = Expo.isExpoPushToken(user?.token);
+  if (user?.token) isTokenValid = Expo.isExpoPushToken(user?.token);
 
   res.status(StatusCodes.OK).json({
     isRegistered: Boolean(user),

@@ -12,6 +12,7 @@ import { checkRole } from "../middlewares/checkRole";
 import scheduleRouter from "../routes/schedule/schedule";
 import pricingRouter from "../routes/pricing/pricing";
 import searchRouter from "../routes/advanced-search/search";
+import privateClassesRouter from "../routes/private_classes/privateClasses";
 
 export function createApp() {
   const app = express();
@@ -27,6 +28,7 @@ export function createApp() {
   app.use("/schedule", scheduleRouter);
   app.use("/pricing", pricingRouter);
   app.use("/search", searchRouter);
+  app.use("/private-class", checkRole(["INSTRUCTOR"]), privateClassesRouter);
   app.get("/", (req, res) => {
     res.send("Hello from product-microservice1");
   });

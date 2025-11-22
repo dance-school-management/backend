@@ -6,7 +6,7 @@ import { getClassesStudents } from "../../grpc/client/enrollCommunication/getCla
 import { getClassesInstructors } from "../../grpc/client/enrollCommunication/getClassesInstructors";
 import { StatusCodes } from "http-status-codes";
 import { UniversalError } from "../../errors/UniversalError";
-import { MsgData } from "../../rabbitmq/types";
+import { NotificationMsgData } from "../../rabbitmq/types";
 
 export async function cancelClass(
   req: Request<
@@ -65,7 +65,7 @@ export async function cancelClass(
       await getClassesInstructors([classId])
     ).instructorsClassesIdsList.map((ic) => ic.instructorId);
 
-    const message: MsgData = {
+    const message: NotificationMsgData = {
       userIds: [...classStudentsIds, ...classInstructorsIds],
       title: `Cancelled class - ${theClass?.classTemplate.name}`,
       body: `Class ${theClass?.classTemplate.name} planned at ${theClass?.startDate.toDateString()} - ${theClass?.endDate.toDateString()} has been CANCELLED. Go to its ticket page to see available actions. Reason for cancellation: ${reason}`,
@@ -146,7 +146,7 @@ export async function postponeClass(
       await getClassesInstructors([classId])
     ).instructorsClassesIdsList.map((ic) => ic.instructorId);
 
-    const message: MsgData = {
+    const message: NotificationMsgData = {
       userIds: [...classStudentsIds, ...classInstructorsIds],
       title: `Postponed class - ${theClass?.classTemplate.name}`,
       body: `Class ${theClass?.classTemplate.name} planned at ${theClass?.startDate.toDateString()} - ${theClass?.endDate.toDateString()} has been POSTPONED to ${newStartDate.toDateString()} - ${newEndDate.toDateString()}. Go to its ticket page to see available actions. Reason for postponement: ${reason}`,

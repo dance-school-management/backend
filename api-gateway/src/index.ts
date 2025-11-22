@@ -18,12 +18,13 @@ const PROFILE_MICROSERVICE_URL = process.env.PROFILE_MICROSERVICE_URL;
 const NOTIFICATION_MICROSERVICE_URL = process.env.NOTIFICATION_MICROSERVICE_URL;
 const ELASTICSEARCH_MICROSERVICE_URL =
   process.env.ELASTICSEARCH_MICROSERVICE_URL;
+const BLOG_MICROSERVICE_URL = process.env.BLOG_MICROSERVICE_URL;
 const NODE_ENV = process.env.NODE_ENV;
 
 app.use(
   cors({
     origin: FRONTEND_URL,
-    methods: ["GET", "POST", "PUT", "DELETE"],
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
     credentials: true,
   }),
 );
@@ -154,6 +155,29 @@ if (ELASTICSEARCH_MICROSERVICE_URL) {
     app.use("/elasticsearch/api-docs", proxyMiddlewareElasticsearchAdditional);
   }
   app.use("/elasticsearch", authenticate(), proxyMiddlewareElasticsearch);
+}
+
+if (BLOG_MICROSERVICE_URL) {
+  const proxyMiddlewareBlog = createProxyMiddleware<Request, Response>({
+    target: BLOG_MICROSERVICE_URL,
+    changeOrigin: true,
+  });
+
+  const proxyMiddlewareBlogAdditional = createProxyMiddleware<
+    Request,
+    Response
+  >({
+    target: BLOG_MICROSERVICE_URL,
+    changeOrigin: true,
+    pathRewrite: (path, req) => {
+      const currPath = req.originalUrl;
+      return currPath.replace("/blog", "");
+    },
+  });
+  if (NODE_ENV === "development") {
+    app.use("/blog/api-docs", proxyMiddlewareBlogAdditional);
+  }
+  app.use("/blog", authenticate(), proxyMiddlewareBlog);
 }
 
 app.get("/", (req: Request, res) => {

@@ -9,4 +9,5 @@ service ProductToProfile {
   // data of instructors of the given ids, but those whose ids do not belong to given ids list
   rpc GetOtherInstructorsData(InstructorIdsRequest) returns (InstructorsDataResponse);
   rpc GetInstructorsData (InstructorIdsRequest) returns (InstructorsDataResponse);
+  rpc GetStudentsProfiles (GetStudentsProfilesRequest) returns (GetStudentsProfilesResponse);
 };

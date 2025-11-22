@@ -38,13 +38,15 @@ export async function getDanceCategoryList(
     select: {
       id: true,
       name: true,
+      photoPath: true,
+      description: true,
     },
   });
   res.json(danceCategories);
 }
 
 export async function getDanceCategory(
-  req: Request<{ id: string }>,
+  req: Request<{ id: string; }>,
   res: Response,
   next: NextFunction,
 ) {
@@ -68,7 +70,7 @@ export async function getDanceCategory(
 }
 
 export async function deleteDanceCategory(
-  req: Request<{ id: string }>,
+  req: Request<{ id: string; }>,
   res: Response,
   next: NextFunction,
 ) {
@@ -98,7 +100,7 @@ export async function deleteDanceCategory(
 }
 
 export async function updateDanceCategory(
-  req: Request<{ id: string }, {}, DanceCategory>,
+  req: Request<{ id: string; }, {}, DanceCategory>,
   res: Response,
   next: NextFunction,
 ) {
