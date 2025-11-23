@@ -161,22 +161,13 @@ if (BLOG_MICROSERVICE_URL) {
   const proxyMiddlewareBlog = createProxyMiddleware<Request, Response>({
     target: BLOG_MICROSERVICE_URL,
     changeOrigin: true,
+    pathRewrite: (_path, req) => req.originalUrl.replace("/blog", "")
   });
 
-  const proxyMiddlewareBlogAdditional = createProxyMiddleware<
-    Request,
-    Response
-  >({
-    target: BLOG_MICROSERVICE_URL,
-    changeOrigin: true,
-    pathRewrite: (path, req) => {
-      const currPath = req.originalUrl;
-      return currPath.replace("/blog", "");
-    },
-  });
   if (NODE_ENV === "development") {
-    app.use("/blog/api-docs", proxyMiddlewareBlogAdditional);
+    app.use("/blog/api-docs", proxyMiddlewareBlog);
   }
+  app.use("/blog/public", proxyMiddlewareBlog);
   app.use("/blog", authenticate(), proxyMiddlewareBlog);
 }
 
