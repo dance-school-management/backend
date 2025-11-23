@@ -1,11 +1,14 @@
-import express from "express";
 import "dotenv/config";
-import { setupSwagger } from "./swagger";
-import { errorHandler } from "../middlewares/errorHandler";
-import morgan from "morgan";
+import express from "express";
 import helmet from "helmet";
-import notificationRouter from "../routes/notification/notification";
+import morgan from "morgan";
+
+import { checkRole } from "../middlewares/checkRole";
+import { errorHandler } from "../middlewares/errorHandler";
 import { handleUserContext } from "../middlewares/handleUserContext";
+import notificationRouter from "../routes/notification/notification";
+import notificationCoordinatorRouter from "../routes/notification/notificationCoordinator";
+import { setupSwagger } from "./swagger";
 
 export function createApp() {
   const app = express();
@@ -18,6 +21,7 @@ export function createApp() {
   }
   app.use(handleUserContext);
   app.use("/notification", notificationRouter);
+  app.use("/notification", checkRole(["COORDINATOR", "ADMINISTRATOR"]), notificationCoordinatorRouter);
   app.use(errorHandler);
   app.get("/", (req, res) => {
     res.send("Hello from notification-microservice");
