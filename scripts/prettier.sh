@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+cd ..
 (cd product-microservice && npm run prettier)
 (cd auth-microservice && npm run prettier)
 (cd enroll-microservice && npm run prettier)

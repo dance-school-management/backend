@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-
+cd ..
 if [ ! -d "db" ]; then
   mkdir db
 fi

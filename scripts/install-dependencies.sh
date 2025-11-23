@@ -1,4 +1,5 @@
-#!/bin/bash
+#!/usr/bin/env bash
+cd ..
 (cd auth-microservice && npm install)
 (cd profile-microservice && npm install)
 (cd product-microservice && npm install)

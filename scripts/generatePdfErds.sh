@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-
+cd ..
 # Output directory relative to backend directory
 OUTPUT_BASE="../../../Praca-inzynierska-zespol-10/pdf"
 
