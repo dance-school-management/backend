@@ -20,8 +20,8 @@ export function createApp() {
   app.use(express.urlencoded({ extended: true }));
   setupSwagger(app);
   app.use("/uploads", express.static(path.resolve("uploads")));
-  app.use(handleUserContext);
   app.use("/", unprotectedRouter);
+  app.use(handleUserContext);
   app.use("/user", userRouter);
   app.use("/search", checkRole(["INSTRUCTOR", "COORDINATOR"]), searchRouter);
   app.get("/", (req, res) => {
