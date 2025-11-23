@@ -1,10 +1,10 @@
 /**
  * @swagger
- * /schedule:
+ * /public/schedule:
  *   get:
  *     summary: Get schedule for a given date range
  *     tags:
- *       - schedule
+ *       - schedule - public
  *     parameters:
  *       - in: query
  *         name: dateFrom
@@ -31,8 +31,7 @@
  *   get:
  *     summary: Get schedule for a given date range
  *     tags:
- *       - schedule
- *        - personal
+ *       - schedule - personal
  *     parameters:
  *       - in: query
  *         name: dateFrom
@@ -55,14 +54,14 @@
 
 /**
  * @swagger
- * /schedule/search/courses:
+ * /public/schedule/search/courses:
  *   get:
  *     summary: Get courses filtered by category, level, and price
  *     description: >
  *       Returns courses filtered by dance category, advancement level, and price range.
  *       All parameters are optional but at least one filter is recommended.
  *     tags:
- *       - schedule - courses
+ *       - schedule - public
  *     parameters:
  *       - in: query
  *         name: danceCategoryIds
@@ -109,14 +108,14 @@
 
 /**
  * @swagger
- * /schedule/courses/classes:
+ * /public/schedule/courses/classes:
  *   get:
  *     summary: Get classes for given courses
  *     description: >
  *       Returns all class instances grouped by their corresponding course IDs.
  *       Accepts a list of course IDs as a JSON string in the query parameter.
  *     tags:
- *       - schedule - courses
+ *       - schedule - public
  *     parameters:
  *       - in: query
  *         name: coursesIds
@@ -130,4 +129,3 @@
  *       200:
  *         description: Successful response containing courses and their related classes
  */
-
