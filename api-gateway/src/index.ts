@@ -3,7 +3,7 @@ import { createProxyMiddleware } from "http-proxy-middleware";
 import "dotenv/config";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-import { authenticate } from "./middlewares/authenticate";
+import { authenticate, logPathMiddleware } from "./middlewares/authenticate";
 import { errorHandler } from "./middlewares/errorHandler";
 import { UniversalError } from "./errors/UniversalError";
 import { StatusCodes } from "http-status-codes";
@@ -87,24 +87,13 @@ if (PROFILE_MICROSERVICE_URL) {
   const proxyMiddlewareProfile = createProxyMiddleware<Request, Response>({
     target: PROFILE_MICROSERVICE_URL,
     changeOrigin: true,
-  });
-
-  const proxyMiddlewareProfileAdditional = createProxyMiddleware<
-    Request,
-    Response
-  >({
-    target: PROFILE_MICROSERVICE_URL,
-    changeOrigin: true,
-    pathRewrite: (path, req) => {
-      const currPath = req.originalUrl;
-      return currPath.replace("/profile", "");
-    },
+    pathRewrite: (path, req) => req.originalUrl.replace("/profile", "")
   });
 
   if (NODE_ENV === "development") {
-    app.use("/profile/api-docs", proxyMiddlewareProfileAdditional);
+    app.use("/profile/api-docs", proxyMiddlewareProfile);
   }
-  app.use("/profile/uploads", proxyMiddlewareProfileAdditional);
+  app.use("/profile/public", proxyMiddlewareProfile);
   app.use("/profile", authenticate(), proxyMiddlewareProfile);
 }
 
