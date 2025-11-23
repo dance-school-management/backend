@@ -8,7 +8,6 @@ services:
       - "8000:8000"
     volumes:
       - ./api-gateway:/usr/src/app
-      - /usr/src/app/node_modules
     env_file:
       - ./api-gateway/.env.development
     networks:
@@ -25,14 +24,14 @@ services:
       - ./product-microservice/.env.development
     volumes:
       - ./product-microservice/:/usr/src/app
-      - /usr/src/app/node_modules
     depends_on:
       product_db:
         condition: service_healthy
-      rabbitmq:
-        condition: service_healthy
+      # rabbitmq:
+      #   condition: service_healthy
     networks:
       - microservices-network
+    command: sh -c "npm run db:deploy && npm run start:dev"
   auth-microservice:
     build:
       context: ./auth-microservice
@@ -44,12 +43,12 @@ services:
       - ./auth-microservice/.env.development
     volumes:
       - ./auth-microservice/:/usr/src/app
-      - /usr/src/app/node_modules
     depends_on:
       auth_db:
         condition: service_healthy
     networks:
       - microservices-network
+    command: sh -c "npm run db:deploy && npm run start:dev"
   enroll-microservice:
     build:
       context: ./enroll-microservice
@@ -62,12 +61,12 @@ services:
       - ./enroll-microservice/.env.development
     volumes:
       - ./enroll-microservice/:/usr/src/app
-      - /usr/src/app/node_modules
     depends_on:
       enroll_db:
         condition: service_healthy
     networks:
       - microservices-network
+    command: sh -c "npm run db:deploy && npm run start:dev"
   notification-microservice:
     build:
       context: ./notification-microservice
@@ -79,7 +78,6 @@ services:
       - ./notification-microservice/.env.development
     volumes:
       - ./notification-microservice/:/usr/src/app
-      - /usr/src/app/node_modules
     depends_on:
       notification_db:
         condition: service_healthy
@@ -87,6 +85,7 @@ services:
         condition: service_healthy
     networks:
       - microservices-network
+    command: sh -c "npm run db:deploy && npm run start:dev"
   profile-microservice:
     build:
       context: ./profile-microservice
@@ -99,12 +98,12 @@ services:
       - ./profile-microservice/.env.development
     volumes:
       - ./profile-microservice/:/usr/src/app
-      - /usr/src/app/node_modules
     depends_on:
       profile_db:
         condition: service_healthy
     networks:
       - microservices-network
+    command: sh -c "npm run db:deploy && npm run start:dev"
   blog-microservice:
     build:
       context: ./blog-microservice
@@ -116,14 +115,14 @@ services:
       - ./blog-microservice/.env.development
     volumes:
       - ./blog-microservice/:/usr/src/app
-      - /usr/src/app/node_modules
     depends_on:
       blog_db:
         condition: service_healthy
     networks:
       - microservices-network
+    command: sh -c "npm run db:deploy && npm run start:dev"
   product_db:
-    image: postgres:latest
+    image: postgres:18
     restart: always
     user: postgres
     secrets:
@@ -134,7 +133,7 @@ services:
     ports:
       - "5434:5432"
     volumes:
-      - product_data:/var/lib/postgresql/data
+      - product_data:/var/lib/postgresql #from postgres 18 without /data (error problems)
     networks:
       - microservices-network
     expose:
@@ -145,7 +144,7 @@ services:
       timeout: 5s
       retries: 5
   enroll_db:
-    image: postgres:latest
+    image: postgres:18
     restart: always
     user: postgres
     secrets:
@@ -156,7 +155,7 @@ services:
     ports:
       - "5435:5432"
     volumes:
-      - enroll_data:/var/lib/postgresql/data
+      - enroll_data:/var/lib/postgresql #from postgres 18 without /data (error problems)/data
     networks:
       - microservices-network
     expose:
@@ -167,7 +166,7 @@ services:
       timeout: 5s
       retries: 5
   auth_db:
-    image: postgres:latest
+    image: postgres:18
     restart: always
     user: postgres
     secrets:
@@ -178,7 +177,7 @@ services:
     ports:
       - "5433:5432"
     volumes:
-      - auth_data:/var/lib/postgresql/data
+      - auth_data:/var/lib/postgresql #from postgres 18 without /data (error problems)/data
     networks:
       - microservices-network
     expose:
@@ -189,7 +188,7 @@ services:
       timeout: 5s
       retries: 5
   notification_db:
-    image: postgres:latest
+    image: postgres:18
     restart: always
     user: postgres
     secrets:
@@ -200,7 +199,7 @@ services:
     ports:
       - "5437:5432"
     volumes:
-      - notification_data:/var/lib/postgresql/data
+      - notification_data:/var/lib/postgresql #from postgres 18 without /data (error problems)/data
     networks:
       - microservices-network
     expose:
@@ -211,7 +210,7 @@ services:
       timeout: 5s
       retries: 5
   profile_db:
-    image: postgres:latest
+    image: postgres:18
     restart: always
     user: postgres
     secrets:
@@ -222,7 +221,7 @@ services:
     ports:
       - "5436:5432"
     volumes:
-      - profile_data:/var/lib/postgresql/data
+      - profile_data:/var/lib/postgresql #from postgres 18 without /data (error problems) #from postgres 18 without /data (error problems)
     networks:
       - microservices-network
     expose:
@@ -233,7 +232,7 @@ services:
       timeout: 5s
       retries: 5
   blog_db:
-    image: postgres:latest
+    image: postgres:18
     restart: always
     user: postgres
     secrets:
@@ -244,7 +243,7 @@ services:
     ports:
       - "5439:5432"
     volumes:
-      - blog_data:/var/lib/postgresql/data
+      - blog_data:/var/lib/postgresql #from postgres 18 without /data (error problems)/data
     networks:
       - microservices-network
     expose:
@@ -322,8 +321,10 @@ services:
   #     context: ./elasticsearch-microservice
   #   container_name: elasticsearch-microservice
   #   image: elasticsearch-microservice
+  #   platform: linux/amd64
   #   ports:
   #     - 8007:8007
+  #     - 50057:50057
   #   volumes:
   #     - ./elasticsearch-microservice:/usr/src/app
   #   depends_on:

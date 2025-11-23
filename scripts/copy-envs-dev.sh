@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-
+cd ..
 MICROSERVICES_DIR="./"
 
 for dir in "$MICROSERVICES_DIR"*/ ; do

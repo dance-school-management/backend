@@ -1,4 +1,5 @@
 import amqp, { Channel, ChannelModel } from "amqplib";
+
 import "dotenv/config";
 
 export class RabbitMQConsumer {
@@ -15,7 +16,7 @@ export class RabbitMQConsumer {
       this.connection = await amqp.connect(
         `amqp://${process.env.RMQ_USER}:${process.env.RMQ_PASS}@${process.env.RMQ_HOST}:${process.env.RMQ_PORT}`,
       );
-
+      
       console.log(`✅ Rabbit MQ Connection is ready`);
 
       this.channel = await this.connection.createChannel();
@@ -27,8 +28,17 @@ export class RabbitMQConsumer {
   }
 
   async createQueue(queue: string) {
-    if (!this.channel) {
+    const MAX_RETRIES = 5;
+    let retries = 0;
+    while (!this.channel && retries < MAX_RETRIES) {
       await this.connect();
+      if (!this.channel) {
+        retries++;
+        if (retries >= MAX_RETRIES) {
+          throw new Error(`Failed to create queue "${queue}" after ${MAX_RETRIES} attempts to connect to RabbitMQ.`);
+        }
+        await new Promise((resolve) => setTimeout(resolve, 10000));
+      }
     }
 
     await this.channel.assertQueue(queue, {

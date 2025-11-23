@@ -3,7 +3,7 @@
 # Compares .env.development and .env.development.local with their respective .example files
 # across all microservices under the current directory.
 # Run from path: backend/
-
+cd ..
 set -u
 
 # Colors (if terminal supports)

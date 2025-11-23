@@ -13,7 +13,7 @@
     "prettier": "npx prettier . --write",
     "start:dev": "nodemon --legacy-watch ./src/index.ts",
     "lint": "eslint ./src",
-    "db:deploy": "npx prisma migrate deploy && npx prisma generate"
+    "db:deploy": "npx prisma migrate deploy"
   },
   "prisma": {
     "seed": "ts-node prisma/seed.ts"
