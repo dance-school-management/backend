@@ -11,7 +11,7 @@
     "prettier": "npx prettier . --write",
     "start:dev": "nodemon ./src/index.ts",
     "lint": "eslint ./src",
-    "db:deploy": "npx prisma migrate deploy && npx prisma generate"
+    "db:deploy": "npx prisma migrate deploy && npx prisma generate --generator client"
   },
   "keywords": [],
   "author": "",

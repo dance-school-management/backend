@@ -9,26 +9,29 @@ WORKDIR /usr/src/app
 FROM base AS deps
 
 
-RUN --mount=type=bind,source=package.json,target=package.json \
-    --mount=type=bind,source=package-lock.json,target=package-lock.json \
-    --mount=type=cache,target=/root/.npm \
+COPY package.json package-lock.json ./
+RUN --mount=type=cache,target=/root/.npm \
     npm ci
 
-# COPY prisma ./prisma
-# RUN npx prisma generate
+COPY prisma ./prisma
+RUN npx prisma generate --generator client
 
 FROM base AS final
 
 ENV NODE_ENV=development
 
-#USER node
-
-# COPY --from=deps /usr/src/app/generated ./generated
+COPY --from=deps /usr/src/app/generated ./generated
+COPY src ./src
+COPY tsconfig.json .
 COPY package.json .
 COPY --from=deps /usr/src/app/node_modules ./node_modules
+COPY prisma ./prisma
+COPY proto ./proto
+
+RUN chown -R node:node .
+USER node
 
 EXPOSE 8003
 EXPOSE 50051
 
-# CMD ["npm", "run", "start:dev"]
-CMD ["sh", "-c", "npm run db:deploy && npm run start:dev"]
+CMD ["npm", "run", "start:dev"]

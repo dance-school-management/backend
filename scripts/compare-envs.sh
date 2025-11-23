@@ -2,7 +2,7 @@
 # compare-envs.sh
 # Compares .env.development with .env.development.example across all microservices under the current directory.
 # Run from path: backend/
-
+cd ..
 set -u
 
 # Colors (if terminal supports)
