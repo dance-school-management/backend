@@ -247,7 +247,7 @@
 
 /**
  * @swagger
- * /blog/posts:
+ * /posts:
  *   post:
  *     summary: Create a new blog post
  *     description: >
@@ -278,7 +278,7 @@
 
 /**
  * @swagger
- * /blog/posts/{idOrSlug}:
+ * /posts/{idOrSlug}:
  *   patch:
  *     summary: Update a blog post
  *     description: >
@@ -367,7 +367,7 @@
 
 /**
  * @swagger
- * /blog/posts:
+ * /posts:
  *   get:
  *     summary: Get all blog posts (admin view)
  *     description: >
@@ -416,7 +416,7 @@
 
 /**
  * @swagger
- * /blog/posts/{idOrSlug}/publish:
+ * /posts/{idOrSlug}/publish:
  *   patch:
  *     summary: Publish a blog post
  *     description: >
@@ -450,7 +450,7 @@
 
 /**
  * @swagger
- * /blog/posts/{idOrSlug}/unpublish:
+ * /posts/{idOrSlug}/unpublish:
  *   patch:
  *     summary: Unpublish a blog post
  *     description: >
@@ -478,7 +478,7 @@
 
 /**
  * @swagger
- * /blog/posts/{idOrSlug}/pin:
+ * /posts/{idOrSlug}/pin:
  *   patch:
  *     summary: Pin a blog post
  *     description: >
@@ -513,7 +513,7 @@
 
 /**
  * @swagger
- * /blog/posts/{idOrSlug}/unpin:
+ * /posts/{idOrSlug}/unpin:
  *   patch:
  *     summary: Unpin a blog post
  *     description: >
@@ -540,7 +540,7 @@
 
 /**
  * @swagger
- * /blog/public/posts:
+ * /public/posts:
  *   get:
  *     summary: Get all lightweight published posts (public)
  *     description: >
@@ -586,7 +586,7 @@
 
 /**
  * @swagger
- * /blog/public/posts/{idOrSlug}:
+ * /public/posts/{idOrSlug}:
  *   get:
  *     summary: Get a single published post (public)
  *     description: >
