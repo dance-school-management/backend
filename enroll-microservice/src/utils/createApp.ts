@@ -23,7 +23,10 @@ export function createApp() {
 
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
-  setupSwagger(app);
+
+  if (process.env.NODE_ENV === "development") {
+    setupSwagger(app);
+  }
   app.use(handleUserContext);
   app.use("/order", checkRole(["STUDENT"]), orderRouter);
   app.use("/progress", checkRole(["STUDENT"]), progressRouter);
