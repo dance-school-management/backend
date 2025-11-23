@@ -11,6 +11,13 @@ import coursesJson from "../../data/product/courses.json";
 import classTemplatesJson from "../../data/product/classTemplates.json";
 import classesJson from "../../data/product/classes.json";
 import logger from "../src/utils/winston";
+import {
+  ClassTemplateDocument,
+  CourseDocument,
+  esClient,
+} from "../src/elasticsearch/client";
+import { embed } from "../src/grpc/client/aiCommunication/embed";
+import client from "../generated/client/client";
 
 const prisma = new PrismaClient();
 
@@ -146,6 +153,139 @@ async function main() {
       );
     }
   }
+
+  await esClient.indices.create({
+    index: "courses",
+    mappings: {
+      properties: {
+        startDate: {
+          type: "date",
+          format: "strict_date_optional_time||epoch_millis",
+        },
+        endDate: {
+          type: "date",
+          format: "strict_date_optional_time||epoch_millis",
+        },
+      },
+    },
+  });
+
+  for (const classTemplate of classTemplatesJson) {
+    const descEmbedded = (await embed(classTemplate.description, false))
+      .embeddingList;
+    const danceCategory = danceCategoriesJson.find(
+      (dc) => dc.id === classTemplate.danceCategoryId,
+    );
+    const advancementLevel = advancementLevelsJson.find(
+      (al) => al.id === classTemplate.advancementLevelId,
+    );
+    const doc: ClassTemplateDocument = {
+      name: classTemplate.name,
+      description: classTemplate.description,
+      descriptionEmbedded: descEmbedded,
+      danceCategory: danceCategory
+        ? {
+            id: danceCategory?.id,
+            name: danceCategory?.name,
+            description: danceCategory?.description,
+          }
+        : null,
+      advancementLevel: advancementLevel
+        ? {
+            id: advancementLevel.id,
+            name: advancementLevel.name,
+            description: advancementLevel.description,
+          }
+        : null,
+      price: classTemplate.price,
+    };
+    await esClient.index({
+      index: "class_templates",
+      id: String(classTemplate.id),
+      document: doc,
+    });
+  }
+
+  for (const course of coursesJson) {
+    const descEmbedded = (await embed(course.description, false)).embeddingList;
+    const danceCategory = danceCategoriesJson.find(
+      (dc) => dc.id === course.danceCategoryId,
+    );
+    const advancementLevel = advancementLevelsJson.find(
+      (al) => al.id === course.advancementLevelId,
+    );
+    const courseClassTemplates = classTemplatesJson.filter(
+      (ct) => ct.courseId === course.id,
+    );
+    const classTemplatesClassesCountsMap = new Map();
+    courseClassTemplates.forEach((cct) => {
+      classTemplatesClassesCountsMap.set(
+        cct.id,
+        (classTemplatesClassesCountsMap.get(cct.id) ?? 0) + 1,
+      );
+    });
+
+    let price = 0;
+    if (!course.customPrice) {
+      classTemplatesClassesCountsMap.forEach((v, k) => {
+        price += v * classTemplatesJson.find((ct) => ct.id === k)!.price;
+      });
+    } else price = course.customPrice;
+
+    const classTemplatesIds = courseClassTemplates.map((ct) => ct.id);
+
+    const courseClasses = classesJson.filter((c) =>
+      classTemplatesIds.includes(c.classTemplateId),
+    );
+
+    const maxDate = new Date(8640000000000000);
+
+    const startDate = new Date(
+      courseClasses.reduce(
+        (acc, cur) =>
+          new Date(cur.startDate) < new Date(acc) ? cur.startDate : acc,
+        String(maxDate),
+      ),
+    );
+
+    const minDate = new Date(0);
+
+    const endDate = new Date(
+      courseClasses.reduce(
+        (acc, cur) =>
+          new Date(cur.endDate) > new Date(acc) ? cur.endDate : acc,
+        String(minDate),
+      ),
+    );
+
+    const doc: CourseDocument = {
+      name: course.name,
+      description: course.description,
+      descriptionEmbedded: descEmbedded,
+      danceCategory: danceCategory
+        ? {
+            id: danceCategory?.id,
+            name: danceCategory?.name,
+            description: danceCategory?.description,
+          }
+        : null,
+      advancementLevel: advancementLevel
+        ? {
+            id: advancementLevel.id,
+            name: advancementLevel.name,
+            description: advancementLevel.description,
+          }
+        : null,
+      price,
+      startDate,
+      endDate,
+    };
+    await esClient.index({
+      index: "courses",
+      id: String(course.id),
+      document: doc,
+    });
+  }
 }
 
 main()
@@ -153,7 +293,7 @@ main()
     await prisma.$disconnect();
   })
   .catch(async (e) => {
-    console.error(e);
+    console.error(`Error while seeding: ${e}`);
     await prisma.$disconnect();
     process.exit(1);
   });
