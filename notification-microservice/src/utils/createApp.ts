@@ -13,7 +13,9 @@ export function createApp() {
   app.use(helmet());
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
-  setupSwagger(app);
+  if (process.env.NODE_ENV === "development") {
+    setupSwagger(app);
+  }
   app.use(handleUserContext);
   app.use("/notification", notificationRouter);
   app.use(errorHandler);
