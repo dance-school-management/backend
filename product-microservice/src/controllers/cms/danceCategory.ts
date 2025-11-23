@@ -7,6 +7,13 @@ import { checkValidations } from "../../utils/errorHelpers";
 import fs from "fs";
 import path from "path";
 import logger from "../../utils/winston";
+import { PutObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
+import { s3, s3Endpoint } from "../../utils/s3Client";
+import "dotenv/config";
+import randomImageName from "../../utils/randomImageName";
+import { uploadPublicPhoto } from "../../utils/uploadPublicPhoto";
+
+const S3_BUCKET_NAME = process.env.S3_BUCKET_NAME;
 
 export async function createDanceCategory(
   req: Request<{}, {}, DanceCategory>,
@@ -15,15 +22,15 @@ export async function createDanceCategory(
 ) {
   checkValidations(validationResult(req));
   const { name, description } = req.body;
-  let photoPath: string | undefined = undefined;
+  let uniquePath: string | null = null;
   if (req.file) {
-    photoPath = req.file.path;
+    uniquePath = await uploadPublicPhoto(req.file);
   }
   const danceCategory = await prisma.danceCategory.create({
     data: {
       name,
       description,
-      photoPath,
+      photoPath: uniquePath,
     },
   });
   res.status(StatusCodes.CREATED).json(danceCategory);
@@ -42,11 +49,17 @@ export async function getDanceCategoryList(
       description: true,
     },
   });
-  res.json(danceCategories);
+  const mappedWithRemotePart = danceCategories.map((category) => {
+    if (category.photoPath) {
+      category.photoPath = `${s3Endpoint}${category.photoPath}`;
+    }
+    return category;
+  });
+  res.json(mappedWithRemotePart);
 }
 
 export async function getDanceCategory(
-  req: Request<{ id: string; }>,
+  req: Request<{ id: string }>,
   res: Response,
   next: NextFunction,
 ) {
@@ -59,7 +72,7 @@ export async function getDanceCategory(
   let photoPath: string | null = null;
   if (danceCategory?.photoPath) {
     //const pathName = path.resolve(danceCategory.photoPath);
-    photoPath = danceCategory.photoPath;
+    photoPath = `${s3Endpoint}${danceCategory.photoPath}`;
   }
   res.json({
     id,
@@ -70,7 +83,7 @@ export async function getDanceCategory(
 }
 
 export async function deleteDanceCategory(
-  req: Request<{ id: string; }>,
+  req: Request<{ id: string }>,
   res: Response,
   next: NextFunction,
 ) {
@@ -81,15 +94,12 @@ export async function deleteDanceCategory(
     },
   });
   if (OldDanceCategory.photoPath) {
-    const oldPhotoPath = path.resolve(OldDanceCategory.photoPath);
-    fs.unlink(oldPhotoPath, (err: any) => {
-      if (err) {
-        logger.error({
-          level: "error",
-          message: `Error deleting file: ${err.message}`,
-        });
-      }
-    });
+    const deleteParams = {
+      Bucket: S3_BUCKET_NAME,
+      Key: OldDanceCategory.photoPath,
+    };
+    const deleteCommand = new DeleteObjectCommand(deleteParams);
+    await s3.send(deleteCommand);
   }
   const danceCategory = await prisma.danceCategory.delete({
     where: {
@@ -100,16 +110,16 @@ export async function deleteDanceCategory(
 }
 
 export async function updateDanceCategory(
-  req: Request<{ id: string; }, {}, DanceCategory>,
+  req: Request<{ id: string }, {}, DanceCategory>,
   res: Response,
   next: NextFunction,
 ) {
   checkValidations(validationResult(req));
   const id = parseInt(req.params.id);
   const { name, description } = req.body;
-  let photoPath: string | undefined = undefined;
+  let uniquePath: string | null = null;
   if (req.file) {
-    photoPath = req.file.path;
+    uniquePath = await uploadPublicPhoto(req.file);
   }
 
   const OldDanceCategory = await prisma.danceCategory.findUniqueOrThrow({
@@ -118,19 +128,20 @@ export async function updateDanceCategory(
     },
   });
 
-  if (OldDanceCategory.photoPath && !req.file) {
-    photoPath = OldDanceCategory.photoPath;
-  } else if (OldDanceCategory.photoPath) {
-    const oldPhotoPath = path.resolve(OldDanceCategory.photoPath);
-    fs.unlink(oldPhotoPath, (err: any) => {
-      if (err) {
-        logger.error({
-          level: "error",
-          message: `Error deleting file: ${err.message}`,
-        });
-      }
-    });
+  // Delete old photo if a new one is uploaded
+  if (
+    req.file &&
+    OldDanceCategory.photoPath &&
+    uniquePath !== OldDanceCategory.photoPath
+  ) {
+    const deleteParams = {
+      Bucket: S3_BUCKET_NAME,
+      Key: OldDanceCategory.photoPath,
+    };
+    const deleteCommand = new DeleteObjectCommand(deleteParams);
+    await s3.send(deleteCommand);
   }
+
   const danceCategory = await prisma.danceCategory.update({
     where: {
       id,
@@ -138,7 +149,7 @@ export async function updateDanceCategory(
     data: {
       name,
       description,
-      photoPath,
+      photoPath: uniquePath || OldDanceCategory.photoPath,
     },
   });
   res.status(StatusCodes.OK).json(danceCategory);
