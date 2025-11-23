@@ -3,7 +3,7 @@ import { createProxyMiddleware } from "http-proxy-middleware";
 import "dotenv/config";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-import { authenticate, logPathMiddleware } from "./middlewares/authenticate";
+import { authenticate } from "./middlewares/authenticate";
 import { errorHandler } from "./middlewares/errorHandler";
 import { UniversalError } from "./errors/UniversalError";
 import { StatusCodes } from "http-status-codes";
@@ -93,13 +93,11 @@ if (NOTIFICATION_MICROSERVICE_URL) {
 }
 
 if (ELASTICSEARCH_MICROSERVICE_URL) {
-  const proxyMiddlewareElasticsearch = createProxyMiddleware<Request, Response>(
-    {
-      target: ELASTICSEARCH_MICROSERVICE_URL,
-      changeOrigin: true,
-      pathRewrite: (path, req) => req.originalUrl.replace("/elasticsearch", "")
-    },
-  );
+  const proxyMiddlewareElasticsearch = createProxyMiddleware<Request, Response>({
+    target: ELASTICSEARCH_MICROSERVICE_URL,
+    changeOrigin: true,
+    pathRewrite: (path, req) => req.originalUrl.replace("/elasticsearch", "")
+  });
 
   if (NODE_ENV === "development") {
     app.use("/elasticsearch/api-docs", proxyMiddlewareElasticsearch);
