@@ -22,7 +22,7 @@ export function createApp() {
   app.use(express.urlencoded({ extended: true }));
   setupSwagger(app);
   app.use(handleUserContext);
-  app.use("/uploads", express.static(path.resolve("uploads")));
+  // app.use("/uploads", express.static(path.resolve("uploads")));
   app.use("/cms", checkRole(["COORDINATOR"]), cmsRouter);
   app.use("/schedule", scheduleRouter);
   app.use("/pricing", pricingRouter);

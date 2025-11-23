@@ -8,6 +8,10 @@ import { expo } from "@better-auth/expo";
 export const auth = betterAuth({
   hooks: {
     after: createAuthMiddleware(async (ctx) => {
+      // if(ctx.path ==)
+      
+      
+      
       if (ctx.path === "/sign-up/email") {
         const returned: any = ctx.context.returned;
         if (returned instanceof APIError) {
