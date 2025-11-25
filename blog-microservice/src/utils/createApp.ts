@@ -19,14 +19,17 @@ export function createApp() {
 
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
-  setupSwagger(app);
-  app.use(handleUserContext);
+
+  if (process.env.NODE_ENV === "development") {
+    setupSwagger(app);
+  }
 
   // Public routes (no authentication required)
-  app.use("/blog/public", publicRouter);
+  app.use("/public", publicRouter);
 
   // Authenticated routes - admin/coordinator
-  app.use("/blog/posts", checkRole(["ADMINISTRATOR", "COORDINATOR"]), postRouter);
+  app.use(handleUserContext);
+  app.use("/posts", checkRole(["ADMINISTRATOR", "COORDINATOR"]), postRouter);
 
   app.get("/", (req, res) => {
     res.send("Hello from blog-microservice");

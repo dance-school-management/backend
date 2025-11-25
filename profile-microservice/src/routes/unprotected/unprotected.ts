@@ -6,7 +6,7 @@ import {
 
 const router = Router();
 
-router.get("/instructors", getAllInstructors);
-router.get("/instructors/:id", getInstructor);
+router.get("/public/instructors", getAllInstructors);
+router.get("/public/instructors/:id", getInstructor);
 
 export default router;

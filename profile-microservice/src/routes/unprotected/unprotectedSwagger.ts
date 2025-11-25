@@ -1,6 +1,6 @@
 /**
  * @swagger
- * /instructors:
+ * /public/instructors:
  *   get:
  *     summary: Get all instructors
  *     description: >
@@ -47,7 +47,7 @@
 
 /**
  * @swagger
- * /instructors/{id}:
+ * /public/instructors/{id}:
  *   get:
  *     summary: Get instructor by ID
  *     description: >
