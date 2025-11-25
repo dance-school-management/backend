@@ -3,8 +3,14 @@ import "dotenv/config";
 import logger from "../utils/winston";
 import { StatusCodes } from "http-status-codes";
 
+const AUTH_FLAG = process.env.AUTH_FLAG;
 const AUTH_MICROSERVICE_URL = process.env.AUTH_MICROSERVICE_URL;
 const AUTH_TIMEOUT_MS = process.env.AUTH_TIMEOUT_MS ? parseInt(process.env.AUTH_TIMEOUT_MS) : 2000;
+
+const FAKE_USER = {
+  id: "provided-fake-id-string124",
+  role: "INSTRUCTOR",
+};
 
 export function authenticate() {
   return async (
@@ -14,6 +20,14 @@ export function authenticate() {
   ) => {
     const cookies = req.cookies;
     const betterAuthCookie = cookies["better-auth.session_token"];
+
+    if (AUTH_FLAG === "false") {
+      req.headers["user-context"] = Buffer.from(
+        JSON.stringify(FAKE_USER),
+      ).toString("base64");
+      next();
+      return;
+    }
 
     if (!betterAuthCookie) {
       res.sendStatus(StatusCodes.UNAUTHORIZED);
