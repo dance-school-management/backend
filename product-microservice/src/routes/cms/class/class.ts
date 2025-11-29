@@ -3,7 +3,7 @@ import {
   availableClassrooms,
   availableInstructors,
   createClass,
-  editClassStatus,
+  publishClass,
   getClassDetails,
 } from "../../../controllers/cms/class";
 import { body, param, query } from "express-validator";
@@ -26,7 +26,7 @@ router.post(
   createClass,
 );
 
-router.put("/status/edit", editClassStatus);
+router.patch("/publish", publishClass);
 
 router.get("/:id", getClassDetails);
 

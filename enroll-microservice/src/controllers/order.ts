@@ -107,6 +107,7 @@ export async function makeClassOrder(
           studentId,
           paymentStatus: PaymentStatus.PENDING,
           checkoutSessionId: session.id,
+          cost: classData.price
         },
       });
 
@@ -241,6 +242,7 @@ export async function makeCourseOrder(
           studentId,
           paymentStatus: PaymentStatus.PENDING,
           checkoutSessionId: session.id,
+          cost: courseData.price
         },
       });
 
@@ -249,6 +251,7 @@ export async function makeCourseOrder(
           classId: classObj.classId,
           studentId,
           paymentStatus: PaymentStatus.PART_OF_COURSE,
+          cost: 0
         })),
       });
 

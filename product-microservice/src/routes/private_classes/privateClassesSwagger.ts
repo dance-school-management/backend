@@ -21,7 +21,6 @@
  *                   - name
  *                   - description
  *                   - price
- *                   - currency
  *                 properties:
  *                   name:
  *                     type: string
@@ -33,9 +32,6 @@
  *                     type: number
  *                     format: decimal
  *                     example: 150.00
- *                   currency:
- *                     type: string
- *                     example: "PLN"
  *                   danceCategoryId:
  *                     type: integer
  *                     nullable: true
@@ -44,10 +40,6 @@
  *                     type: integer
  *                     nullable: true
  *                     example: 2
- *                   scheduleTileColor:
- *                     type: string
- *                     nullable: true
- *                     example: "#FFAA00"
  *     responses:
  *       200:
  *         description: Successfully created a private class template

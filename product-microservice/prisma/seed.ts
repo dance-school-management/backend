@@ -85,7 +85,7 @@ async function main() {
           name: course.name,
           description: course.description,
           courseStatus: course.courseStatus as CourseStatus,
-          customPrice: course.customPrice,
+          price: course.customPrice,
           advancementLevelId: course.advancementLevelId,
           danceCategoryId: course.danceCategoryId,
         },
@@ -106,14 +106,12 @@ async function main() {
         update: {},
         create: {
           classType: classTemplate.classType as ClassType,
-          currency: classTemplate.currency,
           description: classTemplate.description,
           name: classTemplate.name,
           price: classTemplate.price,
           advancementLevelId: classTemplate.advancementLevelId,
           courseId: classTemplate.courseId,
           danceCategoryId: classTemplate.danceCategoryId,
-          scheduleTileColor: classTemplate.scheduleTileColor,
         },
       });
     } catch (error: any) {

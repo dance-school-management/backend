@@ -11,9 +11,9 @@ generator client {
 }
 
 generator pdfErd {
-  provider = "prisma-erd-generator"
+  provider      = "prisma-erd-generator"
   mermaidConfig = "mermaidConfig.js"
-  output = "erd/erd.md"
+  output        = "erd/erd.md"
 }
 
 datasource db {
@@ -30,7 +30,7 @@ model Course {
   advancementLevel   AdvancementLevel? @relation(fields: [advancementLevelId], references: [id])
   advancementLevelId Int?
   courseStatus       CourseStatus
-  customPrice        Decimal?
+  price              Decimal?          @db.Decimal(precision: 10, scale: 2)
   classTemplate      ClassTemplate[]
 }
 
@@ -80,13 +80,11 @@ model ClassTemplate {
   name               String
   description        String
   price              Decimal           @db.Decimal(precision: 10, scale: 2)
-  currency           String
   danceCategory      DanceCategory?    @relation(fields: [danceCategoryId], references: [id])
   danceCategoryId    Int?
   advancementLevel   AdvancementLevel? @relation(fields: [advancementLevelId], references: [id])
   advancementLevelId Int?
   classType          ClassType
-  scheduleTileColor  String?
 }
 
 enum ClassType {

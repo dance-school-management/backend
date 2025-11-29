@@ -11,6 +11,7 @@ import { getOtherInstructorsData } from "../../grpc/client/profileCommunication/
 import { getInstructorsClasses } from "../../grpc/client/enrollCommunication/getInstructorsClasses";
 import { getClassesInstructors } from "../../grpc/client/enrollCommunication/getClassesInstructors";
 import { getClassesStudents } from "../../grpc/client/enrollCommunication/getClassesStudents";
+import { getInstructorsData } from "../../grpc/client/profileCommunication/getInstructorsData";
 
 export async function createClass(
   req: Request<
@@ -32,7 +33,6 @@ export async function createClass(
     peopleLimit,
     classTemplateId,
     isConfirmation,
-    classStatus,
   } = req.body;
 
   if (startDate >= endDate) {
@@ -51,7 +51,6 @@ export async function createClass(
       "Class template not found",
       [],
     );
-    return;
   }
 
   const thisClassroom = await prisma.classRoom.findFirst({
@@ -62,7 +61,6 @@ export async function createClass(
 
   if (!thisClassroom) {
     throw new UniversalError(StatusCodes.NOT_FOUND, "Classroom not found", []);
-    return;
   }
 
   const classRoomOccupation = await prisma.class.findFirst({
@@ -157,7 +155,7 @@ export async function createClass(
         endDate,
         peopleLimit,
         classRoomId,
-        classStatus,
+        classStatus: ClassStatus.HIDDEN,
       },
     });
 
@@ -188,42 +186,54 @@ async function deleteClass(id: number) {
   }
 }
 
-export async function editClassStatus(
-  req: Request<
-    {},
-    {},
-    { classId: number; newStatus: ClassStatus; isConfirmation: boolean }
-  >,
+export async function publishClass(
+  req: Request<{}, {}, { classId: number }>,
   res: Response,
   next: NextFunction,
 ) {
   checkValidations(validationResult(req));
 
-  const { classId, newStatus, isConfirmation } = req.body;
-  const currentClass = await prisma.class.findFirst({
+  const { classId } = req.body;
+
+  const theClass = await prisma.class.findFirst({
     where: {
       id: classId,
     },
+    include: {
+      classTemplate: {
+        include: {
+          course: true,
+        },
+      },
+    },
   });
-  if (!currentClass) {
+
+  if (!theClass) {
+    throw new UniversalError(StatusCodes.CONFLICT, "Class not found", []);
+  }
+
+  if (theClass.classStatus !== ClassStatus.HIDDEN) {
     throw new UniversalError(
-      StatusCodes.NOT_FOUND,
-      "There is no class with this id",
+      StatusCodes.CONFLICT,
+      "Class has already been published",
       [],
     );
   }
-  if (!isConfirmation) {
-    throw new Warning(
-      `This class' status is ${currentClass.classStatus} and you are trying to set it to ${newStatus}`,
+
+  if (theClass.classTemplate.courseId) {
+    throw new UniversalError(
       StatusCodes.CONFLICT,
+      "This class is part of course, you need to publish the entire course",
+      [],
     );
   }
+
   const result = await prisma.class.update({
     where: {
       id: classId,
     },
     data: {
-      classStatus: newStatus,
+      classStatus: ClassStatus.NORMAL,
     },
   });
   res.status(StatusCodes.OK).json(result);
@@ -257,9 +267,13 @@ export async function getClassDetails(
   if (!theClass)
     throw new UniversalError(StatusCodes.NOT_FOUND, "Class not found", []);
 
-  const classInstructors = await getClassesInstructors([id]);
+  const classInstructors = (await getClassesInstructors([id]))
+    .instructorsClassesIdsList;
 
-  // TODO - zwrócić jeszcze dane instruktorów
+  const classInstructorsIds = classInstructors.map((ci) => ci.instructorId);
+
+  const instructorsData = (await getInstructorsData(classInstructorsIds))
+    .instructorsDataList;
 
   const classStudents = await getClassesStudents([id]);
 
@@ -267,6 +281,7 @@ export async function getClassDetails(
     class: theClass,
     vacancies:
       theClass.peopleLimit - classStudents.studentsClassesIdsList.length,
+    instructors: instructorsData,
   };
 
   res.status(StatusCodes.OK).json(result);
@@ -281,8 +296,8 @@ export async function availableClassrooms(
 
   const { startDateQ, endDateQ } = req.query;
 
-  const startDate = new Date(startDateQ)
-  const endDate = new Date(endDateQ)
+  const startDate = new Date(startDateQ);
+  const endDate = new Date(endDateQ);
 
   const busyClassrooms = await prisma.class.findMany({
     where: {
@@ -317,8 +332,8 @@ export async function availableInstructors(
 
   const { startDateQ, endDateQ } = req.query;
 
-  const startDate = new Date(startDateQ)
-  const endDate = new Date(endDateQ)
+  const startDate = new Date(startDateQ);
+  const endDate = new Date(endDateQ);
 
   const classIdsOfClassesBetweenDates = await prisma.class.findMany({
     where: {
