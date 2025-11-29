@@ -35,30 +35,7 @@
  *             - NORMAL
  *             - CANCELLED
  *             - POSTPONED
- *             - MAKE_UP
  *           example: HIDDEN
- *         instructor:
- *           type: array
- *           items:
- *             type: object
- *             properties:
- *               instructorId:
- *                 type: integer
- *                 example: 3
- *               classId:
- *                 type: integer
- *                 example: 1
- *         student:
- *           type: array
- *           items:
- *             type: object
- *             properties:
- *               studentId:
- *                 type: integer
- *                 example: 4
- *               classId:
- *                 type: integer
- *                 example: 1
  */
 
 /**
@@ -86,7 +63,6 @@
  *               - peopleLimit
  *               - classTemplateId
  *               - isConfirmation
- *               - classStatus
  *             properties:
  *               instructorIds:
  *                 type: array
@@ -115,7 +91,7 @@
  *               peopleLimit:
  *                 type: integer
  *                 description: Maximum number of people allowed in the class
- *                 example: 25
+ *                 example: 2
  *               classTemplateId:
  *                 type: integer
  *                 description: ID of the class template associated with this class
@@ -126,10 +102,6 @@
  *                   Set to true to confirm creation even if peopleLimit exceeds the room capacity.
  *                   Required in such cases, otherwise the request will be rejected or ignored.
  *                 example: false
- *               classStatus:
- *                 type: string
- *                 description: Status of the class (e.g. OPEN, CANCELLED, etc.)
- *                 example: "HIDDEN"
  *     responses:
  *       "201":
  *         description: Class created successfully
@@ -149,12 +121,11 @@
 
 /**
  * @swagger
- * /cms/class/status/edit:
- *   put:
+ * /cms/class/publish:
+ *   patch:
  *     summary: Edit status of a class
  *     description: >
- *       Updates the status of a class based on its ID.
- *       Requires isConfirmation to be set to true to proceed, otherwise throws a Warning
+ *       Publishes a class (changes its status to normal).
  *     tags:
  *       - cms - Classes
  *     requestBody:
@@ -165,27 +136,11 @@
  *             type: object
  *             required:
  *               - classId
- *               - newStatus
- *               - isConfirmation
  *             properties:
  *               classId:
  *                 type: integer
  *                 description: ID of the class to update
  *                 example: 42
- *               newStatus:
- *                 type: string
- *                 description: New status to set for the class
- *                 enum:
- *                   - HIDDEN
- *                   - NORMAL
- *                   - CANCELLED
- *                   - POSTPONED
- *                   - MAKE_UP
- *                 example: CANCELLED
- *               isConfirmation:
- *                 type: boolean
- *                 description: Must be true if updating from HIDDEN to any status other than NORMAL
- *                 example: false
  *     responses:
  *       200:
  *         description: Class status successfully updated
@@ -193,17 +148,10 @@
  *           application/json:
  *             schema:
  *               type: object
- *               properties:
- *                 id:
- *                   type: integer
- *                 classStatus:
- *                   type: string
  *       400:
  *         description: Bad request (e.g., missing or invalid data)
  *       404:
  *         description: Class not found
- *       409:
- *         description: Conflict — confirmation required when changing status from HIDDEN
  *       500:
  *         description: Internal server error
  */

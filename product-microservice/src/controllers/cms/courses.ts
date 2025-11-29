@@ -1,14 +1,17 @@
-import { NextFunction, Request, Response } from "express";
+import { Request, Response } from "express";
 import { Prisma, CourseStatus, Course } from "../../../generated/client";
 import prisma from "../../utils/prisma";
-import { prismaError } from "prisma-better-errors";
 import { StatusCodes } from "http-status-codes";
 import { checkValidations } from "../../utils/errorHelpers";
 import { validationResult } from "express-validator";
 import { UniversalError } from "../../errors/UniversalError";
 import { Warning } from "../../errors/Warning";
 import { ClassType } from "../../../generated/client";
-import { addCourse } from "../../grpc/client/elasticsearchCommunication/addCourse";
+import {
+  getCoursesAllClassesPrice,
+  getCoursesStartAndEndDates,
+} from "../../utils/helpers";
+import { ClassStatus } from "../../../generated/client";
 
 interface GetCourseFilter {
   danceCategoryIds: number[] | null;
@@ -52,7 +55,6 @@ export async function getCourses(
   }
 
   const result = await prisma.course.findMany({
-    relationLoadStrategy: "join",
     include: {
       danceCategory: true,
       advancementLevel: true,
@@ -100,7 +102,6 @@ export async function createCourse(
         description: "description",
         price: 200,
         classType: ClassType.GROUP_CLASS,
-        currency: "PLN",
         courseId: newCourse.id,
       },
     });
@@ -112,15 +113,8 @@ export async function createCourse(
 export async function editCourse(req: Request<{}, {}, Course>, res: Response) {
   checkValidations(validationResult(req));
 
-  const {
-    id,
-    name,
-    description,
-    danceCategoryId,
-    advancementLevelId,
-    customPrice,
-    courseStatus,
-  } = req.body;
+  const { id, name, description, danceCategoryId, advancementLevelId, price } =
+    req.body;
 
   const editedCourse = await prisma.course.update({
     where: {
@@ -131,11 +125,93 @@ export async function editCourse(req: Request<{}, {}, Course>, res: Response) {
       description,
       danceCategoryId,
       advancementLevelId,
-      customPrice,
-      courseStatus,
+      price,
     },
   });
   res.status(StatusCodes.OK).json(editedCourse);
+}
+
+export async function publishCourse(
+  req: Request<{ id: string }, {}, { isConfirmation: boolean }>,
+  res: Response,
+) {
+  const id = Number(req.params.id);
+  const { isConfirmation } = req.body;
+
+  const theCourse = await prisma.course.findFirst({
+    where: {
+      id,
+    },
+  });
+
+  if (!theCourse) {
+    throw new UniversalError(StatusCodes.CONFLICT, "Course not found", []);
+  }
+
+  if (theCourse.courseStatus !== CourseStatus.HIDDEN) {
+    throw new UniversalError(
+      StatusCodes.CONFLICT,
+      "The course has already been published",
+      [],
+    );
+  }
+
+  const courseClasses = await prisma.class.findMany({
+    where: {
+      classTemplate: {
+        courseId: id,
+      },
+    },
+  });
+
+  if (!courseClasses.length) {
+    throw new UniversalError(
+      StatusCodes.CONFLICT,
+      "This course doesn't have any classes associated with it",
+      [],
+    );
+  }
+
+  if (!theCourse.price) {
+    throw new UniversalError(
+      StatusCodes.CONFLICT,
+      "This course doesn't have a price associated with it",
+      [],
+    );
+  }
+
+  const courseStartAndEndDates = (await getCoursesStartAndEndDates([id]))[0];
+
+  if (!isConfirmation) {
+    res.status(StatusCodes.OK).json({
+      courseStartDates: courseStartAndEndDates.courseStartDates,
+      courseEndDates: courseStartAndEndDates.courseEndDates,
+    });
+    return;
+  }
+
+  await prisma.$transaction(async (tx) => {
+    await tx.course.update({
+      where: {
+        id,
+      },
+      data: {
+        courseStatus: CourseStatus.SALE,
+      },
+    });
+    await tx.class.updateMany({
+      where: {
+        id: {
+          in: courseClasses.map((cc) => cc.id),
+        },
+      },
+      data: {
+        classStatus: ClassStatus.NORMAL,
+      },
+    });
+  });
+
+  res.status(StatusCodes.OK).json({ message: "Course successfully published" });
 }
 
 export async function getCourseDetails(
@@ -162,7 +238,9 @@ export async function getCourseDetails(
   if (!theCourse)
     throw new UniversalError(StatusCodes.NOT_FOUND, "Course not found", []);
 
-  res.status(StatusCodes.OK).json(theCourse);
+  const allClassesPrice = (await getCoursesAllClassesPrice([id]))[0].price;
+
+  res.status(StatusCodes.OK).json({ ...theCourse, allClassesPrice });
 }
 
 export async function deleteCourse(

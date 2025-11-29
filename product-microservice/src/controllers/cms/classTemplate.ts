@@ -20,30 +20,16 @@ export async function createClassTemplate(
     name,
     description,
     price,
-    currency,
     danceCategoryId,
     advancementLevelId,
     classType,
-    scheduleTileColor,
     isConfirmation,
   } = req.body;
 
-  if (
-    courseId &&
-    (classType === ClassType.PRIVATE_CLASS ||
-      classType === ClassType.THEME_PARTY)
-  ) {
+  if (classType === ClassType.PRIVATE_CLASS) {
     throw new UniversalError(
       StatusCodes.CONFLICT,
-      "Class template with class type 'private class' or 'theme_party' cannot be binded to a course",
-      [],
-    );
-  }
-
-  if (!courseId && classType === ClassType.GROUP_CLASS) {
-    throw new UniversalError(
-      StatusCodes.CONFLICT,
-      "Class template with class type 'group class' must be binded to a course",
+      "You can't create a private class from here",
       [],
     );
   }
@@ -67,11 +53,9 @@ export async function createClassTemplate(
       name,
       description,
       price,
-      currency,
       danceCategoryId,
       advancementLevelId,
       classType,
-      scheduleTileColor,
     },
   });
 
@@ -89,29 +73,15 @@ export async function editClassTemplate(
     name,
     description,
     price,
-    currency,
     danceCategoryId,
     advancementLevelId,
     classType,
-    scheduleTileColor,
   } = req.body;
 
-  if (
-    courseId &&
-    (classType === ClassType.PRIVATE_CLASS ||
-      classType === ClassType.THEME_PARTY)
-  ) {
+  if (classType === ClassType.PRIVATE_CLASS) {
     throw new UniversalError(
       StatusCodes.CONFLICT,
-      "Class template with class type 'private class' or 'theme_party' cannot be binded to a course",
-      [],
-    );
-  }
-
-  if (!courseId && classType === ClassType.GROUP_CLASS) {
-    throw new UniversalError(
-      StatusCodes.CONFLICT,
-      "Class template with class type 'group class' must be binded to a course",
+      "You can't create a private class from here",
       [],
     );
   }
@@ -125,11 +95,9 @@ export async function editClassTemplate(
       name,
       description,
       price,
-      currency,
       danceCategoryId,
       advancementLevelId,
       classType,
-      scheduleTileColor,
     },
   });
 

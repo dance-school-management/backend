@@ -5,10 +5,13 @@ import {
   editCourse,
   getCourseDetails,
   getCourses,
+  publishCourse,
 } from "../../../controllers/cms/courses";
 import { body } from "express-validator";
 
 const router = Router();
+
+router.patch("/:id/publish", publishCourse);
 
 router.post("/", getCourses);
 

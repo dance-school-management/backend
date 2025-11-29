@@ -29,8 +29,6 @@ export async function createPrivateClassTemplate(
       advancementLevelId: classTemplateData.advancementLevelId,
       classType: ClassType.PRIVATE_CLASS,
       price: classTemplateData.price,
-      currency: classTemplateData.currency,
-      scheduleTileColor: classTemplateData.scheduleTileColor,
     },
   });
 
