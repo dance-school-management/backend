@@ -4,8 +4,8 @@
  *   get:
  *     summary: Search users by name, surname, email, or phone
  *     description: >
- *       Returns a list of users with STUDENT role whose profile fields match the provided query parameters.
- *       Each query parameter is optional and uses partial matching.
+ *       Returns a list of users with STUDENT role whose profile fields match the provided query parameter.
+ *       The query parameter is optional and uses partial matching.
  *     tags:
  *       - users
  *     parameters:
