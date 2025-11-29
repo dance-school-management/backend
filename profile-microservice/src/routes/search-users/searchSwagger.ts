@@ -16,7 +16,7 @@
  *         description: Part of the user's name, surname, email, or phone to search for.
  *     responses:
  *       200:
- *         description: List of up to 5students matching the search criteria.
+ *         description: List of up to 5 students matching the search criteria.
  *         content:
  *           application/json:
  *             schema:
