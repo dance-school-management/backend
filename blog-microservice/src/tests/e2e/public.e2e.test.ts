@@ -8,6 +8,15 @@ import {
 } from "../helpers/testDatabase";
 import { BlogPost, PrismaClient } from "../../../generated/client";
 
+jest.mock("../../utils/aws-s3/crud", () => ({
+  uploadPublicPhoto: jest.fn().mockResolvedValue("mocked-s3-path.jpg"),
+  deletePublicPhoto: jest.fn().mockResolvedValue(undefined),
+  uploadMultiplePublicPhotos: jest
+    .fn()
+    .mockResolvedValue(["mocked-s3-path1.jpg", "mocked-s3-path2.jpg"]),
+  deleteMultiplePublicPhotos: jest.fn().mockResolvedValue(undefined),
+}));
+
 // Mock prisma to use test database (will be set in beforeAll)
 let testPrisma: PrismaClient;
 jest.mock("../../utils/prisma", () => ({
@@ -69,7 +78,9 @@ describe("Public Routes (E2E Tests)", () => {
       expect(response.status).toBe(200);
       expect(response.body.data.length).toBe(2);
       expect(response.body.pagination.total).toBe(2);
-      expect(response.body.data.every((p: BlogPost) => p.status === "published")).toBe(true);
+      expect(
+        response.body.data.every((p: BlogPost) => p.status === "published")
+      ).toBe(true);
     });
 
     it("should not return draft posts", async () => {
@@ -317,7 +328,9 @@ describe("Public Routes (E2E Tests)", () => {
         },
       });
 
-      const response = await request(app).get("/blog/public/posts/test-post-slug");
+      const response = await request(app).get(
+        "/blog/public/posts/test-post-slug"
+      );
 
       expect(response.status).toBe(200);
       expect(response.body.slug).toBe("test-post-slug");
@@ -368,4 +381,3 @@ describe("Public Routes (E2E Tests)", () => {
     });
   });
 });
-

@@ -9,6 +9,7 @@ import { handleUserContext } from "../middlewares/handleUserContext";
 import { checkRole } from "../middlewares/checkRole";
 import postRouter from "../routes/post/post";
 import publicRouter from "../routes/post/public";
+import photoRouter from "../routes/photo/photo";
 
 export function createApp() {
   const app = express();
@@ -26,7 +27,14 @@ export function createApp() {
   app.use("/blog/public", publicRouter);
 
   // Authenticated routes - admin/coordinator
-  app.use("/blog/posts", checkRole(["ADMINISTRATOR", "COORDINATOR"]), postRouter);
+  app.use(
+    "/blog/posts",
+    checkRole(["ADMINISTRATOR", "COORDINATOR"]),
+    postRouter
+  );
+
+  // Authenticated routes - admin/coordinator
+  app.use("/photo", checkRole(["ADMINISTRATOR", "COORDINATOR"]), photoRouter);
 
   app.get("/", (req, res) => {
     res.send("Hello from blog-microservice");
@@ -39,4 +47,3 @@ export function createApp() {
   app.use(errorHandler);
   return app;
 }
-

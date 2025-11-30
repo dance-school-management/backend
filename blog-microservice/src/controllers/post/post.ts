@@ -7,6 +7,8 @@ import { UniversalError } from "../../errors/UniversalError";
 import { generateSlug, generateUniqueSlug } from "../../utils/slug";
 import { calculateReadingTime } from "../../utils/readingTime";
 import { PostStatus } from "../../../generated/client";
+import { deleteMultiplePublicPhotos } from "../../utils/aws-s3/crud";
+import { log } from "console";
 
 interface CreatePostBody {
   title: string;
@@ -14,6 +16,7 @@ interface CreatePostBody {
   excerpt: string;
   tags?: string[];
   status?: PostStatus;
+  photosIds?: number[];
 }
 
 interface UpdatePostBody {
@@ -22,6 +25,7 @@ interface UpdatePostBody {
   excerpt?: string;
   tags?: string[];
   status?: PostStatus;
+  photosIds?: number[];
 }
 
 interface PublishPostBody {
@@ -36,20 +40,27 @@ interface PinPostBody {
  * Create a new blog post
  */
 export async function createPost(
-  req: Request<{}, {}, CreatePostBody> & { user?: any; },
+  req: Request<{}, {}, CreatePostBody> & { user?: any },
   res: Response,
-  next: NextFunction,
+  next: NextFunction
 ) {
   checkValidations(validationResult(req));
 
-  const { title, content, excerpt, tags = [], status = "draft" } = req.body;
+  const {
+    title,
+    content,
+    excerpt,
+    tags = [],
+    status = "draft",
+    photosIds,
+  } = req.body;
   const authorId = req.user?.id;
 
   if (!authorId) {
     throw new UniversalError(
       StatusCodes.UNAUTHORIZED,
       "User context not found",
-      [],
+      []
     );
   }
 
@@ -60,7 +71,7 @@ export async function createPost(
   });
   const slug = generateUniqueSlug(
     baseSlug,
-    existingSlugs.map((p) => p.slug),
+    existingSlugs.map((p) => p.slug)
   );
 
   // Calculate reading time
@@ -68,7 +79,6 @@ export async function createPost(
 
   // Set publishedAt if status is published
   const publishedAt = status === "published" ? new Date() : null;
-
   const post = await prisma.blogPost.create({
     data: {
       title,
@@ -82,6 +92,16 @@ export async function createPost(
       isPinned: false,
       pinnedUntil: null,
       publishedAt,
+      BlogPhotosOnBlogPosts: {
+        create: photosIds ? photosIds.map((id) => ({ blogPhotoId: id })) : [],
+      },
+    },
+    include: {
+      BlogPhotosOnBlogPosts: {
+        select: {
+          blogPhoto: true,
+        },
+      },
     },
   });
 
@@ -92,14 +112,14 @@ export async function createPost(
  * Update a blog post (admin only)
  */
 export async function updatePost(
-  req: Request<{ idOrSlug: string; }, {}, UpdatePostBody> & { user?: any; },
+  req: Request<{ idOrSlug: string }, {}, UpdatePostBody> & { user?: any },
   res: Response,
-  next: NextFunction,
+  next: NextFunction
 ) {
   checkValidations(validationResult(req));
 
   const { idOrSlug } = req.params;
-  const { title, content, excerpt, tags, status } = req.body;
+  const { title, content, excerpt, tags, status, photosIds } = req.body;
 
   // Find post by ID or slug
   const existingPost = await prisma.blogPost.findFirst({
@@ -112,16 +132,11 @@ export async function updatePost(
   });
 
   if (!existingPost) {
-    throw new UniversalError(
-      StatusCodes.NOT_FOUND,
-      "Post not found",
-      [],
-    );
+    throw new UniversalError(StatusCodes.NOT_FOUND, "Post not found", []);
   }
 
   // Prepare update data
   const updateData: any = {};
-
   if (title !== undefined) {
     updateData.title = title;
     // If title changes, update slug
@@ -133,7 +148,7 @@ export async function updatePost(
       });
       updateData.slug = generateUniqueSlug(
         baseSlug,
-        existingSlugs.map((p) => p.slug),
+        existingSlugs.map((p) => p.slug)
       );
     }
   }
@@ -164,23 +179,86 @@ export async function updatePost(
     }
   }
 
-  updateData.updatedAt = new Date();
+  if (photosIds !== undefined) {
+    const currentPhotosIds = (
+      await prisma.blogPhotosOnBlogPosts.findMany({
+        where: { blogPostId: existingPost.id },
+        select: { blogPhotoId: true },
+      })
+    ).map((bp) => bp.blogPhotoId);
 
-  const updatedPost = await prisma.blogPost.update({
-    where: { id: existingPost.id },
-    data: updateData,
-  });
+    const toDeletePhotos = currentPhotosIds.filter(
+      (id) => !photosIds.includes(id)
+    );
+    const onlyUsedThisBlogPost = await prisma.blogPhotosOnBlogPosts.groupBy({
+      by: ["blogPhotoId"],
+      where: {
+        blogPhotoId: { in: toDeletePhotos },
+      },
+      _count: {
+        blogPostId: true,
+      },
+    });
 
-  res.status(StatusCodes.OK).json(updatedPost);
+    const photosIdsToDelete = onlyUsedThisBlogPost
+      .filter((group) => group._count.blogPostId === 1)
+      .map((group) => group.blogPhotoId);
+    const photosToDelete = await prisma.blogPhoto.findMany({
+      where: {
+        id: { in: photosIdsToDelete },
+      },
+    });
+
+    const photoPathsToDelete = photosToDelete.map((photo) => photo.path);
+
+    try {
+      await deleteMultiplePublicPhotos(photoPathsToDelete);
+    } catch (error) {
+      log("Error deleting photos from storage:", error);
+    }
+    console.log(
+      photosIds?.map((id) => ({
+        blogPhotoId: id,
+        blogPostId: existingPost.id,
+      })) || []
+    );
+
+    updateData.updatedAt = new Date();
+    const updatedPost = await prisma.blogPost.update({
+      where: { id: existingPost.id },
+      data: {
+        ...(photosIds !== undefined
+          ? {
+              BlogPhotosOnBlogPosts: {
+                deleteMany: {},
+                create: photosIds.map((id) => ({
+                  blogPhotoId: id,
+                })),
+              },
+            }
+          : {}),
+        ...updateData,
+      },
+      include: {
+        BlogPhotosOnBlogPosts: {
+          select: {
+            blogPhoto: true,
+          },
+        },
+      },
+    });
+
+    res.status(StatusCodes.OK).json(updatedPost);
+  }
 }
 
 /**
  * Publish a post
  */
 export async function publishPost(
-  req: Request<{ idOrSlug: string; }, {}, PublishPostBody> & { user?: any; },
+  req: Request<{ idOrSlug: string }, {}, PublishPostBody> & { user?: any },
   res: Response,
-  next: NextFunction,
+  next: NextFunction
 ) {
   checkValidations(validationResult(req));
 
@@ -197,11 +275,7 @@ export async function publishPost(
   });
 
   if (!existingPost) {
-    throw new UniversalError(
-      StatusCodes.NOT_FOUND,
-      "Post not found",
-      [],
-    );
+    throw new UniversalError(StatusCodes.NOT_FOUND, "Post not found", []);
   }
 
   // If already published, return 204
@@ -225,9 +299,9 @@ export async function publishPost(
  * Unpublish a post
  */
 export async function unpublishPost(
-  req: Request<{ idOrSlug: string; }, {}, {}> & { user?: any; },
+  req: Request<{ idOrSlug: string }, {}, {}> & { user?: any },
   res: Response,
-  next: NextFunction,
+  next: NextFunction
 ) {
   checkValidations(validationResult(req));
 
@@ -243,11 +317,7 @@ export async function unpublishPost(
   });
 
   if (!existingPost) {
-    throw new UniversalError(
-      StatusCodes.NOT_FOUND,
-      "Post not found",
-      [],
-    );
+    throw new UniversalError(StatusCodes.NOT_FOUND, "Post not found", []);
   }
 
   // If already draft, return 204
@@ -271,9 +341,9 @@ export async function unpublishPost(
  * Pin a post
  */
 export async function pinPost(
-  req: Request<{ idOrSlug: string; }, {}, PinPostBody> & { user?: any; },
+  req: Request<{ idOrSlug: string }, {}, PinPostBody> & { user?: any },
   res: Response,
-  next: NextFunction,
+  next: NextFunction
 ) {
   checkValidations(validationResult(req));
 
@@ -290,11 +360,7 @@ export async function pinPost(
   });
 
   if (!existingPost) {
-    throw new UniversalError(
-      StatusCodes.NOT_FOUND,
-      "Post not found",
-      [],
-    );
+    throw new UniversalError(StatusCodes.NOT_FOUND, "Post not found", []);
   }
 
   await prisma.blogPost.update({
@@ -312,9 +378,9 @@ export async function pinPost(
  * Unpin a post
  */
 export async function unpinPost(
-  req: Request<{ idOrSlug: string; }, {}, {}> & { user?: any; },
+  req: Request<{ idOrSlug: string }, {}, {}> & { user?: any },
   res: Response,
-  next: NextFunction,
+  next: NextFunction
 ) {
   checkValidations(validationResult(req));
 
@@ -330,11 +396,7 @@ export async function unpinPost(
   });
 
   if (!existingPost) {
-    throw new UniversalError(
-      StatusCodes.NOT_FOUND,
-      "Post not found",
-      [],
-    );
+    throw new UniversalError(StatusCodes.NOT_FOUND, "Post not found", []);
   }
 
   // If already unpinned, return 204
@@ -358,9 +420,9 @@ export async function unpinPost(
  * Delete a post
  */
 export async function deletePost(
-  req: Request<{ idOrSlug: string; }, {}, {}> & { user?: any; },
+  req: Request<{ idOrSlug: string }, {}, {}> & { user?: any },
   res: Response,
-  next: NextFunction,
+  next: NextFunction
 ) {
   checkValidations(validationResult(req));
 
@@ -376,15 +438,53 @@ export async function deletePost(
   });
 
   if (!existingPost) {
-    throw new UniversalError(
-      StatusCodes.NOT_FOUND,
-      "Post not found",
-      [],
-    );
+    throw new UniversalError(StatusCodes.NOT_FOUND, "Post not found", []);
+  }
+
+  const photosToDelete = await prisma.blogPhotosOnBlogPosts.findMany({
+    where: { blogPostId: existingPost.id },
+    select: {
+      blogPhoto: {
+        select: {
+          id: true,
+          path: true,
+        },
+      },
+    },
+  });
+
+  const photosToDeleteFromStorage = await prisma.blogPhotosOnBlogPosts.groupBy({
+    by: ["blogPhotoId"],
+    where: {
+      blogPhotoId: {
+        in: photosToDelete.map((p) => p.blogPhoto.id),
+      },
+    },
+    _count: {
+      blogPostId: true,
+    },
+  });
+
+  const photoIdsToDelete = photosToDeleteFromStorage
+    .filter((group) => group._count.blogPostId === 1)
+    .map((group) => group.blogPhotoId);
+
+  const photoPathsToDelete = photosToDelete
+    .filter((p) => photoIdsToDelete.includes(p.blogPhoto.id))
+    .map((p) => p.blogPhoto.path);
+
+  try {
+    await deleteMultiplePublicPhotos(photoPathsToDelete);
+  } catch (error) {
+    log("Error deleting photos from storage:", error);
   }
 
   await prisma.blogPost.delete({
     where: { id: existingPost.id },
+  });
+
+  await prisma.blogPhoto.deleteMany({
+    where: { id: { in: photoIdsToDelete } },
   });
 
   res.status(StatusCodes.NO_CONTENT).send();
@@ -404,9 +504,9 @@ export async function getAllPosts(
       status?: string;
       q?: string;
     }
-  > & { user?: any; },
+  > & { user?: any },
   res: Response,
-  next: NextFunction,
+  next: NextFunction
 ) {
   checkValidations(validationResult(req));
 
@@ -451,6 +551,11 @@ export async function getAllPosts(
         createdAt: true,
         updatedAt: true,
         publishedAt: true,
+        BlogPhotosOnBlogPosts: {
+          select: {
+            blogPhoto: true,
+          },
+        },
       },
     }),
     prisma.blogPost.count({ where }),
@@ -471,9 +576,9 @@ export async function getAllPosts(
  * Get single post by ID or slug (admin view)
  */
 export async function getPostByIdOrSlug(
-  req: Request<{ idOrSlug: string; }, {}, {}> & { user?: any; },
+  req: Request<{ idOrSlug: string }, {}, {}> & { user?: any },
   res: Response,
-  next: NextFunction,
+  next: NextFunction
 ) {
   checkValidations(validationResult(req));
 
@@ -486,16 +591,18 @@ export async function getPostByIdOrSlug(
         { slug: idOrSlug },
       ],
     },
+    include: {
+      BlogPhotosOnBlogPosts: {
+        select: {
+          blogPhoto: true,
+        },
+      },
+    },
   });
 
   if (!post) {
-    throw new UniversalError(
-      StatusCodes.NOT_FOUND,
-      "Post not found",
-      [],
-    );
+    throw new UniversalError(StatusCodes.NOT_FOUND, "Post not found", []);
   }
 
   res.status(StatusCodes.OK).json(post);
 }
-

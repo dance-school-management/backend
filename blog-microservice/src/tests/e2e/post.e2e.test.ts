@@ -9,6 +9,15 @@ import {
 import { BlogPost, PrismaClient } from "../../../generated/client";
 import { createMockUserContext } from "../helpers/testHelpers";
 
+jest.mock("../../utils/aws-s3/crud", () => ({
+  uploadPublicPhoto: jest.fn().mockResolvedValue("mocked-s3-path.jpg"),
+  deletePublicPhoto: jest.fn().mockResolvedValue(undefined),
+  uploadMultiplePublicPhotos: jest
+    .fn()
+    .mockResolvedValue(["mocked-s3-path1.jpg", "mocked-s3-path2.jpg"]),
+  deleteMultiplePublicPhotos: jest.fn().mockResolvedValue(undefined),
+}));
+
 // Mock prisma to use test database (will be set in beforeAll)
 let testPrisma: PrismaClient;
 jest.mock("../../utils/prisma", () => ({
@@ -40,6 +49,7 @@ describe("Post Routes (E2E Tests)", () => {
 
   beforeEach(async () => {
     await cleanTestDatabase();
+    await prisma.blogPhoto.deleteMany();
   });
 
   describe("POST /blog/posts", () => {
@@ -338,7 +348,9 @@ describe("Post Routes (E2E Tests)", () => {
         .query({ status: "published" });
 
       expect(response.status).toBe(200);
-      expect(response.body.data.every((p: BlogPost) => p.status === "published")).toBe(true);
+      expect(
+        response.body.data.every((p: BlogPost) => p.status === "published")
+      ).toBe(true);
     });
   });
 
@@ -386,4 +398,3 @@ describe("Post Routes (E2E Tests)", () => {
     });
   });
 });
-
