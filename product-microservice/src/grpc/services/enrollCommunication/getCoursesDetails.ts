@@ -24,44 +24,26 @@ export async function getCoursesDetails(
     },
   });
 
-  const coursesDetails = await Promise.all(coursesData.map(async (courseData) => {
-    let price;
-    if (courseData.customPrice)
-      price = Number(courseData.customPrice.toFixed(2));
-    else {
-      const allCourseClasses = await prisma.class.findMany({
-        where: {
-          classTemplate: {
-            courseId: courseData.id,
-          },
-        },
-        include: {
-          classTemplate: true,
-        },
-      });
-      price = Number(
-        allCourseClasses
-          .reduce((acc, cur) => acc + cur.classTemplate.price.toNumber(), 0)
-          .toFixed(2),
-      );
-    }
+  const coursesDetails = await Promise.all(
+    coursesData.map(async (courseData) => {
+      const courseDetails = new CourseDetailsResponse();
+      courseDetails
+        .setCourseId(courseData.id)
+        .setDescription(courseData.description)
+        .setName(courseData.name)
+        .setCourseStatus(courseData.courseStatus.toString())
+        .setPrice(courseData.price?.toNumber() || 0);
+      if (courseData.danceCategory)
+        courseDetails.setDanceCategoryName(courseData.danceCategory.name);
+      if (courseData.advancementLevel)
+        courseDetails.setAdvancementLevelName(courseData.advancementLevel.name);
 
-    const courseDetails = new CourseDetailsResponse();
-    courseDetails.setCourseId(courseData.id)
-    .setDescription(courseData.description)
-    .setName(courseData.name)
-    .setCourseStatus(courseData.courseStatus.toString())
-    if (courseData.danceCategory)
-      courseDetails.setDanceCategoryName(courseData.danceCategory.name);
-    if (courseData.advancementLevel)
-      courseDetails.setAdvancementLevelName(courseData.advancementLevel.name);
-    courseDetails.setPrice(price);
-
-    return courseDetails;
-  }));
+      return courseDetails;
+    }),
+  );
 
   const res = new CoursesDetailsResponse();
   res.setCoursesDetailsList(coursesDetails);
 
-  callback(null, res)
+  callback(null, res);
 }

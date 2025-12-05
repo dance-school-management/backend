@@ -4,9 +4,9 @@ generator client {
 }
 
 generator pdfErd {
-  provider = "prisma-erd-generator"
+  provider      = "prisma-erd-generator"
   mermaidConfig = "mermaidConfig.js"
-  output = "erd/erd.md"
+  output        = "erd/erd.md"
 }
 
 datasource db {

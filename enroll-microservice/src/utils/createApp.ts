@@ -12,6 +12,7 @@ import { handleUserContext } from "../middlewares/handleUserContext";
 import { checkRole } from "../middlewares/checkRole";
 import webhookRouter from "../routes/stripe/webhooks/webhook";
 import progressRouter from "../routes/student-progress/studentProgress";
+import adminRouter from "../routes/finances/financialEndpoints";
 
 export function createApp() {
   const app = express();
@@ -31,6 +32,7 @@ export function createApp() {
   app.use("/progress", checkRole(["STUDENT"]), progressRouter);
   app.use("/ticket/retrieve", checkRole(["STUDENT"]), ticketRetrieveRouter);
   app.use("/ticket/scan", checkRole(["COORDINATOR"]), ticketScanRouter);
+  app.use("/admin", adminRouter);
   app.get("/", (req, res) => {
     res.send("Hello from enroll-microservice");
   });

@@ -6,7 +6,6 @@ import { ClassStatus, Prisma } from "../../generated/client";
 import { getStudentClasses } from "../grpc/client/enrollCommunication/getStudentClasses";
 import { getInstructorsClasses } from "../grpc/client/enrollCommunication/getInstructorsClasses";
 import { CourseStatus } from "../../generated/client";
-import { getCoursesPrices } from "../utils/helpers";
 import { getClassesInstructors } from "../grpc/client/enrollCommunication/getClassesInstructors";
 import { getInstructorsData } from "../grpc/client/profileCommunication/getInstructorsData";
 
@@ -361,40 +360,22 @@ export async function getSearchAndFilterCourses(
     coursesInstructorsMap.set(cci.courseId, [...current, ...cci.instructors]);
   });
 
-  const coursesClassesPricesMap: Map<number, number[]> = new Map();
-
-  coursesClasses.forEach((cc) => {
-    if (!cc.classTemplate.courseId) return;
-    if (cc.classTemplate.course?.customPrice) {
-      coursesClassesPricesMap.set(cc.classTemplate.courseId, [
-        Number(cc.classTemplate.course.customPrice.toFixed(2)),
-      ]);
-      return;
-    }
-    if (!coursesClassesPricesMap.get(cc.classTemplate.courseId)) {
-      coursesClassesPricesMap.set(cc.classTemplate.courseId, [
-        Number(cc.classTemplate.price.toFixed(2)),
-      ]);
-    } else {
-      coursesClassesPricesMap.set(cc.classTemplate.courseId, [
-        ...(coursesClassesPricesMap.get(cc.classTemplate.courseId) || []),
-        Number(cc.classTemplate.price.toFixed(2)),
-      ]);
-    }
-  });
-
-  const coursesFilteredByPrice: { courseId: number; price: number }[] = [];
-
-  const keys = [...coursesClassesPricesMap.keys()];
-
-  keys.forEach((k) => {
-    const coursePrice = (coursesClassesPricesMap.get(k) ?? []).reduce(
-      (acc, cur) => acc + cur,
-      0,
-    );
-    if (coursePrice && coursePrice >= priceMin && coursePrice <= priceMax)
-      coursesFilteredByPrice.push({ courseId: k, price: coursePrice });
-  });
+  const coursesFilteredByPrice = coursesClasses
+    .filter((cc) => {
+      const coursePrice = cc.classTemplate.course?.price?.toNumber();
+      return coursePrice && coursePrice >= priceMin && coursePrice <= priceMax;
+    })
+    .map((cc) => {
+      if (cc.classTemplate.courseId) {
+        return {
+          courseId: cc.classTemplate.courseId,
+          price: cc.classTemplate.course?.price?.toNumber(),
+        };
+      } else {
+        return null;
+      }
+    })
+    .filter((item) => item !== null);
 
   const resultCourses = await prisma.course.findMany({
     where: {
@@ -491,8 +472,6 @@ export async function getCoursesClasses(
 
   const keys = [...coursesClassesMap.keys()];
 
-  const coursesPrices = await getCoursesPrices(coursesIds);
-
   const classesIds = allClasses.map((cl) => cl.id);
 
   const classesInstructorsIds = (await getClassesInstructors(classesIds))
@@ -532,8 +511,6 @@ export async function getCoursesClasses(
       courseData: {
         ...allClasses.find((ac) => ac.classTemplate.courseId === k)
           ?.classTemplate.course,
-        coursePrice: coursesPrices.find((cp) => cp.courseId === k)?.price,
-        customPrice: undefined,
         instructors: [
           ...new Set(
             classesInstructors

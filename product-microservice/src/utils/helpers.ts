@@ -1,6 +1,6 @@
 import prisma from "./prisma";
 
-export async function getCoursesPrices(coursesIds: number[]) {
+export async function getCoursesAllClassesPrice(coursesIds: number[]) {
   const coursesClasses = await prisma.class.findMany({
     where: {
       classTemplate: {
@@ -22,12 +22,6 @@ export async function getCoursesPrices(coursesIds: number[]) {
 
   coursesClasses.forEach((cc) => {
     if (!cc.classTemplate.courseId) return;
-    if (cc.classTemplate.course?.customPrice) {
-      coursesClassesPricesMap.set(cc.classTemplate.courseId, [
-        Number(cc.classTemplate.course.customPrice.toFixed(2)),
-      ]);
-      return;
-    }
     if (!coursesClassesPricesMap.get(cc.classTemplate.courseId)) {
       coursesClassesPricesMap.set(cc.classTemplate.courseId, [
         Number(cc.classTemplate.price.toFixed(2)),

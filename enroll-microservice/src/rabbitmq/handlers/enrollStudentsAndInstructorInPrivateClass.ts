@@ -1,4 +1,5 @@
 import { PaymentStatus } from "../../../generated/client";
+import { getClassesDetails } from "../../grpc/client/productCommunication/getClassesDetails";
 import prisma from "../../utils/prisma";
 import { EnrollStudentsAndInstructorInPrivateClassMsgData } from "../types";
 
@@ -12,11 +13,15 @@ export const EnrollStudentsAndInstructorInPrivateClass = async (
   const studentIds = msgData.studentIds;
   const instructorIds = msgData.instructorIds;
 
+  const classDetails = (await getClassesDetails([classId])).classesdetailsList[0]
+
   await prisma.classTicket.createMany({
     data: studentIds.map((si) => ({
       classId,
       studentId: si,
-      paymentStatus: PaymentStatus.PENDING
+      paymentStatus: PaymentStatus.PENDING,
+      cost: classDetails.price,
+      createdAt: new Date()
     }))
   });
 

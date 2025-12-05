@@ -11,9 +11,9 @@ generator client {
 }
 
 generator pdfErd {
-  provider = "prisma-erd-generator"
+  provider      = "prisma-erd-generator"
   mermaidConfig = "mermaidConfig.js"
-  output = "erd/erd.md"
+  output        = "erd/erd.md"
 }
 
 datasource db {
@@ -26,29 +26,41 @@ enum AttendanceStatus {
   ABSENT
 }
 
-model ClassTicket {         
+model ClassTicket {
   studentId             String
   classId               Int
-  qrCodeUUID            String         @default(uuid()) @unique
+  qrCodeUUID            String           @unique @default(uuid())
   attendanceStatus      AttendanceStatus @default(ABSENT)
   attendanceLastUpdated DateTime?
 
-  paymentStatus         PaymentStatus
-  paymentIntentId       String?          @unique
+  paymentStatus   PaymentStatus
+  paymentIntentId String?       @unique
 
-  checkoutSessionId     String?          @unique
+  checkoutSessionId String? @unique
+
+  cost Decimal @db.Decimal(precision: 10, scale: 2)
+
+  canBeRefunded Boolean?
+
+  createdAt     DateTime
 
   @@id([studentId, classId])
 }
 
 model CourseTicket {
-  studentId         String
-  courseId          Int
+  studentId String
+  courseId  Int
 
-  paymentStatus     PaymentStatus
-  paymentIntentId   String?       @unique
+  paymentStatus   PaymentStatus
+  paymentIntentId String?       @unique
 
-  checkoutSessionId String?       @unique
+  checkoutSessionId String? @unique
+
+  cost Decimal @db.Decimal(precision: 10, scale: 2)
+
+  canBeRefunded Boolean?
+
+  createdAt     DateTime
 
   @@id([studentId, courseId])
 }

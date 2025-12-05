@@ -94,7 +94,6 @@ export async function makeClassOrder(
   }
 
   if (!existingReservation) {
-    const expiresAt = new Date(new Date().getTime() + 35 * 1000 * 60);
 
     await prisma.$transaction(async (tx) => {
       const { session, classData } = await createClassCheckoutSession(
@@ -107,6 +106,8 @@ export async function makeClassOrder(
           studentId,
           paymentStatus: PaymentStatus.PENDING,
           checkoutSessionId: session.id,
+          cost: classData.price,
+          createdAt: new Date()
         },
       });
 
@@ -241,6 +242,8 @@ export async function makeCourseOrder(
           studentId,
           paymentStatus: PaymentStatus.PENDING,
           checkoutSessionId: session.id,
+          cost: courseData.price,
+          createdAt: new Date()
         },
       });
 
@@ -249,6 +252,8 @@ export async function makeCourseOrder(
           classId: classObj.classId,
           studentId,
           paymentStatus: PaymentStatus.PART_OF_COURSE,
+          cost: 0,
+          createdAt: new Date()
         })),
       });
 
