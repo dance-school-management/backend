@@ -323,6 +323,25 @@ export async function editPrivateClass(
 
   const instructorId = req.user?.id;
 
+  const theClass = await prisma.class.findFirst({
+    where: {
+      id: classData.id,
+    },
+    include: { classTemplate: true },
+  });
+
+  if (!theClass) {
+    throw new UniversalError(StatusCodes.CONFLICT, "Class not found", []);
+  }
+
+  if (theClass.createdBy !== instructorId) {
+    throw new UniversalError(
+      StatusCodes.CONFLICT,
+      "This class was not created by you",
+      [{ field: "req.user.id", message: "It is not your class" }],
+    );
+  }
+
   const { theClassTemplate } = await validatePrivateClass(
     classData,
     studentIds,
@@ -345,7 +364,7 @@ export async function editPrivateClass(
   const message: NotificationMsgData = {
     userIds: studentIds,
     title: `Invitation for class changed - ${theClassTemplate.name}`,
-    body: `Your invitation for a private class ${theClassTemplate.name} has changed. You can view changes in the ticket page.`,
+    body: `Your invitation for a private class ${theClass.classTemplate.name} has changed. You can view changes in the ticket page.`,
     payload: {
       event: "CLASS_INVITATION_CHANGED",
       classId: updatedClass.id,
