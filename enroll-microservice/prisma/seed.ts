@@ -6,8 +6,8 @@ import {
 import classTicketsJson from "../../data/enroll/classTickets.json";
 import courseTicketsJson from "../../data/enroll/courseTickets.json";
 import classesOnInstructorsJson from "../../data/enroll/classesOnInstructors.json";
-import classes from "../../data/product/classes.json";
-import classTemplates from "../../data/product/classTemplates.json";
+import classesJson from "../../data/product/classes.json";
+import classTemplatesJson from "../../data/product/classTemplates.json";
 import courses from "../../data/product/courses.json";
 import logger from "../src/utils/winston";
 
@@ -15,13 +15,16 @@ const prisma = new PrismaClient();
 
 async function main() {
   for (const classTicket of classTicketsJson) {
-    const theClass = classes.find((c) => c.id === classTicket.classId);
-    const theClassTemplate = classTemplates.find(
+    const theClass = classesJson.find((c) => c.id === classTicket.classId);
+    const theClassTemplate = classTemplatesJson.find(
       (ct) => ct.id === theClass?.classTemplateId,
     );
     let cost = 0;
     if (theClassTemplate && theClassTemplate.classType !== "PART_OF_COURSE")
       cost = theClassTemplate.price;
+
+    const createdAt = new Date(theClass?.startDate || 0);
+    createdAt.setDate(createdAt.getDate() - 2);
     try {
       await prisma.classTicket.upsert({
         where: {
@@ -38,6 +41,7 @@ async function main() {
           attendanceLastUpdated: classTicket.attendanceLastUpdated,
           attendanceStatus: classTicket.attendanceStatus as AttendanceStatus,
           cost,
+          createdAt,
         },
       });
     } catch (error: any) {
@@ -49,6 +53,21 @@ async function main() {
 
   for (const courseTicket of courseTicketsJson) {
     const theCourse = courses.find((c) => c.id === courseTicket.courseId);
+
+    const theClasTemplates = classTemplatesJson.filter(
+      (ct) => ct.courseId === courseTicket.courseId,
+    );
+
+    const theClasses = classesJson.filter((c) =>
+      theClasTemplates.map((ct) => ct.id).includes(c.classTemplateId),
+    );
+
+    const courseStartDate = theClasses.reduce((acc, cur) =>
+      new Date(cur.startDate || 0) < new Date(acc.startDate || 0) ? cur : acc,
+    ).startDate;
+
+    const createdAt = new Date(courseStartDate || 0);
+    createdAt.setDate(createdAt.getDate() - 10);
     try {
       await prisma.courseTicket.upsert({
         where: {
@@ -63,7 +82,8 @@ async function main() {
           courseId: courseTicket.courseId,
           paymentStatus: courseTicket.paymentStatus as PaymentStatus,
           paymentIntentId: courseTicket.paymentIntentId,
-          cost: theCourse?.customPrice || 0
+          cost: theCourse?.customPrice || 0,
+          createdAt,
         },
       });
     } catch (error: any) {

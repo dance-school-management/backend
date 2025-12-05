@@ -62,6 +62,7 @@ model Class {
   classRoom       ClassRoom     @relation(fields: [classRoomId], references: [id])
   classRoomId     Int
   classStatus     ClassStatus
+  createdBy       String?
 }
 
 model ClassRoom {
@@ -85,6 +86,7 @@ model ClassTemplate {
   advancementLevel   AdvancementLevel? @relation(fields: [advancementLevelId], references: [id])
   advancementLevelId Int?
   classType          ClassType
+  createdBy          String?
 }
 
 enum ClassType {

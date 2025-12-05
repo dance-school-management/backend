@@ -6,12 +6,16 @@ import { StatusCodes } from "http-status-codes";
 import { UniversalError } from "../../errors/UniversalError";
 import { getClassesInstructors } from "../../grpc/client/enrollCommunication/getClassesInstructors";
 import { ClassStatus } from "../../../generated/client";
-import { EnrollStudentsAndInstructorInPrivateClassMsgData, NotificationMsgData } from "../../rabbitmq/types";
+import {
+  EnrollStudentsAndInstructorInPrivateClassMsgData,
+  NotificationMsgData,
+} from "../../rabbitmq/types";
 import { EnrollStudentsAndInstructorInPrivateClass } from "../../rabbitmq/senders/enrollStudentsAndInstructorInPrivateClass";
 import { getClassesStudents } from "../../grpc/client/enrollCommunication/getClassesStudents";
 import { hasIntersection, intersectSets } from "../../utils/helpers";
 import { getStudentsProfiles } from "../../grpc/client/profileCommunication/getStudentsProfiles";
 import { sendPushNotifications } from "../../rabbitmq/senders/sendPushNotifications";
+import { getInstructorsClasses } from "../../grpc/client/enrollCommunication/getInstructorsClasses";
 
 export async function createPrivateClassTemplate(
   req: Request<{}, {}, { classTemplateData: ClassTemplate }> & {
@@ -29,6 +33,7 @@ export async function createPrivateClassTemplate(
       advancementLevelId: classTemplateData.advancementLevelId,
       classType: ClassType.PRIVATE_CLASS,
       price: classTemplateData.price,
+      createdBy: req.user?.id,
     },
   });
 
@@ -38,23 +43,139 @@ export async function createPrivateClassTemplate(
   });
 }
 
-export async function createPrivateClass(
-  req: Request<{}, {}, { classData: Class; studentIds: string[] }> & {
+export async function editPrivateClassTemplate(
+  req: Request<{}, {}, { classTemplateData: ClassTemplate }> & {
     user?: any;
   },
   res: Response,
 ) {
-  const { classData } = req.body;
+  const { classTemplateData } = req.body;
 
-  const studentIds = [...new Set(req.body.studentIds)];
+  const instructorId = req.user?.id;
 
+  const theClassTemplate = await prisma.classTemplate.findFirst({
+    where: {
+      id: classTemplateData.id,
+    },
+  });
+
+  if (!theClassTemplate) {
+    throw new UniversalError(
+      StatusCodes.CONFLICT,
+      "Class template not found",
+      [],
+    );
+  }
+
+  if (theClassTemplate.classType !== ClassType.PRIVATE_CLASS) {
+    throw new UniversalError(
+      StatusCodes.CONFLICT,
+      "You cannot edit a non-private class",
+      [],
+    );
+  }
+
+  if (theClassTemplate.createdBy !== instructorId) {
+    throw new UniversalError(
+      StatusCodes.CONFLICT,
+      "This class template was not created by you",
+      [],
+    );
+  }
+
+  const editedClassTemplate = await prisma.classTemplate.update({
+    where: {
+      id: classTemplateData.id,
+    },
+    data: {
+      name: classTemplateData.name,
+      description: classTemplateData.description,
+      danceCategoryId: classTemplateData.danceCategoryId,
+      advancementLevelId: classTemplateData.advancementLevelId,
+      classType: ClassType.PRIVATE_CLASS,
+      price: classTemplateData.price,
+    },
+  });
+
+  res.status(StatusCodes.OK).json({
+    message: "Class template for private class edited",
+    classTemplateData: editedClassTemplate,
+  });
+}
+
+export async function getPrivateClassTemplates(
+  req: Request<{}, {}, {}> & {
+    user?: any;
+  },
+  res: Response,
+) {
+  const instructorId = req.user?.id;
+
+  const hisClassTemplates = await prisma.classTemplate.findMany({
+    where: {
+      createdBy: instructorId,
+      classType: ClassType.PRIVATE_CLASS,
+    },
+    include: {
+      danceCategory: true,
+      advancementLevel: true,
+    },
+  });
+
+  res.status(StatusCodes.OK).json(hisClassTemplates);
+}
+
+export async function getClassTemplateDetails(
+  req: Request<{ id: string }> & {
+    user?: any;
+  },
+  res: Response,
+) {
+  const id = Number(req.params.id);
+
+  const instructorId = req.user?.id;
+
+  const theClassTemplate = await prisma.classTemplate.findFirst({
+    where: {
+      createdBy: instructorId,
+      classType: ClassType.PRIVATE_CLASS,
+      id,
+    },
+    include: {
+      danceCategory: true,
+      advancementLevel: true,
+    },
+  });
+
+  if (!theClassTemplate) {
+    throw new UniversalError(
+      StatusCodes.CONFLICT,
+      `Class template with id: ${id}, creator: ${instructorId}, class type: PRIVATE_CLASS not found`,
+      [],
+    );
+  }
+
+  res.status(StatusCodes.OK).json(theClassTemplate);
+}
+
+async function validatePrivateClass(
+  classData: Class,
+  studentIds: string[],
+  instructorId: string,
+) {
   const theClassTemplate = await prisma.classTemplate.findFirst({
     where: {
       id: classData.classTemplateId,
     },
   });
 
-  if (theClassTemplate?.classType !== "PRIVATE_CLASS") {
+  if (!theClassTemplate) {
+    throw new UniversalError(StatusCodes.CONFLICT, "Class template not found", [
+      { field: "classTemplateId", message: "Class template not found" },
+    ]);
+  }
+
+  if (theClassTemplate.classType !== "PRIVATE_CLASS") {
     throw new UniversalError(
       StatusCodes.CONFLICT,
       "Chosen class template must be of type private class",
@@ -62,13 +183,21 @@ export async function createPrivateClass(
     );
   }
 
+  if (theClassTemplate.createdBy !== instructorId) {
+    throw new UniversalError(
+      StatusCodes.CONFLICT,
+      "The given class template was not created by you",
+      [{ field: "req.user.id", message: "It is not your class template" }],
+    );
+  }
+
   const overlappingClasses = await prisma.class.findMany({
     where: {
       startDate: {
-        lte: classData.startDate,
+        lte: classData.endDate,
       },
       endDate: {
-        gte: classData.endDate,
+        gte: classData.startDate,
       },
     },
   });
@@ -87,7 +216,7 @@ export async function createPrivateClass(
     await getClassesInstructors(overlappingClasses.map((oc) => oc.id))
   ).instructorsClassesIdsList.map((ic) => ic.instructorId);
 
-  if (occupiedInstructors.includes(req.user?.instructorId)) {
+  if (occupiedInstructors.includes(instructorId)) {
     throw new UniversalError(
       StatusCodes.CONFLICT,
       "The given instructor is occupied in the specified timespan",
@@ -117,6 +246,27 @@ export async function createPrivateClass(
     );
   }
 
+  return { theClassTemplate };
+}
+
+export async function createPrivateClass(
+  req: Request<{}, {}, { classData: Class; studentIds: string[] }> & {
+    user?: any;
+  },
+  res: Response,
+) {
+  const { classData } = req.body;
+
+  const studentIds = [...new Set(req.body.studentIds)];
+
+  const instructorId = req.user?.id;
+
+  const { theClassTemplate } = await validatePrivateClass(
+    classData,
+    studentIds,
+    instructorId,
+  );
+
   const newClass = await prisma.class.create({
     data: {
       classRoomId: classData.classRoomId,
@@ -126,6 +276,7 @@ export async function createPrivateClass(
       endDate: classData.endDate,
       groupNumber: classData.groupNumber,
       peopleLimit: classData.peopleLimit,
+      createdBy: instructorId,
     },
   });
 
@@ -149,5 +300,88 @@ export async function createPrivateClass(
 
   await sendPushNotifications(message);
 
-  res.status(StatusCodes.OK).json(newClass);
+  const studentsData = (await getStudentsProfiles(studentIds))
+    .studentProfilesList;
+
+  res.status(StatusCodes.OK).json({
+    class: newClass,
+    students: studentsData,
+  });
+}
+
+export async function editPrivateClass(
+  req: Request<{}, {}, { classData: Class }> & {
+    user?: any;
+  },
+  res: Response,
+) {
+  const { classData } = req.body;
+
+  const studentIds = (
+    await getClassesStudents([classData.id])
+  ).studentsClassesIdsList.map((cs) => cs.studentId);
+
+  const instructorId = req.user?.id;
+
+  const { theClassTemplate } = await validatePrivateClass(
+    classData,
+    studentIds,
+    instructorId,
+  );
+
+  const updatedClass = await prisma.class.update({
+    where: {
+      id: classData.id,
+    },
+    data: {
+      classRoomId: classData.classRoomId,
+      classTemplateId: classData.classTemplateId,
+      startDate: classData.startDate,
+      endDate: classData.endDate,
+      groupNumber: classData.groupNumber,
+    },
+  });
+
+  const message: NotificationMsgData = {
+    userIds: studentIds,
+    title: `Invitation for class changed - ${theClassTemplate.name}`,
+    body: `Your invitation for a private class ${theClassTemplate.name} has changed. You can view changes in the ticket page.`,
+    payload: {
+      event: "CLASS_INVITATION_CHANGED",
+      classId: updatedClass.id,
+    },
+  };
+
+  await sendPushNotifications(message);
+
+  res.status(StatusCodes.OK).json(updatedClass);
+}
+
+export async function getPrivateClasses(
+  req: Request & {
+    user?: any;
+  },
+  res: Response,
+) {
+  const instructorId = req.user?.id;
+
+  const hisClasses = await prisma.class.findMany({
+    where: {
+      createdBy: instructorId,
+      classTemplate: {
+        classType: ClassType.PRIVATE_CLASS,
+      },
+    },
+    include: {
+      classTemplate: {
+        include: {
+          danceCategory: true,
+          advancementLevel: true,
+        },
+      },
+      classRoom: true,
+    },
+  });
+
+  res.status(StatusCodes.OK).json(hisClasses);
 }
