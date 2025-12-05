@@ -43,21 +43,12 @@ if (PRODUCT_MICROSERVICE_URL) {
   const proxyMiddlewareProduct = createProxyMiddleware<Request, Response>({
     target: PRODUCT_MICROSERVICE_URL,
     changeOrigin: true,
-  });
-  const proxyMiddlewareProductApiDocs = createProxyMiddleware<
-    Request,
-    Response
-  >({
-    target: PRODUCT_MICROSERVICE_URL,
-    changeOrigin: true,
-    pathRewrite: (path, req) => {
-      const currPath = req.originalUrl;
-      return currPath.replace("/product", "");
-    },
+    pathRewrite: (path, req) => req.originalUrl.replace("/product", "")
   });
   if (NODE_ENV === "development") {
-    app.use("/product/api-docs", proxyMiddlewareProductApiDocs);
+    app.use("/product/api-docs", proxyMiddlewareProduct);
   }
+  app.use("/product/public", proxyMiddlewareProduct);
   app.use("/product", authenticate(), proxyMiddlewareProduct);
 }
 
@@ -65,20 +56,11 @@ if (ENROLL_MICROSERVICE_URL) {
   const proxyMiddlewareEnroll = createProxyMiddleware<Request, Response>({
     target: ENROLL_MICROSERVICE_URL,
     changeOrigin: true,
+    pathRewrite: (path, req) => req.originalUrl.replace("/enroll", "")
   });
 
-  const proxyMiddlewareEnrollApiDocs = createProxyMiddleware<Request, Response>(
-    {
-      target: ENROLL_MICROSERVICE_URL,
-      changeOrigin: true,
-      pathRewrite: (path, req) => {
-        const currPath = req.originalUrl;
-        return currPath.replace("/enroll", "");
-      },
-    },
-  );
   if (NODE_ENV === "development") {
-    app.use("/enroll/api-docs", proxyMiddlewareEnrollApiDocs);
+    app.use("/enroll/api-docs", proxyMiddlewareEnroll);
   }
   app.use("/enroll", authenticate(), proxyMiddlewareEnroll);
 }
@@ -87,24 +69,13 @@ if (PROFILE_MICROSERVICE_URL) {
   const proxyMiddlewareProfile = createProxyMiddleware<Request, Response>({
     target: PROFILE_MICROSERVICE_URL,
     changeOrigin: true,
-  });
-
-  const proxyMiddlewareProfileAdditional = createProxyMiddleware<
-    Request,
-    Response
-  >({
-    target: PROFILE_MICROSERVICE_URL,
-    changeOrigin: true,
-    pathRewrite: (path, req) => {
-      const currPath = req.originalUrl;
-      return currPath.replace("/profile", "");
-    },
+    pathRewrite: (path, req) => req.originalUrl.replace("/profile", "")
   });
 
   if (NODE_ENV === "development") {
-    app.use("/profile/api-docs", proxyMiddlewareProfileAdditional);
+    app.use("/profile/api-docs", proxyMiddlewareProfile);
   }
-  app.use("/profile/uploads", proxyMiddlewareProfileAdditional);
+  app.use("/profile/public", proxyMiddlewareProfile);
   app.use("/profile", authenticate(), proxyMiddlewareProfile);
 }
 
@@ -112,47 +83,24 @@ if (NOTIFICATION_MICROSERVICE_URL) {
   const proxyMiddlewareNotification = createProxyMiddleware<Request, Response>({
     target: NOTIFICATION_MICROSERVICE_URL,
     changeOrigin: true,
+    pathRewrite: (path, req) => req.originalUrl.replace("/notification", "")
   });
 
-  const proxyMiddlewareNotificationAdditional = createProxyMiddleware<
-    Request,
-    Response
-  >({
-    target: NOTIFICATION_MICROSERVICE_URL,
-    changeOrigin: true,
-    pathRewrite: (path, req) => {
-      const currPath = req.originalUrl;
-      return currPath.replace("/notification", "");
-    },
-  });
   if (NODE_ENV === "development") {
-    app.use("/notification/api-docs", proxyMiddlewareNotificationAdditional);
+    app.use("/notification/api-docs", proxyMiddlewareNotification);
   }
   app.use("/notification", authenticate(), proxyMiddlewareNotification);
 }
 
 if (ELASTICSEARCH_MICROSERVICE_URL) {
-  const proxyMiddlewareElasticsearch = createProxyMiddleware<Request, Response>(
-    {
-      target: ELASTICSEARCH_MICROSERVICE_URL,
-      changeOrigin: true,
-    },
-  );
-
-  const proxyMiddlewareElasticsearchAdditional = createProxyMiddleware<
-    Request,
-    Response
-  >({
+  const proxyMiddlewareElasticsearch = createProxyMiddleware<Request, Response>({
     target: ELASTICSEARCH_MICROSERVICE_URL,
     changeOrigin: true,
-    pathRewrite: (path, req) => {
-      const currPath = req.originalUrl;
-      return currPath.replace("/elasticsearch", "");
-    },
+    pathRewrite: (path, req) => req.originalUrl.replace("/elasticsearch", "")
   });
 
   if (NODE_ENV === "development") {
-    app.use("/elasticsearch/api-docs", proxyMiddlewareElasticsearchAdditional);
+    app.use("/elasticsearch/api-docs", proxyMiddlewareElasticsearch);
   }
   app.use("/elasticsearch", authenticate(), proxyMiddlewareElasticsearch);
 }
@@ -161,22 +109,13 @@ if (BLOG_MICROSERVICE_URL) {
   const proxyMiddlewareBlog = createProxyMiddleware<Request, Response>({
     target: BLOG_MICROSERVICE_URL,
     changeOrigin: true,
+    pathRewrite: (_path, req) => req.originalUrl.replace("/blog", "")
   });
 
-  const proxyMiddlewareBlogAdditional = createProxyMiddleware<
-    Request,
-    Response
-  >({
-    target: BLOG_MICROSERVICE_URL,
-    changeOrigin: true,
-    pathRewrite: (path, req) => {
-      const currPath = req.originalUrl;
-      return currPath.replace("/blog", "");
-    },
-  });
   if (NODE_ENV === "development") {
-    app.use("/blog/api-docs", proxyMiddlewareBlogAdditional);
+    app.use("/blog/api-docs", proxyMiddlewareBlog);
   }
+  app.use("/blog/public", proxyMiddlewareBlog);
   app.use("/blog", authenticate(), proxyMiddlewareBlog);
 }
 

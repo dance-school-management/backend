@@ -1,60 +1,127 @@
 import { NextFunction, Request, Response } from "express";
 import "dotenv/config";
-import { UniversalError } from "../errors/UniversalError";
-import { StatusCodes } from "http-status-codes";
 import logger from "../utils/winston";
+import { StatusCodes } from "http-status-codes";
 
-const AUTH_MICROSERVICE_URL = process.env.AUTH_MICROSERVICE_URL;
 const AUTH_FLAG = process.env.AUTH_FLAG;
+const AUTH_MICROSERVICE_URL = process.env.AUTH_MICROSERVICE_URL;
+const AUTH_TIMEOUT_MS = process.env.AUTH_TIMEOUT_MS ? parseInt(process.env.AUTH_TIMEOUT_MS) : 2000;
+
+const FAKE_USER = {
+  id: "provided-fake-id-string124",
+  role: "INSTRUCTOR",
+};
 
 export function authenticate() {
   return async (
-    req: Request & { user?: any },
+    req: Request & { user?: any; },
     res: Response,
     next: NextFunction,
   ) => {
     const cookies = req.cookies;
     const betterAuthCookie = cookies["better-auth.session_token"];
+
+    if (AUTH_FLAG === "false") {
+      req.headers["user-context"] = Buffer.from(
+        JSON.stringify(FAKE_USER),
+      ).toString("base64");
+      next();
+      return;
+    }
+
+    if (!betterAuthCookie) {
+      res.sendStatus(StatusCodes.UNAUTHORIZED);
+      return;
+    }
+
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), AUTH_TIMEOUT_MS);
+
     try {
-      if (AUTH_FLAG === "false") {
-        throw new Error();
+      const headers: Record<string, string> = {
+        "Accept": "application/json",
+      };
+      headers["Cookie"] = `better-auth.session_token=${betterAuthCookie}`;
+
+      const response = await fetch(`${AUTH_MICROSERVICE_URL}/api/auth/get-session`, {
+        method: "GET",
+        headers,
+        signal: controller.signal,
+      });
+
+      clearTimeout(timeout);
+
+      if (response.status === StatusCodes.UNAUTHORIZED || response.status === StatusCodes.FORBIDDEN) {
+        res.sendStatus(StatusCodes.UNAUTHORIZED);
+        return;
       }
-      const response = await fetch(
-        `${AUTH_MICROSERVICE_URL}/api/auth/get-session`,
-        {
-          method: "GET",
-          headers: {
-            Cookie: `better-auth.session_token=${betterAuthCookie}`,
-          },
-          credentials: "include",
-        },
-      );
-      const data = await response.json();
+
+      if (!response.ok) {
+        logger.error({
+          level: "error",
+          message: "Auth service error",
+          status: response.status,
+        });
+        res.sendStatus(StatusCodes.SERVICE_UNAVAILABLE);
+        return;
+      }
+
+      const contentType = response.headers.get("content-type") ?? "";
+      if (!contentType.includes("application/json")) {
+        logger.error({
+          level: "error",
+          message: "Unexpected content-type from auth service",
+          contentType,
+        });
+        res.sendStatus(StatusCodes.BAD_GATEWAY);
+        return;
+      }
+
+      let data: any;
+      try {
+        data = await response.json();
+      } catch (e) {
+        logger.error({
+          level: "error",
+          message: "Failed to parse auth response JSON",
+          error: e,
+        });
+        res.sendStatus(StatusCodes.BAD_GATEWAY);
+        return;
+      }
+
+      const user = data?.user;
+      if (!user || typeof user !== "object" || !user.id || !user.role) {
+        res.sendStatus(StatusCodes.UNAUTHORIZED);
+        return;
+      }
+
       logger.info({
         level: "info",
-        message: `User ${data.user.id} authenticated with role: ${data.user.role}`,
+        message: `Authenticated user id=${String(user.id)} role=${String(user.role)}`,
       });
       req.headers["user-context"] = Buffer.from(
         JSON.stringify(data.user),
       ).toString("base64");
       next();
+      return;
     } catch (err: any) {
-      if (AUTH_FLAG === "false") {
-        const fakeUser = {
-          id: "provided-fake-id-string124",
-          role: "INSTRUCTOR",
-        };
-        req.headers["user-context"] = Buffer.from(
-          JSON.stringify(fakeUser),
-        ).toString("base64");
-        next();
-      } else {
-        throw new UniversalError(
-          StatusCodes.UNAUTHORIZED,
-          "Error while authenticating",
-          [],
-        );
+      clearTimeout(timeout);
+      if (err?.name === "AbortError") {
+        logger.error({
+          level: "error",
+          message: "Auth fetch timeout",
+        });
+        res.sendStatus(StatusCodes.REQUEST_TIMEOUT);
+        return;
       }
+      logger.error({
+        level: "error",
+        message: "Error in authentication middleware",
+        error: err?.message ?? err,
+      });
+      res.sendStatus(StatusCodes.INTERNAL_SERVER_ERROR);
+      return;
     }
   };
 }

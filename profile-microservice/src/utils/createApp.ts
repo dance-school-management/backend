@@ -18,10 +18,12 @@ export function createApp() {
   app.use(helmet());
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
-  setupSwagger(app);
+  if (process.env.NODE_ENV === "development") {
+    setupSwagger(app);
+  }
   app.use("/uploads", express.static(path.resolve("uploads")));
-  app.use(handleUserContext);
   app.use("/", unprotectedRouter);
+  app.use(handleUserContext);
   app.use("/user", userRouter);
   app.use("/search", checkRole(["INSTRUCTOR", "COORDINATOR"]), searchRouter);
   app.get("/", (req, res) => {
