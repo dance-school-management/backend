@@ -20,7 +20,8 @@ export const EnrollStudentsAndInstructorInPrivateClass = async (
       classId,
       studentId: si,
       paymentStatus: PaymentStatus.PENDING,
-      cost: classDetails.price
+      cost: classDetails.price,
+      createdAt: new Date()
     }))
   });
 

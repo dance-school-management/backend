@@ -3,66 +3,234 @@
  * /private-class/class-template:
  *   post:
  *     summary: Create a private class template
- *     description: Creates a new private class template (ClassTemplate) in the database.
  *     tags:
- *       - private classes
+ *       - Private Classes
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
  *             type: object
- *             required:
- *               - classTemplateData
  *             properties:
  *               classTemplateData:
  *                 type: object
- *                 required:
- *                   - name
- *                   - description
- *                   - price
  *                 properties:
  *                   name:
  *                     type: string
- *                     example: "Private Salsa Lesson"
+ *                     example: "Salsa On2 – Beginner Private"
  *                   description:
  *                     type: string
- *                     example: "One-on-one salsa session focusing on technique and rhythm."
- *                   price:
- *                     type: number
- *                     format: decimal
- *                     example: 150.00
+ *                     example: "Private introduction to Salsa On2 fundamentals."
  *                   danceCategoryId:
  *                     type: integer
- *                     nullable: true
- *                     example: 3
+ *                     format: int32
+ *                     example: 1
  *                   advancementLevelId:
  *                     type: integer
- *                     nullable: true
- *                     example: 2
+ *                     format: int32
+ *                     example: 1
+ *                   price:
+ *                     type: number
+ *                     example: 180
+ *                 required:
+ *                   - name
+ *                   - danceCategoryId
+ *                   - advancementLevelId
+ *                   - price
  *     responses:
  *       200:
- *         description: Successfully created a private class template
+ *         description: Private class template created
+ *       409:
+ *         description: Conflict (validation issue)
+ *       500:
+ *         description: Internal server error
+ */
+
+/**
+ * @swagger
+ * /private-class/class-template:
+ *   put:
+ *     summary: Edit an existing private class template
+ *     tags:
+ *       - Private Classes
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               classTemplateData:
+ *                 type: object
+ *                 properties:
+ *                   id:
+ *                     type: integer
+ *                     format: int32
+ *                     example: 10
+ *                   name:
+ *                     type: string
+ *                     example: "Salsa On2 – Intermediate Private"
+ *                   description:
+ *                     type: string
+ *                     example: "Private lesson focused on partnerwork and shines."
+ *                   danceCategoryId:
+ *                     type: integer
+ *                     format: int32
+ *                     example: 1
+ *                   advancementLevelId:
+ *                     type: integer
+ *                     format: int32
+ *                     example: 2
+ *                   price:
+ *                     type: number
+ *                     example: 220
+ *                 required:
+ *                   - id
+ *     responses:
+ *       200:
+ *         description: Private class template edited
+ *       409:
+ *         description: Template not found or conflict
+ *       500:
+ *         description: Internal server error
+ */
+
+/**
+ * @swagger
+ * /private-class/class-templates:
+ *   get:
+ *     summary: Get private class templates created by the current instructor
+ *     tags:
+ *       - Private Classes
+ *     responses:
+ *       200:
+ *         description: List of private class templates created by the instructor
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: "Class template for private class created"
- *       400:
- *         description: Invalid request body
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 error:
- *                   type: string
- *                   example: "Invalid class data"
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   id:
+ *                     type: integer
+ *                     format: int32
+ *                     example: 10
+ *                   name:
+ *                     type: string
+ *                     example: "Salsa On2 – Beginner Private"
+ *                   description:
+ *                     type: string
+ *                     example: "Private introduction to Salsa On2 fundamentals."
+ *                   danceCategoryId:
+ *                     type: integer
+ *                     format: int32
+ *                     nullable: true
+ *                     example: 1
+ *                   advancementLevelId:
+ *                     type: integer
+ *                     format: int32
+ *                     nullable: true
+ *                     example: 1
+ *                   classType:
+ *                     type: string
+ *                     example: "PRIVATE_CLASS"
+ *                   price:
+ *                     type: number
+ *                     example: 180
+ *                   createdBy:
+ *                     type: string
+ *                     nullable: true
+ *                     example: "instructor_123"
+ *       500:
+ *         description: Internal server error
+ */
+
+/**
+ * @swagger
+ * /private-class/class-templates/{id}:
+ *   get:
+ *     summary: Get details of a class template created by the authenticated instructor
+ *     description: Returns details of a private class template belonging to the authenticated instructor.
+ *     tags:
+ *       - Private Classes
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID of the class template
+ *     responses:
+ *       200:
+ *         description: Successfully returned class template details
+ *       409:
+ *         description: Class template not found for the given instructor and id
  *       401:
  *         description: Unauthorized
+ */
+
+
+/**
+ * @swagger
+ * /private-class/class:
+ *   post:
+ *     summary: Create a private class for given students based on a template
+ *     tags:
+ *       - Private Classes
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               classData:
+ *                 type: object
+ *                 properties:
+ *                   classTemplateId:
+ *                     type: integer
+ *                     format: int32
+ *                     example: 25
+ *                   classRoomId:
+ *                     type: integer
+ *                     format: int32
+ *                     example: 2
+ *                   startDate:
+ *                     type: string
+ *                     format: date-time
+ *                     example: "2026-02-14T18:00:00.000Z"
+ *                   endDate:
+ *                     type: string
+ *                     format: date-time
+ *                     example: "2026-02-14T19:00:00.000Z"
+ *                   groupNumber:
+ *                     type: integer
+ *                     format: int32
+ *                     example: 1
+ *                   peopleLimit:
+ *                     type: integer
+ *                     format: int32
+ *                     example: 2
+ *                 required:
+ *                   - classTemplateId
+ *                   - classRoomId
+ *                   - startDate
+ *                   - endDate
+ *               studentIds:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                   example: "stud_101"
+ *                 example:
+ *                   - "stud_101"
+ *                   - "stud_202"
+ *                 description: List of student IDs invited to the private class
+ *     responses:
+ *       200:
+ *         description: Private class created
+ *       409:
+ *         description: Validation conflict (occupied room, instructor, student overlap)
  *       500:
  *         description: Internal server error
  */
@@ -70,85 +238,69 @@
 /**
  * @swagger
  * /private-class/class:
- *   post:
- *     summary: Create a private class
- *     description: >
- *       Creates a new private class in the system.  
- *       The endpoint checks for overlapping classes in the same classroom and instructor availability before creating the record.
+ *   put:
+ *     summary: Edit an existing private class
  *     tags:
- *       - private classes
- *     security:
- *       - bearerAuth: []  # jeśli endpoint wymaga autoryzacji (JWT)
+ *       - Private Classes
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
  *             type: object
- *             required:
- *               - classData
- *               - studentIds
  *             properties:
  *               classData:
  *                 type: object
- *                 required:
- *                   - classRoomId
- *                   - classTemplateId
- *                   - startDate
- *                   - endDate
- *                   - groupNumber
- *                   - peopleLimit
  *                 properties:
- *                   classRoomId:
+ *                   id:
  *                     type: integer
- *                     example: 5
+ *                     format: int32
+ *                     example: 55
  *                   classTemplateId:
  *                     type: integer
- *                     example: 12
+ *                     format: int32
+ *                     example: 25
+ *                   classRoomId:
+ *                     type: integer
+ *                     format: int32
+ *                     example: 3
  *                   startDate:
  *                     type: string
  *                     format: date-time
- *                     example: "2025-11-21T17:00:00Z"
+ *                     example: "2026-03-01T17:00:00.000Z"
  *                   endDate:
  *                     type: string
  *                     format: date-time
- *                     example: "2025-11-21T18:00:00Z"
+ *                     example: "2026-03-01T18:00:00.000Z"
  *                   groupNumber:
  *                     type: integer
+ *                     format: int32
  *                     example: 1
- *                   peopleLimit:
- *                     type: integer
- *                     example: 2
- *               studentIds:
- *                 type: array
- *                 items:
- *                   type: string
- *                 example: ["uuid-student-1", "uuid-student-2"]
+ *                 required:
+ *                   - id
+ *                   - classTemplateId
+ *                   - classRoomId
+ *                   - startDate
+ *                   - endDate
  *     responses:
  *       200:
- *         description: Successfully created private class
+ *         description: Private class updated
  *       409:
- *         description: Conflict — overlapping classroom or instructor schedule
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: "The given classroom is occupied in the specified timespan"
- *       400:
- *         description: Invalid input data
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 error:
- *                   type: string
- *                   example: "Invalid class data"
- *       401:
- *         description: Unauthorized
+ *         description: Conflict (overlaps, invalid template, etc.)
+ *       500:
+ *         description: Internal server error
+ */
+
+/**
+ * @swagger
+ * /private-class/classes:
+ *   get:
+ *     summary: Get private classes created by the current instructor
+ *     tags:
+ *       - Private Classes
+ *     responses:
+ *       200:
+ *         description: List of private classes created by the instructor
  *       500:
  *         description: Internal server error
  */
