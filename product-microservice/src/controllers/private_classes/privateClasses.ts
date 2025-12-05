@@ -15,7 +15,6 @@ import { getClassesStudents } from "../../grpc/client/enrollCommunication/getCla
 import { hasIntersection, intersectSets } from "../../utils/helpers";
 import { getStudentsProfiles } from "../../grpc/client/profileCommunication/getStudentsProfiles";
 import { sendPushNotifications } from "../../rabbitmq/senders/sendPushNotifications";
-import { getInstructorsClasses } from "../../grpc/client/enrollCommunication/getInstructorsClasses";
 
 export async function createPrivateClassTemplate(
   req: Request<{}, {}, { classTemplateData: ClassTemplate }> & {
@@ -125,7 +124,7 @@ export async function getPrivateClassTemplates(
   res.status(StatusCodes.OK).json(hisClassTemplates);
 }
 
-export async function getClassTemplateDetails(
+export async function getPrivateClassTemplateDetails(
   req: Request<{ id: string }> & {
     user?: any;
   },
@@ -150,7 +149,7 @@ export async function getClassTemplateDetails(
   if (!theClassTemplate) {
     throw new UniversalError(
       StatusCodes.CONFLICT,
-      `Class template with id: ${id}, creator: ${instructorId}, class type: PRIVATE_CLASS not found`,
+      `Class template with id ${id}, created by ${instructorId}, with class type PRIVATE_CLASS not found`,
       [],
     );
   }
@@ -403,4 +402,44 @@ export async function getPrivateClasses(
   });
 
   res.status(StatusCodes.OK).json(hisClasses);
+}
+
+export async function getPrivateClassDetails(
+  req: Request<{ id: string }> & {
+    user?: any;
+  },
+  res: Response,
+) {
+  const id = Number(req.params.id);
+
+  const instructorId = req.user?.id;
+
+  const theClass = await prisma.class.findFirst({
+    where: {
+      createdBy: instructorId,
+      classTemplate: {
+        classType: ClassType.PRIVATE_CLASS,
+      },
+      id,
+    },
+    include: {
+      classTemplate: {
+        include: {
+          danceCategory: true,
+          advancementLevel: true,
+        },
+      },
+      classRoom: true,
+    },
+  });
+
+  if (!theClass) {
+    throw new UniversalError(
+      StatusCodes.CONFLICT,
+      `Class with id ${id}, created by ${instructorId}, with class type PRIVATE_CLASS not found`,
+      [],
+    );
+  }
+
+  res.status(StatusCodes.OK).json(theClass);
 }

@@ -97,7 +97,7 @@
 
 /**
  * @swagger
- * /private-class/class-templates:
+ * /private-class/class-template:
  *   get:
  *     summary: Get private class templates created by the current instructor
  *     tags:
@@ -148,7 +148,7 @@
 
 /**
  * @swagger
- * /private-class/class-templates/{id}:
+ * /private-class/class-template/{id}:
  *   get:
  *     summary: Get details of a class template created by the authenticated instructor
  *     description: Returns details of a private class template belonging to the authenticated instructor.
@@ -293,7 +293,7 @@
 
 /**
  * @swagger
- * /private-class/classes:
+ * /private-class/class:
  *   get:
  *     summary: Get private classes created by the current instructor
  *     tags:
@@ -303,4 +303,28 @@
  *         description: List of private classes created by the instructor
  *       500:
  *         description: Internal server error
+ */
+
+/**
+ * @swagger
+ * /private-class/class/{id}:
+ *   get:
+ *     summary: Get details of a private class created by the authenticated instructor
+ *     description: Returns details of a private class that belongs to the authenticated instructor.
+ *     tags:
+ *       - Private Classes
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID of the private class
+ *     responses:
+ *       200:
+ *         description: Successfully returned private class details
+ *       409:
+ *         description: Private class not found for the given instructor and id
+ *       401:
+ *         description: Unauthorized
  */
