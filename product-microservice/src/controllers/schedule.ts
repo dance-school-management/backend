@@ -15,7 +15,7 @@ interface GetScheduleParams {
 }
 
 export async function getSchedule(
-  req: Request<object, object, object, GetScheduleParams> & { user?: any },
+  req: Request<object, object, object, GetScheduleParams> & { user?: any; },
   res: Response,
   next: NextFunction,
 ) {
@@ -30,7 +30,7 @@ export async function getSchedule(
     classStatus: { notIn: [ClassStatus.HIDDEN] },
   };
   try {
-    let classesData = await prisma.class.findMany({
+    const classesData = await prisma.class.findMany({
       where,
       include: {
         classTemplate: {
@@ -38,6 +38,12 @@ export async function getSchedule(
             danceCategory: true,
             advancementLevel: true,
             course: true,
+          },
+        },
+        classRoom: {
+          select: {
+            id: true,
+            name: true,
           },
         },
       },
@@ -124,7 +130,7 @@ export async function getSchedule(
 }
 
 export async function getSchedulePersonal(
-  req: Request<object, object, object, GetScheduleParams> & { user?: any },
+  req: Request<object, object, object, GetScheduleParams> & { user?: any; },
   res: Response,
   next: NextFunction,
 ) {
@@ -179,6 +185,12 @@ export async function getSchedulePersonal(
             danceCategory: true,
             advancementLevel: true,
             course: true,
+          },
+        },
+        classRoom: {
+          select: {
+            id: true,
+            name: true,
           },
         },
       },
@@ -245,7 +257,7 @@ export async function getSearchAndFilterCourses(
       priceMin: string;
       priceMax: string;
     }
-  > & { user?: any },
+  > & { user?: any; },
   res: Response,
 ) {
   const priceMax = req.query.priceMax ? Number(req.query.priceMax) : 999999;
@@ -277,17 +289,17 @@ export async function getSearchAndFilterCourses(
   const where = {
     ...(danceCategoryIds.length > 0
       ? {
-          danceCategoryId: {
-            in: danceCategoryIds,
-          },
-        }
+        danceCategoryId: {
+          in: danceCategoryIds,
+        },
+      }
       : null),
     ...(advancementLevelIds.length > 0
       ? {
-          advancementLevelId: {
-            in: advancementLevelIds,
-          },
-        }
+        advancementLevelId: {
+          in: advancementLevelIds,
+        },
+      }
       : null),
     courseStatus: { not: CourseStatus.HIDDEN },
   };
@@ -352,7 +364,7 @@ export async function getSearchAndFilterCourses(
 
   const coursesInstructorsMap: Map<
     number | null | undefined,
-    { id: string; name: string; surname: string }[]
+    { id: string; name: string; surname: string; }[]
   > = new Map();
 
   coursesClassesInstructors.forEach((cci) => {
@@ -426,7 +438,7 @@ type AllClassesType = Prisma.ClassGetPayload<{
 }>[];
 
 export async function getCoursesClasses(
-  req: Request<object, object, {}, { coursesIds: string[] }> & { user?: any },
+  req: Request<object, object, {}, { coursesIds: string[]; }> & { user?: any; },
   res: Response,
 ) {
   let coursesIdsQ: string[] = [];
@@ -468,7 +480,7 @@ export async function getCoursesClasses(
     coursesClassesMap.set(c.classTemplate.courseId, [...current, c]);
   });
 
-  const result: { courseData: any; classes: any[] }[] = [];
+  const result: { courseData: any; classes: any[]; }[] = [];
 
   const keys = [...coursesClassesMap.keys()];
 
