@@ -20,7 +20,7 @@ interface GetCourseFilter {
 }
 
 export async function getCourses(
-  req: Request<{}, {}, { filter: GetCourseFilter; search_query: string }>,
+  req: Request<{}, {}, { filter: GetCourseFilter; search_query: string; }>,
   res: Response,
 ) {
   const { filter, search_query } = req.body;
@@ -68,7 +68,7 @@ export async function getCourses(
 }
 
 export async function createCourse(
-  req: Request<{}, {}, { name: string; isConfirmation: boolean }>,
+  req: Request<{}, {}, { name: string; isConfirmation: boolean; }>,
   res: Response,
 ) {
   checkValidations(validationResult(req));
@@ -132,7 +132,7 @@ export async function editCourse(req: Request<{}, {}, Course>, res: Response) {
 }
 
 export async function publishCourse(
-  req: Request<{ id: string }, {}, { isConfirmation: boolean }>,
+  req: Request<{ id: string; }, {}, { isConfirmation: boolean; }>,
   res: Response,
 ) {
   const id = Number(req.params.id);
@@ -215,7 +215,7 @@ export async function publishCourse(
 }
 
 export async function getCourseDetails(
-  req: Request<{ id: string }, {}, {}>,
+  req: Request<{ id: string; }, {}, {}>,
   res: Response,
 ) {
   const id = parseInt(req.params.id);
@@ -238,13 +238,13 @@ export async function getCourseDetails(
   if (!theCourse)
     throw new UniversalError(StatusCodes.NOT_FOUND, "Course not found", []);
 
-  const allClassesPrice = (await getCoursesAllClassesPrice([id]))[0].price;
+  const allClassesPrice = (await getCoursesAllClassesPrice([id]))[0]?.price || 0;
 
   res.status(StatusCodes.OK).json({ ...theCourse, allClassesPrice });
 }
 
 export async function deleteCourse(
-  req: Request<{ id: string }, {}, {}>,
+  req: Request<{ id: string; }, {}, {}>,
   res: Response,
 ) {
   const id = parseInt(req.params.id);
