@@ -7,6 +7,8 @@ import { checkValidations } from "../../utils/errorHelpers";
 import { Warning } from "../../errors/Warning";
 import { ClassType } from "../../../generated/client";
 import { UniversalError } from "../../errors/UniversalError";
+import { ClassStatus } from "../../../generated/client";
+import { CourseStatus } from "../../../generated/client";
 
 export async function createClassTemplate(
   req: Request<{}, {}, ClassTemplate & { isConfirmation: boolean }>,
@@ -32,6 +34,30 @@ export async function createClassTemplate(
       "You can't create a private class from here",
       [],
     );
+  }
+
+  if (courseId) {
+    const theCourse = await prisma.course.findFirst({
+      where: {
+        id: courseId,
+      },
+    });
+
+    if (!theCourse) {
+      throw new UniversalError(
+        StatusCodes.CONFLICT,
+        "Provided course not found",
+        [],
+      );
+    }
+
+    if (theCourse.courseStatus !== CourseStatus.HIDDEN) {
+      throw new UniversalError(
+        StatusCodes.CONFLICT,
+        "You can't add a class template to a published",
+        [],
+      );
+    }
   }
 
   if (!isConfirmation) {
@@ -69,7 +95,6 @@ export async function editClassTemplate(
 ) {
   const id = parseInt(req.params.id);
   const {
-    courseId,
     name,
     description,
     price,
@@ -91,7 +116,6 @@ export async function editClassTemplate(
       id: id,
     },
     data: {
-      courseId,
       name,
       description,
       price,
@@ -111,13 +135,13 @@ export async function deleteClassTemplate(
 ) {
   const id = parseInt(req.params.id);
 
-  const classUsingIt = await prisma.class.findFirst({
+  const classesUsingIt = await prisma.class.findMany({
     where: {
       classTemplateId: id,
     },
   });
 
-  if (classUsingIt) {
+  if (classesUsingIt.some((c) => c.classStatus !== ClassStatus.HIDDEN)) {
     throw new UniversalError(
       StatusCodes.CONFLICT,
       "There are existing classes using this class template",

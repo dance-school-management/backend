@@ -128,6 +128,7 @@ export async function editCourse(req: Request<{}, {}, Course>, res: Response) {
       price,
     },
   });
+  
   res.status(StatusCodes.OK).json(editedCourse);
 }
 
@@ -252,21 +253,11 @@ export async function deleteCourse(
     },
   });
 
-  const classTemplateUsingIt = await prisma.classTemplate.findFirst({
-    where: {
-      courseId: id,
-    },
-  });
-
-  if (classTemplateUsingIt) {
-    throw new UniversalError(
-      StatusCodes.CONFLICT,
-      "There are existing class templates using this course",
-      [],
-    );
+  if (!theCourse) {
+    throw new UniversalError(StatusCodes.CONFLICT, "Course not found", []);
   }
 
-  if (theCourse?.courseStatus !== "HIDDEN")
+  if (theCourse.courseStatus !== ClassStatus.HIDDEN)
     throw new UniversalError(
       StatusCodes.CONFLICT,
       "Cannot delete this course, because its status is not 'hidden'",

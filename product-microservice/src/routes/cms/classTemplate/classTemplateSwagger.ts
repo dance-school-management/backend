@@ -170,10 +170,6 @@
  *               - price
  *               - classType
  *             properties:
- *               courseId:
- *                 type: integer
- *                 nullable: true
- *                 example: 2
  *               name:
  *                 type: string
  *                 example: "Advanced Salsa"
