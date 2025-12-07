@@ -13,6 +13,7 @@ import { getClassesInstructors } from "../../grpc/client/enrollCommunication/get
 import { getClassesStudents } from "../../grpc/client/enrollCommunication/getClassesStudents";
 import { getInstructorsData } from "../../grpc/client/profileCommunication/getInstructorsData";
 import { ClassType } from "../../../generated/client";
+import { CourseStatus } from "../../../generated/client";
 
 export async function createClass(
   req: Request<
@@ -51,6 +52,30 @@ export async function createClass(
       "Class template not found",
       [],
     );
+  }
+
+  if (thisClassTemplate.courseId) {
+    const theCourse = await prisma.course.findFirst({
+      where: {
+        id: thisClassTemplate.courseId,
+      },
+    });
+
+    if (!theCourse) {
+      throw new UniversalError(
+        StatusCodes.CONFLICT,
+        "The given class template has a course assigned, but the course not found",
+        [],
+      );
+    }
+
+    if (theCourse.courseStatus !== CourseStatus.HIDDEN) {
+      throw new UniversalError(
+        StatusCodes.CONFLICT,
+        "You can't add a class to a published course",
+        [],
+      );
+    }
   }
 
   const thisClassroom = await prisma.classRoom.findFirst({
