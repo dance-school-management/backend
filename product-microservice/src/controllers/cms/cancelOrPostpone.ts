@@ -31,6 +31,14 @@ export async function cancelClass(
     throw new UniversalError(StatusCodes.BAD_REQUEST, "Class not found", []);
   }
 
+  if (theClass.classStatus === ClassStatus.HIDDEN) {
+    throw new UniversalError(
+      StatusCodes.CONFLICT,
+      "You can't cancel a HIDDEN class, delete it instead",
+      [],
+    );
+  }
+
   if (theClass.classStatus === ClassStatus.CANCELLED) {
     throw new UniversalError(
       StatusCodes.BAD_REQUEST,
@@ -108,6 +116,14 @@ export async function postponeClass(
 
   if (!theClass) {
     throw new UniversalError(StatusCodes.BAD_REQUEST, "Class not found", []);
+  }
+
+  if (theClass.classStatus === ClassStatus.HIDDEN) {
+    throw new UniversalError(
+      StatusCodes.CONFLICT,
+      "You can't postpone a HIDDEN class, edit it instead",
+      [],
+    );
   }
 
   if (theClass.classStatus === ClassStatus.CANCELLED && !isConfirmation) {
