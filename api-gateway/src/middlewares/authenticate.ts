@@ -20,6 +20,9 @@ interface AuthenticateOptions {
  * @param options - Auth options
  * @param [options.strict=true] - Block on auth failure when true; pass through when false
  * @returns Express middleware that performs authentication
+ * @example
+ * // For endpoints that work both authenticated and unauthenticated:
+ * authenticate({ strict: false })
  */
 export function authenticate(options: AuthenticateOptions = { strict: true }) {
   const { strict } = options;
@@ -36,7 +39,8 @@ export function authenticate(options: AuthenticateOptions = { strict: true }) {
       if (strict) {
         res.sendStatus(status);
       } else {
-        delete req.headers["user-context"];
+        // Explicitly overwrite user-context header to prevent client injection
+        req.headers["user-context"] = undefined;
         next();
       }
     };
