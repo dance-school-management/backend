@@ -125,6 +125,28 @@ export async function deleteClassTemplate(
     );
   }
 
+  const theClassTemplate = await prisma.classTemplate.findFirst({
+    where: {
+      id,
+    },
+  });
+
+  if (!theClassTemplate) {
+    throw new UniversalError(
+      StatusCodes.CONFLICT,
+      "Class template not found",
+      [],
+    );
+  }
+
+  if (theClassTemplate.classType === ClassType.PRIVATE_CLASS) {
+    throw new UniversalError(
+      StatusCodes.CONFLICT,
+      "This class template has class type PRIVATE CLASS",
+      [],
+    );
+  }
+
   await prisma.classTemplate.delete({
     where: {
       id: id,
@@ -141,7 +163,7 @@ export async function getClassTemplate(
 ) {
   const id = parseInt(req.params.id);
 
-  const theClassTemplate = await prisma.classTemplate.findUniqueOrThrow({
+  const theClassTemplate = await prisma.classTemplate.findFirst({
     where: {
       id: id,
     },
@@ -156,6 +178,22 @@ export async function getClassTemplate(
     },
   });
 
+  if (!theClassTemplate) {
+    throw new UniversalError(
+      StatusCodes.CONFLICT,
+      "Class template not found",
+      [],
+    );
+  }
+
+  if (theClassTemplate.classType === ClassType.PRIVATE_CLASS) {
+    throw new UniversalError(
+      StatusCodes.CONFLICT,
+      "This class template has class type PRIVATE CLASS",
+      [],
+    );
+  }
+
   res.status(StatusCodes.OK).json(theClassTemplate);
 }
 
@@ -165,6 +203,11 @@ export async function getAllClassTemplates(
   next: NextFunction,
 ) {
   const allClassTemplates = await prisma.classTemplate.findMany({
+    where: {
+      classType: {
+        not: ClassType.PRIVATE_CLASS,
+      },
+    },
     include: {
       danceCategory: true,
       advancementLevel: true,
