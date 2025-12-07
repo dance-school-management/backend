@@ -13,7 +13,7 @@ const FAKE_USER = {
 };
 
 interface AuthenticateOptions {
-  strict: boolean;
+  strict?: boolean;
 }
 
 /**
@@ -32,6 +32,15 @@ export function authenticate(options: AuthenticateOptions = { strict: true }) {
     const cookies = req.cookies;
     const betterAuthCookie = cookies["better-auth.session_token"];
 
+    const handleAuthFailure = (status: StatusCodes) => {
+      if (strict) {
+        res.sendStatus(status);
+      } else {
+        delete req.headers["user-context"];
+        next();
+      }
+    };
+
     if (AUTH_FLAG === "false") {
       req.headers["user-context"] = Buffer.from(
         JSON.stringify(FAKE_USER),
@@ -41,11 +50,7 @@ export function authenticate(options: AuthenticateOptions = { strict: true }) {
     }
 
     if (!betterAuthCookie) {
-      if (strict) {
-        res.sendStatus(StatusCodes.UNAUTHORIZED);
-        return;
-      }
-      next();
+      handleAuthFailure(StatusCodes.UNAUTHORIZED);
       return;
     }
 
@@ -67,11 +72,7 @@ export function authenticate(options: AuthenticateOptions = { strict: true }) {
       clearTimeout(timeout);
 
       if (response.status === StatusCodes.UNAUTHORIZED || response.status === StatusCodes.FORBIDDEN) {
-        if (strict) {
-          res.sendStatus(StatusCodes.UNAUTHORIZED);
-          return;
-        }
-        next();
+        handleAuthFailure(StatusCodes.UNAUTHORIZED);
         return;
       }
 
@@ -81,11 +82,7 @@ export function authenticate(options: AuthenticateOptions = { strict: true }) {
           message: "Auth service error",
           status: response.status,
         });
-        if (strict) {
-          res.sendStatus(StatusCodes.SERVICE_UNAVAILABLE);
-          return;
-        }
-        next();
+        handleAuthFailure(StatusCodes.SERVICE_UNAVAILABLE);
         return;
       }
 
@@ -96,11 +93,7 @@ export function authenticate(options: AuthenticateOptions = { strict: true }) {
           message: "Unexpected content-type from auth service",
           contentType,
         });
-        if (strict) {
-          res.sendStatus(StatusCodes.BAD_GATEWAY);
-          return;
-        }
-        next();
+        handleAuthFailure(StatusCodes.BAD_GATEWAY);
         return;
       }
 
@@ -113,21 +106,13 @@ export function authenticate(options: AuthenticateOptions = { strict: true }) {
           message: "Failed to parse auth response JSON",
           error: e,
         });
-        if (strict) {
-          res.sendStatus(StatusCodes.BAD_GATEWAY);
-          return;
-        }
-        next();
+        handleAuthFailure(StatusCodes.BAD_GATEWAY);
         return;
       }
 
       const user = data?.user;
       if (!user || typeof user !== "object" || !user.id || !user.role) {
-        if (strict) {
-          res.sendStatus(StatusCodes.UNAUTHORIZED);
-          return;
-        }
-        next();
+        handleAuthFailure(StatusCodes.UNAUTHORIZED);
         return;
       }
 
@@ -147,11 +132,7 @@ export function authenticate(options: AuthenticateOptions = { strict: true }) {
           level: "error",
           message: "Auth fetch timeout",
         });
-        if (strict) {
-          res.sendStatus(StatusCodes.REQUEST_TIMEOUT);
-          return;
-        }
-        next();
+        handleAuthFailure(StatusCodes.REQUEST_TIMEOUT);
         return;
       }
       logger.error({
@@ -159,11 +140,7 @@ export function authenticate(options: AuthenticateOptions = { strict: true }) {
         message: "Error in authentication middleware",
         error: err?.message ?? err,
       });
-      if (strict) {
-        res.sendStatus(StatusCodes.INTERNAL_SERVER_ERROR);
-        return;
-      }
-      next();
+      handleAuthFailure(StatusCodes.INTERNAL_SERVER_ERROR);
       return;
     }
   };
