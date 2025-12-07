@@ -14,7 +14,18 @@ const FAKE_USER = {
   role: "INSTRUCTOR",
 };
 
-export function authenticate() {
+interface AuthenticateOptions {
+  strict: boolean;
+}
+
+/**
+ * @param options - Auth options
+ * @param [options.strict=true] - Block on auth failure when true; pass through when false
+ * @returns Express middleware that performs authentication
+ */
+export function authenticate(options: AuthenticateOptions = { strict: true }) {
+  const { strict } = options;
+
   return async (
     req: Request & { user?: any },
     res: Response,
@@ -32,7 +43,11 @@ export function authenticate() {
     }
 
     if (!betterAuthCookie) {
-      res.sendStatus(StatusCodes.UNAUTHORIZED);
+      if (strict) {
+        res.sendStatus(StatusCodes.UNAUTHORIZED);
+        return;
+      }
+      next();
       return;
     }
 
@@ -56,11 +71,12 @@ export function authenticate() {
 
       clearTimeout(timeout);
 
-      if (
-        response.status === StatusCodes.UNAUTHORIZED ||
-        response.status === StatusCodes.FORBIDDEN
-      ) {
-        res.sendStatus(StatusCodes.UNAUTHORIZED);
+      if (response.status === StatusCodes.UNAUTHORIZED || response.status === StatusCodes.FORBIDDEN) {
+        if (strict) {
+          res.sendStatus(StatusCodes.UNAUTHORIZED);
+          return;
+        }
+        next();
         return;
       }
 
@@ -70,7 +86,11 @@ export function authenticate() {
           message: "Auth service error",
           status: response.status,
         });
-        res.sendStatus(StatusCodes.SERVICE_UNAVAILABLE);
+        if (strict) {
+          res.sendStatus(StatusCodes.SERVICE_UNAVAILABLE);
+          return;
+        }
+        next();
         return;
       }
 
@@ -81,7 +101,11 @@ export function authenticate() {
           message: "Unexpected content-type from auth service",
           contentType,
         });
-        res.sendStatus(StatusCodes.BAD_GATEWAY);
+        if (strict) {
+          res.sendStatus(StatusCodes.BAD_GATEWAY);
+          return;
+        }
+        next();
         return;
       }
 
@@ -94,13 +118,21 @@ export function authenticate() {
           message: "Failed to parse auth response JSON",
           error: e,
         });
-        res.sendStatus(StatusCodes.BAD_GATEWAY);
+        if (strict) {
+          res.sendStatus(StatusCodes.BAD_GATEWAY);
+          return;
+        }
+        next();
         return;
       }
 
       const user = data?.user;
       if (!user || typeof user !== "object" || !user.id || !user.role) {
-        res.sendStatus(StatusCodes.UNAUTHORIZED);
+        if (strict) {
+          res.sendStatus(StatusCodes.UNAUTHORIZED);
+          return;
+        }
+        next();
         return;
       }
 
@@ -120,7 +152,11 @@ export function authenticate() {
           level: "error",
           message: "Auth fetch timeout",
         });
-        res.sendStatus(StatusCodes.REQUEST_TIMEOUT);
+        if (strict) {
+          res.sendStatus(StatusCodes.REQUEST_TIMEOUT);
+          return;
+        }
+        next();
         return;
       }
       logger.error({
@@ -128,7 +164,11 @@ export function authenticate() {
         message: "Error in authentication middleware",
         error: err?.message ?? err,
       });
-      res.sendStatus(StatusCodes.INTERNAL_SERVER_ERROR);
+      if (strict) {
+        res.sendStatus(StatusCodes.INTERNAL_SERVER_ERROR);
+        return;
+      }
+      next();
       return;
     }
   };
