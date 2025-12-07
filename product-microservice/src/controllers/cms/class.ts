@@ -12,6 +12,7 @@ import { getInstructorsClasses } from "../../grpc/client/enrollCommunication/get
 import { getClassesInstructors } from "../../grpc/client/enrollCommunication/getClassesInstructors";
 import { getClassesStudents } from "../../grpc/client/enrollCommunication/getClassesStudents";
 import { getInstructorsData } from "../../grpc/client/profileCommunication/getInstructorsData";
+import { ClassType } from "../../../generated/client";
 
 export async function createClass(
   req: Request<
@@ -297,6 +298,14 @@ export async function getClassDetails(
 
   if (!theClass)
     throw new UniversalError(StatusCodes.NOT_FOUND, "Class not found", []);
+
+  if (theClass.classTemplate.classType === ClassType.PRIVATE_CLASS) {
+    throw new UniversalError(
+      StatusCodes.CONFLICT,
+      "This class has class template with class type PRIVATE CLASS",
+      [],
+    );
+  }
 
   const classInstructors = (await getClassesInstructors([id]))
     .instructorsClassesIdsList;
