@@ -111,6 +111,20 @@ export async function deleteClassTemplate(
 ) {
   const id = parseInt(req.params.id);
 
+  const classUsingIt = await prisma.class.findFirst({
+    where: {
+      classTemplateId: id,
+    },
+  });
+
+  if (classUsingIt) {
+    throw new UniversalError(
+      StatusCodes.CONFLICT,
+      "There are existing classes using this class template",
+      [],
+    );
+  }
+
   await prisma.classTemplate.delete({
     where: {
       id: id,

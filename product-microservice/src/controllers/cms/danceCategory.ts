@@ -7,6 +7,7 @@ import { checkValidations } from "../../utils/errorHelpers";
 import { deletePublicPhoto, uploadPublicPhoto } from "../../utils/aws-s3/crud";
 import { s3Endpoint } from "../../utils/aws-s3/s3Client";
 import "dotenv/config";
+import { UniversalError } from "../../errors/UniversalError";
 
 export async function createDanceCategory(
   req: Request<{}, {}, DanceCategory>,
@@ -81,19 +82,43 @@ export async function deleteDanceCategory(
   next: NextFunction,
 ) {
   const id = parseInt(req.params.id);
+
+  const courseUsingIt = await prisma.course.findFirst({
+    where: {
+      danceCategoryId: id,
+    },
+  });
+
+  const classTemplateUsingIt = await prisma.classTemplate.findFirst({
+    where: {
+      danceCategoryId: id,
+    },
+  });
+
+  if (courseUsingIt || classTemplateUsingIt) {
+    throw new UniversalError(
+      StatusCodes.CONFLICT,
+      "This dance category is in use",
+      [],
+    );
+  }
+
   const OldDanceCategory = await prisma.danceCategory.findUniqueOrThrow({
     where: {
       id,
     },
   });
+  
   if (OldDanceCategory.photoPath) {
     await deletePublicPhoto(OldDanceCategory.photoPath);
   }
-  const danceCategory = await prisma.danceCategory.delete({
+
+  await prisma.danceCategory.delete({
     where: {
       id,
     },
   });
+
   res.status(StatusCodes.NO_CONTENT).send();
 }
 

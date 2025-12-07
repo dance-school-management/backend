@@ -313,3 +313,34 @@
  *       500:
  *         description: Internal server error
  */
+
+/**
+ * @swagger
+ * /cms/class/{id}:
+ *   delete:
+ *     summary: Delete a class
+ *     description: >
+ *       Deletes a class **only if it exists** and its status is `HIDDEN`.  
+ *       If the class is published, the server returns an error.
+ *     tags:
+ *       - cms - Classes
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         example: 12
+ *         description: ID of the class to delete
+ *     responses:
+ *       204:
+ *         description: Class deleted successfully (no content).
+ *       409:
+ *         description: >
+ *           Possible reasons:  
+ *           - Class not found  
+ *           - Class is published and cannot be deleted
+ *       500:
+ *         description: Unexpected server error.
+ */
+
