@@ -9,7 +9,7 @@ import { ClassType } from "../../../generated/client";
 import { UniversalError } from "../../errors/UniversalError";
 
 export async function createClassTemplate(
-  req: Request<{}, {}, ClassTemplate & { isConfirmation: boolean }>,
+  req: Request<{}, {}, ClassTemplate & { isConfirmation: boolean; }>,
   res: Response,
   next: NextFunction,
 ) {
@@ -63,7 +63,7 @@ export async function createClassTemplate(
 }
 
 export async function editClassTemplate(
-  req: Request<{ id: string }, {}, ClassTemplate>,
+  req: Request<{ id: string; }, {}, ClassTemplate>,
   res: Response,
   next: NextFunction,
 ) {
@@ -105,7 +105,7 @@ export async function editClassTemplate(
 }
 
 export async function deleteClassTemplate(
-  req: Request<{ id: string }, {}, {}>,
+  req: Request<{ id: string; }, {}, {}>,
   res: Response,
   next: NextFunction,
 ) {
@@ -121,7 +121,7 @@ export async function deleteClassTemplate(
 }
 
 export async function getClassTemplate(
-  req: Request<{ id: string }, {}, {}>,
+  req: Request<{ id: string; }, {}, {}>,
   res: Response,
   next: NextFunction,
 ) {
@@ -151,6 +151,9 @@ export async function getAllClassTemplates(
   next: NextFunction,
 ) {
   const allClassTemplates = await prisma.classTemplate.findMany({
+    where: {
+      courseId: null,
+    },
     include: {
       danceCategory: true,
       advancementLevel: true,
