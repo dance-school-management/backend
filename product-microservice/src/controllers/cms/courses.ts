@@ -116,6 +116,18 @@ export async function editCourse(req: Request<{}, {}, Course>, res: Response) {
   const { id, name, description, danceCategoryId, advancementLevelId, price } =
     req.body;
 
+  const theCourse = await prisma.course.findFirst({
+    where: {
+      id,
+    },
+  });
+
+  if (!theCourse) {
+    throw new UniversalError(StatusCodes.CONFLICT, "Course not found", []);
+  }
+
+  const isPublished = theCourse.courseStatus !== CourseStatus.HIDDEN;
+
   const editedCourse = await prisma.course.update({
     where: {
       id: id,
@@ -123,12 +135,12 @@ export async function editCourse(req: Request<{}, {}, Course>, res: Response) {
     data: {
       name,
       description,
-      danceCategoryId,
-      advancementLevelId,
-      price,
+      ...(!isPublished && {danceCategoryId}),
+      ...(!isPublished && {advancementLevelId}),
+      ...(!isPublished && {price}),
     },
   });
-  
+
   res.status(StatusCodes.OK).json(editedCourse);
 }
 

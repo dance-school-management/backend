@@ -111,6 +111,16 @@ export async function editClassTemplate(
     );
   }
 
+  const itsClasses = await prisma.class.findMany({
+    where: {
+      classTemplateId: id,
+    },
+  });
+
+  const areSomeClassesPublished = itsClasses.some(
+    (c) => c.classStatus !== ClassStatus.HIDDEN,
+  );
+
   const editedClassTemplate = await prisma.classTemplate.update({
     where: {
       id: id,
@@ -118,10 +128,10 @@ export async function editClassTemplate(
     data: {
       name,
       description,
-      price,
-      danceCategoryId,
-      advancementLevelId,
-      classType,
+      ...(!areSomeClassesPublished && { price }),
+      ...(!areSomeClassesPublished && { danceCategoryId }),
+      ...(!areSomeClassesPublished && { advancementLevelId }),
+      ...(!areSomeClassesPublished && { classType }),
     },
   });
 
