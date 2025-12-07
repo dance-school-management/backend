@@ -12,7 +12,21 @@ const FAKE_USER = {
   role: "INSTRUCTOR",
 };
 
-export function authenticate() {
+interface AuthenticateOptions {
+  strict?: boolean;
+}
+
+/**
+ * @param options - Auth options
+ * @param [options.strict=true] - Block on auth failure when true; pass through when false
+ * @returns Express middleware that performs authentication
+ * @example
+ * // For endpoints that work both authenticated and unauthenticated:
+ * authenticate({ strict: false })
+ */
+export function authenticate(options: AuthenticateOptions = { strict: true }) {
+  const { strict } = options;
+
   return async (
     req: Request & { user?: any; },
     res: Response,
@@ -20,6 +34,16 @@ export function authenticate() {
   ) => {
     const cookies = req.cookies;
     const betterAuthCookie = cookies["better-auth.session_token"];
+
+    const handleAuthFailure = (status: StatusCodes) => {
+      if (strict) {
+        res.sendStatus(status);
+      } else {
+        // Explicitly overwrite user-context header to prevent client injection
+        req.headers["user-context"] = undefined;
+        next();
+      }
+    };
 
     if (AUTH_FLAG === "false") {
       req.headers["user-context"] = Buffer.from(
@@ -30,7 +54,7 @@ export function authenticate() {
     }
 
     if (!betterAuthCookie) {
-      res.sendStatus(StatusCodes.UNAUTHORIZED);
+      handleAuthFailure(StatusCodes.UNAUTHORIZED);
       return;
     }
 
@@ -52,7 +76,7 @@ export function authenticate() {
       clearTimeout(timeout);
 
       if (response.status === StatusCodes.UNAUTHORIZED || response.status === StatusCodes.FORBIDDEN) {
-        res.sendStatus(StatusCodes.UNAUTHORIZED);
+        handleAuthFailure(StatusCodes.UNAUTHORIZED);
         return;
       }
 
@@ -62,7 +86,7 @@ export function authenticate() {
           message: "Auth service error",
           status: response.status,
         });
-        res.sendStatus(StatusCodes.SERVICE_UNAVAILABLE);
+        handleAuthFailure(StatusCodes.SERVICE_UNAVAILABLE);
         return;
       }
 
@@ -73,7 +97,7 @@ export function authenticate() {
           message: "Unexpected content-type from auth service",
           contentType,
         });
-        res.sendStatus(StatusCodes.BAD_GATEWAY);
+        handleAuthFailure(StatusCodes.BAD_GATEWAY);
         return;
       }
 
@@ -86,13 +110,13 @@ export function authenticate() {
           message: "Failed to parse auth response JSON",
           error: e,
         });
-        res.sendStatus(StatusCodes.BAD_GATEWAY);
+        handleAuthFailure(StatusCodes.BAD_GATEWAY);
         return;
       }
 
       const user = data?.user;
       if (!user || typeof user !== "object" || !user.id || !user.role) {
-        res.sendStatus(StatusCodes.UNAUTHORIZED);
+        handleAuthFailure(StatusCodes.UNAUTHORIZED);
         return;
       }
 
@@ -112,7 +136,7 @@ export function authenticate() {
           level: "error",
           message: "Auth fetch timeout",
         });
-        res.sendStatus(StatusCodes.REQUEST_TIMEOUT);
+        handleAuthFailure(StatusCodes.REQUEST_TIMEOUT);
         return;
       }
       logger.error({
@@ -120,7 +144,7 @@ export function authenticate() {
         message: "Error in authentication middleware",
         error: err?.message ?? err,
       });
-      res.sendStatus(StatusCodes.INTERNAL_SERVER_ERROR);
+      handleAuthFailure(StatusCodes.INTERNAL_SERVER_ERROR);
       return;
     }
   };

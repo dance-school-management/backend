@@ -48,6 +48,7 @@ if (PRODUCT_MICROSERVICE_URL) {
   if (NODE_ENV === "development") {
     app.use("/product/api-docs", proxyMiddlewareProduct);
   }
+  app.use("/product/public/schedule", authenticate({ strict: false }), proxyMiddlewareProduct);
   app.use("/product/public", proxyMiddlewareProduct);
   app.use("/product", authenticate(), proxyMiddlewareProduct);
 }
