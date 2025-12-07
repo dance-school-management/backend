@@ -54,7 +54,7 @@ export async function createClassTemplate(
     if (theCourse.courseStatus !== CourseStatus.HIDDEN) {
       throw new UniversalError(
         StatusCodes.CONFLICT,
-        "You can't add a class template to a published",
+        "You can't add a class template to a published course",
         [],
       );
     }
@@ -89,7 +89,18 @@ export async function createClassTemplate(
 }
 
 export async function editClassTemplate(
-  req: Request<{ id: string }, {}, ClassTemplate>,
+  req: Request<
+    { id: string },
+    {},
+    {
+      name?: string;
+      description?: string;
+      price?: number;
+      danceCategoryId?: number;
+      advancementLevelId?: number;
+      classType?: ClassType;
+    }
+  >,
   res: Response,
   next: NextFunction,
 ) {
@@ -111,6 +122,20 @@ export async function editClassTemplate(
     );
   }
 
+  const theClassTemplate = await prisma.classTemplate.findFirst({
+    where: {
+      id,
+    },
+  });
+
+  if (!theClassTemplate) {
+    throw new UniversalError(
+      StatusCodes.CONFLICT,
+      "Class template not found",
+      [],
+    );
+  }
+
   const itsClasses = await prisma.class.findMany({
     where: {
       classTemplateId: id,
@@ -121,17 +146,50 @@ export async function editClassTemplate(
     (c) => c.classStatus !== ClassStatus.HIDDEN,
   );
 
+  if (areSomeClassesPublished && price) {
+    throw new UniversalError(
+      StatusCodes.CONFLICT,
+      "The class template is published, price cannot be changed",
+      [{ field: "price", message: "Should not be provided" }],
+    );
+  }
+
+  if (areSomeClassesPublished && danceCategoryId) {
+    throw new UniversalError(
+      StatusCodes.CONFLICT,
+      "The class template is published, danceCategoryId cannot be changed",
+      [{ field: "danceCategoryId", message: "Should not be provided" }],
+    );
+  }
+
+  if (areSomeClassesPublished && advancementLevelId) {
+    throw new UniversalError(
+      StatusCodes.CONFLICT,
+      "The class template is published, advancementLevelId cannot be changed",
+      [{ field: "advancementLevelId", message: "Should not be provided" }],
+    );
+  }
+
+  if (areSomeClassesPublished && classType) {
+    throw new UniversalError(
+      StatusCodes.CONFLICT,
+      "The class template is published, classType cannot be changed",
+      [{ field: "classType", message: "Should not be provided" }],
+    );
+  }
+
   const editedClassTemplate = await prisma.classTemplate.update({
     where: {
       id: id,
     },
     data: {
-      name,
-      description,
-      ...(!areSomeClassesPublished && { price }),
-      ...(!areSomeClassesPublished && { danceCategoryId }),
-      ...(!areSomeClassesPublished && { advancementLevelId }),
-      ...(!areSomeClassesPublished && { classType }),
+      ...(name && { name }),
+      ...(description && { description }),
+      ...(!areSomeClassesPublished && price && { price }),
+      ...(!areSomeClassesPublished && danceCategoryId && { danceCategoryId }),
+      ...(!areSomeClassesPublished &&
+        advancementLevelId && { advancementLevelId }),
+      ...(!areSomeClassesPublished && classType && { classType }),
     },
   });
 

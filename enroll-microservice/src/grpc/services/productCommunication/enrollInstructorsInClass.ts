@@ -17,7 +17,12 @@ export async function enrollInstructorsInClass(
   const classId = call.request.getClassId();
   const instructorIds = call.request.getInstructorIdsList();
   try {
-    const classes = await prisma.classesOnInstructors.createMany({
+    await prisma.classesOnInstructors.deleteMany({
+      where: {
+        classId,
+      },
+    });
+    await prisma.classesOnInstructors.createMany({
       data: instructorIds.map((instructorId) => ({
         classId,
         instructorId,
