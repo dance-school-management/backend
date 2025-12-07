@@ -24,7 +24,9 @@ const tagsValidator = body("tags")
       return false;
     }
     if (tags && tags.length > 0) {
-      return tags.every((tag: any) => typeof tag === "string" && tag.length > 0);
+      return tags.every(
+        (tag: any) => typeof tag === "string" && tag.length > 0
+      );
     }
     return true;
   })
@@ -56,7 +58,7 @@ router.post(
     .optional()
     .isIn(["draft", "published"])
     .withMessage("Status must be either 'draft' or 'published'"),
-  createPost,
+  createPost
 );
 
 /**
@@ -66,9 +68,7 @@ router.post(
  */
 router.patch(
   "/:idOrSlug",
-  param("idOrSlug")
-    .notEmpty()
-    .withMessage("Post ID or slug is required"),
+  param("idOrSlug").notEmpty().withMessage("Post ID or slug is required"),
   body("title")
     .optional()
     .notEmpty()
@@ -92,7 +92,7 @@ router.patch(
     .optional()
     .isIn(["draft", "published"])
     .withMessage("Status must be either 'draft' or 'published'"),
-  updatePost,
+  updatePost
 );
 
 /**
@@ -101,15 +101,13 @@ router.patch(
  */
 router.patch(
   "/:idOrSlug/publish",
-  param("idOrSlug")
-    .notEmpty()
-    .withMessage("Post ID or slug is required"),
+  param("idOrSlug").notEmpty().withMessage("Post ID or slug is required"),
   body("publishedAt")
     .optional()
     .isISO8601()
     .withMessage("publishedAt must be a valid ISO8601 date string")
     .toDate(),
-  publishPost,
+  publishPost
 );
 
 /**
@@ -118,10 +116,8 @@ router.patch(
  */
 router.patch(
   "/:idOrSlug/unpublish",
-  param("idOrSlug")
-    .notEmpty()
-    .withMessage("Post ID or slug is required"),
-  unpublishPost,
+  param("idOrSlug").notEmpty().withMessage("Post ID or slug is required"),
+  unpublishPost
 );
 
 /**
@@ -130,9 +126,7 @@ router.patch(
  */
 router.patch(
   "/:idOrSlug/pin",
-  param("idOrSlug")
-    .notEmpty()
-    .withMessage("Post ID or slug is required"),
+  param("idOrSlug").notEmpty().withMessage("Post ID or slug is required"),
   body("pinnedUntil")
     .notEmpty()
     .withMessage("pinnedUntil is required")
@@ -141,7 +135,7 @@ router.patch(
     .toDate()
     .custom((pinnedUntil) => pinnedUntil > new Date())
     .withMessage("pinnedUntil must be in the future"),
-  pinPost,
+  pinPost
 );
 
 /**
@@ -150,10 +144,8 @@ router.patch(
  */
 router.patch(
   "/:idOrSlug/unpin",
-  param("idOrSlug")
-    .notEmpty()
-    .withMessage("Post ID or slug is required"),
-  unpinPost,
+  param("idOrSlug").notEmpty().withMessage("Post ID or slug is required"),
+  unpinPost
 );
 
 /**
@@ -162,10 +154,8 @@ router.patch(
  */
 router.delete(
   "/:idOrSlug",
-  param("idOrSlug")
-    .notEmpty()
-    .withMessage("Post ID or slug is required"),
-  deletePost,
+  param("idOrSlug").notEmpty().withMessage("Post ID or slug is required"),
+  deletePost
 );
 
 /**
@@ -192,7 +182,7 @@ router.get(
     .optional()
     .isLength({ min: 1 })
     .withMessage("Search query cannot be empty"),
-  getAllPosts,
+  getAllPosts
 );
 
 /**
@@ -201,10 +191,8 @@ router.get(
  */
 router.get(
   "/:idOrSlug",
-  param("idOrSlug")
-    .notEmpty()
-    .withMessage("Post ID or slug is required"),
-  getPostByIdOrSlug,
+  param("idOrSlug").notEmpty().withMessage("Post ID or slug is required"),
+  getPostByIdOrSlug
 );
 
 export default router;

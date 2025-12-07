@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 (bash clear-databases.sh)
 # Wait for databases to be fully cleared before seeding
-sleep 8
+sleep 15
 cd ..
 (cd auth-microservice && bash seed.sh)
 (cd profile-microservice && bash seed.sh)
