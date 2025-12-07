@@ -343,8 +343,6 @@
  *                           properties:
  *                             id:
  *                               type: integer
- *                             groupNumber:
- *                               type: integer
  *                             startDate:
  *                               type: string
  *                               format: date-time
@@ -432,8 +430,6 @@
  *                       items:
  *                         type: object
  *                         properties:
- *                           groupNumber:
- *                             type: integer
  *                           courseStartDate:
  *                             type: string
  *                             format: date-time
@@ -443,8 +439,6 @@
  *                       items:
  *                         type: object
  *                         properties:
- *                           groupNumber:
- *                             type: integer
  *                           courseEndDate:
  *                             type: string
  *                             format: date-time

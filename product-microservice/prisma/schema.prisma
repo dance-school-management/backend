@@ -55,7 +55,6 @@ model Class {
   id              Int           @id() @default(autoincrement())
   classTemplate   ClassTemplate @relation(fields: [classTemplateId], references: [id])
   classTemplateId Int
-  groupNumber     Int
   startDate       DateTime
   endDate         DateTime
   peopleLimit     Int

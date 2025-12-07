@@ -180,13 +180,10 @@ export async function publishCourse(
     );
   }
 
-  const courseStartAndEndDates = (await getCoursesStartAndEndDates([id]))[0];
+  const courseStartAndEndDate = (await getCoursesStartAndEndDates([id]))[0];
 
   if (!isConfirmation) {
-    res.status(StatusCodes.OK).json({
-      courseStartDates: courseStartAndEndDates.courseStartDates,
-      courseEndDates: courseStartAndEndDates.courseEndDates,
-    });
+    res.status(StatusCodes.OK).json(courseStartAndEndDate);
     return;
   }
 

@@ -322,7 +322,6 @@ export async function createPrivateClass(
       classTemplateId: classData.classTemplateId,
       startDate: classData.startDate,
       endDate: classData.endDate,
-      groupNumber: classData.groupNumber,
       peopleLimit: classData.peopleLimit,
       createdBy: instructorId,
     },
@@ -405,7 +404,6 @@ export async function editPrivateClass(
       classTemplateId: classData.classTemplateId,
       startDate: classData.startDate,
       endDate: classData.endDate,
-      groupNumber: classData.groupNumber,
     },
   });
 

@@ -27,7 +27,6 @@ export async function createClass(
   const {
     instructorIds,
     classRoomId,
-    groupNumber,
     startDate,
     endDate,
     peopleLimit,
@@ -90,7 +89,6 @@ export async function createClass(
           equals: thisClassTemplate.courseId,
         },
       },
-      groupNumber,
     },
   });
 
@@ -150,7 +148,6 @@ export async function createClass(
     createdClass = await prisma.class.create({
       data: {
         classTemplateId,
-        groupNumber,
         startDate,
         endDate,
         peopleLimit,

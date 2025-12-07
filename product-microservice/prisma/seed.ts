@@ -133,7 +133,6 @@ async function main() {
           endDate: new Date(aClass.endDate),
           startDate: new Date(aClass.startDate),
           peopleLimit: aClass.peopleLimit,
-          groupNumber: aClass.groupNumber,
           classRoomId: aClass.classRoomId,
           classTemplateId: aClass.classTemplateId,
         },
