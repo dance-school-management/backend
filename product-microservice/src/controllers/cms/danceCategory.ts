@@ -4,16 +4,9 @@ import { validationResult } from "express-validator";
 import { StatusCodes } from "http-status-codes";
 import prisma from "../../utils/prisma";
 import { checkValidations } from "../../utils/errorHelpers";
-import fs from "fs";
-import path from "path";
-import logger from "../../utils/winston";
-import { PutObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
-import { s3, s3Endpoint } from "../../utils/s3Client";
+import { deletePublicPhoto, uploadPublicPhoto } from "../../utils/aws-s3/crud";
+import { s3Endpoint } from "../../utils/aws-s3/s3Client";
 import "dotenv/config";
-import randomImageName from "../../utils/randomImageName";
-import { uploadPublicPhoto } from "../../utils/uploadPublicPhoto";
-
-const S3_BUCKET_NAME = process.env.S3_BUCKET_NAME;
 
 export async function createDanceCategory(
   req: Request<{}, {}, DanceCategory>,
@@ -94,12 +87,7 @@ export async function deleteDanceCategory(
     },
   });
   if (OldDanceCategory.photoPath) {
-    const deleteParams = {
-      Bucket: S3_BUCKET_NAME,
-      Key: OldDanceCategory.photoPath,
-    };
-    const deleteCommand = new DeleteObjectCommand(deleteParams);
-    await s3.send(deleteCommand);
+    await deletePublicPhoto(OldDanceCategory.photoPath);
   }
   const danceCategory = await prisma.danceCategory.delete({
     where: {
@@ -134,12 +122,7 @@ export async function updateDanceCategory(
     OldDanceCategory.photoPath &&
     uniquePath !== OldDanceCategory.photoPath
   ) {
-    const deleteParams = {
-      Bucket: S3_BUCKET_NAME,
-      Key: OldDanceCategory.photoPath,
-    };
-    const deleteCommand = new DeleteObjectCommand(deleteParams);
-    await s3.send(deleteCommand);
+    await deletePublicPhoto(OldDanceCategory.photoPath);
   }
 
   const danceCategory = await prisma.danceCategory.update({

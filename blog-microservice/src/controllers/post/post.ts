@@ -222,34 +222,34 @@ export async function updatePost(
         blogPostId: existingPost.id,
       })) || []
     );
+  }
 
-    updateData.updatedAt = new Date();
-    const updatedPost = await prisma.blogPost.update({
-      where: { id: existingPost.id },
-      data: {
-        ...(photosIds !== undefined
-          ? {
-              BlogPhotosOnBlogPosts: {
-                deleteMany: {},
-                create: photosIds.map((id) => ({
-                  blogPhotoId: id,
-                })),
-              },
-            }
-          : {}),
-        ...updateData,
-      },
-      include: {
-        BlogPhotosOnBlogPosts: {
-          select: {
-            blogPhoto: true,
-          },
+  updateData.updatedAt = new Date();
+  const updatedPost = await prisma.blogPost.update({
+    where: { id: existingPost.id },
+    data: {
+      ...(photosIds !== undefined
+        ? {
+            BlogPhotosOnBlogPosts: {
+              deleteMany: {},
+              create: photosIds.map((id) => ({
+                blogPhotoId: id,
+              })),
+            },
+          }
+        : {}),
+      ...updateData,
+    },
+    include: {
+      BlogPhotosOnBlogPosts: {
+        select: {
+          blogPhoto: true,
         },
       },
-    });
+    },
+  });
 
-    res.status(StatusCodes.OK).json(updatedPost);
-  }
+  res.status(StatusCodes.OK).json(updatedPost);
 }
 
 /**

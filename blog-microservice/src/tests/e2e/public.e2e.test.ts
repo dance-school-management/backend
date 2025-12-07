@@ -44,7 +44,7 @@ describe("Public Routes (E2E Tests)", () => {
     await cleanTestDatabase();
   });
 
-  describe("GET /blog/public/posts", () => {
+  describe("GET /public/posts", () => {
     it("should get published posts with pagination", async () => {
       await prisma.blogPost.createMany({
         data: [
@@ -72,7 +72,7 @@ describe("Public Routes (E2E Tests)", () => {
       });
 
       const response = await request(app)
-        .get("/blog/public/posts")
+        .get("/public/posts")
         .query({ page: "1", limit: "10" });
 
       expect(response.status).toBe(200);
@@ -108,7 +108,7 @@ describe("Public Routes (E2E Tests)", () => {
         ],
       });
 
-      const response = await request(app).get("/blog/public/posts");
+      const response = await request(app).get("/public/posts");
 
       expect(response.status).toBe(200);
       expect(response.body.data.length).toBe(1);
@@ -130,7 +130,7 @@ describe("Public Routes (E2E Tests)", () => {
         },
       });
 
-      const response = await request(app).get("/blog/public/posts");
+      const response = await request(app).get("/public/posts");
 
       expect(response.status).toBe(200);
       expect(response.body.data.length).toBe(0);
@@ -163,7 +163,7 @@ describe("Public Routes (E2E Tests)", () => {
       });
 
       const response = await request(app)
-        .get("/blog/public/posts")
+        .get("/public/posts")
         .query({ tag: "dance" });
 
       expect(response.status).toBe(200);
@@ -198,7 +198,7 @@ describe("Public Routes (E2E Tests)", () => {
       });
 
       const response = await request(app)
-        .get("/blog/public/posts")
+        .get("/public/posts")
         .query({ q: "dance" });
 
       expect(response.status).toBe(200);
@@ -238,7 +238,7 @@ describe("Public Routes (E2E Tests)", () => {
         ],
       });
 
-      const response = await request(app).get("/blog/public/posts");
+      const response = await request(app).get("/public/posts");
 
       expect(response.status).toBe(200);
       expect(response.body.data[0].isPinned).toBe(true);
@@ -260,7 +260,7 @@ describe("Public Routes (E2E Tests)", () => {
       });
 
       const response = await request(app)
-        .get("/blog/public/posts")
+        .get("/public/posts")
         .query({ page: "1", limit: "10" });
 
       expect(response.status).toBe(200);
@@ -284,7 +284,7 @@ describe("Public Routes (E2E Tests)", () => {
       });
 
       const response = await request(app)
-        .get("/blog/public/posts")
+        .get("/public/posts")
         .query({ page: "1", limit: "200" });
 
       expect(response.status).toBe(400);
@@ -292,7 +292,7 @@ describe("Public Routes (E2E Tests)", () => {
     });
   });
 
-  describe("GET /blog/public/posts/:idOrSlug", () => {
+  describe("GET /public/posts/:idOrSlug", () => {
     it("should get published post by ID", async () => {
       const post = await prisma.blogPost.create({
         data: {
@@ -307,7 +307,7 @@ describe("Public Routes (E2E Tests)", () => {
         },
       });
 
-      const response = await request(app).get(`/blog/public/posts/${post.id}`);
+      const response = await request(app).get(`/public/posts/${post.id}`);
 
       expect(response.status).toBe(200);
       expect(response.body.id).toBe(post.id);
@@ -329,7 +329,7 @@ describe("Public Routes (E2E Tests)", () => {
       });
 
       const response = await request(app).get(
-        "/blog/public/posts/test-post-slug"
+        "/public/posts/test-post-slug"
       );
 
       expect(response.status).toBe(200);
@@ -349,7 +349,7 @@ describe("Public Routes (E2E Tests)", () => {
         },
       });
 
-      const response = await request(app).get(`/blog/public/posts/${post.id}`);
+      const response = await request(app).get(`/public/posts/${post.id}`);
 
       expect(response.status).toBe(404);
     });
@@ -369,13 +369,13 @@ describe("Public Routes (E2E Tests)", () => {
         },
       });
 
-      const response = await request(app).get(`/blog/public/posts/${post.id}`);
+      const response = await request(app).get(`/public/posts/${post.id}`);
 
       expect(response.status).toBe(404);
     });
 
     it("should return 404 for non-existent post", async () => {
-      const response = await request(app).get("/blog/public/posts/99999");
+      const response = await request(app).get("/public/posts/99999");
 
       expect(response.status).toBe(404);
     });

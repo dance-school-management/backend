@@ -15,6 +15,7 @@ import privateClassesRouter from "../routes/private_classes/privateClasses";
 import publicScheduleRouter from "../routes/schedule/publicSchedule";
 import scheduleRouter from "../routes/schedule/schedule";
 import { setupSwagger } from "./swagger";
+import s3Router from "../routes/s3/s3";
 
 export function createApp() {
   const app = express();
@@ -28,6 +29,7 @@ export function createApp() {
   }
   app.use("/public/pricing", pricingRouter);
   app.use("/public/cms", publicCmsRouter);
+  app.use("/s3-endpoint", s3Router);
   app.use(handleUserContext);
   app.use("/public/schedule", publicScheduleRouter);
   // app.use("/uploads", express.static(path.resolve("uploads")));

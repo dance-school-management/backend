@@ -52,10 +52,10 @@ describe("Post Routes (E2E Tests)", () => {
     await prisma.blogPhoto.deleteMany();
   });
 
-  describe("POST /blog/posts", () => {
+  describe("POST /posts", () => {
     it("should create a draft post", async () => {
       const response = await request(app)
-        .post("/blog/posts")
+        .post("/posts")
         .set("user-context", adminUserContext)
         .send({
           title: "Test Draft Post",
@@ -74,7 +74,7 @@ describe("Post Routes (E2E Tests)", () => {
 
     it("should create a published post", async () => {
       const response = await request(app)
-        .post("/blog/posts")
+        .post("/posts")
         .set("user-context", adminUserContext)
         .send({
           title: "Test Published Post",
@@ -90,7 +90,7 @@ describe("Post Routes (E2E Tests)", () => {
 
     it("should return 400 for missing required fields", async () => {
       const response = await request(app)
-        .post("/blog/posts")
+        .post("/posts")
         .set("user-context", adminUserContext)
         .send({
           title: "Test Post",
@@ -102,7 +102,7 @@ describe("Post Routes (E2E Tests)", () => {
 
     it("should return 400 for invalid status", async () => {
       const response = await request(app)
-        .post("/blog/posts")
+        .post("/posts")
         .set("user-context", adminUserContext)
         .send({
           title: "Test Post",
@@ -115,7 +115,7 @@ describe("Post Routes (E2E Tests)", () => {
     });
   });
 
-  describe("PATCH /blog/posts/:idOrSlug", () => {
+  describe("PATCH /posts/:idOrSlug", () => {
     it("should update a post", async () => {
       const post = await prisma.blogPost.create({
         data: {
@@ -130,7 +130,7 @@ describe("Post Routes (E2E Tests)", () => {
       });
 
       const response = await request(app)
-        .patch(`/blog/posts/${post.id}`)
+        .patch(`/posts/${post.id}`)
         .set("user-context", adminUserContext)
         .send({
           title: "Updated Title",
@@ -143,7 +143,7 @@ describe("Post Routes (E2E Tests)", () => {
 
     it("should return 404 for non-existent post", async () => {
       const response = await request(app)
-        .patch("/blog/posts/99999")
+        .patch("/posts/99999")
         .set("user-context", adminUserContext)
         .send({
           title: "Updated Title",
@@ -153,7 +153,7 @@ describe("Post Routes (E2E Tests)", () => {
     });
   });
 
-  describe("DELETE /blog/posts/:idOrSlug", () => {
+  describe("DELETE /posts/:idOrSlug", () => {
     it("should delete a post", async () => {
       const post = await prisma.blogPost.create({
         data: {
@@ -168,7 +168,7 @@ describe("Post Routes (E2E Tests)", () => {
       });
 
       const response = await request(app)
-        .delete(`/blog/posts/${post.id}`)
+        .delete(`/posts/${post.id}`)
         .set("user-context", adminUserContext);
 
       expect(response.status).toBe(204);
@@ -181,14 +181,14 @@ describe("Post Routes (E2E Tests)", () => {
 
     it("should return 404 for non-existent post", async () => {
       const response = await request(app)
-        .delete("/blog/posts/99999")
+        .delete("/posts/99999")
         .set("user-context", adminUserContext);
 
       expect(response.status).toBe(404);
     });
   });
 
-  describe("PATCH /blog/posts/:idOrSlug/publish", () => {
+  describe("PATCH /posts/:idOrSlug/publish", () => {
     it("should publish a draft post", async () => {
       const post = await prisma.blogPost.create({
         data: {
@@ -203,7 +203,7 @@ describe("Post Routes (E2E Tests)", () => {
       });
 
       const response = await request(app)
-        .patch(`/blog/posts/${post.id}/publish`)
+        .patch(`/posts/${post.id}/publish`)
         .set("user-context", adminUserContext)
         .send({});
 
@@ -217,7 +217,7 @@ describe("Post Routes (E2E Tests)", () => {
     });
   });
 
-  describe("PATCH /blog/posts/:idOrSlug/unpublish", () => {
+  describe("PATCH /posts/:idOrSlug/unpublish", () => {
     it("should unpublish a published post", async () => {
       const post = await prisma.blogPost.create({
         data: {
@@ -233,7 +233,7 @@ describe("Post Routes (E2E Tests)", () => {
       });
 
       const response = await request(app)
-        .patch(`/blog/posts/${post.id}/unpublish`)
+        .patch(`/posts/${post.id}/unpublish`)
         .set("user-context", adminUserContext);
 
       expect(response.status).toBe(204);
@@ -246,7 +246,7 @@ describe("Post Routes (E2E Tests)", () => {
     });
   });
 
-  describe("PATCH /blog/posts/:idOrSlug/pin", () => {
+  describe("PATCH /posts/:idOrSlug/pin", () => {
     it("should pin a post", async () => {
       const post = await prisma.blogPost.create({
         data: {
@@ -265,7 +265,7 @@ describe("Post Routes (E2E Tests)", () => {
       futureDate.setDate(futureDate.getDate() + 7);
 
       const response = await request(app)
-        .patch(`/blog/posts/${post.id}/pin`)
+        .patch(`/posts/${post.id}/pin`)
         .set("user-context", adminUserContext)
         .send({
           pinnedUntil: futureDate.toISOString(),
@@ -281,7 +281,7 @@ describe("Post Routes (E2E Tests)", () => {
     });
   });
 
-  describe("GET /blog/posts", () => {
+  describe("GET /posts", () => {
     it("should get all posts with pagination", async () => {
       await prisma.blogPost.createMany({
         data: [
@@ -308,7 +308,7 @@ describe("Post Routes (E2E Tests)", () => {
       });
 
       const response = await request(app)
-        .get("/blog/posts")
+        .get("/posts")
         .set("user-context", adminUserContext)
         .query({ page: "1", limit: "10" });
 
@@ -343,7 +343,7 @@ describe("Post Routes (E2E Tests)", () => {
       });
 
       const response = await request(app)
-        .get("/blog/posts")
+        .get("/posts")
         .set("user-context", adminUserContext)
         .query({ status: "published" });
 
@@ -354,7 +354,7 @@ describe("Post Routes (E2E Tests)", () => {
     });
   });
 
-  describe("GET /blog/posts/:idOrSlug", () => {
+  describe("GET /posts/:idOrSlug", () => {
     it("should get post by ID", async () => {
       const post = await prisma.blogPost.create({
         data: {
@@ -369,7 +369,7 @@ describe("Post Routes (E2E Tests)", () => {
       });
 
       const response = await request(app)
-        .get(`/blog/posts/${post.id}`)
+        .get(`/posts/${post.id}`)
         .set("user-context", adminUserContext);
 
       expect(response.status).toBe(200);
@@ -390,7 +390,7 @@ describe("Post Routes (E2E Tests)", () => {
       });
 
       const response = await request(app)
-        .get("/blog/posts/test-post-slug")
+        .get("/posts/test-post-slug")
         .set("user-context", adminUserContext);
 
       expect(response.status).toBe(200);

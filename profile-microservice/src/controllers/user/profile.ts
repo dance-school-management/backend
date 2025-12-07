@@ -5,10 +5,9 @@ import { UniversalError } from "../../errors/UniversalError";
 import { Profile } from "../../../generated/client";
 import { checkValidations, getWrongFields } from "../../utils/errorHelpers";
 import { validationResult } from "express-validator";
-import fs from "fs";
-import path from "path";
 import logger from "../../utils/winston";
 import { Prisma } from "../../../generated/client";
+import { deletePublicPhoto, uploadPublicPhoto } from "../../utils/aws-s3/crud";
 
 export async function editProfile(
   req: Request<{}, {}, Profile> & { user?: any },
@@ -20,7 +19,11 @@ export async function editProfile(
     req.body;
 
   const id = req.user.id;
-  const photoPath = req.file ? req.file.path : undefined;
+  let photoPath: string | undefined;
+
+  if (req.file) {
+    photoPath = await uploadPublicPhoto(req.file);
+  }
 
   let oldProfile: Profile | null = null;
   try {
@@ -48,15 +51,7 @@ export async function editProfile(
     });
     try {
       if (oldProfile.photoPath && photoPath) {
-        const oldPhotoPath = path.resolve(oldProfile.photoPath);
-        fs.unlink(oldPhotoPath, (err: any) => {
-          if (err) {
-            logger.error({
-              level: "error",
-              message: `Error deleting old photo: ${err.message}`,
-            });
-          }
-        });
+        await deletePublicPhoto(oldProfile.photoPath);
       }
     } catch (err: any) {
       logger.error({
@@ -66,16 +61,8 @@ export async function editProfile(
     }
     res.status(StatusCodes.OK).json(editedProfile);
   } catch (error) {
-    if (oldProfile.photoPath && photoPath) {
-      const oldPhotoPath = path.resolve(oldProfile.photoPath);
-      fs.unlink(oldPhotoPath, (err: any) => {
-        if (err) {
-          logger.error({
-            level: "error",
-            message: `Profile update failed, also error deleting added new phoy: ${err.message}`,
-          });
-        }
-      });
+    if (photoPath) {
+      await deletePublicPhoto(photoPath);
     }
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       const fields = getWrongFields(error);

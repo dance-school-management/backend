@@ -11,6 +11,7 @@ import unprotectedRouter from "../routes/unprotected/unprotected";
 import userRouter from "../routes/user/profile";
 import searchRouter from "../routes/search-users/search";
 import path from "path";
+import s3Router from "../routes/s3/s3";
 
 export function createApp() {
   const app = express();
@@ -23,6 +24,7 @@ export function createApp() {
   }
   app.use("/uploads", express.static(path.resolve("uploads")));
   app.use("/", unprotectedRouter);
+  app.use("/s3-endpoint", s3Router);
   app.use(handleUserContext);
   app.use("/user", userRouter);
   app.use("/search", checkRole(["INSTRUCTOR", "COORDINATOR"]), searchRouter);
