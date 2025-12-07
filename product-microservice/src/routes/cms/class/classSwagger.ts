@@ -11,9 +11,6 @@
  *         classTemplateId:
  *           type: integer
  *           example: 2
- *         groupNumber:
- *           type: integer
- *           example: 1
  *         startDate:
  *           type: string
  *           format: date-time
@@ -57,7 +54,6 @@
  *             required:
  *               - instructorIds
  *               - classRoomId
- *               - groupNumber
  *               - startDate
  *               - endDate
  *               - peopleLimit
@@ -74,10 +70,6 @@
  *                 type: integer
  *                 description: ID of the classroom where the class takes place
  *                 example: 1
- *               groupNumber:
- *                 type: integer
- *                 description: Number of the group attending the class
- *                 example: 3
  *               startDate:
  *                 type: string
  *                 format: date-time

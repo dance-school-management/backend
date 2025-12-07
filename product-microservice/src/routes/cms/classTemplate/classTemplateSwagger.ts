@@ -362,9 +362,6 @@
  *         id:
  *           type: integer
  *           example: 10
- *         groupNumber:
- *           type: integer
- *           example: 2
  *         startDate:
  *           type: string
  *           format: date-time

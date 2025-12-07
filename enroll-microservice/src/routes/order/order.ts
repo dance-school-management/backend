@@ -20,11 +20,6 @@ router.post(
 
 router.post(
   "/course",
-  body("groupNumber")
-    .exists()
-    .withMessage("Group number is required")
-    .isNumeric()
-    .withMessage("Group number must be a number"),
   body("courseId").exists().withMessage("Course ID is required"),
   body("courseId").isNumeric().withMessage("Course ID must be a number"),
   makeCourseOrder,

@@ -236,10 +236,6 @@
  *                     type: string
  *                     format: date-time
  *                     example: "2026-02-14T19:00:00.000Z"
- *                   groupNumber:
- *                     type: integer
- *                     format: int32
- *                     example: 1
  *                   peopleLimit:
  *                     type: integer
  *                     format: int32
@@ -304,10 +300,6 @@
  *                     type: string
  *                     format: date-time
  *                     example: "2026-03-01T18:00:00.000Z"
- *                   groupNumber:
- *                     type: integer
- *                     format: int32
- *                     example: 1
  *                 required:
  *                   - id
  *                   - classTemplateId
