@@ -165,10 +165,6 @@
  *           schema:
  *             type: object
  *             required:
- *               - name
- *               - description
- *               - price
- *               - classType
  *             properties:
  *               name:
  *                 type: string

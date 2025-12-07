@@ -15,6 +15,127 @@ import { getInstructorsData } from "../../grpc/client/profileCommunication/getIn
 import { ClassType } from "../../../generated/client";
 import { CourseStatus } from "../../../generated/client";
 
+async function validateClass(
+  startDate: Date,
+  endDate: Date,
+  classRoomId: number,
+  classTemplateId: number,
+  instructorIds: string[],
+  peopleLimit: number,
+  isConfirmation: boolean,
+  id?: number,
+) {
+  if (startDate >= endDate) {
+    throw new Error("End date must be greater than start date");
+  }
+
+  const thisClassroom = await prisma.classRoom.findFirst({
+    where: {
+      id: classRoomId,
+    },
+  });
+
+  if (!thisClassroom) {
+    throw new UniversalError(StatusCodes.NOT_FOUND, "Classroom not found", []);
+  }
+
+  const classRoomOccupation = await prisma.class.findFirst({
+    where: {
+      classRoomId,
+      startDate: {
+        lte: endDate,
+      },
+      endDate: {
+        gte: startDate,
+      },
+      ...(id && { id: { not: id } }),
+    },
+  });
+
+  if (classRoomOccupation) {
+    throw new UniversalError(
+      StatusCodes.CONFLICT,
+      "Classroom occupied: this classroom is occupied during the specified time span",
+      [],
+    );
+  }
+
+  const providedClassTemplate = await prisma.classTemplate.findFirst({
+    where: {
+      id: classTemplateId,
+    },
+  });
+
+  if (!providedClassTemplate) {
+    throw new UniversalError(
+      StatusCodes.CONFLICT,
+      "Provided class template not found",
+      [],
+    );
+  }
+
+  if (providedClassTemplate.courseId) {
+    const thisCourseClasses = await prisma.class.findMany({
+      where: {
+        classTemplate: {
+          courseId: providedClassTemplate.courseId,
+        },
+        ...(id && { id: { not: id } }),
+      },
+    });
+
+    const overlappingClasses = thisCourseClasses.filter(
+      (thisCourseClass) =>
+        thisCourseClass.startDate <= endDate &&
+        thisCourseClass.endDate >= startDate,
+    );
+
+    if (overlappingClasses.length > 0) {
+      throw new UniversalError(
+        StatusCodes.CONFLICT,
+        "Overlapping classes: can't proceed, because the course would have overlapping classes",
+        [],
+      );
+    }
+  }
+
+  const allClassIdsConductedByGivenInstructors =
+    await getInstructorsClasses(instructorIds);
+
+  const instructorOccupation = await prisma.class.findMany({
+    where: {
+      startDate: {
+        lte: endDate,
+      },
+      endDate: {
+        gte: startDate,
+      },
+      id: {
+        in: allClassIdsConductedByGivenInstructors.instructorsClassesIdsList
+          .map((item) => item.classId)
+          .filter((classId) => classId !== id),
+      },
+    },
+  });
+
+  if (instructorOccupation.length > 0) {
+    throw new UniversalError(
+      StatusCodes.CONFLICT,
+      "One of the instructors is occupied in the specified time span",
+      [],
+    );
+  }
+
+  if (peopleLimit > thisClassroom.peopleLimit) {
+    if (!isConfirmation) {
+      throw new Warning(
+        "You are trying to exceed the classroom's people limit with the class people limit",
+        StatusCodes.CONFLICT,
+      );
+    }
+  }
+}
+
 export async function createClass(
   req: Request<
     {},
@@ -35,10 +156,6 @@ export async function createClass(
     classTemplateId,
     isConfirmation,
   } = req.body;
-
-  if (startDate >= endDate) {
-    throw new Error("End date must be greater than start date");
-  }
 
   const thisClassTemplate = await prisma.classTemplate.findFirst({
     where: {
@@ -78,95 +195,15 @@ export async function createClass(
     }
   }
 
-  const thisClassroom = await prisma.classRoom.findFirst({
-    where: {
-      id: classRoomId,
-    },
-  });
-
-  if (!thisClassroom) {
-    throw new UniversalError(StatusCodes.NOT_FOUND, "Classroom not found", []);
-  }
-
-  const classRoomOccupation = await prisma.class.findFirst({
-    where: {
-      classRoomId,
-      startDate: {
-        lte: endDate,
-      },
-      endDate: {
-        gte: startDate,
-      },
-    },
-  });
-
-  if (classRoomOccupation) {
-    throw new UniversalError(
-      StatusCodes.CONFLICT,
-      "Classroom occupied: this classroom is occupied during the specified time span",
-      [],
-    );
-  }
-
-  const thisGroupThisCourseClasses = await prisma.class.findMany({
-    where: {
-      classTemplate: {
-        courseId: {
-          equals: thisClassTemplate.courseId,
-        },
-      },
-    },
-  });
-
-  const overlappingClasses = thisGroupThisCourseClasses.filter(
-    (thisGroupThisCourseClass) =>
-      thisGroupThisCourseClass.startDate <= endDate &&
-      thisGroupThisCourseClass.endDate >= startDate,
+  await validateClass(
+    startDate,
+    endDate,
+    classRoomId,
+    classTemplateId,
+    instructorIds,
+    peopleLimit,
+    isConfirmation,
   );
-
-  if (overlappingClasses.length > 0) {
-    throw new UniversalError(
-      StatusCodes.CONFLICT,
-      "Overlapping classes: can't proceed, because this group would have overlapping classes",
-      [],
-    );
-  }
-
-  const allClassIdsConductedByGivenInstructors =
-    await getInstructorsClasses(instructorIds);
-
-  const instructorOccupation = await prisma.class.findMany({
-    where: {
-      startDate: {
-        lte: endDate,
-      },
-      endDate: {
-        gte: startDate,
-      },
-      id: {
-        in: allClassIdsConductedByGivenInstructors.instructorsClassesIdsList.map(
-          (item) => item.classId,
-        ),
-      },
-    },
-  });
-
-  if (instructorOccupation.length > 0) {
-    throw new UniversalError(
-      StatusCodes.CONFLICT,
-      "One of the instructors is occupied in the specified time span",
-      [],
-    );
-  }
-
-  if (peopleLimit > thisClassroom.peopleLimit) {
-    if (!isConfirmation) {
-      throw new Warning(
-        "You are trying to exceed the classroom's people limit with the class people limit",
-        StatusCodes.CONFLICT,
-      );
-    }
-  }
 
   let createdClass;
 
@@ -195,6 +232,138 @@ export async function createClass(
   }
 
   res.status(StatusCodes.CREATED).json(createdClass);
+}
+
+export async function editClass(
+  req: Request<
+    {},
+    {},
+    {
+      id: number;
+      classRoomId?: number;
+      startDate?: Date;
+      endDate?: Date;
+      peopleLimit?: number;
+      instructorIds?: string[];
+      isConfirmation: boolean;
+    }
+  >,
+  res: Response,
+) {
+  let {
+    id,
+    instructorIds,
+    classRoomId,
+    startDate,
+    endDate,
+    peopleLimit,
+    isConfirmation,
+  } = req.body;
+
+  const theClass = await prisma.class.findFirst({
+    where: {
+      id,
+    },
+  });
+
+  if (!theClass) {
+    throw new UniversalError(StatusCodes.CONFLICT, "Class not found", []);
+  }
+
+  if (!classRoomId) classRoomId = theClass.classRoomId;
+  if (!startDate) startDate = theClass.startDate;
+  if (!endDate) endDate = theClass.endDate;
+  if (!peopleLimit) peopleLimit = theClass.peopleLimit;
+  if (!instructorIds)
+    instructorIds = (
+      await getClassesInstructors([id])
+    ).instructorsClassesIdsList.map((ic) => ic.instructorId);
+
+  if (theClass.classStatus === ClassStatus.HIDDEN) {
+    await validateClass(
+      startDate,
+      endDate,
+      classRoomId,
+      theClass.classTemplateId,
+      instructorIds,
+      peopleLimit,
+      isConfirmation,
+      id,
+    );
+
+    let updatedClass;
+
+    await prisma.$transaction(async (tx) => {
+      updatedClass = await tx.class.update({
+        where: {
+          id,
+        },
+        data: {
+          startDate,
+          endDate,
+          classRoomId,
+          peopleLimit,
+        },
+      });
+
+      await enrollInstructorsInClass(id, instructorIds);
+    });
+
+    res.status(StatusCodes.OK).json(updatedClass);
+  } else {
+    if (startDate) {
+      throw new UniversalError(
+        StatusCodes.CONFLICT,
+        "The class is published, startDate cannot be changed",
+        [{ field: "startDate", message: "Should not be provided" }],
+      );
+    }
+
+    if (endDate) {
+      throw new UniversalError(
+        StatusCodes.CONFLICT,
+        "The class is published, endDate cannot be changed",
+        [{ field: "endDate", message: "Should not be provided" }],
+      );
+    }
+
+    if (peopleLimit < theClass.peopleLimit) {
+      throw new UniversalError(
+        StatusCodes.CONFLICT,
+        "You can't decrease people limit of a published class",
+        [],
+      );
+    }
+
+    const theClassroom = await prisma.classRoom.findFirst({
+      where: {
+        id: classRoomId,
+      },
+    });
+
+    if (!theClassroom) {
+      throw new UniversalError(StatusCodes.CONFLICT, "Classroom not found", []);
+    }
+
+    if (theClassroom.peopleLimit < peopleLimit && !isConfirmation) {
+      throw new Warning(
+        "You are trying to exceed the classroom's people limit with the class people limit",
+        StatusCodes.CONFLICT,
+      );
+    }
+
+    const updatedClass = await prisma.class.update({
+      where: {
+        id,
+      },
+      data: {
+        peopleLimit,
+        classRoomId,
+      },
+    });
+
+    res.status(StatusCodes.OK).json(updatedClass);
+  }
 }
 
 async function deleteClassCompensationFunction(id: number) {

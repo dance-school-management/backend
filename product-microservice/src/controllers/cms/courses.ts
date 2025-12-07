@@ -110,7 +110,21 @@ export async function createCourse(
   res.status(StatusCodes.CREATED).json(newCourse);
 }
 
-export async function editCourse(req: Request<{}, {}, Course>, res: Response) {
+export async function editCourse(
+  req: Request<
+    {},
+    {},
+    {
+      id: number;
+      name?: string;
+      description?: string;
+      danceCategoryId?: number;
+      advancementLevelId?: number;
+      price?: number;
+    }
+  >,
+  res: Response,
+) {
   checkValidations(validationResult(req));
 
   const { id, name, description, danceCategoryId, advancementLevelId, price } =
@@ -128,16 +142,40 @@ export async function editCourse(req: Request<{}, {}, Course>, res: Response) {
 
   const isPublished = theCourse.courseStatus !== CourseStatus.HIDDEN;
 
+  if (isPublished && danceCategoryId) {
+    throw new UniversalError(
+      StatusCodes.CONFLICT,
+      "The course is published, danceCategoryId cannot be changed",
+      [{ field: "danceCategoryId", message: "Should not be provided" }],
+    );
+  }
+
+  if (isPublished && advancementLevelId) {
+    throw new UniversalError(
+      StatusCodes.CONFLICT,
+      "The course is published, advancementLevelId cannot be changed",
+      [{ field: "advancementLevelId", message: "Should not be provided" }],
+    );
+  }
+
+  if (isPublished && price) {
+    throw new UniversalError(
+      StatusCodes.CONFLICT,
+      "The course is published, price cannot be changed",
+      [{ field: "price", message: "Should not be provided" }],
+    );
+  }
+
   const editedCourse = await prisma.course.update({
     where: {
       id: id,
     },
     data: {
-      name,
-      description,
-      ...(!isPublished && {danceCategoryId}),
-      ...(!isPublished && {advancementLevelId}),
-      ...(!isPublished && {price}),
+      ...(name && { name }),
+      ...(description && { description }),
+      ...(!isPublished && danceCategoryId && { danceCategoryId }),
+      ...(!isPublished && advancementLevelId && { advancementLevelId }),
+      ...(!isPublished && price && { price }),
     },
   });
 
