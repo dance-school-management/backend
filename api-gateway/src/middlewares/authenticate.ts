@@ -41,8 +41,7 @@ export function authenticate(options: AuthenticateOptions = { strict: true }) {
       if (strict) {
         res.sendStatus(status);
       } else {
-        // Explicitly overwrite user-context header to prevent client injection
-        req.headers["user-context"] = undefined;
+        req.headers["user-context"] = "";
         next();
       }
     };
