@@ -5,6 +5,7 @@ import {
   createClass,
   publishClass,
   getClassDetails,
+  deleteClass,
 } from "../../../controllers/cms/class";
 import { body, param, query } from "express-validator";
 
@@ -29,6 +30,8 @@ router.post(
 router.patch("/publish", publishClass);
 
 router.get("/:id", getClassDetails);
+
+router.delete("/:id", deleteClass);
 
 router.get(
   "/available/classrooms",

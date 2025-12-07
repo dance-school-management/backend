@@ -12,11 +12,9 @@ async function main() {
 
   for (const user of users) {
     try {
-      await prisma.profile.upsert({
-        where: {id: user.id},
-        update: {},
-        create: {
-          id: user.id,
+      await prisma.profile.update({
+        where: { id: user.id },
+        data: {
           name: user.name,
           surname: user.surname,
           email: user.email,
@@ -26,7 +24,7 @@ async function main() {
           photoPath: user.photoPath,
           favouriteDanceCategories: user.favouriteDanceCategories,
           startDate: user.startDate,
-        }
+        },
       });
     } catch (error: any) {
       console.log(user);

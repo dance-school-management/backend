@@ -157,6 +157,55 @@ export async function getPrivateClassTemplateDetails(
   res.status(StatusCodes.OK).json(theClassTemplate);
 }
 
+export async function deletePrivateClassTemplate(
+  req: Request<{ id: string }> & {
+    user?: any;
+  },
+  res: Response,
+) {
+  const id = Number(req.params.id);
+
+  const instructorId = req.user?.id;
+
+  const theClassTemplate = await prisma.classTemplate.findFirst({
+    where: {
+      id,
+    },
+  });
+
+  if (!theClassTemplate) {
+    throw new UniversalError(
+      StatusCodes.CONFLICT,
+      "Class template not found",
+      [],
+    );
+  }
+
+  if (theClassTemplate.classType !== ClassType.PRIVATE_CLASS) {
+    throw new UniversalError(
+      StatusCodes.CONFLICT,
+      "You can't delete a non-private class from here",
+      [],
+    );
+  }
+
+  if (theClassTemplate.createdBy !== instructorId) {
+    throw new UniversalError(
+      StatusCodes.CONFLICT,
+      "You can only delete private classes created by you",
+      [],
+    );
+  }
+
+  await prisma.classTemplate.delete({
+    where: {
+      id,
+    },
+  });
+
+  res.status(StatusCodes.NO_CONTENT).send();
+}
+
 async function validatePrivateClass(
   classData: Class,
   studentIds: string[],

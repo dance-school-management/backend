@@ -162,7 +162,7 @@ export async function createClass(
     await enrollInstructorsInClass(createdClass.id, instructorIds);
   } catch (err: any) {
     if (createdClass) {
-      deleteClass(createdClass.id);
+      deleteClassCompensationFunction(createdClass.id);
     }
     throw new UniversalError(
       StatusCodes.INTERNAL_SERVER_ERROR,
@@ -174,7 +174,7 @@ export async function createClass(
   res.status(StatusCodes.CREATED).json(createdClass);
 }
 
-async function deleteClass(id: number) {
+async function deleteClassCompensationFunction(id: number) {
   try {
     await prisma.class.delete({
       where: {
@@ -184,6 +184,40 @@ async function deleteClass(id: number) {
   } catch (err: any) {
     console.log("Failed to compensate class creation by deleting class");
   }
+}
+
+export async function deleteClass(
+  req: Request<{ id: string }>,
+  res: Response,
+  next: NextFunction,
+) {
+  const id = Number(req.params.id);
+
+  const theClass = await prisma.class.findFirst({
+    where: {
+      id,
+    },
+  });
+
+  if (!theClass) {
+    throw new UniversalError(StatusCodes.CONFLICT, "Class not found", []);
+  }
+
+  if (theClass.classStatus !== ClassStatus.HIDDEN) {
+    throw new UniversalError(
+      StatusCodes.CONFLICT,
+      "You can't delete a published class",
+      [],
+    );
+  }
+
+  await prisma.class.delete({
+    where: {
+      id,
+    },
+  });
+
+  res.status(StatusCodes.NO_CONTENT).send();
 }
 
 export async function publishClass(

@@ -7,6 +7,7 @@ import { checkValidations } from "../../utils/errorHelpers";
 import fs from "fs";
 import path from "path";
 import logger from "../../utils/winston";
+import { UniversalError } from "../../errors/UniversalError";
 
 export async function createDanceCategory(
   req: Request<{}, {}, DanceCategory>,
@@ -46,7 +47,7 @@ export async function getDanceCategoryList(
 }
 
 export async function getDanceCategory(
-  req: Request<{ id: string; }>,
+  req: Request<{ id: string }>,
   res: Response,
   next: NextFunction,
 ) {
@@ -70,16 +71,38 @@ export async function getDanceCategory(
 }
 
 export async function deleteDanceCategory(
-  req: Request<{ id: string; }>,
+  req: Request<{ id: string }>,
   res: Response,
   next: NextFunction,
 ) {
   const id = parseInt(req.params.id);
+
+  const courseUsingIt = await prisma.course.findFirst({
+    where: {
+      danceCategoryId: id,
+    },
+  });
+
+  const classTemplateUsingIt = await prisma.classTemplate.findFirst({
+    where: {
+      danceCategoryId: id,
+    },
+  });
+
+  if (courseUsingIt || classTemplateUsingIt) {
+    throw new UniversalError(
+      StatusCodes.CONFLICT,
+      "This dance category is in use",
+      [],
+    );
+  }
+
   const OldDanceCategory = await prisma.danceCategory.findUniqueOrThrow({
     where: {
       id,
     },
   });
+  
   if (OldDanceCategory.photoPath) {
     const oldPhotoPath = path.resolve(OldDanceCategory.photoPath);
     fs.unlink(oldPhotoPath, (err: any) => {
@@ -91,16 +114,18 @@ export async function deleteDanceCategory(
       }
     });
   }
-  const danceCategory = await prisma.danceCategory.delete({
+
+  await prisma.danceCategory.delete({
     where: {
       id,
     },
   });
+
   res.status(StatusCodes.NO_CONTENT).send();
 }
 
 export async function updateDanceCategory(
-  req: Request<{ id: string; }, {}, DanceCategory>,
+  req: Request<{ id: string }, {}, DanceCategory>,
   res: Response,
   next: NextFunction,
 ) {

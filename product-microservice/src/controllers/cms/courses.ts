@@ -255,6 +255,20 @@ export async function deleteCourse(
     },
   });
 
+  const classTemplateUsingIt = await prisma.classTemplate.findFirst({
+    where: {
+      courseId: id,
+    },
+  });
+
+  if (classTemplateUsingIt) {
+    throw new UniversalError(
+      StatusCodes.CONFLICT,
+      "There are existing class templates using this course",
+      [],
+    );
+  }
+
   if (theCourse?.courseStatus !== "HIDDEN")
     throw new UniversalError(
       StatusCodes.CONFLICT,
