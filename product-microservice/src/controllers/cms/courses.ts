@@ -307,7 +307,7 @@ export async function deleteCourse(
     throw new UniversalError(StatusCodes.CONFLICT, "Course not found", []);
   }
 
-  if (theCourse.courseStatus !== ClassStatus.HIDDEN)
+  if (theCourse.courseStatus !== CourseStatus.HIDDEN)
     throw new UniversalError(
       StatusCodes.CONFLICT,
       "Cannot delete this course, because its status is not 'hidden'",
