@@ -26,10 +26,10 @@ export function createApp() {
   if (process.env.NODE_ENV === "development") {
     setupSwagger(app);
   }
-  app.use("/public/schedule", publicScheduleRouter);
   app.use("/public/pricing", pricingRouter);
   app.use("/public/cms", publicCmsRouter);
   app.use(handleUserContext);
+  app.use("/public/schedule", publicScheduleRouter);
   app.use("/uploads", express.static(path.resolve("uploads")));
   app.use("/cms", checkRole(["COORDINATOR"]), cmsRouter);
   app.use("/schedule", checkRole(["STUDENT", "INSTRUCTOR"]), scheduleRouter);

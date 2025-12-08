@@ -11,7 +11,7 @@ import { ClassStatus } from "../../../generated/client";
 import { CourseStatus } from "../../../generated/client";
 
 export async function createClassTemplate(
-  req: Request<{}, {}, ClassTemplate & { isConfirmation: boolean }>,
+  req: Request<{}, {}, ClassTemplate & { isConfirmation: boolean; }>,
   res: Response,
   next: NextFunction,
 ) {
@@ -197,7 +197,7 @@ export async function editClassTemplate(
 }
 
 export async function deleteClassTemplate(
-  req: Request<{ id: string }, {}, {}>,
+  req: Request<{ id: string; }, {}, {}>,
   res: Response,
   next: NextFunction,
 ) {
@@ -249,7 +249,7 @@ export async function deleteClassTemplate(
 }
 
 export async function getClassTemplate(
-  req: Request<{ id: string }, {}, {}>,
+  req: Request<{ id: string; }, {}, {}>,
   res: Response,
   next: NextFunction,
 ) {
@@ -299,6 +299,7 @@ export async function getAllClassTemplates(
       classType: {
         not: ClassType.PRIVATE_CLASS,
       },
+      courseId: null,
     },
     include: {
       danceCategory: true,
