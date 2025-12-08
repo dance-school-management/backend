@@ -63,22 +63,30 @@ export async function getCoursesStartAndEndDates(coursesIds: number[]) {
     },
   });
 
-  const result = coursesIds.map((ci) => {
-    const courseClasses = allCoursesClasses.filter(
-      (acc) => acc.classTemplate.courseId === ci,
-    );
-    const courseStartDate = courseClasses.reduce((acc, cur) =>
-      acc.startDate < cur.startDate ? acc : cur,
-    ).startDate;
-    const courseEndDate = courseClasses.reduce((acc, cur) =>
-      acc.endDate > cur.endDate ? acc : cur,
-    ).endDate;
-    return {
-      courseId: ci,
-      courseStartDate,
-      courseEndDate,
-    };
-  });
+  const result = coursesIds
+    .map((ci) => {
+      const courseClasses = allCoursesClasses.filter(
+        (acc) => acc.classTemplate.courseId === ci,
+      );
+      if (courseClasses.length === 0) {
+        return {
+          courseId: ci,
+          courseStartDate: null,
+          courseEndDate: null
+        }
+      }
+      const courseStartDate = courseClasses.reduce((acc, cur) =>
+        acc.startDate < cur.startDate ? acc : cur,
+      ).startDate;
+      const courseEndDate = courseClasses.reduce((acc, cur) =>
+        acc.endDate > cur.endDate ? acc : cur,
+      ).endDate;
+      return {
+        courseId: ci,
+        courseStartDate,
+        courseEndDate,
+      };
+    })
 
   return result;
 }
