@@ -231,9 +231,8 @@ export async function publishCourse(
     );
   }
 
-  const courseStartAndEndDate = (await getCoursesStartAndEndDates([id]))[0];
-
   if (!isConfirmation) {
+    const courseStartAndEndDate = (await getCoursesStartAndEndDates([id]))[0];
     res.status(StatusCodes.OK).json(courseStartAndEndDate);
     return;
   }
