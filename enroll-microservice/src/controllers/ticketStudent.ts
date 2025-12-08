@@ -59,7 +59,7 @@ export async function getStudentTickets(
       classRoomName: classDetails?.classRoomName,
       danceCategoryName: classDetails?.danceCategoryName,
       advancementLevelName: classDetails?.advancementLevelName,
-      price: classDetails?.price,
+      price: studentTicket?.cost || courseTicket?.cost,
       paymentStatus: studentTicket?.paymentStatus,
       coursePaymentStatus: courseTicket
         ? courseTicket?.paymentStatus
