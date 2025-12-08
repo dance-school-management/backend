@@ -110,24 +110,75 @@ export async function createCourse(
   res.status(StatusCodes.CREATED).json(newCourse);
 }
 
-export async function editCourse(req: Request<{}, {}, Course>, res: Response) {
+export async function editCourse(
+  req: Request<
+    {},
+    {},
+    {
+      id: number;
+      name?: string;
+      description?: string;
+      danceCategoryId?: number;
+      advancementLevelId?: number;
+      price?: number;
+    }
+  >,
+  res: Response,
+) {
   checkValidations(validationResult(req));
 
   const { id, name, description, danceCategoryId, advancementLevelId, price } =
     req.body;
+
+  const theCourse = await prisma.course.findFirst({
+    where: {
+      id,
+    },
+  });
+
+  if (!theCourse) {
+    throw new UniversalError(StatusCodes.CONFLICT, "Course not found", []);
+  }
+
+  const isPublished = theCourse.courseStatus !== CourseStatus.HIDDEN;
+
+  if (isPublished && danceCategoryId) {
+    throw new UniversalError(
+      StatusCodes.CONFLICT,
+      "The course is published, danceCategoryId cannot be changed",
+      [{ field: "danceCategoryId", message: "Should not be provided" }],
+    );
+  }
+
+  if (isPublished && advancementLevelId) {
+    throw new UniversalError(
+      StatusCodes.CONFLICT,
+      "The course is published, advancementLevelId cannot be changed",
+      [{ field: "advancementLevelId", message: "Should not be provided" }],
+    );
+  }
+
+  if (isPublished && price) {
+    throw new UniversalError(
+      StatusCodes.CONFLICT,
+      "The course is published, price cannot be changed",
+      [{ field: "price", message: "Should not be provided" }],
+    );
+  }
 
   const editedCourse = await prisma.course.update({
     where: {
       id: id,
     },
     data: {
-      name,
-      description,
-      danceCategoryId,
-      advancementLevelId,
-      price,
+      ...(name !== undefined && { name }),
+      ...(description !== undefined && { description }),
+      ...(!isPublished && danceCategoryId !== undefined && { danceCategoryId }),
+      ...(!isPublished && advancementLevelId !== undefined && { advancementLevelId }),
+      ...(!isPublished && price !== undefined && { price }),
     },
   });
+
   res.status(StatusCodes.OK).json(editedCourse);
 }
 
@@ -180,13 +231,9 @@ export async function publishCourse(
     );
   }
 
-  const courseStartAndEndDates = (await getCoursesStartAndEndDates([id]))[0];
-
   if (!isConfirmation) {
-    res.status(StatusCodes.OK).json({
-      courseStartDates: courseStartAndEndDates.courseStartDates,
-      courseEndDates: courseStartAndEndDates.courseEndDates,
-    });
+    const courseStartAndEndDate = (await getCoursesStartAndEndDates([id]))[0];
+    res.status(StatusCodes.OK).json(courseStartAndEndDate);
     return;
   }
 
@@ -249,13 +296,17 @@ export async function deleteCourse(
 ) {
   const id = parseInt(req.params.id);
 
-  const theCourse = await prisma.course.findUniqueOrThrow({
+  const theCourse = await prisma.course.findFirst({
     where: {
       id,
     },
   });
 
-  if (theCourse?.courseStatus !== "HIDDEN")
+  if (!theCourse) {
+    throw new UniversalError(StatusCodes.CONFLICT, "Course not found", []);
+  }
+
+  if (theCourse.courseStatus !== CourseStatus.HIDDEN)
     throw new UniversalError(
       StatusCodes.CONFLICT,
       "Cannot delete this course, because its status is not 'hidden'",

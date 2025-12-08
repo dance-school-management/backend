@@ -7,6 +7,8 @@ import { checkValidations } from "../../utils/errorHelpers";
 import { Warning } from "../../errors/Warning";
 import { ClassType } from "../../../generated/client";
 import { UniversalError } from "../../errors/UniversalError";
+import { ClassStatus } from "../../../generated/client";
+import { CourseStatus } from "../../../generated/client";
 
 export async function createClassTemplate(
   req: Request<{}, {}, ClassTemplate & { isConfirmation: boolean; }>,
@@ -32,6 +34,30 @@ export async function createClassTemplate(
       "You can't create a private class from here",
       [],
     );
+  }
+
+  if (courseId) {
+    const theCourse = await prisma.course.findFirst({
+      where: {
+        id: courseId,
+      },
+    });
+
+    if (!theCourse) {
+      throw new UniversalError(
+        StatusCodes.CONFLICT,
+        "Provided course not found",
+        [],
+      );
+    }
+
+    if (theCourse.courseStatus !== CourseStatus.HIDDEN) {
+      throw new UniversalError(
+        StatusCodes.CONFLICT,
+        "You can't add a class template to a published course",
+        [],
+      );
+    }
   }
 
   if (!isConfirmation) {
@@ -63,13 +89,23 @@ export async function createClassTemplate(
 }
 
 export async function editClassTemplate(
-  req: Request<{ id: string; }, {}, ClassTemplate>,
+  req: Request<
+    { id: string },
+    {},
+    {
+      name?: string;
+      description?: string;
+      price?: number;
+      danceCategoryId?: number;
+      advancementLevelId?: number;
+      classType?: ClassType;
+    }
+  >,
   res: Response,
   next: NextFunction,
 ) {
   const id = parseInt(req.params.id);
   const {
-    courseId,
     name,
     description,
     price,
@@ -86,18 +122,74 @@ export async function editClassTemplate(
     );
   }
 
+  const theClassTemplate = await prisma.classTemplate.findFirst({
+    where: {
+      id,
+    },
+  });
+
+  if (!theClassTemplate) {
+    throw new UniversalError(
+      StatusCodes.CONFLICT,
+      "Class template not found",
+      [],
+    );
+  }
+
+  const itsClasses = await prisma.class.findMany({
+    where: {
+      classTemplateId: id,
+    },
+  });
+
+  const areSomeClassesPublished = itsClasses.some(
+    (c) => c.classStatus !== ClassStatus.HIDDEN,
+  );
+
+  if (areSomeClassesPublished && price) {
+    throw new UniversalError(
+      StatusCodes.CONFLICT,
+      "The class template is published, price cannot be changed",
+      [{ field: "price", message: "Should not be provided" }],
+    );
+  }
+
+  if (areSomeClassesPublished && danceCategoryId) {
+    throw new UniversalError(
+      StatusCodes.CONFLICT,
+      "The class template is published, danceCategoryId cannot be changed",
+      [{ field: "danceCategoryId", message: "Should not be provided" }],
+    );
+  }
+
+  if (areSomeClassesPublished && advancementLevelId) {
+    throw new UniversalError(
+      StatusCodes.CONFLICT,
+      "The class template is published, advancementLevelId cannot be changed",
+      [{ field: "advancementLevelId", message: "Should not be provided" }],
+    );
+  }
+
+  if (areSomeClassesPublished && classType) {
+    throw new UniversalError(
+      StatusCodes.CONFLICT,
+      "The class template is published, classType cannot be changed",
+      [{ field: "classType", message: "Should not be provided" }],
+    );
+  }
+
   const editedClassTemplate = await prisma.classTemplate.update({
     where: {
       id: id,
     },
     data: {
-      courseId,
-      name,
-      description,
-      price,
-      danceCategoryId,
-      advancementLevelId,
-      classType,
+      ...(name !== undefined && { name }),
+      ...(description !== undefined && { description }),
+      ...(!areSomeClassesPublished && price !== undefined && { price }),
+      ...(!areSomeClassesPublished && danceCategoryId !== undefined && { danceCategoryId }),
+      ...(!areSomeClassesPublished &&
+        advancementLevelId !== undefined && { advancementLevelId }),
+      ...(!areSomeClassesPublished && classType !== undefined && { classType }),
     },
   });
 
@@ -110,6 +202,42 @@ export async function deleteClassTemplate(
   next: NextFunction,
 ) {
   const id = parseInt(req.params.id);
+
+  const classesUsingIt = await prisma.class.findMany({
+    where: {
+      classTemplateId: id,
+    },
+  });
+
+  if (classesUsingIt.some((c) => c.classStatus !== ClassStatus.HIDDEN)) {
+    throw new UniversalError(
+      StatusCodes.CONFLICT,
+      "There are existing classes using this class template",
+      [],
+    );
+  }
+
+  const theClassTemplate = await prisma.classTemplate.findFirst({
+    where: {
+      id,
+    },
+  });
+
+  if (!theClassTemplate) {
+    throw new UniversalError(
+      StatusCodes.CONFLICT,
+      "Class template not found",
+      [],
+    );
+  }
+
+  if (theClassTemplate.classType === ClassType.PRIVATE_CLASS) {
+    throw new UniversalError(
+      StatusCodes.CONFLICT,
+      "This class template has class type PRIVATE CLASS",
+      [],
+    );
+  }
 
   await prisma.classTemplate.delete({
     where: {
@@ -127,7 +255,7 @@ export async function getClassTemplate(
 ) {
   const id = parseInt(req.params.id);
 
-  const theClassTemplate = await prisma.classTemplate.findUniqueOrThrow({
+  const theClassTemplate = await prisma.classTemplate.findFirst({
     where: {
       id: id,
     },
@@ -142,6 +270,22 @@ export async function getClassTemplate(
     },
   });
 
+  if (!theClassTemplate) {
+    throw new UniversalError(
+      StatusCodes.CONFLICT,
+      "Class template not found",
+      [],
+    );
+  }
+
+  if (theClassTemplate.classType === ClassType.PRIVATE_CLASS) {
+    throw new UniversalError(
+      StatusCodes.CONFLICT,
+      "This class template has class type PRIVATE CLASS",
+      [],
+    );
+  }
+
   res.status(StatusCodes.OK).json(theClassTemplate);
 }
 
@@ -152,6 +296,9 @@ export async function getAllClassTemplates(
 ) {
   const allClassTemplates = await prisma.classTemplate.findMany({
     where: {
+      classType: {
+        not: ClassType.PRIVATE_CLASS,
+      },
       courseId: null,
     },
     include: {

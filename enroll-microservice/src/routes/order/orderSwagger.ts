@@ -84,16 +84,11 @@
  *             type: object
  *             required:
  *               - courseId
- *               - groupNumber
  *             properties:
  *               courseId:
  *                 type: integer
  *                 description: ID of the course to order
  *                 example: 4
- *               groupNumber:
- *                 type: integer
- *                 description: Group number identifying the set of classes
- *                 example: 1
  *     responses:
  *       200:
  *         description: Course order successfully created

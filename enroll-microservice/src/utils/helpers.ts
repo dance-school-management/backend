@@ -64,8 +64,7 @@ export async function createClassCheckoutSession(
 
 export async function createCourseCheckoutSession(
   courseId: number,
-  studentId: string,
-  groupNumber: number
+  studentId: string
 ) {
   const theCourse = (await getCoursesDetails([courseId])).coursesDetailsList[0];
 
@@ -93,7 +92,6 @@ export async function createCourseCheckoutSession(
         },
       ],
       metadata: {
-        groupNumber,
         courseId,
         studentId,
         productType: 'COURSE'

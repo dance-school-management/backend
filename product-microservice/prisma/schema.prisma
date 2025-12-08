@@ -53,9 +53,8 @@ model AdvancementLevel {
 
 model Class {
   id              Int           @id() @default(autoincrement())
-  classTemplate   ClassTemplate @relation(fields: [classTemplateId], references: [id])
+  classTemplate   ClassTemplate @relation(fields: [classTemplateId], references: [id], onDelete: Cascade)
   classTemplateId Int
-  groupNumber     Int
   startDate       DateTime
   endDate         DateTime
   peopleLimit     Int
@@ -75,8 +74,8 @@ model ClassRoom {
 
 model ClassTemplate {
   id                 Int               @id() @default(autoincrement())
-  class              Class[]
-  course             Course?           @relation(fields: [courseId], references: [id])
+  class              Class[]           
+  course             Course?           @relation(fields: [courseId], references: [id], onDelete: Cascade)
   courseId           Int?
   name               String
   description        String

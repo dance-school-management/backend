@@ -63,51 +63,32 @@ export async function getCoursesStartAndEndDates(coursesIds: number[]) {
     },
   });
 
-  const allGroupNumbers = [
-    ...new Set(allCoursesClasses.map((acc) => acc.groupNumber)),
-  ];
+  const result = coursesIds
+    .map((ci) => {
+      const courseClasses = allCoursesClasses.filter(
+        (acc) => acc.classTemplate.courseId === ci,
+      );
+      if (courseClasses.length === 0) {
+        return {
+          courseId: ci,
+          courseStartDate: null,
+          courseEndDate: null
+        }
+      }
+      const courseStartDate = courseClasses.reduce((acc, cur) =>
+        acc.startDate < cur.startDate ? acc : cur,
+      ).startDate;
+      const courseEndDate = courseClasses.reduce((acc, cur) =>
+        acc.endDate > cur.endDate ? acc : cur,
+      ).endDate;
+      return {
+        courseId: ci,
+        courseStartDate,
+        courseEndDate,
+      };
+    })
 
-  const result = coursesIds.map((ci) => {
-    const courseEndDates = allGroupNumbers
-      .map((gn) =>
-        allCoursesClasses.reduce((acc, cur) => {
-          if (
-            cur.classTemplate.courseId === ci &&
-            cur.groupNumber === gn &&
-            cur.endDate > acc.endDate
-          )
-            return cur;
-          else return acc;
-        }),
-      )
-      .map((csd) => ({
-        groupNumber: csd.groupNumber,
-        courseEndDate: csd.endDate,
-      }));
-    const courseStartDates = allGroupNumbers
-      .map((gn) =>
-        allCoursesClasses.reduce((acc, cur) => {
-          if (
-            cur.classTemplate.courseId === ci &&
-            cur.groupNumber === gn &&
-            cur.startDate < acc.startDate
-          )
-            return cur;
-          else return acc;
-        }),
-      )
-      .map((csd) => ({
-        groupNumber: csd.groupNumber,
-        courseStartDate: csd.startDate,
-      }));
-    return {
-      courseId: ci,
-      courseStartDates: courseStartDates,
-      courseEndDates: courseEndDates
-    };
-  });
-
-  return result
+  return result;
 }
 
 export function hasIntersection<T>(a: Set<T>, b: Set<T>): boolean {
@@ -120,5 +101,5 @@ export function hasIntersection<T>(a: Set<T>, b: Set<T>): boolean {
 }
 
 export function intersectSets<T>(a: Set<T>, b: Set<T>): Set<T> {
-  return new Set([...a].filter(x => b.has(x)));
+  return new Set([...a].filter((x) => b.has(x)));
 }

@@ -165,15 +165,7 @@
  *           schema:
  *             type: object
  *             required:
- *               - name
- *               - description
- *               - price
- *               - classType
  *             properties:
- *               courseId:
- *                 type: integer
- *                 nullable: true
- *                 example: 2
  *               name:
  *                 type: string
  *                 example: "Advanced Salsa"
@@ -362,9 +354,6 @@
  *         id:
  *           type: integer
  *           example: 10
- *         groupNumber:
- *           type: integer
- *           example: 2
  *         startDate:
  *           type: string
  *           format: date-time

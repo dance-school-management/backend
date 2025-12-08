@@ -12,45 +12,21 @@ import { getInstructorsClasses } from "../../grpc/client/enrollCommunication/get
 import { getClassesInstructors } from "../../grpc/client/enrollCommunication/getClassesInstructors";
 import { getClassesStudents } from "../../grpc/client/enrollCommunication/getClassesStudents";
 import { getInstructorsData } from "../../grpc/client/profileCommunication/getInstructorsData";
+import { ClassType } from "../../../generated/client";
+import { CourseStatus } from "../../../generated/client";
 
-export async function createClass(
-  req: Request<
-    {},
-    {},
-    Class & { instructorIds: string[]; isConfirmation: boolean }
-  >,
-  res: Response,
-  next: NextFunction,
+async function validateClass(
+  startDate: Date,
+  endDate: Date,
+  classRoomId: number,
+  classTemplateId: number,
+  instructorIds: string[],
+  peopleLimit: number,
+  isConfirmation: boolean,
+  id?: number,
 ) {
-  checkValidations(validationResult(req));
-
-  const {
-    instructorIds,
-    classRoomId,
-    groupNumber,
-    startDate,
-    endDate,
-    peopleLimit,
-    classTemplateId,
-    isConfirmation,
-  } = req.body;
-
   if (startDate >= endDate) {
     throw new Error("End date must be greater than start date");
-  }
-
-  const thisClassTemplate = await prisma.classTemplate.findFirst({
-    where: {
-      id: classTemplateId,
-    },
-  });
-
-  if (!thisClassTemplate) {
-    throw new UniversalError(
-      StatusCodes.NOT_FOUND,
-      "Class template not found",
-      [],
-    );
   }
 
   const thisClassroom = await prisma.classRoom.findFirst({
@@ -72,6 +48,7 @@ export async function createClass(
       endDate: {
         gte: startDate,
       },
+      ...(id && { id: { not: id } }),
     },
   });
 
@@ -83,29 +60,43 @@ export async function createClass(
     );
   }
 
-  const thisGroupThisCourseClasses = await prisma.class.findMany({
+  const providedClassTemplate = await prisma.classTemplate.findFirst({
     where: {
-      classTemplate: {
-        courseId: {
-          equals: thisClassTemplate.courseId,
-        },
-      },
-      groupNumber,
+      id: classTemplateId,
     },
   });
 
-  const overlappingClasses = thisGroupThisCourseClasses.filter(
-    (thisGroupThisCourseClass) =>
-      thisGroupThisCourseClass.startDate <= endDate &&
-      thisGroupThisCourseClass.endDate >= startDate,
-  );
-
-  if (overlappingClasses.length > 0) {
+  if (!providedClassTemplate) {
     throw new UniversalError(
       StatusCodes.CONFLICT,
-      "Overlapping classes: can't proceed, because this group would have overlapping classes",
+      "Provided class template not found",
       [],
     );
+  }
+
+  if (providedClassTemplate.courseId) {
+    const thisCourseClasses = await prisma.class.findMany({
+      where: {
+        classTemplate: {
+          courseId: providedClassTemplate.courseId,
+        },
+        ...(id && { id: { not: id } }),
+      },
+    });
+
+    const overlappingClasses = thisCourseClasses.filter(
+      (thisCourseClass) =>
+        thisCourseClass.startDate <= endDate &&
+        thisCourseClass.endDate >= startDate,
+    );
+
+    if (overlappingClasses.length > 0) {
+      throw new UniversalError(
+        StatusCodes.CONFLICT,
+        "Overlapping classes: can't proceed, because the course would have overlapping classes",
+        [],
+      );
+    }
   }
 
   const allClassIdsConductedByGivenInstructors =
@@ -120,9 +111,9 @@ export async function createClass(
         gte: startDate,
       },
       id: {
-        in: allClassIdsConductedByGivenInstructors.instructorsClassesIdsList.map(
-          (item) => item.classId,
-        ),
+        in: allClassIdsConductedByGivenInstructors.instructorsClassesIdsList
+          .map((item) => item.classId)
+          .filter((classId) => classId !== id),
       },
     },
   });
@@ -143,6 +134,76 @@ export async function createClass(
       );
     }
   }
+}
+
+export async function createClass(
+  req: Request<
+    {},
+    {},
+    Class & { instructorIds: string[]; isConfirmation: boolean }
+  >,
+  res: Response,
+  next: NextFunction,
+) {
+  checkValidations(validationResult(req));
+
+  const {
+    instructorIds,
+    classRoomId,
+    startDate,
+    endDate,
+    peopleLimit,
+    classTemplateId,
+    isConfirmation,
+  } = req.body;
+
+  const thisClassTemplate = await prisma.classTemplate.findFirst({
+    where: {
+      id: classTemplateId,
+    },
+  });
+
+  if (!thisClassTemplate) {
+    throw new UniversalError(
+      StatusCodes.NOT_FOUND,
+      "Class template not found",
+      [],
+    );
+  }
+
+  if (thisClassTemplate.courseId) {
+    const theCourse = await prisma.course.findFirst({
+      where: {
+        id: thisClassTemplate.courseId,
+      },
+    });
+
+    if (!theCourse) {
+      throw new UniversalError(
+        StatusCodes.CONFLICT,
+        "The given class template has a course assigned, but the course not found",
+        [],
+      );
+    }
+
+    if (theCourse.courseStatus !== CourseStatus.HIDDEN) {
+      throw new UniversalError(
+        StatusCodes.CONFLICT,
+        "You can't add a class to a published course",
+        [],
+      );
+    }
+  }
+
+  await validateClass(
+    startDate,
+    endDate,
+    classRoomId,
+    classTemplateId,
+    instructorIds,
+    peopleLimit,
+    isConfirmation,
+  );
 
   let createdClass;
 
@@ -150,7 +211,6 @@ export async function createClass(
     createdClass = await prisma.class.create({
       data: {
         classTemplateId,
-        groupNumber,
         startDate,
         endDate,
         peopleLimit,
@@ -162,7 +222,7 @@ export async function createClass(
     await enrollInstructorsInClass(createdClass.id, instructorIds);
   } catch (err: any) {
     if (createdClass) {
-      deleteClass(createdClass.id);
+      deleteClassCompensationFunction(createdClass.id);
     }
     throw new UniversalError(
       StatusCodes.INTERNAL_SERVER_ERROR,
@@ -174,7 +234,139 @@ export async function createClass(
   res.status(StatusCodes.CREATED).json(createdClass);
 }
 
-async function deleteClass(id: number) {
+export async function editClass(
+  req: Request<
+    {},
+    {},
+    {
+      id: number;
+      classRoomId?: number;
+      startDate?: Date;
+      endDate?: Date;
+      peopleLimit?: number;
+      instructorIds?: string[];
+      isConfirmation: boolean;
+    }
+  >,
+  res: Response,
+) {
+  let {
+    id,
+    instructorIds,
+    classRoomId,
+    startDate,
+    endDate,
+    peopleLimit,
+    isConfirmation,
+  } = req.body;
+
+  const theClass = await prisma.class.findFirst({
+    where: {
+      id,
+    },
+  });
+
+  if (!theClass) {
+    throw new UniversalError(StatusCodes.CONFLICT, "Class not found", []);
+  }
+
+  if (!classRoomId) classRoomId = theClass.classRoomId;
+  if (!startDate) startDate = theClass.startDate;
+  if (!endDate) endDate = theClass.endDate;
+  if (!peopleLimit) peopleLimit = theClass.peopleLimit;
+  if (!instructorIds)
+    instructorIds = (
+      await getClassesInstructors([id])
+    ).instructorsClassesIdsList.map((ic) => ic.instructorId);
+
+  if (theClass.classStatus === ClassStatus.HIDDEN) {
+    await validateClass(
+      startDate,
+      endDate,
+      classRoomId,
+      theClass.classTemplateId,
+      instructorIds,
+      peopleLimit,
+      isConfirmation,
+      id,
+    );
+
+    let updatedClass;
+
+    await prisma.$transaction(async (tx) => {
+      updatedClass = await tx.class.update({
+        where: {
+          id,
+        },
+        data: {
+          startDate,
+          endDate,
+          classRoomId,
+          peopleLimit,
+        },
+      });
+
+      await enrollInstructorsInClass(id, instructorIds);
+    });
+
+    res.status(StatusCodes.OK).json(updatedClass);
+  } else {
+    if (startDate) {
+      throw new UniversalError(
+        StatusCodes.CONFLICT,
+        "The class is published, startDate cannot be changed",
+        [{ field: "startDate", message: "Should not be provided" }],
+      );
+    }
+
+    if (endDate) {
+      throw new UniversalError(
+        StatusCodes.CONFLICT,
+        "The class is published, endDate cannot be changed",
+        [{ field: "endDate", message: "Should not be provided" }],
+      );
+    }
+
+    if (peopleLimit < theClass.peopleLimit) {
+      throw new UniversalError(
+        StatusCodes.CONFLICT,
+        "You can't decrease people limit of a published class",
+        [],
+      );
+    }
+
+    const theClassroom = await prisma.classRoom.findFirst({
+      where: {
+        id: classRoomId,
+      },
+    });
+
+    if (!theClassroom) {
+      throw new UniversalError(StatusCodes.CONFLICT, "Classroom not found", []);
+    }
+
+    if (theClassroom.peopleLimit < peopleLimit && !isConfirmation) {
+      throw new Warning(
+        "You are trying to exceed the classroom's people limit with the class people limit",
+        StatusCodes.CONFLICT,
+      );
+    }
+
+    const updatedClass = await prisma.class.update({
+      where: {
+        id,
+      },
+      data: {
+        peopleLimit,
+        classRoomId,
+      },
+    });
+
+    res.status(StatusCodes.OK).json(updatedClass);
+  }
+}
+
+async function deleteClassCompensationFunction(id: number) {
   try {
     await prisma.class.delete({
       where: {
@@ -184,6 +376,40 @@ async function deleteClass(id: number) {
   } catch (err: any) {
     console.log("Failed to compensate class creation by deleting class");
   }
+}
+
+export async function deleteClass(
+  req: Request<{ id: string }>,
+  res: Response,
+  next: NextFunction,
+) {
+  const id = Number(req.params.id);
+
+  const theClass = await prisma.class.findFirst({
+    where: {
+      id,
+    },
+  });
+
+  if (!theClass) {
+    throw new UniversalError(StatusCodes.CONFLICT, "Class not found", []);
+  }
+
+  if (theClass.classStatus !== ClassStatus.HIDDEN) {
+    throw new UniversalError(
+      StatusCodes.CONFLICT,
+      "You can't delete a published class",
+      [],
+    );
+  }
+
+  await prisma.class.delete({
+    where: {
+      id,
+    },
+  });
+
+  res.status(StatusCodes.NO_CONTENT).send();
 }
 
 export async function publishClass(
@@ -266,6 +492,14 @@ export async function getClassDetails(
 
   if (!theClass)
     throw new UniversalError(StatusCodes.NOT_FOUND, "Class not found", []);
+
+  if (theClass.classTemplate.classType === ClassType.PRIVATE_CLASS) {
+    throw new UniversalError(
+      StatusCodes.CONFLICT,
+      "This class has class template with class type PRIVATE CLASS",
+      [],
+    );
+  }
 
   const classInstructors = (await getClassesInstructors([id]))
     .instructorsClassesIdsList;

@@ -343,8 +343,6 @@
  *                           properties:
  *                             id:
  *                               type: integer
- *                             groupNumber:
- *                               type: integer
  *                             startDate:
  *                               type: string
  *                               format: date-time
@@ -386,7 +384,7 @@
  *     description: >
  *       This endpoint works in two modes:
  *         
- *       - **Preview mode (`isConfirmation=false`)** – Returns the start and end dates of all groups within the course.
+ *       - **Preview mode (`isConfirmation=false`)** – Returns the start and end date of the course.
  *       - **Publish mode (`isConfirmation=true`)** – Publishes the course and sets all its classes to NORMAL.
  *
  *     tags:
@@ -432,8 +430,6 @@
  *                       items:
  *                         type: object
  *                         properties:
- *                           groupNumber:
- *                             type: integer
  *                           courseStartDate:
  *                             type: string
  *                             format: date-time
@@ -443,8 +439,6 @@
  *                       items:
  *                         type: object
  *                         properties:
- *                           groupNumber:
- *                             type: integer
  *                           courseEndDate:
  *                             type: string
  *                             format: date-time

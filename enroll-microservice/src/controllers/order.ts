@@ -159,13 +159,13 @@ export async function makeClassOrder(
 }
 
 export async function makeCourseOrder(
-  req: Request<object, object, { courseId: number; groupNumber: number }> & {
+  req: Request<object, object, { courseId: number; }> & {
     user?: any;
   },
   res: Response,
 ) {
   checkValidations(validationResult(req));
-  const { courseId, groupNumber } = req.body;
+  const { courseId } = req.body;
   let studentId;
   if (req.user) {
     studentId = req.user.id;
@@ -176,7 +176,7 @@ export async function makeCourseOrder(
       [],
     );
   }
-  const response = await checkCourse(courseId, groupNumber); // asks the product-microservice if the course is available, asks for the maximum peopoleLimit in the course's classes
+  const response = await checkCourse(courseId); // asks the product-microservice if the course is available, asks for the maximum peopoleLimit in the course's classes
   const classes = response.peopleLimitsList;
 
   const minPeopleLimit = classes.reduce((acc, cur) =>
@@ -234,7 +234,6 @@ export async function makeCourseOrder(
       const { session, courseData } = await createCourseCheckoutSession(
         courseId,
         studentId,
-        groupNumber,
       );
       await tx.courseTicket.create({
         data: {

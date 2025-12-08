@@ -77,7 +77,6 @@ export async function checkClass(
       },
     });
     const firstClassStartDate = courseClasses
-      .filter((cc) => cc.groupNumber === classObj.groupNumber)
       .reduce(
         (acc, cur) => (cur.startDate < acc ? cur.startDate : acc),
         // Biggest date possible
