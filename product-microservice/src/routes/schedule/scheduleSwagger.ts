@@ -129,3 +129,26 @@
  *       200:
  *         description: Successful response containing courses and their related classes
  */
+
+/**
+ * @swagger
+ * /public/schedule/class/{id}:
+ *   get:
+ *     summary: Get details of a published class
+ *     description: Returns class data (non-hidden only) with instructors and template metadata.
+ *     tags:
+ *       - schedule - public
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: Class identifier
+ *         example: 42
+ *     responses:
+ *       200:
+ *         description: Class details with instructors
+ *       404:
+ *         description: Class not found or hidden
+ */

@@ -129,6 +129,77 @@ export async function getSchedule(
   }
 }
 
+export async function getClassDetails(
+  req: Request<{ id: string; }, object, object, object> & { user?: any; },
+  res: Response,
+  next: NextFunction,
+) {
+  const classId = Number(req.params.id);
+
+  if (Number.isNaN(classId)) {
+    throw new UniversalError(
+      StatusCodes.BAD_REQUEST,
+      "Class id must be a number",
+      [],
+    );
+  }
+
+  try {
+    const classData = await prisma.class.findFirst({
+      where: {
+        id: classId,
+        classStatus: { not: ClassStatus.HIDDEN },
+      },
+      include: {
+        classTemplate: {
+          include: {
+            danceCategory: true,
+            advancementLevel: true,
+            course: true,
+          },
+        },
+        classRoom: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+      },
+    });
+
+    if (!classData) {
+      throw new UniversalError(StatusCodes.NOT_FOUND, "Class not found", []);
+    }
+
+    const classesInstructorsIds = (
+      await getClassesInstructors([classData.id])
+    ).instructorsClassesIdsList;
+
+    const instructorIds = [
+      ...new Set(classesInstructorsIds.map((ci) => ci.instructorId)),
+    ];
+
+    const instructorsData = instructorIds.length
+      ? (await getInstructorsData(instructorIds)).instructorsDataList
+      : [];
+
+    res.status(StatusCodes.OK).json({
+      ...classData,
+      instructors: instructorsData,
+    });
+  } catch (err: any) {
+    if (err instanceof UniversalError) {
+      throw err;
+    }
+
+    throw new UniversalError(
+      StatusCodes.INTERNAL_SERVER_ERROR,
+      "Problem with getting class details",
+      [],
+    );
+  }
+}
+
 export async function getSchedulePersonal(
   req: Request<object, object, object, GetScheduleParams> & { user?: any; },
   res: Response,
