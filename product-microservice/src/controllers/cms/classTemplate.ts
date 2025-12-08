@@ -183,13 +183,13 @@ export async function editClassTemplate(
       id: id,
     },
     data: {
-      ...(name && { name }),
-      ...(description && { description }),
-      ...(!areSomeClassesPublished && price && { price }),
-      ...(!areSomeClassesPublished && danceCategoryId && { danceCategoryId }),
+      ...(name !== undefined && { name }),
+      ...(description !== undefined && { description }),
+      ...(!areSomeClassesPublished && price !== undefined && { price }),
+      ...(!areSomeClassesPublished && danceCategoryId !== undefined && { danceCategoryId }),
       ...(!areSomeClassesPublished &&
-        advancementLevelId && { advancementLevelId }),
-      ...(!areSomeClassesPublished && classType && { classType }),
+        advancementLevelId !== undefined && { advancementLevelId }),
+      ...(!areSomeClassesPublished && classType !== undefined && { classType }),
     },
   });
 
