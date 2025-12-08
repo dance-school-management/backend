@@ -297,7 +297,7 @@ export async function deleteCourse(
 ) {
   const id = parseInt(req.params.id);
 
-  const theCourse = await prisma.course.findUniqueOrThrow({
+  const theCourse = await prisma.course.findFirst({
     where: {
       id,
     },
