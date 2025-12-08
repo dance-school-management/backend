@@ -171,11 +171,11 @@ export async function editCourse(
       id: id,
     },
     data: {
-      ...(name && { name }),
-      ...(description && { description }),
-      ...(!isPublished && danceCategoryId && { danceCategoryId }),
-      ...(!isPublished && advancementLevelId && { advancementLevelId }),
-      ...(!isPublished && price && { price }),
+      ...(name !== undefined && { name }),
+      ...(description !== undefined && { description }),
+      ...(!isPublished && danceCategoryId !== undefined && { danceCategoryId }),
+      ...(!isPublished && advancementLevelId !== undefined && { advancementLevelId }),
+      ...(!isPublished && price !== undefined && { price }),
     },
   });
 
