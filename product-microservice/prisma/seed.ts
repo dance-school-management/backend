@@ -5,10 +5,12 @@ import {
   PrismaClient,
 } from "../generated/client";
 import danceCategoriesJson from "../../data/product/danceCategories.json";
+import danceCategoriesGeminiJson from "../../data/product/danceCategoriesGemini.json"
 import advancementLevelsJson from "../../data/product/advancementLevels.json";
 import classRoomsJson from "../../data/product/classRooms.json";
 import coursesJson from "../../data/product/courses.json";
 import classTemplatesJson from "../../data/product/classTemplates.json";
+import classTemplatesGeminiJson from "../../data/product/classTemplatesGemini.json"
 import classesJson from "../../data/product/classes.json";
 import logger from "../src/utils/winston";
 import "dotenv/config";
@@ -218,7 +220,7 @@ async function findAvailableSlot(
 }
 
 async function main() {
-  for (const danceCategory of danceCategoriesJson) {
+  for (const danceCategory of danceCategoriesJson.concat(danceCategoriesGeminiJson)) {
     try {
       await prisma.danceCategory.upsert({
         where: {
@@ -304,7 +306,7 @@ async function main() {
     }
   }
 
-  for (const classTemplate of classTemplatesJson) {
+  for (const classTemplate of classTemplatesJson.concat(classTemplatesGeminiJson)) {
     try {
       await prisma.classTemplate.upsert({
         where: {
