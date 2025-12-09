@@ -1,5 +1,6 @@
 import { S3Client } from "@aws-sdk/client-s3";
 import "dotenv/config";
+import logger from "../winston";
 
 const AWS_REGION = process.env.AWS_REGION;
 const AWS_ACCESS_KEY_ID = process.env.AWS_ACCESS_KEY_ID;
@@ -12,17 +13,17 @@ if (
   !AWS_SECRET_ACCESS_KEY ||
   !S3_BUCKET_NAME
 ) {
-  throw new Error(
+  logger.error(
     "Missing required AWS configuration. Please set AWS_REGION, AWS_ACCESS_KEY_ID, S3_BUCKET_NAME and AWS_SECRET_ACCESS_KEY environment variables.",
   );
 }
 
 const s3 = new S3Client({
   credentials: {
-    accessKeyId: AWS_ACCESS_KEY_ID,
-    secretAccessKey: AWS_SECRET_ACCESS_KEY,
+    accessKeyId: AWS_ACCESS_KEY_ID || "",
+    secretAccessKey: AWS_SECRET_ACCESS_KEY || "",
   },
-  region: AWS_REGION,
+  region: AWS_REGION || "us-east-1",
 });
 
 const s3Endpoint = `https://${S3_BUCKET_NAME}.s3.${AWS_REGION}.amazonaws.com/`;
