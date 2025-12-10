@@ -12,7 +12,7 @@ function getRandomInt(max: number) {
  * Generates a valid Polish mobile phone number.
  * Polish mobile numbers have 9 digits and start with specific 2-digit prefixes (45, 50, 51, etc.)
  * followed by 7 more digits.
- * Format: xxx xxx xxx
+ * Format: +48XXXXXXXXX
  */
 function generatePolishPhoneNumber(): string {
   // Valid Polish mobile number 2-digit prefixes (a third digit 0-9 will be appended)
@@ -31,12 +31,8 @@ function generatePolishPhoneNumber(): string {
     Math.floor(Math.random() * 10)
   ).join('');
   
-  // Format: xxx xxx xxx
-  const firstPart = prefix + thirdDigit;
-  const secondPart = remainingDigits.substring(0, 3);
-  const thirdPart = remainingDigits.substring(3, 6);
-  
-  return `${firstPart} ${secondPart} ${thirdPart}`;
+  // Format: +48XXXXXXXXX (country code + 9 digits)
+  return `+48${prefix}${thirdDigit}${remainingDigits}`;
 }
 
 export const generateFakeProfile = (id: string, role: Role): Profile => {
