@@ -10,11 +10,12 @@ function getRandomInt(max: number) {
 
 /**
  * Generates a valid Polish mobile phone number.
- * Polish mobile numbers have 9 digits and start with specific prefixes.
+ * Polish mobile numbers have 9 digits and start with specific 2-digit prefixes (45, 50, 51, etc.)
+ * followed by 7 more digits.
  * Format: xxx xxx xxx
  */
 function generatePolishPhoneNumber(): string {
-  // Valid Polish mobile number prefixes
+  // Valid Polish mobile number 2-digit prefixes (a third digit 0-9 will be appended)
   const validPrefixes = [
     '45', '50', '51', '53', '57', '60', '66', '69', '72', '73', '78', '79', '88'
   ];
