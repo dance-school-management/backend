@@ -1,0 +1,122 @@
+[
+  {
+    "id": 60,
+    "name": "Salsa Havana Nights",
+    "description": "Ignite your passion for Latin dance with 'Salsa Havana Nights'! This vibrant intermediate-level class is perfect for dancers who have mastered basic salsa steps and are eager to learn intricate turn patterns, styling techniques, and lead/follow connection. Immerse yourself in the infectious rhythms and energetic atmosphere of Cuban salsa, focusing on body movement, musicality, and partner work.",
+    "danceCategoryId": 60,
+    "advancementLevelId": 1,
+    "classType": "GROUP_CLASS",
+    "price": 43,
+    "courseId": null,
+    "currency": "PLN",
+    "scheduleTileColor": "#123456"
+  },
+  {
+    "id": 61,
+    "name": "Hip-Hop Street Grooves",
+    "description": "Unleash your inner dancer with 'Hip-Hop Street Grooves'! This high-energy beginner-friendly class is designed for anyone wanting to learn the fundamentals of hip-hop dance. We'll cover basic isolations, popping, locking, and breaking elements in a fun, supportive environment. No prior experience needed, just bring your enthusiasm and comfortable shoes!",
+    "danceCategoryId": 61,
+    "advancementLevelId": 2,
+    "classType": "GROUP_CLASS",
+    "price": 52,
+    "courseId": null,
+    "currency": "PLN",
+    "scheduleTileColor": "#123456"
+  },
+  {
+    "id": 62,
+    "name": "Ballet Barre & Center Fundamentals",
+    "description": "Refine your technique and build a strong foundation with 'Ballet Barre & Center Fundamentals'. This essential beginner to intermediate ballet class focuses on classical ballet principles, including posture, alignment, turnout, and graceful movement. We'll work through traditional barre exercises followed by center work, enhancing strength, flexibility, and artistry. Perfect for those looking to improve their classical dance skills.",
+    "danceCategoryId": 62,
+    "advancementLevelId": 3,
+    "classType": "GROUP_CLASS",
+    "price": 59,
+    "courseId": null,
+    "currency": "PLN",
+    "scheduleTileColor": "#123456"
+  },
+  {
+    "id": 63,
+    "name": "Contemporary Flow & Expression",
+    "description": "Dive deep into movement and emotion with 'Contemporary Flow & Expression'. This open-level class explores the fluidity and improvisational nature of contemporary dance, blending elements of ballet, jazz, and modern dance. Focus on floor work, dynamic transitions, and expressive choreography, encouraging dancers to connect with their personal artistry and storytelling. Some prior dance experience is beneficial.",
+    "danceCategoryId": 63,
+    "advancementLevelId": 3,
+    "classType": "GROUP_CLASS",
+    "price": 38,
+    "courseId": null,
+    "currency": "PLN",
+    "scheduleTileColor": "#123456"
+  },
+  {
+    "id": 64,
+    "name": "Jazz Funk Fusion",
+    "description": "Get ready to move with attitude in 'Jazz Funk Fusion'! This energetic intermediate class merges the sharp, theatrical flair of jazz with the grounded, rhythmic grooves of funk and hip-hop. Learn dynamic routines packed with sassy isolations, powerful jumps, and intricate footwork, all set to popular music. It's a high-energy workout that's all about performance and style!",
+    "danceCategoryId": 64,
+    "advancementLevelId": 2,
+    "classType": "GROUP_CLASS",
+    "price": 57,
+    "courseId": null,
+    "currency": "PLN",
+    "scheduleTileColor": "#123456"
+  },
+  {
+    "id": 65,
+    "name": "Tap Rhythm & Broadway",
+    "description": "Feel the beat and make some noise in 'Tap Rhythm & Broadway'! This beginner-friendly tap class introduces fundamental tap techniques, including shuffles, flaps, drawbacks, and cramp rolls. Explore musicality and rhythm while learning exciting Broadway-style combinations. No experience necessary – just a desire to create percussive magic with your feet!",
+    "danceCategoryId": 65,
+    "advancementLevelId": 2,
+    "classType": "GROUP_CLASS",
+    "price": 57,
+    "courseId": null,
+    "currency": "PLN",
+    "scheduleTileColor": "#123456"
+  },
+  {
+    "id": 66,
+    "name": "Bellydance Mystique: Beginners",
+    "description": "Unveil the ancient art of 'Bellydance Mystique' in this captivating beginner's class. Discover the mesmerizing isolations of the hips, torso, and arms that define this beautiful dance form. Focus on fundamental movements, graceful shimmies, and flowing veil work, building confidence and celebrating feminine expression in a supportive and empowering atmosphere.",
+    "danceCategoryId": 66,
+    "advancementLevelId": 2,
+    "classType": "GROUP_CLASS",
+    "price": 46,
+    "courseId": null,
+    "currency": "PLN",
+    "scheduleTileColor": "#123456"
+  },
+  {
+    "id": 67,
+    "name": "Bachata Sensual Connection",
+    "description": "Deepen your partner dance skills with 'Bachata Sensual Connection'. This intermediate class focuses on the smooth, fluid movements and intimate connection of sensual Bachata. Learn intricate body rolls, waves, dips, and lead/follow techniques that enhance musicality and communication with your partner. Perfect for those ready to add more flair and feeling to their Bachata.",
+    "danceCategoryId": 67,
+    "advancementLevelId": 2,
+    "classType": "GROUP_CLASS",
+    "price": 39,
+    "courseId": null,
+    "currency": "PLN",
+    "scheduleTileColor": "#123456"
+  },
+  {
+    "id": 68,
+    "name": "Bollywood Bhangra Blast",
+    "description": "Experience the vibrant energy of India with 'Bollywood Bhangra Blast'! This high-octane, open-level class combines the expressive storytelling of Bollywood with the powerful, celebratory movements of Bhangra. Learn dynamic choreography, intricate hand gestures, and energetic footwork to popular Indian film music. It's a joyful, full-body workout that's guaranteed to make you smile!",
+    "danceCategoryId": 68,
+    "advancementLevelId": 2,
+    "classType": "GROUP_CLASS",
+    "price": 43,
+    "courseId": null,
+    "currency": "PLN",
+    "scheduleTileColor": "#123456"
+  },
+  {
+    "id": 69,
+    "name": "African Rhythms & Movement",
+    "description": "Connect with the earth and your inner rhythm in 'African Rhythms & Movement'. This all-levels class explores traditional West African dance techniques, focusing on grounded steps, polyrhythms, and communal expression. Accompanied by live drumming, participants will learn fundamental movements, cultural context, and the joy of moving together in celebration. No experience necessary, just an open heart and willingness to move.",
+    "danceCategoryId": 69,
+    "advancementLevelId": 3,
+    "classType": "GROUP_CLASS",
+    "price": 48,
+    "courseId": null,
+    "currency": "PLN",
+    "scheduleTileColor": "#123456"
+  }
+]
