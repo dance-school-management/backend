@@ -1,60 +1,60 @@
 [
   {
-    "id": 60,
+    "id": 10,
     "name": "Salsa",
     "description": "Salsa is a lively, passionate partner dance originating from Latin America, particularly Cuba and Puerto Rico. It is characterized by its quick footwork, spins, and close partner connection, danced to a dynamic musical genre of the same name. There are various styles, including Cuban, L.A., and New York style.",
     "photoPath": ""
   },
   {
-    "id": 61,
+    "id": 11,
     "name": "Hip-Hop",
     "description": "Hip-Hop dance is a broad category encompassing various street dance styles primarily performed to hip-hop music. It includes breaking, locking, popping, and more contemporary styles. It emphasizes rhythm, improvisation, body isolations, and personal expression, often characterized by its energetic and dynamic movements.",
     "photoPath": ""
   },
   {
-    "id": 62,
+    "id": 12,
     "name": "Ballet",
     "description": "Ballet is a classical dance form characterized by its precise and graceful movements, including pointe work, turn-outs, and high extensions. It emphasizes strict technique, elegant lines, and storytelling through choreography, often performed to classical music in theatrical settings.",
     "photoPath": ""
   },
   {
-    "id": 63,
+    "id": 13,
     "name": "Contemporary",
     "description": "Contemporary dance is an expressive dance form that combines elements of several dance genres including modern, jazz, lyrical, and classical ballet. It emphasizes versatility, improvisation, and emotional expression, often characterized by its fluid movements, floor work, and use of gravity.",
     "photoPath": ""
   },
   {
-    "id": 64,
+    "id": 14,
     "name": "Jazz Funk",
     "description": "Jazz Funk is a hybrid dance style that combines the technicality and showmanship of jazz dance with the grounded, rhythmic, and often street-influenced movements of funk and hip-hop. It is known for its high energy, strong isolations, and sassy, performance-oriented choreography.",
     "photoPath": ""
   },
   {
-    "id": 65,
+    "id": 15,
     "name": "Tap Dance",
     "description": "Tap dance is a percussive dance form where dancers wear special shoes fitted with metal taps on the heel and toe. Dancers use their feet to create rhythmic sounds and patterns, acting as both dancers and musicians. It emphasizes intricate footwork, musicality, and improvisation.",
     "photoPath": ""
   },
   {
-    "id": 66,
+    "id": 16,
     "name": "Bellydance",
     "description": "Bellydance, also known as Raqs Sharqi, is an expressive dance form originating from the Middle East. It is characterized by fluid, isolated movements of the torso, hips, and arms, often accompanied by shimmies and undulations. It celebrates femininity, grace, and cultural storytelling.",
     "photoPath": ""
   },
   {
-    "id": 67,
+    "id": 17,
     "name": "Bachata",
     "description": "Bachata is a social dance from the Dominican Republic, characterized by its slow, rhythmic steps, close partner embrace, and hip movements. Sensual Bachata, a modern style, emphasizes fluid body waves, dips, and a strong connection between partners.",
     "photoPath": ""
   },
   {
-    "id": 68,
+    "id": 18,
     "name": "Bollywood & Bhangra",
     "description": "Bollywood dance is a fusion of various Indian classical and folk dance forms with Western styles, often seen in Indian films. Bhangra is a lively folk dance from Punjab, India, characterized by powerful, energetic movements, jumps, and hand gestures, traditionally performed during harvest festivals.",
     "photoPath": ""
   },
   {
-    "id": 69,
+    "id": 19,
     "name": "West African Dance",
     "description": "West African dance encompasses a diverse range of traditional dances from various ethnic groups in West Africa. These dances are often communal, performed to live drumming, and characterized by grounded, powerful movements, polyrhythms, and a strong connection to cultural storytelling and celebration.",
     "photoPath": ""
