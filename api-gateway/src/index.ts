@@ -36,7 +36,7 @@ if (AUTH_MICROSERVICE_URL) {
     target: AUTH_MICROSERVICE_URL,
     changeOrigin: true,
   });
-  app.use("/auth", proxyMiddlewareAuth);
+  app.use("/auth", authenticate({ strict: false }), proxyMiddlewareAuth);
 }
 
 if (PRODUCT_MICROSERVICE_URL) {

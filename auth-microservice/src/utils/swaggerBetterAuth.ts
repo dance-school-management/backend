@@ -32,6 +32,7 @@ const API_GATEWAY_URL = process.env.API_GATEWAY_URL;
         schema.properties["first_name"] = { type: "string" };
         schema.properties["surname"] = { type: "string" };
         schema.properties["id"] = { type: "string" };
+        schema.properties["role"] = { type: "string", default: "STUDENT" };
         if (Array.isArray(schema.required)) {
           schema.required.push("first_name", "surname");
         }
