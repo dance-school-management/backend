@@ -17,7 +17,7 @@ import { getStudentsProfiles } from "../../grpc/client/profileCommunication/getS
 import { sendPushNotifications } from "../../rabbitmq/senders/sendPushNotifications";
 
 export async function createPrivateClassTemplate(
-  req: Request<{}, {}, { classTemplateData: ClassTemplate }> & {
+  req: Request<{}, {}, { classTemplateData: ClassTemplate; }> & {
     user?: any;
   },
   res: Response,
@@ -43,7 +43,7 @@ export async function createPrivateClassTemplate(
 }
 
 export async function editPrivateClassTemplate(
-  req: Request<{}, {}, { classTemplateData: ClassTemplate }> & {
+  req: Request<{}, {}, { classTemplateData: ClassTemplate; }> & {
     user?: any;
   },
   res: Response,
@@ -125,7 +125,7 @@ export async function getPrivateClassTemplates(
 }
 
 export async function getPrivateClassTemplateDetails(
-  req: Request<{ id: string }> & {
+  req: Request<{ id: string; }> & {
     user?: any;
   },
   res: Response,
@@ -143,6 +143,11 @@ export async function getPrivateClassTemplateDetails(
     include: {
       danceCategory: true,
       advancementLevel: true,
+      class: {
+        include: {
+          classRoom: true,
+        },
+      },
     },
   });
 
@@ -158,7 +163,7 @@ export async function getPrivateClassTemplateDetails(
 }
 
 export async function deletePrivateClassTemplate(
-  req: Request<{ id: string }> & {
+  req: Request<{ id: string; }> & {
     user?: any;
   },
   res: Response,
@@ -206,8 +211,10 @@ export async function deletePrivateClassTemplate(
   res.status(StatusCodes.NO_CONTENT).send();
 }
 
+type CreateClassData = Omit<Class, "peopleLimit" | "createdBy" | "classStatus" | "id">;
+
 async function validatePrivateClass(
-  classData: Class,
+  classData: CreateClassData,
   studentIds: string[],
   instructorId: string,
 ) {
@@ -298,7 +305,7 @@ async function validatePrivateClass(
 }
 
 export async function createPrivateClass(
-  req: Request<{}, {}, { classData: Class; studentIds: string[] }> & {
+  req: Request<{}, {}, { classData: CreateClassData; studentIds: string[]; }> & {
     user?: any;
   },
   res: Response,
@@ -315,6 +322,17 @@ export async function createPrivateClass(
     instructorId,
   );
 
+  const studentsData = (await getStudentsProfiles(studentIds))
+    .studentProfilesList;
+
+  if (studentsData.length !== studentIds.length) {
+    throw new UniversalError(
+      StatusCodes.CONFLICT,
+      "Some students do not exist",
+      [{ field: "studentIds", message: "Some students do not exist" }]
+    );
+  }
+
   const newClass = await prisma.class.create({
     data: {
       classRoomId: classData.classRoomId,
@@ -322,7 +340,7 @@ export async function createPrivateClass(
       classTemplateId: classData.classTemplateId,
       startDate: classData.startDate,
       endDate: classData.endDate,
-      peopleLimit: classData.peopleLimit,
+      peopleLimit: studentIds.length,
       createdBy: instructorId,
     },
   });
@@ -347,9 +365,6 @@ export async function createPrivateClass(
 
   await sendPushNotifications(message);
 
-  const studentsData = (await getStudentsProfiles(studentIds))
-    .studentProfilesList;
-
   res.status(StatusCodes.OK).json({
     class: newClass,
     students: studentsData,
@@ -357,7 +372,7 @@ export async function createPrivateClass(
 }
 
 export async function editPrivateClass(
-  req: Request<{}, {}, { classData: Class }> & {
+  req: Request<{}, {}, { classData: Class; }> & {
     user?: any;
   },
   res: Response,
@@ -452,7 +467,7 @@ export async function getPrivateClasses(
 }
 
 export async function getPrivateClassDetails(
-  req: Request<{ id: string }> & {
+  req: Request<{ id: string; }> & {
     user?: any;
   },
   res: Response,

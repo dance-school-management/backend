@@ -236,10 +236,6 @@
  *                     type: string
  *                     format: date-time
  *                     example: "2026-02-14T19:00:00.000Z"
- *                   peopleLimit:
- *                     type: integer
- *                     format: int32
- *                     example: 2
  *                 required:
  *                   - classTemplateId
  *                   - classRoomId
