@@ -211,8 +211,10 @@ export async function deletePrivateClassTemplate(
   res.status(StatusCodes.NO_CONTENT).send();
 }
 
+type CreateClassData = Omit<Class, "peopleLimit" | "createdBy" | "classStatus" | "id">;
+
 async function validatePrivateClass(
-  classData: Class,
+  classData: CreateClassData,
   studentIds: string[],
   instructorId: string,
 ) {
@@ -303,7 +305,7 @@ async function validatePrivateClass(
 }
 
 export async function createPrivateClass(
-  req: Request<{}, {}, { classData: Class; studentIds: string[]; }> & {
+  req: Request<{}, {}, { classData: CreateClassData; studentIds: string[]; }> & {
     user?: any;
   },
   res: Response,
@@ -338,7 +340,7 @@ export async function createPrivateClass(
       classTemplateId: classData.classTemplateId,
       startDate: classData.startDate,
       endDate: classData.endDate,
-      peopleLimit: classData.peopleLimit,
+      peopleLimit: studentIds.length,
       createdBy: instructorId,
     },
   });
