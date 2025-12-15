@@ -5,14 +5,13 @@ import {
   CreateProfileResponse,
   Role as GrpcRole,
 } from "../../../../proto/AuthToProfileMessages_pb";
-import { Role as PrismaRole } from "../../../../generated/client";
 import logger from "../../../utils/winston";
 
 export const StringRoleToGrpcRole: Record<string, GrpcRole> = {
-  [PrismaRole.INSTRUCTOR]: GrpcRole.INSTRUCTOR,
-  [PrismaRole.COORDINATOR]: GrpcRole.COORDINATOR,
-  [PrismaRole.STUDENT]: GrpcRole.STUDENT,
-  [PrismaRole.ADMINISTRATOR]: GrpcRole.ADMINISTRATOR,
+  ["INSTRUCTOR"]: GrpcRole.INSTRUCTOR,
+  ["COORDINATOR"]: GrpcRole.COORDINATOR,
+  ["STUDENT"]: GrpcRole.STUDENT,
+  ["ADMINISTRATOR"]: GrpcRole.ADMINISTRATOR,
 };
 
 export async function createProfile(

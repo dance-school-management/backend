@@ -1,49 +1,49 @@
 import { betterAuth, logger } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
-import { createAuthMiddleware, openAPI } from "better-auth/plugins";
+import { admin, createAuthMiddleware, openAPI } from "better-auth/plugins";
 import prisma from "./prisma";
 import { createProfile } from "../grpc/client/profileCommunication/profile";
 import { APIError } from "better-auth/api";
 import { expo } from "@better-auth/expo";
 export const auth = betterAuth({
   hooks: {
-    before: createAuthMiddleware(async (ctx) => {
-      if (ctx.path === "/sign-up/email") {
-        const userHeader = ctx.request?.headers.get("user-context");
-        let user;
-        if (userHeader) {
-          try {
-            user = JSON.parse(
-              Buffer.from(userHeader, "base64").toString("utf8"),
-            );
-          } catch (e) {
-            logger.error(`Failed to parse user-context header in sign-up`);
-          }
-        }
+    // before: createAuthMiddleware(async (ctx) => {
+    //   if (ctx.path === "/sign-up/email") {
+    //     const userHeader = ctx.request?.headers.get("user-context");
+    //     let user;
+    //     if (userHeader) {
+    //       try {
+    //         user = JSON.parse(
+    //           Buffer.from(userHeader, "base64").toString("utf8"),
+    //         );
+    //       } catch (e) {
+    //         logger.error(`Failed to parse user-context header in sign-up`);
+    //       }
+    //     }
 
-        // nobody is logged in
-        if (!user) {
-          if (![undefined, "STUDENT"].includes(ctx.body.role)) {
-            throw new APIError("UNAUTHORIZED", {
-              message: `You are not authorized to create account with role: ${ctx.body.role}`,
-              code: "UNAUTHORIZED",
-            });
-          }
-        }
-        // logged in some user
-        if (!checkAdministratorRole(user)) {
-          throw new APIError("UNAUTHORIZED", {
-            message: `You are not authorized to create account with role: ${ctx.body.role}`,
-            code: "UNAUTHORIZED",
-          });
-        }
-        if (!checkRoleType(ctx.body.role)) {
-          throw new APIError("BAD_REQUEST", {
-            message: `Invalid role type: ${ctx.body.role}`,
-          });
-        }
-      }
-    }),
+    //     // nobody is logged in
+    //     if (!user) {
+    //       if (![undefined, "STUDENT"].includes(ctx.body.role)) {
+    //         throw new APIError("UNAUTHORIZED", {
+    //           message: `You are not authorized to create account with role: ${ctx.body.role}`,
+    //           code: "UNAUTHORIZED",
+    //         });
+    //       }
+    //     }
+    //     // logged in some user
+    //     if (!checkAdministratorRole(user)) {
+    //       throw new APIError("UNAUTHORIZED", {
+    //         message: `You are not authorized to create account with role: ${ctx.body.role}`,
+    //         code: "UNAUTHORIZED",
+    //       });
+    //     }
+    //     if (!checkRoleType(ctx.body.role)) {
+    //       throw new APIError("BAD_REQUEST", {
+    //         message: `Invalid role type: ${ctx.body.role}`,
+    //       });
+    //     }
+    //   }
+    // }),
     after: createAuthMiddleware(async (ctx) => {
       if (ctx.path === "/sign-up/email") {
         const returned: any = ctx.context.returned;
@@ -51,29 +51,30 @@ export const auth = betterAuth({
           return returned;
         }
 
-        // If an admin is creating the account, we don't want to overwrite their session
-        const userHeader = ctx.request?.headers.get("user-context");
-        if (userHeader) {
-          ctx.context.responseHeaders?.delete("Set-Cookie");
-          if (returned?.token) {
-            try {
-              await prisma.session.delete({
-                where: {
-                  token: returned.token,
-                },
-              });
-            } catch (e) {
-              logger.error(
-                "Failed to delete session for admin created user",
-                e,
-              );
-            }
-          }
-          delete returned.token;
-        }
+        // // If an admin is creating the account, we don't want to overwrite their session
+        // const userHeader = ctx.request?.headers.get("user-context");
+        // if (userHeader) {
+        //   ctx.context.responseHeaders?.delete("Set-Cookie");
+        //   if (returned?.token) {
+        //     try {
+        //       await prisma.session.delete({
+        //         where: {
+        //           token: returned.token,
+        //         },
+        //       });
+        //     } catch (e) {
+        //       logger.error(
+        //         "Failed to delete session for admin created user",
+        //         e,
+        //       );
+        //     }
+        //   }
+        //   delete returned.token;
+        // }
 
         const userId: string = returned.user.id;
-        const { first_name, surname, role } = ctx.body;
+        // const { first_name, surname, role } = ctx.body;
+        const { first_name, surname } = ctx.body;
         let id = ctx.body.id || null;
         try {
           if (id) {
@@ -91,7 +92,7 @@ export const auth = betterAuth({
             id || userId,
             first_name,
             surname,
-            role || "STUDENT",
+            "STUDENT",
           );
 
           return ctx.json(returned);
@@ -113,7 +114,11 @@ export const auth = betterAuth({
       }
     }),
   },
-  plugins: [openAPI(), expo()],
+  plugins: [
+    openAPI(),
+    expo(),
+    admin({ adminRoles: ["ADMINISTRATOR"], defaultRole: "STUDENT" }),
+  ],
   database: prismaAdapter(prisma, {
     provider: "postgresql",
   }),

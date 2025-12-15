@@ -1,4 +1,4 @@
-import { PrismaClient, Role } from "../generated/client";
+import { PrismaClient } from "../generated/client";
 import { auth } from "../src/utils/auth";
 import logger from "../src/utils/winston";
 import { generateFakeUsers } from "../src/data/usersFaker";
@@ -13,9 +13,9 @@ async function main() {
     studentsJson,
     instructorsJson,
     administratorsJson,
-    generateFakeUsers(69, 62, Role.STUDENT),
-    generateFakeUsers(15, 15, Role.INSTRUCTOR),
-    generateFakeUsers(4, 6, Role.COORDINATOR),
+    generateFakeUsers(69, 62, "STUDENT"),
+    generateFakeUsers(15, 15, "INSTRUCTOR"),
+    generateFakeUsers(4, 6, "COORDINATOR"),
   );
 
   for (const user of users) {
@@ -43,7 +43,7 @@ async function main() {
       await prisma.user.update({
         where: { id: user.id },
         data: {
-          role: user.role as Role,
+          role: user.role,
         },
       });
     } catch (error: any) {
