@@ -11,7 +11,7 @@ export const StringRoleToGrpcRole: Record<string, GrpcRole> = {
   ["INSTRUCTOR"]: GrpcRole.INSTRUCTOR,
   ["COORDINATOR"]: GrpcRole.COORDINATOR,
   ["STUDENT"]: GrpcRole.STUDENT,
-  ["ADMINISTRATOR"]: GrpcRole.ADMINISTRATOR,
+  ["admin"]: GrpcRole.ADMIN,
 };
 
 export async function createProfile(

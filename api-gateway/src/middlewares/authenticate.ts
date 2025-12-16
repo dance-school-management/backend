@@ -11,7 +11,7 @@ const AUTH_TIMEOUT_MS = process.env.AUTH_TIMEOUT_MS
 
 const FAKE_USER = {
   id: "provided-fake-id-string124",
-  role: "ADMINISTRATOR",
+  role: "admin",
 };
 
 interface AuthenticateOptions {

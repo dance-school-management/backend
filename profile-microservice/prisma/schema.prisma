@@ -38,5 +38,5 @@ enum Role {
   INSTRUCTOR
   COORDINATOR
   STUDENT
-  ADMINISTRATOR
+  admin
 }

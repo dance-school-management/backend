@@ -1,5 +1,5 @@
 import { faker } from "@faker-js/faker";
-type Role = "INSTRUCTOR" | "COORDINATOR" | "STUDENT" | "ADMINISTRATOR";
+type Role = "INSTRUCTOR" | "COORDINATOR" | "STUDENT" | "admin";
 interface User {
   id: string;
   email: string;

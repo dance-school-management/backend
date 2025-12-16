@@ -21,7 +21,11 @@ export function createApp() {
   }
   app.use(handleUserContext);
   app.use("/notification", notificationRouter);
-  app.use("/notification", checkRole(["COORDINATOR", "ADMINISTRATOR"]), notificationCoordinatorRouter);
+  app.use(
+    "/notification",
+    checkRole(["COORDINATOR", "admin"]),
+    notificationCoordinatorRouter,
+  );
   app.use(errorHandler);
   app.get("/", (req, res) => {
     res.send("Hello from notification-microservice");

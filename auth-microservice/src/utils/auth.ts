@@ -117,7 +117,7 @@ export const auth = betterAuth({
   plugins: [
     openAPI(),
     expo(),
-    admin({ adminRoles: ["ADMINISTRATOR"], defaultRole: "STUDENT" }),
+    admin({ adminRoles: ["admin"], defaultRole: "STUDENT" }),
   ],
   database: prismaAdapter(prisma, {
     provider: "postgresql",
@@ -148,10 +148,10 @@ export const auth = betterAuth({
 function checkAdministratorRole(
   user: { role: string } | undefined | null,
 ): boolean {
-  return !!user && user.role === "ADMINISTRATOR";
+  return !!user && user.role === "admin";
 }
 
 function checkRoleType(role: string): boolean {
-  const validRoles = ["ADMINISTRATOR", "COORDINATOR", "INSTRUCTOR", "STUDENT"];
+  const validRoles = ["admin", "COORDINATOR", "INSTRUCTOR", "STUDENT"];
   return validRoles.includes(role);
 }

@@ -29,7 +29,7 @@ export function createApp() {
 
   // Authenticated routes - admin/coordinator
   app.use(handleUserContext);
-  app.use("/posts", checkRole(["ADMINISTRATOR", "COORDINATOR"]), postRouter);
+  app.use("/posts", checkRole(["admin", "COORDINATOR"]), postRouter);
 
   app.get("/", (req, res) => {
     res.send("Hello from blog-microservice");
@@ -42,4 +42,3 @@ export function createApp() {
   app.use(errorHandler);
   return app;
 }
-
