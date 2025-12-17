@@ -1,9 +1,7 @@
 import { Router } from "express";
 import {
-  getNotifications,
-  getNotificationById,
-  createNotifications,
-  updateNotificationContent,
+  getUserNotifications,
+  getUserNotificationById,
   toggleEnableNotifications,
   getIsRegisteredForNotifications,
   updateNotificationsStatus,
@@ -36,7 +34,7 @@ router.get(
     .isNumeric()
     .withMessage("limit must be a number")
     .toInt(),
-  getNotifications,
+  getUserNotifications,
 );
 
 router.get("/status", getIsRegisteredForNotifications);
@@ -44,7 +42,7 @@ router.get("/status", getIsRegisteredForNotifications);
 router.get(
   "/:id",
   param("id").isNumeric().withMessage("id must be a number").toInt(),
-  getNotificationById,
+  getUserNotificationById,
 );
 
 router.put(

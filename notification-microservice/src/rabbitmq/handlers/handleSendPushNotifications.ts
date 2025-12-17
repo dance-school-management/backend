@@ -13,6 +13,8 @@ export const handleSendPushNotifications = async (msg: string) => {
     data: {
       body: msgData.body,
       payload: Object(msgData.payload),
+      isAutomatic: true,
+      createdBy: "system",
       title: msgData.title,
     },
   });
