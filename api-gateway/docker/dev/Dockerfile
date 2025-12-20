@@ -20,8 +20,8 @@ COPY tsconfig.json .
 COPY package.json .
 COPY --from=deps /usr/src/app/node_modules ./node_modules
 
-RUN chown -R node:node .
-USER node
+# RUN chown -R node:node .
+# USER node
 
 EXPOSE 8000
 
