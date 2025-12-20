@@ -116,10 +116,10 @@ export async function refundTicket(
   const classDetails = (await getClassesDetails([theTicket.classId]))
     .classesdetailsList[0];
 
-  if (classDetails.classStatus !== "POSTPONED") {
+  if (classDetails.classStatus !== "POSTPONED" && classDetails.classStatus !== "CANCELLED") {
     throw new UniversalError(
       StatusCodes.CONFLICT,
-      "You can only get a manual refund from a postponed class",
+      "You can only get a refund from a postponed or cancelled class",
       [],
     );
   }
