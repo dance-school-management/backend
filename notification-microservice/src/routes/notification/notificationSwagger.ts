@@ -28,7 +28,7 @@
 
 /**
  * @swagger
- * /public/notification:
+ * /notification:
  *   get:
  *     summary: Get notifications with filter by sendDate
  *     tags:
@@ -93,7 +93,7 @@
 
 /**
  * @swagger
- * /public/notification/{id}:
+ * /notification/{id}:
  *   get:
  *     summary: Get notification by ID
  *     tags:
@@ -118,7 +118,7 @@
 
 /**
  * @swagger
- * /notification:
+ * /notification/management:
  *   post:
  *     summary: Create a new notification
  *     tags:
@@ -158,7 +158,7 @@
 
 /**
  * @swagger
- * /public/notification/status:
+ * /notification/status:
  *   put:
  *     summary: Update notifications read status
  *     description: Updates the `hasBeenRead` status for multiple notifications belonging to the authenticated user.
@@ -206,7 +206,7 @@
 
 /**
  * @swagger
- * /public/notification/register:
+ * /notification/register:
  *   post:
  *     summary: Register a device to push notifications
  *     tags:
@@ -230,7 +230,7 @@
 
 /**
  * @swagger
- * /public/notification/toggle:
+ * /notification/toggle:
  *   post:
  *     summary: Enable or disable notifications for the current user
  *     description: Allows the authenticated user to enable or disable notifications.
@@ -267,7 +267,7 @@
 
 /**
  * @swagger
- * /public/notification/status:
+ * /notification/status:
  *   get:
  *     summary: Get user's notification registration status
  *     description: Returns information about whether the user is registered and has enabled push notifications.
@@ -296,7 +296,7 @@
 
 /**
  * @swagger
- * /public/notification/push/unregister:
+ * /notification/push/unregister:
  *   put:
  *     summary: Unregister user from push notifications
  *     description: Removes the user's Expo push token and disables further push notifications.
@@ -321,7 +321,7 @@
 
 /**
  * @swagger
- * /notification:
+ * /notification/management:
  *   get:
  *     summary: Get notifications (paginated) with optional sendDate filter and ownership filter
  *     description: |
@@ -329,8 +329,6 @@
  *       If `onlyOwned=true` or the authenticated user has role `INSTRUCTOR`, results are limited to notifications created by the current user.
  *     tags:
  *       - Notification - Management
- *     security:
- *       - bearerAuth: []
  *     parameters:
  *       - in: query
  *         name: dateFrom
@@ -400,7 +398,7 @@
 
 /**
  * @swagger
- * /notification/{id}:
+ * /notification/management/{id}:
  *   get:
  *     summary: Get notification by ID
  *     tags:
