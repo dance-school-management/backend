@@ -47,11 +47,12 @@ export async function checkClass(
   }
 
   if (
-    classObj.classStatus === ClassStatus.CANCELLED
+    classObj.classStatus === ClassStatus.CANCELLED ||
+    classObj.classStatus === ClassStatus.POSTPONED
   ) {
     const err = new UniversalError(
       StatusCodes.CONFLICT,
-      `This class with id ${classId} is cancelled`,
+      `This class with id ${classId} is cancelled or postponed. Its purchase time has expired.`,
       [],
     );
     callback({ code: status.UNAVAILABLE, details: JSON.stringify(err) });
@@ -76,12 +77,11 @@ export async function checkClass(
         },
       },
     });
-    const firstClassStartDate = courseClasses
-      .reduce(
-        (acc, cur) => (cur.startDate < acc ? cur.startDate : acc),
-        // Biggest date possible
-        new Date(8640000000000000),
-      );
+    const firstClassStartDate = courseClasses.reduce(
+      (acc, cur) => (cur.startDate < acc ? cur.startDate : acc),
+      // Biggest date possible
+      new Date(8640000000000000),
+    );
     const date = new Date();
     const threeDaysLater = new Date(
       date.setDate(

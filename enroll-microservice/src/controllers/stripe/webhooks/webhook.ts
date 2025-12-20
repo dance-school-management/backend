@@ -6,6 +6,7 @@ import { UniversalError } from "../../../errors/UniversalError";
 import { PaymentStatus } from "../../../../generated/client";
 import { getCoursesClasses } from "../../../grpc/client/productCommunication/getCoursesClasses";
 import { getClassesDetails } from "../../../grpc/client/productCommunication/getClassesDetails";
+import Stripe from "stripe";
 
 export async function handleWebhook(req: Request, res: Response) {
   console.log("webhook has been hit");
@@ -131,6 +132,25 @@ export async function handleWebhook(req: Request, res: Response) {
         });
       }
     }
+  }
+
+  if (event.type === "charge.refunded") {
+    const charge = event.data.object as Stripe.Charge;
+
+    const paymentIntentId =
+      typeof charge.payment_intent === "string"
+        ? charge.payment_intent
+        : charge.payment_intent?.id;
+
+    if (!paymentIntentId) {
+      // You can log and exit; no way to map this charge to your ticket
+      return;
+    }
+
+    await prisma.classTicket.update({
+      where: { paymentIntentId },
+      data: { paymentStatus: PaymentStatus.REFUNDED },
+    });
   }
   res.sendStatus(StatusCodes.OK);
 }
