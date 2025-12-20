@@ -93,6 +93,14 @@ export async function refundTicket(
     ]);
   }
 
+  if (theTicket.studentId !== req.user?.id) {
+    throw new UniversalError(
+      StatusCodes.CONFLICT,
+      "This ticket is not owned by you",
+      [],
+    );
+  }
+
   if (theTicket.paymentStatus === PaymentStatus.PENDING) {
     throw new UniversalError(StatusCodes.CONFLICT, "Ticket not paid", []);
   }
@@ -116,7 +124,10 @@ export async function refundTicket(
   const classDetails = (await getClassesDetails([theTicket.classId]))
     .classesdetailsList[0];
 
-  if (classDetails.classStatus !== "POSTPONED" && classDetails.classStatus !== "CANCELLED") {
+  if (
+    classDetails.classStatus !== "POSTPONED" &&
+    classDetails.classStatus !== "CANCELLED"
+  ) {
     throw new UniversalError(
       StatusCodes.CONFLICT,
       "You can only get a refund from a postponed or cancelled class",
@@ -134,17 +145,24 @@ export async function refundTicket(
 
   let amount;
 
-  if (theTicket.paymentStatus === PaymentStatus.PART_OF_COURSE) amount = classDetails.price
-  else if (theTicket.paymentStatus === PaymentStatus.PAID) amount = theTicket.cost.toNumber()
-  else throw new UniversalError(StatusCodes.INTERNAL_SERVER_ERROR, "Found unknown payment status", [])
+  if (theTicket.paymentStatus === PaymentStatus.PART_OF_COURSE)
+    amount = classDetails.price;
+  else if (theTicket.paymentStatus === PaymentStatus.PAID)
+    amount = theTicket.cost.toNumber();
+  else
+    throw new UniversalError(
+      StatusCodes.INTERNAL_SERVER_ERROR,
+      "Found unknown payment status",
+      [],
+    );
 
   try {
     await stripe.refunds.create({
       payment_intent: theTicket.paymentIntentId,
       amount,
       metadata: {
-        qrCodeUUID: qrCodeUUID
-      }
+        qrCodeUUID: qrCodeUUID,
+      },
     });
 
     res.status(StatusCodes.OK).json({
