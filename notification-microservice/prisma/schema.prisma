@@ -33,6 +33,9 @@ model Notification {
   title    String
   body     String
   sendDate DateTime @default(now())
+  isAutomatic Boolean
+  // createdBy = userId | "system"
+  createdBy   String
   payload  Json
 
   notificationsOnUsers NotificationsOnUsers[]

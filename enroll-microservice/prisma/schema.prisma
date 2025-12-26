@@ -40,8 +40,6 @@ model ClassTicket {
 
   cost Decimal @db.Decimal(precision: 10, scale: 2)
 
-  canBeRefunded Boolean?
-
   createdAt     DateTime
 
   @@id([studentId, classId])
@@ -57,8 +55,6 @@ model CourseTicket {
   checkoutSessionId String? @unique
 
   cost Decimal @db.Decimal(precision: 10, scale: 2)
-
-  canBeRefunded Boolean?
 
   createdAt     DateTime
 

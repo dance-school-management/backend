@@ -7,7 +7,7 @@ import { checkRole } from "../middlewares/checkRole";
 import { errorHandler } from "../middlewares/errorHandler";
 import { handleUserContext } from "../middlewares/handleUserContext";
 import notificationRouter from "../routes/notification/notification";
-import notificationCoordinatorRouter from "../routes/notification/notificationCoordinator";
+import notificationManagementRouter from "../routes/notification/notificationManagement";
 import { setupSwagger } from "./swagger";
 
 export function createApp() {
@@ -20,12 +20,8 @@ export function createApp() {
     setupSwagger(app);
   }
   app.use(handleUserContext);
+  app.use("/notification/management", checkRole(["INSTRUCTOR", "COORDINATOR", "ADMINISTRATOR"]), notificationManagementRouter);
   app.use("/notification", notificationRouter);
-  app.use(
-    "/notification",
-    checkRole(["COORDINATOR", "admin"]),
-    notificationCoordinatorRouter,
-  );
   app.use(errorHandler);
   app.get("/", (req, res) => {
     res.send("Hello from notification-microservice");

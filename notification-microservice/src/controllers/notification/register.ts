@@ -9,15 +9,19 @@ export async function register(
   res: Response,
 ) {
   if (!req.user) {
-    res.status(StatusCodes.UNAUTHORIZED).json("User is not authorized");
-    return;
+    throw new UniversalError(
+      StatusCodes.UNAUTHORIZED,
+      "User is not authorized",
+      [],
+    );
   }
 
   const { pushToken } = req.body;
 
   if (pushToken && !Expo.isExpoPushToken(pushToken)) {
-    res.status(StatusCodes.BAD_REQUEST).json("Invalid push token");
-    return;
+    throw new UniversalError(StatusCodes.BAD_REQUEST, "Invalid push token", [
+      { field: "pushToken", message: "Invalid expo push token" },
+    ]);
   }
 
   await prisma.user.upsert({

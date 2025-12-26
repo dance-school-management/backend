@@ -14,6 +14,9 @@
  *         body:
  *           type: string
  *           example: Sprawdź nasz najnowszy kurs taneczny!
+ *         isAutomatic:
+ *           type: boolean
+ *           example: false
  *         sendDate:
  *           type: string
  *           format: date-time
@@ -115,11 +118,11 @@
 
 /**
  * @swagger
- * /notification:
+ * /notification/management:
  *   post:
  *     summary: Create a new notification
  *     tags:
- *       - Notification
+ *       - Notification - Management
  *     requestBody:
  *       required: true
  *       content:
@@ -151,46 +154,6 @@
  *               $ref: "#/components/schemas/Notification"
  *       400:
  *         description: Validation error
- */
-
-/**
- * @swagger
- * /notification/{id}:
- *   put:
- *     summary: Update notification content
- *     tags:
- *       - Notification
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: integer
- *         description: Notification ID
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               title:
- *                 type: string
- *                 example: Zaktualizowany tytuł
- *               body:
- *                 type: string
- *                 example: Zaktualizowana treść powiadomienia
- *     responses:
- *       200:
- *         description: Notification updated successfully
- *         content:
- *           application/json:
- *             schema:
- *               $ref: "#/components/schemas/Notification"
- *       400:
- *         description: Validation error
- *       404:
- *         description: Notification not found
  */
 
 /**
@@ -354,4 +317,106 @@
  *         description: User is not registered for any notifications.
  *       500:
  *         description: Server error.
+ */
+
+/**
+ * @swagger
+ * /notification/management:
+ *   get:
+ *     summary: Get notifications (paginated) with optional sendDate filter and ownership filter
+ *     description: |
+ *       Returns notifications sorted by `sendDate` (descending).
+ *       If `onlyOwned=true` or the authenticated user has role `INSTRUCTOR`, results are limited to notifications created by the current user.
+ *     tags:
+ *       - Notification - Management
+ *     parameters:
+ *       - in: query
+ *         name: dateFrom
+ *         schema:
+ *           type: string
+ *           format: date-time
+ *           example: 2025-10-11T00:00:00Z
+ *         description: Min send date (inclusive). Works only when both `dateFrom` and `dateTo` are provided.
+ *       - in: query
+ *         name: dateTo
+ *         schema:
+ *           type: string
+ *           format: date-time
+ *           example: 2026-05-31T23:59:59Z
+ *         description: Max send date (inclusive). Works only when both `dateFrom` and `dateTo` are provided.
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           default: 1
+ *           minimum: 1
+ *         description: Page number
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           default: 10
+ *           minimum: 1
+ *         description: Number of items per page
+ *       - in: query
+ *         name: onlyOwned
+ *         schema:
+ *           type: boolean
+ *           example: true
+ *         description: If true, returns only notifications created by the current user.
+ *     responses:
+ *       200:
+ *         description: A list of notifications
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     $ref: "#/components/schemas/Notification"
+ *                 page:
+ *                   type: integer
+ *                   example: 1
+ *                 limit:
+ *                   type: integer
+ *                   example: 10
+ *                 total:
+ *                   type: integer
+ *                   example: 100
+ *                 totalPages:
+ *                   type: integer
+ *                   example: 10
+ *       400:
+ *         description: Invalid request parameters
+ *       401:
+ *         description: Unauthorized (user not authenticated)
+ *       500:
+ *         description: Internal server error
+ */
+
+/**
+ * @swagger
+ * /notification/management/{id}:
+ *   get:
+ *     summary: Get notification by ID
+ *     tags:
+ *       - Notification - Management
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: Notification ID
+ *     responses:
+ *       200:
+ *         description: A notification object
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/Notification"
+ *       404:
+ *         description: Notification not found
  */
