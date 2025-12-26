@@ -5,6 +5,7 @@ import prisma from "./prisma";
 import { createProfile } from "../grpc/client/profileCommunication/profile";
 import { APIError } from "better-auth/api";
 import { expo } from "@better-auth/expo";
+import { sendEmail } from "../react-email-starter/src/sendEmail";
 
 export const auth = betterAuth({
   hooks: {
@@ -37,7 +38,6 @@ export const auth = betterAuth({
     }),
     after: createAuthMiddleware(async (ctx) => {
       if (ctx.path === "/admin/create-user") {
-
         const returned: any = ctx.context.returned;
 
         if (returned instanceof APIError) {
@@ -52,7 +52,6 @@ export const auth = betterAuth({
         return ctx.json(returned);
       }
       if (ctx.path === "/sign-up/email") {
-
         const returned: any = ctx.context.returned;
 
         if (returned instanceof APIError) {
@@ -75,6 +74,16 @@ export const auth = betterAuth({
   }),
   emailAndPassword: {
     enabled: true,
+    sendResetPassword: async ({ user, url, token }, request) => {
+      const resetPasswordRoute = "http://localhost:3000/auth/reset-password";
+      const finalUrl = `${resetPasswordRoute}?token=${token}`;
+
+      sendEmail({
+        to: user.email,
+        emailType: "RESET_PASSWORD",
+        url: finalUrl,
+      });
+    },
   },
   user: {
     deleteUser: {
@@ -123,7 +132,6 @@ async function createProfileUtil(ctx: any, returned: any, role: string) {
   }
 
   try {
-
     const responseProfile = await createProfile(
       id || userId,
       first_name,
