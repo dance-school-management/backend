@@ -28,8 +28,8 @@ COPY --from=deps /usr/src/app/node_modules ./node_modules
 COPY prisma ./prisma
 COPY proto ./proto
 
-RUN chown -R node:node .
-USER node
+# RUN chown -R node:node .
+# USER node
 
 EXPOSE 8004
 EXPOSE 50051
