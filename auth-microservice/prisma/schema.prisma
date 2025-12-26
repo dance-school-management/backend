@@ -30,7 +30,7 @@ model User {
   banReason  String?
   banExpires DateTime?
 
-  role String? @default("STUDENT")
+  role String @default("STUDENT")
 
   @@unique([email])
   @@map("user")

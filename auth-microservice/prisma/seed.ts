@@ -20,17 +20,33 @@ async function main() {
 
   for (const user of users) {
     try {
-      await auth.api.signUpEmail({
-        body: {
-          email: user.email,
-          password: user.password,
-          name: user.name,
-          //@ts-ignore
-          first_name: user.first_name,
-          surname: user.surname,
-          id: user.id,
-        },
-      });
+      if (user.role === "STUDENT") {
+        await auth.api.signUpEmail({
+          body: {
+            email: user.email,
+            password: user.password,
+            name: user.name,
+            //@ts-ignore
+            role: "STUDENT",
+            first_name: user.first_name,
+            surname: user.surname,
+            id: user.id,
+          },
+        });
+      } else {
+        await auth.api.createUser({
+          body: {
+            email: user.email,
+            name: user.name,
+            password: user.password,
+            //@ts-ignore,
+            role: user.role,
+            first_name: user.first_name,
+            surname: user.surname,
+            id: user.id,
+          },
+        });
+      }
     } catch (error: any) {
       logger.info(
         ` \n User already exists or error occurred, skipping creation. for email: ${user.email} \n error: ${error}`,
