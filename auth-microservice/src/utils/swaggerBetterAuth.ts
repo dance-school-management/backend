@@ -32,8 +32,15 @@ const API_GATEWAY_URL = process.env.API_GATEWAY_URL;
       { name: "first_name", type: "string", required: true },
       { name: "surname", type: "string", required: true },
       { name: "id", type: "string" },
-      { name: "role", type: "string", required: true },
+      { name: "role", type: "string", required: true, default: "INSTRUCTOR" },
+      { name: "shouldSendEmail", type: "boolean", default: false },
     ],
+    betterAuthSchema,
+  );
+
+  removeFieldsFromRequest(
+    "/admin/create-user",
+    [{ name: "data" }],
     betterAuthSchema,
   );
 
@@ -56,7 +63,7 @@ function addFieldsToRequest(
         fields.forEach((field) => {
           schema.properties[field.name] = {
             type: field.type,
-            ...(field.default && { default: field.default }),
+            ...(field.default !== undefined && { default: field.default }),
           };
         });
         if (Array.isArray(schema.required)) {

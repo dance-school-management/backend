@@ -5,7 +5,10 @@ import prisma from "./prisma";
 import { createProfile } from "../grpc/client/profileCommunication/profile";
 import { APIError } from "better-auth/api";
 import { expo } from "@better-auth/expo";
-import { sendEmail } from "../react-email-starter/src/sendEmail";
+import {
+  sendResetPasswordEmail,
+  sendYourPasswordEmail,
+} from "../../src/react-email-starter/src/sendEmail";
 
 export const auth = betterAuth({
   hooks: {
@@ -43,11 +46,27 @@ export const auth = betterAuth({
         if (returned instanceof APIError) {
           return returned;
         }
-        const requestBody: { role: string } = ctx.body;
+        const requestBody: {
+          role: string;
+          shouldSendEmail?: boolean;
+          email: string;
+          first_name: string;
+          surname: string;
+          password: string;
+        } = ctx.body;
 
         const providedRole = requestBody.role;
 
         await createProfileUtil(ctx, returned, providedRole);
+
+        if (requestBody.shouldSendEmail) {
+          await sendYourPasswordEmail({
+            to: requestBody.email,
+            first_name: requestBody.first_name,
+            surname: requestBody.surname,
+            password: requestBody.password,
+          });
+        }
 
         return ctx.json(returned);
       }
@@ -78,9 +97,8 @@ export const auth = betterAuth({
       const resetPasswordRoute = "http://localhost:3000/auth/reset-password";
       const finalUrl = `${resetPasswordRoute}?token=${token}`;
 
-      sendEmail({
+      sendResetPasswordEmail({
         to: user.email,
-        emailType: "RESET_PASSWORD",
         url: finalUrl,
       });
     },
