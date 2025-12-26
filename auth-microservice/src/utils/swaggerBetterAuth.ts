@@ -39,6 +39,12 @@ const API_GATEWAY_URL = process.env.API_GATEWAY_URL;
   );
 
   removeFieldsFromRequest(
+    "/sign-up/email",
+    [{ name: "callbackURL" }],
+    betterAuthSchema,
+  );
+
+  removeFieldsFromRequest(
     "/admin/create-user",
     [{ name: "data" }],
     betterAuthSchema,
