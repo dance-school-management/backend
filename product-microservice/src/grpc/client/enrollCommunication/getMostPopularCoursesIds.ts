@@ -14,7 +14,6 @@ export async function getMostPopularCoursesIds(
     productWithEnrollClient.getMostPopularCoursesIds(
       request,
       (err, response) => {
-        console.log(err);
         if (err) {
           let unErr: UniversalError;
           try {
