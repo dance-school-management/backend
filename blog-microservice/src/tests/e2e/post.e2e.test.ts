@@ -29,7 +29,7 @@ describe("Post Routes (E2E Tests)", () => {
     app = createApp();
     adminUserContext = createMockUserContext({
       id: "user-123",
-      role: "ADMINISTRATOR",
+      role: "admin",
       email: "admin@test.com",
     });
   });
@@ -338,7 +338,9 @@ describe("Post Routes (E2E Tests)", () => {
         .query({ status: "published" });
 
       expect(response.status).toBe(200);
-      expect(response.body.data.every((p: BlogPost) => p.status === "published")).toBe(true);
+      expect(
+        response.body.data.every((p: BlogPost) => p.status === "published")
+      ).toBe(true);
     });
   });
 
@@ -386,4 +388,3 @@ describe("Post Routes (E2E Tests)", () => {
     });
   });
 });
-

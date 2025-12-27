@@ -18,14 +18,14 @@ export const PrismaRoleToGrpcRole: Record<PrismaRole, GrpcRole> = {
   [PrismaRole.INSTRUCTOR]: GrpcRole.INSTRUCTOR,
   [PrismaRole.COORDINATOR]: GrpcRole.COORDINATOR,
   [PrismaRole.STUDENT]: GrpcRole.STUDENT,
-  [PrismaRole.ADMINISTRATOR]: GrpcRole.ADMINISTRATOR,
+  [PrismaRole.admin]: GrpcRole.ADMIN,
 };
 
 export const GrpcRoleToPrismaRole: Record<GrpcRole, PrismaRole> = {
   [GrpcRole.INSTRUCTOR]: PrismaRole.INSTRUCTOR,
   [GrpcRole.COORDINATOR]: PrismaRole.COORDINATOR,
   [GrpcRole.STUDENT]: PrismaRole.STUDENT,
-  [GrpcRole.ADMINISTRATOR]: PrismaRole.ADMINISTRATOR,
+  [GrpcRole.ADMIN]: PrismaRole.admin,
 };
 
 export async function createProfile(
