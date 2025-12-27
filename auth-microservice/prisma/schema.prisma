@@ -1,3 +1,4 @@
+
 generator client {
   provider = "prisma-client-js"
   output   = "../generated/client"
@@ -25,17 +26,14 @@ model User {
   sessions      Session[]
   accounts      Account[]
 
-  role Role
+  banned     Boolean?  @default(false)
+  banReason  String?
+  banExpires DateTime?
+
+  role String @default("STUDENT")
 
   @@unique([email])
   @@map("user")
-}
-
-enum Role {
-  INSTRUCTOR
-  COORDINATOR
-  STUDENT
-  ADMINISTRATOR
 }
 
 model Session {
@@ -49,8 +47,11 @@ model Session {
   userId    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
+  impersonatedBy String?
+
   @@unique([token])
   @@map("session")
+  @@index([userId])
 }
 
 model Account {
@@ -70,6 +71,7 @@ model Account {
   updatedAt             DateTime
 
   @@map("account")
+  @@index([userId])
 }
 
 model Verification {
@@ -81,4 +83,5 @@ model Verification {
   updatedAt  DateTime?
 
   @@map("verification")
+  @@index([identifier])
 }

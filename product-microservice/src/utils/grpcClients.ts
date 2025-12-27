@@ -20,10 +20,6 @@ if (!PROFILE_MICROSERVICE_GRPC_URL) {
   throw new Error("PROFILE_MICROSERVICE_GRPC_URL is not defined");
 }
 
-if (!ELASTICSEARCH_MICROSERVICE_GRPC_URL) {
-  throw new Error("ELASTICSEARCH_MICROSERVICE_GRPC_URL is not defined")
-}
-
 if (!AI_MICROSERVICE_GRPC_URL) {
   throw new Error("AI_MICROSERVICE_GRPC_URL is not defined")
 }
@@ -36,11 +32,6 @@ export const productWithEnrollClient = new ProductToEnrollClient(
 export const productWithProfileClient = new ProductToProfileClient(
   PROFILE_MICROSERVICE_GRPC_URL,
   credentials.createInsecure(),
-);
-
-export const productWithElasticsearchClient = new ProductToElasticsearchClient(
-  ELASTICSEARCH_MICROSERVICE_GRPC_URL,
-  credentials.createInsecure()
 );
 
 export const embedClient = new EmbedClient(

@@ -1,19 +1,22 @@
-import express from "express";
 import "dotenv/config";
-import { setupSwagger } from "./swagger";
-import { errorHandler } from "../middlewares/errorHandler";
-import morgan from "morgan";
+import express from "express";
 import helmet from "helmet";
-import cmsRouter from "../routes/cms/cms";
+import morgan from "morgan";
 import path from "path";
+
 import { UniversalError } from "../errors/UniversalError";
-import { handleUserContext } from "../middlewares/handleUserContext";
 import { checkRole } from "../middlewares/checkRole";
-import scheduleRouter from "../routes/schedule/schedule";
+import { errorHandler } from "../middlewares/errorHandler";
+import { handleUserContext } from "../middlewares/handleUserContext";
+import cmsRouter from "../routes/cms/cms";
+import publicCmsRouter from "../routes/cms/publicCms";
 import pricingRouter from "../routes/pricing/pricing";
 import advancedSearchRouter from "../routes/advanced-search/search";
 import searchRouter from "../routes/search/search"
 import privateClassesRouter from "../routes/private_classes/privateClasses";
+import publicScheduleRouter from "../routes/schedule/publicSchedule";
+import scheduleRouter from "../routes/schedule/schedule";
+import { setupSwagger } from "./swagger";
 
 export function createApp() {
   const app = express();
@@ -22,14 +25,19 @@ export function createApp() {
 
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
-  setupSwagger(app);
+  if (process.env.NODE_ENV === "development") {
+    setupSwagger(app);
+  }
+  app.use("/public/pricing", pricingRouter);
+  app.use("/public/cms", publicCmsRouter);
   app.use(handleUserContext);
+  app.use("/public/schedule", publicScheduleRouter);
   app.use("/uploads", express.static(path.resolve("uploads")));
   app.use("/cms", checkRole(["COORDINATOR"]), cmsRouter);
-  app.use("/schedule", scheduleRouter);
   app.use("/pricing", pricingRouter);
   app.use("/advanced-search", advancedSearchRouter);
   app.use("/search", searchRouter);
+  app.use("/schedule", checkRole(["STUDENT", "INSTRUCTOR"]), scheduleRouter);
   app.use("/private-class", checkRole(["INSTRUCTOR"]), privateClassesRouter);
   app.get("/", (req, res) => {
     res.send("Hello from product-microservice1");

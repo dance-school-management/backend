@@ -7,7 +7,7 @@ async function main() {
   const users = generateFakeProfiles(61, 70, Role.STUDENT).concat(
     generateFakeProfiles(11, 19, Role.INSTRUCTOR),
     generateFakeProfiles(1, 9, Role.COORDINATOR),
-    generateFakeProfiles(2000, 2, Role.ADMINISTRATOR),
+    generateFakeProfiles(2000, 2, Role.admin),
   );
 
   for (const user of users) {

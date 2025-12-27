@@ -22,9 +22,6 @@
  *           type: number
  *           format: decimal
  *           example: 199.99
- *         currency:
- *           type: string
- *           example: "USD"
  *         danceCategoryId:
  *           type: integer
  *           nullable: true
@@ -40,10 +37,6 @@
  *             - PRIVATE_CLASS
  *             - THEME_PARTY
  *           example: "GROUP_CLASS"
- *         scheduleTileColor:
- *           type: string
- *           nullable: true
- *           example: "#FF5733"
  */
 
 /**
@@ -56,7 +49,6 @@
  *         - name
  *         - description
  *         - price
- *         - currency
  *         - classType
  *         - isConfirmation
  *       properties:
@@ -78,10 +70,6 @@
  *           format: float
  *           description: Price of the class template
  *           example: 199.99
- *         currency:
- *           type: string
- *           description: Currency code (ISO 4217 format)
- *           example: "USD"
  *         danceCategoryId:
  *           type: integer
  *           nullable: true
@@ -100,11 +88,6 @@
  *             - THEME_PARTY
  *           description: Type of the class
  *           example: "GROUP_CLASS"
- *         scheduleTileColor:
- *           type: string
- *           nullable: true
- *           description: Optional hex color code for the schedule tile
- *           example: "#FF5733"
  *         isConfirmation:
  *           type: boolean
  *           description: Set to true to skip name duplication check
@@ -182,16 +165,7 @@
  *           schema:
  *             type: object
  *             required:
- *               - name
- *               - description
- *               - price
- *               - currency
- *               - classType
  *             properties:
- *               courseId:
- *                 type: integer
- *                 nullable: true
- *                 example: 2
  *               name:
  *                 type: string
  *                 example: "Advanced Salsa"
@@ -202,9 +176,6 @@
  *                 type: number
  *                 format: decimal
  *                 example: 299.99
- *               currency:
- *                 type: string
- *                 example: "USD"
  *               danceCategoryId:
  *                 type: integer
  *                 nullable: true
@@ -220,10 +191,6 @@
  *                   - PRIVATE_CLASS
  *                   - THEME_PARTY
  *                 example: "GROUP_CLASS"
- *               scheduleTileColor:
- *                 type: string
- *                 nullable: true
- *                 example: "#FF5733"
  *     responses:
  *       "200":
  *         description: Class template updated successfully
@@ -338,17 +305,10 @@
  *           type: number
  *           format: decimal
  *           example: 200.00
- *         currency:
- *           type: string
- *           example: "PLN"
  *         classType:
  *           type: string
  *           enum: [GROUP_CLASS, PRIVATE_CLASS, THEME_PARTY]
  *           example: "GROUP_CLASS"
- *         scheduleTileColor:
- *           type: string
- *           nullable: true
- *           example: "#FFAA00"
  *         danceCategory:
  *           $ref: "#/components/schemas/DanceCategory"
  *         advancementLevel:
@@ -394,9 +354,6 @@
  *         id:
  *           type: integer
  *           example: 10
- *         groupNumber:
- *           type: integer
- *           example: 2
  *         startDate:
  *           type: string
  *           format: date-time

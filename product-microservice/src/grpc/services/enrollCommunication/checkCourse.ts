@@ -7,6 +7,7 @@ import {
 import prisma from "../../../utils/prisma";
 import { UniversalError } from "../../../errors/UniversalError";
 import { StatusCodes } from "http-status-codes";
+import { CourseStatus } from "../../../../generated/client";
 
 const DAYS_BEFORE_COURSE_START_TO_BLOCK_BUYING_TICKETS = 3;
 
@@ -15,12 +16,23 @@ export async function checkCourse(
   callback: sendUnaryData<CheckCourseResponse>,
 ): Promise<void> {
   const courseId = call.request.getCourseId();
-  const groupNumber = call.request.getGroupNumber();
-  // const courseObj = await prisma.course.findFirst({
-  //   where: {
-  //     id: courseId,
-  //   },
-  // });
+  const courseObj = await prisma.course.findFirst({
+    where: {
+      id: courseId,
+    },
+  });
+
+  if (!courseObj) {
+    throw new UniversalError(StatusCodes.CONFLICT, "Course not found", []);
+  }
+
+  if (courseObj.courseStatus === CourseStatus.HIDDEN) {
+    throw new UniversalError(
+      StatusCodes.CONFLICT,
+      "This course is hidden",
+      [],
+    );
+  }
 
   const courseClasses = await prisma.class.findMany({
     where: {
@@ -29,7 +41,7 @@ export async function checkCourse(
       },
     },
   });
-  const firstClassStartDate = courseClasses.filter((cc) => cc.groupNumber === groupNumber).reduce(
+  const firstClassStartDate = courseClasses.reduce(
     (acc, cur) => (cur.startDate < acc ? cur.startDate : acc),
     // Biggest date possible
     new Date(8640000000000000),
@@ -60,9 +72,6 @@ export async function checkCourse(
           id: true,
           peopleLimit: true,
         },
-        where: {
-          groupNumber,
-        },
       },
     },
   });
@@ -76,24 +85,6 @@ export async function checkCourse(
     callback({ code: status.NOT_FOUND, details: JSON.stringify(err) });
     return;
   }
-  if (classesWithPeopleLimites.length === 0) {
-    const err = new UniversalError(
-      StatusCodes.NOT_FOUND,
-      `This course with id ${courseId} doesn't have class_templates with group number ${groupNumber}`,
-      [],
-    );
-    callback({ code: status.NOT_FOUND, details: JSON.stringify(err) });
-  }
-  // classesWithPeopleLimites.forEach((classWithPeopleLimit) => {
-  //   if (classWithPeopleLimit.class.length !== 1) {
-  //     const err = new UniversalError(
-  //       StatusCodes.NOT_FOUND,
-  //       `This course with id ${courseId} doesn't have complete set of classes with group number ${groupNumber}`,
-  //       [],
-  //     );
-  //     callback({ code: status.NOT_FOUND, details: JSON.stringify(err) });
-  //   }
-  // });
 
   const res = new CheckCourseResponse().setPeopleLimitsList(
     classesWithPeopleLimites

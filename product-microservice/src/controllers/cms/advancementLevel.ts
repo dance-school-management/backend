@@ -4,6 +4,7 @@ import { StatusCodes } from "http-status-codes";
 import prisma from "../../utils/prisma";
 import { checkValidations } from "../../utils/errorHelpers";
 import { AdvancementLevel } from "../../../generated/client";
+import { UniversalError } from "../../errors/UniversalError";
 
 export async function createAdvancementLevel(
   req: Request<object, object, AdvancementLevel>,
@@ -48,11 +49,33 @@ export async function deleteAdvancementLevel(
   next: NextFunction,
 ) {
   const id = parseInt(req.params.id);
+
+  const courseUsingIt = await prisma.course.findFirst({
+    where: {
+      advancementLevelId: id,
+    },
+  });
+
+  const classTemplateUsingIt = await prisma.classTemplate.findFirst({
+    where: {
+      advancementLevelId: id,
+    },
+  });
+
+  if (courseUsingIt || classTemplateUsingIt) {
+    throw new UniversalError(
+      StatusCodes.CONFLICT,
+      "This advancement level is in use",
+      [],
+    );
+  }
+
   await prisma.advancementLevel.delete({
     where: {
       id,
     },
   });
+
   res.status(StatusCodes.NO_CONTENT).send();
 }
 

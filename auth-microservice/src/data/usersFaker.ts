@@ -1,6 +1,5 @@
 import { faker } from "@faker-js/faker";
-import { Role } from "../../generated/client";
-
+type Role = "INSTRUCTOR" | "COORDINATOR" | "STUDENT" | "admin";
 interface User {
   id: string;
   email: string;

@@ -38,22 +38,17 @@
  *         advancementLevelId:
  *           type: integer
  *           description: New advancement level ID (optional)
- *         customPrice:
+ *         price:
  *           type: number
  *           format: float
  *           description: New price (optional)
- *         courseStatus:
- *           type: string
- *           description: New course status (optional)
- *           enum: [HIDDEN, SALE, ONGOING, FINISHED]
  *       example:
  *         id: 1
  *         name: "Advanced Tango"
  *         description: "Updated course for advanced learners"
  *         danceCategoryId: 2
  *         advancementLevelId: 3
- *         customPrice: 1800
- *         courseStatus: "ONGOING"
+ *         price: 300
  */
 
 /**
@@ -308,6 +303,8 @@
  *                 customPrice:
  *                   type: number
  *                   nullable: true
+ *                 allClassesPrice:
+ *                   type: number
  *                 danceCategory:
  *                   type: object
  *                   nullable: true
@@ -346,8 +343,6 @@
  *                           properties:
  *                             id:
  *                               type: integer
- *                             groupNumber:
- *                               type: integer
  *                             startDate:
  *                               type: string
  *                               format: date-time
@@ -379,4 +374,101 @@
  *                 message:
  *                   type: string
  *                   example: Invalid course ID
+ */
+
+/**
+ * @swagger
+ * /cms/course/{id}/publish:
+ *   patch:
+ *     summary: Publish a course or get its start/end dates before publishing
+ *     description: >
+ *       This endpoint works in two modes:
+ *         
+ *       - **Preview mode (`isConfirmation=false`)** – Returns the start and end date of the course.
+ *       - **Publish mode (`isConfirmation=true`)** – Publishes the course and sets all its classes to NORMAL.
+ *
+ *     tags:
+ *       - cms - Courses
+ *
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID of the course to publish
+ *
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               isConfirmation:
+ *                 type: boolean
+ *                 description: >
+ *                   If false – only preview start/end dates.  
+ *                   If true – publish the course.
+ *             required:
+ *               - isConfirmation
+ *           example:
+ *             isConfirmation: false
+ *
+ *     responses:
+ *       200:
+ *         description: OK
+ *         content:
+ *           application/json:
+ *             schema:
+ *               oneOf:
+ *                 - type: object
+ *                   properties:
+ *                     courseStartDates:
+ *                       type: array
+ *                       description: List of group start dates
+ *                       items:
+ *                         type: object
+ *                         properties:
+ *                           courseStartDate:
+ *                             type: string
+ *                             format: date-time
+ *                     courseEndDates:
+ *                       type: array
+ *                       description: List of group end dates
+ *                       items:
+ *                         type: object
+ *                         properties:
+ *                           courseEndDate:
+ *                             type: string
+ *                             format: date-time
+ *
+ *                 - type: object
+ *                   properties:
+ *                     message:
+ *                       type: string
+ *                       example: "Course successfully published"
+ *
+ *       409:
+ *         description: Conflict — course not found, no classes, or no price.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *             examples:
+ *               courseNotFound:
+ *                 summary: Course not found
+ *                 value:
+ *                   message: "Course not found"
+ *               noClasses:
+ *                 summary: Course has no classes
+ *                 value:
+ *                   message: "This course doesn't have any classes associated with it"
+ *               noPrice:
+ *                 summary: Course has no price
+ *                 value:
+ *                   message: "This course doesn't have a price associated with it"
  */

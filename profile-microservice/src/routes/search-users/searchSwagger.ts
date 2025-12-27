@@ -4,34 +4,19 @@
  *   get:
  *     summary: Search users by name, surname, email, or phone
  *     description: >
- *       Returns a list of users whose profile fields match the provided query parameters.
- *       Each query parameter is optional and uses partial matching.
+ *       Returns a list of users with STUDENT role whose profile fields match the provided query parameter.
+ *       The query parameter is optional and uses partial matching.
  *     tags:
  *       - users
  *     parameters:
  *       - in: query
- *         name: nameQuery
+ *         name: q
  *         schema:
  *           type: string
- *         description: Part of the user's name to search for.
- *       - in: query
- *         name: surnameQuery
- *         schema:
- *           type: string
- *         description: Part of the user's surname to search for.
- *       - in: query
- *         name: emailQuery
- *         schema:
- *           type: string
- *         description: Part of the user's email to search for.
- *       - in: query
- *         name: phoneQuery
- *         schema:
- *           type: string
- *         description: Part of the user's phone number to search for.
+ *         description: Part of the user's name, surname, email, or phone to search for.
  *     responses:
  *       200:
- *         description: List of users matching the search criteria.
+ *         description: List of up to 5 students matching the search criteria.
  *         content:
  *           application/json:
  *             schema:

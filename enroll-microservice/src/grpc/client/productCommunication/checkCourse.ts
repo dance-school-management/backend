@@ -5,13 +5,11 @@ import { enrollToProductClient } from "../../../utils/grpcClients";
 import logger from "../../../utils/winston";
 
 export async function checkCourse(
-  courseId: number,
-  groupNumber: number,
+  courseId: number
 ): Promise<CheckCourseResponse.AsObject> {
   return new Promise((resolve, reject) => {
     const request = new CheckCourseRequest()
       .setCourseId(courseId)
-      .setGroupNumber(groupNumber);
     enrollToProductClient.checkCourse(request, (err, response) => {
       if (err) {
         let unErr: UniversalError;

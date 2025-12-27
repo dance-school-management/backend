@@ -2,7 +2,6 @@ import { Request, Response } from "express";
 import { getMostPopularCoursesIds } from "../../grpc/client/enrollCommunication/getMostPopularCoursesIds";
 import { StatusCodes } from "http-status-codes";
 import prisma from "../../utils/prisma";
-import { getCoursesPrices } from "../../utils/helpers";
 
 export async function getMostPopularCourses(
   req: Request<
@@ -59,12 +58,8 @@ export async function getMostPopularCourses(
     mostPopularCourses.find((mpc) => mpc.id === mpci),
   );
 
-  const coursesPrices = await getCoursesPrices(mostPopularCoursesIds);
-
   const result = mostPopularCoursesSorted.map((mpcs) => ({
     ...mpcs,
-    coursePrice: coursesPrices.find((cp) => cp.courseId === mpcs?.id)?.price,
-    customPrice: undefined,
     instructors: mostPopularCoursesIdsWithInstructors.find(
       (mpciwi) => mpciwi.courseId === mpcs?.id,
     )?.instructorsDataList,

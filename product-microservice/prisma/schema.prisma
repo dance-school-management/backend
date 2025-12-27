@@ -30,7 +30,7 @@ model Course {
   advancementLevel   AdvancementLevel? @relation(fields: [advancementLevelId], references: [id])
   advancementLevelId Int?
   courseStatus       CourseStatus
-  customPrice        Decimal?
+  price              Decimal?          @db.Decimal(precision: 10, scale: 2)
   classTemplate      ClassTemplate[]
 }
 
@@ -53,15 +53,15 @@ model AdvancementLevel {
 
 model Class {
   id              Int           @id() @default(autoincrement())
-  classTemplate   ClassTemplate @relation(fields: [classTemplateId], references: [id])
+  classTemplate   ClassTemplate @relation(fields: [classTemplateId], references: [id], onDelete: Cascade)
   classTemplateId Int
-  groupNumber     Int
   startDate       DateTime
   endDate         DateTime
   peopleLimit     Int
   classRoom       ClassRoom     @relation(fields: [classRoomId], references: [id])
   classRoomId     Int
   classStatus     ClassStatus
+  createdBy       String?
 }
 
 model ClassRoom {
@@ -73,20 +73,19 @@ model ClassRoom {
 }
 
 model ClassTemplate {
-  id                  Int                 @id() @default(autoincrement())
-  class               Class[]
-  course              Course?             @relation(fields: [courseId], references: [id])
-  courseId            Int?
-  name                String
-  description         String
-  price               Decimal             @db.Decimal(precision: 10, scale: 2)
-  currency            String
-  danceCategory       DanceCategory?      @relation(fields: [danceCategoryId], references: [id])
-  danceCategoryId     Int?
-  advancementLevel    AdvancementLevel?   @relation(fields: [advancementLevelId], references: [id])
-  advancementLevelId  Int?
-  classType           ClassType
-  scheduleTileColor   String?
+  id                 Int               @id() @default(autoincrement())
+  class              Class[]           
+  course             Course?           @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  courseId           Int?
+  name               String
+  description        String
+  price              Decimal           @db.Decimal(precision: 10, scale: 2)
+  danceCategory      DanceCategory?    @relation(fields: [danceCategoryId], references: [id])
+  danceCategoryId    Int?
+  advancementLevel   AdvancementLevel? @relation(fields: [advancementLevelId], references: [id])
+  advancementLevelId Int?
+  classType          ClassType
+  createdBy          String?
 }
 
 enum ClassType {
