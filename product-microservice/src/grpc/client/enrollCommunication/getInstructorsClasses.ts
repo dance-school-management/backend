@@ -11,7 +11,6 @@ export async function getInstructorsClasses(
       instructorIds,
     );
     productWithEnrollClient.getInstructorsClasses(request, (err, response) => {
-      console.log(err);
       if (err) {
         let unErr: UniversalError;
         try {

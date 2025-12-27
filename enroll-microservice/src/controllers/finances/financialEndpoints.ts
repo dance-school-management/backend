@@ -243,16 +243,18 @@ export async function adminMetricsCoursesTop(
   const coursesDetails = (await getCoursesDetails(uniqueCoursesIds))
     .coursesDetailsList;
 
-  const items = coursesGrouped.map((cg) => {
-    const courseDetails = coursesDetails.find(
-      (c) => c.courseId === cg.courseId,
-    );
-    return {
-      courseId: cg.courseId,
-      name: courseDetails?.name,
-      revenue: Number(cg._sum.cost?.toFixed(2)),
-    };
-  });
+  const items = coursesGrouped
+    .map((cg) => {
+      const courseDetails = coursesDetails.find(
+        (c) => c.courseId === cg.courseId,
+      );
+      return {
+        courseId: cg.courseId,
+        name: courseDetails?.name,
+        revenue: Number(cg._sum.cost?.toFixed(2)),
+      };
+    })
+    .sort((course1, course2) => course2.revenue - course1.revenue);
 
   res.status(StatusCodes.OK).json({
     period: {

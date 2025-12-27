@@ -11,14 +11,12 @@ export async function enrollInstructorsInClass(
   instructorIds: string[],
 ): Promise<EnrollInstructorsInClassResponse.AsObject> {
   return new Promise((resolve, reject) => {
-    console.log(instructorIds);
     const request = new EnrollInstructorsInClassRequest()
       .setInstructorIdsList(instructorIds)
       .setClassId(classId);
     productWithEnrollClient.enrollInstructorsInClass(
       request,
       (err: any, response: any) => {
-        console.log(err);
         if (err) {
           let unErr: UniversalError;
           try {

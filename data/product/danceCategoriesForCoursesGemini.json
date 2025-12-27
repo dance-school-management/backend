@@ -1,0 +1,122 @@
+[
+  {
+    "id": 20,
+    "name": "Salsa 2",
+    "description": "Salsa is a vibrant and energetic Latin dance originating from Cuban and Puerto Rican influences, characterized by its quick footwork, spins, and close partner connection.",
+    "photoPath": "no photo path"
+  },
+  {
+    "id": 21,
+    "name": "Ballet 2",
+    "description": "Ballet is a classical dance form characterized by its precise, graceful, and ethereal movements, emphasizing technique, posture, and elaborate storytelling through movement.",
+    "photoPath": "no photo path"
+  },
+  {
+    "id": 22,
+    "name": "Hip-Hop 2",
+    "description": "Hip-Hop dance is a dynamic and expressive street dance style characterized by its rhythmic bounces, isolations, breaking, popping, and locking, often performed to hip-hop music.",
+    "photoPath": "no photo path"
+  },
+  {
+    "id": 23,
+    "name": "Argentine Tango 2",
+    "description": "Argentine Tango is an improvisational social dance from Argentina, known for its close embrace, intricate leg work, and deep emotional connection between partners, emphasizing musicality and subtle communication.",
+    "photoPath": "no photo path"
+  },
+  {
+    "id": 24,
+    "name": "Contemporary Dance 2",
+    "description": "Contemporary dance is an expressive dance form that combines elements of several dance genres including modern, jazz, lyrical, and classical ballet, focusing on versatility, improvisation, and personal expression.",
+    "photoPath": "no photo path"
+  },
+  {
+    "id": 25,
+    "name": "Tap Dance 2",
+    "description": "Tap dance is a form of dance characterized by a percussive use of the feet, creating rhythms and sounds with small metal plates on the shoes, emphasizing musicality and intricate footwork.",
+    "photoPath": "no photo path"
+  },
+  {
+    "id": 26,
+    "name": "Jazz Dance 2",
+    "description": "Jazz dance is a dynamic and energetic dance style that emerged from African-American vernacular dances, characterized by its syncopated rhythms, strong isolations, turns, leaps, and expressive movements.",
+    "photoPath": "no photo path"
+  },
+  {
+    "id": 27,
+    "name": "Bellydance 2",
+    "description": "Bellydance is an expressive and ancient dance form originating from the Middle East, characterized by its fluid, undulating movements of the torso, hips, and arms, emphasizing isolations and often performed with intricate costuming.",
+    "photoPath": "no photo path"
+  },
+  {
+    "id": 28,
+    "name": "Bollywood Dance 2",
+    "description": "Bollywood dance is a fusion dance style that combines elements of Indian classical dance, folk dance, and Western contemporary styles, characterized by its high energy, elaborate choreography, and storytelling.",
+    "photoPath": "no photo path"
+  },
+  {
+    "id": 29,
+    "name": "Ballroom Dance 2",
+    "description": "Ballroom dance encompasses a set of partner dances, including Waltz, Foxtrot, Tango, and Rumba, characterized by their elegance, structured movements, and social interaction, often performed in a formal setting.",
+    "photoPath": "no photo path"
+  },
+  {
+    "id": 30,
+    "name": "African Dance 2",
+    "description": "African dance is a diverse range of dance forms from Africa, characterized by polyrhythmic movements, groundedness, improvisation, and communal participation, often performed with drumming and storytelling.",
+    "photoPath": "no photo path"
+  },
+  {
+    "id": 31,
+    "name": "Street Jazz 2",
+    "description": "Street Jazz is a commercial dance style that blends the technicality of jazz dance with the urban coolness and grooves of hip-hop, often seen in music videos and stage performances.",
+    "photoPath": "no photo path"
+  },
+  {
+    "id": 32,
+    "name": "Lyrical Dance 2",
+    "description": "Lyrical dance is a fusion of ballet and jazz, emphasizing emotional expression, fluid movements, and storytelling through choreography, often set to music with lyrics.",
+    "photoPath": "no photo path"
+  },
+  {
+    "id": 33,
+    "name": "Lindy Hop 2",
+    "description": "Lindy Hop is an energetic and athletic partner dance that originated in Harlem, New York, in the 1920s and 30s, characterized by its improvisational nature, swing outs, and joyful movements.",
+    "photoPath": "no photo path"
+  },
+  {
+    "id": 34,
+    "name": "Flamenco 2",
+    "description": "Flamenco is a passionate and expressive Spanish art form consisting of cante (song), toque (guitar playing), and baile (dance), characterized by intricate footwork, graceful arm movements, and deep emotional intensity.",
+    "photoPath": "no photo path"
+  },
+  {
+    "id": 35,
+    "name": "Breaking (B-boying/B-girling) 2",
+    "description": "Breaking, also known as B-boying or B-girling, is an athletic street dance style characterized by four main elements: top rock, down rock (footwork), freezes, and power moves, often performed to breakbeats.",
+    "photoPath": "no photo path"
+  },
+  {
+    "id": 36,
+    "name": "K-Pop Dance 2",
+    "description": "K-Pop dance is a highly choreographed and energetic dance style performed to Korean pop music, characterized by its sharp movements, intricate formations, and synchronized group performances.",
+    "photoPath": "no photo path"
+  },
+  {
+    "id": 37,
+    "name": "Afrobeat Dance 2",
+    "description": "Afrobeat dance is a vibrant and energetic dance style that originated from West Africa, characterized by its rhythmic body isolations, grounded movements, and connection to Afrobeat music.",
+    "photoPath": "no photo path"
+  },
+  {
+    "id": 38,
+    "name": "Samba 2",
+    "description": "Samba is a lively and rhythmic Brazilian dance and musical genre, characterized by its fast footwork, hip movements, and celebratory nature, often associated with Brazilian Carnival.",
+    "photoPath": "no photo path"
+  },
+  {
+    "id": 39,
+    "name": "Dancehall 2",
+    "description": "Dancehall is an energetic and expressive Jamaican street dance style, characterized by its distinct grooves, isolations, and cultural significance, often performed to Dancehall music.",
+    "photoPath": "no photo path"
+  }
+]

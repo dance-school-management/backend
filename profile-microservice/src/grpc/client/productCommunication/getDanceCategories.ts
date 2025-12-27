@@ -13,7 +13,6 @@ export async function getDanceCategories(
       danceCategoriesIds,
     );
     profileToProductClient.getDanceCategories(request, (err, response) => {
-      console.log(err);
       if (err) {
         let unErr: UniversalError;
         try {

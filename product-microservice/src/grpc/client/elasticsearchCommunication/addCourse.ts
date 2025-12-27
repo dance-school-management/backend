@@ -40,7 +40,6 @@ export async function addCourse(
     productWithElasticsearchClient.addCourse(
       request,
       (err: any, response: any) => {
-        console.log(err);
         if (err) {
           let unErr: UniversalError;
           try {
