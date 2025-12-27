@@ -7,6 +7,8 @@ import { checkValidations } from "../../utils/errorHelpers";
 import { Warning } from "../../errors/Warning";
 import { ClassType } from "../../../generated/client";
 import { UniversalError } from "../../errors/UniversalError";
+import { ClassTemplateDocument, esClient } from "../../elasticsearch/client";
+import { embed } from "../../grpc/client/aiCommunication/embed";
 import { ClassStatus } from "../../../generated/client";
 import { CourseStatus } from "../../../generated/client";
 
@@ -84,6 +86,47 @@ export async function createClassTemplate(
       classType,
     },
   });
+
+  try {
+    let danceCategory = null;
+    if (danceCategoryId)
+      danceCategory = await prisma.danceCategory.findFirst({
+        where: {
+          id: danceCategoryId,
+        },
+      });
+    let advancementLevel = null;
+    if (advancementLevelId)
+      advancementLevel = await prisma.advancementLevel.findFirst({
+        where: {
+          id: advancementLevelId,
+        },
+      });
+
+    const doc: ClassTemplateDocument = {
+      name,
+      description,
+      danceCategory,
+      advancementLevel,
+      price: price,
+      descriptionEmbedded: (await embed(description, false)).embeddingList,
+    };
+
+    esClient
+      .index({
+        index: "class_templates",
+        id: String(createdClassTemplate.id),
+        document: doc,
+      })
+      .catch((err) =>
+        console.log(
+          "Failed to replicate/edit course to/in elasticsearch: ",
+          err,
+        ),
+      );
+  } catch (err) {
+    console.log("Failed to replicate class template to elasticsearch: ", err);
+  }
 
   res.status(StatusCodes.CREATED).json(createdClassTemplate);
 }
@@ -192,6 +235,47 @@ export async function editClassTemplate(
       ...(!areSomeClassesPublished && classType !== undefined && { classType }),
     },
   });
+
+  try {
+    let danceCategory = null;
+    if (danceCategoryId)
+      danceCategory = await prisma.danceCategory.findFirst({
+        where: {
+          id: danceCategoryId,
+        },
+      });
+    let advancementLevel = null;
+    if (advancementLevelId)
+      advancementLevel = await prisma.advancementLevel.findFirst({
+        where: {
+          id: advancementLevelId,
+        },
+      });
+
+    const editedDoc: ClassTemplateDocument = {
+      name,
+      description,
+      danceCategory,
+      advancementLevel,
+      descriptionEmbedded: (await embed(description, false)).embeddingList,
+      price: price,
+    };
+
+    esClient
+      .index({
+        index: "class_templates",
+        id: String(id),
+        document: editedDoc,
+      })
+      .catch((err) =>
+        console.log(
+          "Failed to replicate/edit course to/in elasticsearch: ",
+          err,
+        ),
+      );
+  } catch (err) {
+    console.log("Failed to edit class template in elasticsearch: ", err);
+  }
 
   res.status(StatusCodes.OK).json(editedClassTemplate);
 }

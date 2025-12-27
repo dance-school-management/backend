@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # compare-envs.sh
-# Compares .env.development with .env.development.example across all microservices under the current directory.
+# Compares .env.development and .env.development.local with their respective .example files
+# across all microservices under the current directory.
 # Run from path: backend/
 cd ..
 set -u
@@ -48,9 +49,10 @@ compare_pair() {
   local svc="$1"
   local example="$2"
   local dev="$3"
+  local label="$4"
 
   echo
-  echo "${BOLD}${CYAN}▶ ${svc}${RESET}"
+  echo "${BOLD}${CYAN}▶ ${svc}${RESET} (${label})"
   echo "  example:     ${example}"
   echo "  development: ${dev}"
 
@@ -79,14 +81,14 @@ compare_pair() {
   rm -f "$tmp_ex" "$tmp_dev"
 
   if [[ -n "$missing_in_dev" ]]; then
-    echo "  ${RED}✖ Missing in .env.development (present in .example):${RESET}"
+    echo "  ${RED}✖ Missing in ${dev} (present in example):${RESET}"
     printf '    - %s\n' $missing_in_dev
   else
     echo "  ${GREEN}✔ Missing keys: 0${RESET}"
   fi
 
   if [[ -n "$extra_in_dev" ]]; then
-    echo "  ${YELLOW}• Extra keys in .env.development (not in .example):${RESET}"
+    echo "  ${YELLOW}• Extra keys in ${dev} (not in example):${RESET}"
     printf '    - %s\n' $extra_in_dev
   else
     echo "  ${GREEN}✔ Extra keys: 0${RESET}"
@@ -122,16 +124,25 @@ main() {
   # – criterion is presence of .env.* files
   for dir in "$base"/*/ ; do
     [[ -d "$dir" ]] || continue
+
     ex_file="${dir}.env.development.example"
     dev_file="${dir}.env.development"
+    ex_file_local="${dir}.env.development.local.example"
+    dev_file_local="${dir}.env.development.local"
+
     if [[ -f "$ex_file" || -f "$dev_file" ]]; then
       found_any=1
-      compare_pair "$(basename "$dir")" "$ex_file" "$dev_file"
+      compare_pair "$(basename "$dir")" "$ex_file" "$dev_file" ".env.development"
+    fi
+
+    if [[ -f "$ex_file_local" || -f "$dev_file_local" ]]; then
+      found_any=1
+      compare_pair "$(basename "$dir")" "$ex_file_local" "$dev_file_local" ".env.development.local"
     fi
   done
 
   if [[ $found_any -eq 0 ]]; then
-    echo "${YELLOW}No .env.development(.example) pairs found in subdirectories.${RESET}"
+    echo "${YELLOW}No .env.development(.example) or .env.development.local(.example) pairs found in subdirectories.${RESET}"
     exit 1
   fi
 }

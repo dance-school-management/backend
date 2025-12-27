@@ -5,7 +5,7 @@ import src.proto.calculator_pb2_grpc as calculator_pb2_grpc
 import src.proto.ProductToElasticsearch_pb2_grpc as ProductToElasticsearch_pb2_grpc
 import src.grpc_service.serverImpl as serverImpl
 
-PORT = 50057
+PORT = 50058
 
 class CalculatorServicer(calculator_pb2_grpc.CalculatorServicer):
   def Add(self, request, context):
