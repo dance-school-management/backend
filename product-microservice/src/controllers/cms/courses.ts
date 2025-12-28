@@ -7,6 +7,9 @@ import { validationResult } from "express-validator";
 import { UniversalError } from "../../errors/UniversalError";
 import { Warning } from "../../errors/Warning";
 import { ClassType } from "../../../generated/client";
+import { addCourse } from "../../grpc/client/elasticsearchCommunication/addCourse";
+import { CourseDocument, esClient } from "../../elasticsearch/client";
+import { embed } from "../../grpc/client/aiCommunication/embed";
 import {
   getCoursesAllClassesPrice,
   getCoursesStartAndEndDates,
@@ -20,7 +23,7 @@ interface GetCourseFilter {
 }
 
 export async function getCourses(
-  req: Request<{}, {}, { filter: GetCourseFilter; search_query: string; }>,
+  req: Request<{}, {}, { filter: GetCourseFilter; search_query: string }>,
   res: Response,
 ) {
   const { filter, search_query } = req.body;
@@ -68,7 +71,7 @@ export async function getCourses(
 }
 
 export async function createCourse(
-  req: Request<{}, {}, { name: string; isConfirmation: boolean; }>,
+  req: Request<{}, {}, { name: string; isConfirmation: boolean }>,
   res: Response,
 ) {
   checkValidations(validationResult(req));
@@ -174,16 +177,40 @@ export async function editCourse(
       ...(name !== undefined && { name }),
       ...(description !== undefined && { description }),
       ...(!isPublished && danceCategoryId !== undefined && { danceCategoryId }),
-      ...(!isPublished && advancementLevelId !== undefined && { advancementLevelId }),
+      ...(!isPublished &&
+        advancementLevelId !== undefined && { advancementLevelId }),
       ...(!isPublished && price !== undefined && { price }),
     },
   });
+
+  if (isPublished) {
+    try {
+      const doc: CourseDocument = {
+        ...(name !== undefined && { name }),
+        ...(description !== undefined && { description }),
+        ...(description !== undefined && {
+          descriptionEmbedded: (await embed(description, false)).embeddingList,
+        }),
+      };
+
+      esClient
+        .update({ index: "courses", id: String(id), doc: doc })
+        .catch((err) =>
+          console.log(
+            "Failed to replicate/edit course to/in elasticsearch: ",
+            err,
+          ),
+        );
+    } catch (err) {
+      console.log("Failed to replicate/edit course to/in elasticsearch: ", err);
+    }
+  }
 
   res.status(StatusCodes.OK).json(editedCourse);
 }
 
 export async function publishCourse(
-  req: Request<{ id: string; }, {}, { isConfirmation: boolean; }>,
+  req: Request<{ id: string }, {}, { isConfirmation: boolean }>,
   res: Response,
 ) {
   const id = Number(req.params.id);
@@ -192,6 +219,10 @@ export async function publishCourse(
   const theCourse = await prisma.course.findFirst({
     where: {
       id,
+    },
+    include: {
+      danceCategory: true,
+      advancementLevel: true,
     },
   });
 
@@ -231,8 +262,9 @@ export async function publishCourse(
     );
   }
 
+  const courseStartAndEndDate = (await getCoursesStartAndEndDates([id]))[0];
+
   if (!isConfirmation) {
-    const courseStartAndEndDate = (await getCoursesStartAndEndDates([id]))[0];
     res.status(StatusCodes.OK).json(courseStartAndEndDate);
     return;
   }
@@ -258,11 +290,29 @@ export async function publishCourse(
     });
   });
 
+  const document: CourseDocument = {
+    name: theCourse.name,
+    description: theCourse.description,
+    danceCategory: theCourse.danceCategory,
+    advancementLevel: theCourse.advancementLevel,
+    descriptionEmbedded: (await embed(theCourse.description, false))
+      .embeddingList,
+    startDate: courseStartAndEndDate.courseStartDate || undefined,
+    endDate: courseStartAndEndDate.courseEndDate || undefined,
+    price: Number(theCourse.price.toFixed(2)),
+  };
+
+  esClient
+    .index({ index: "courses", id: String(id), document: document })
+    .catch((err) =>
+      console.log("Failed to replicate/edit course to/in elasticsearch: ", err),
+    );
+
   res.status(StatusCodes.OK).json({ message: "Course successfully published" });
 }
 
 export async function getCourseDetails(
-  req: Request<{ id: string; }, {}, {}>,
+  req: Request<{ id: string }, {}, {}>,
   res: Response,
 ) {
   const id = parseInt(req.params.id);
@@ -285,13 +335,14 @@ export async function getCourseDetails(
   if (!theCourse)
     throw new UniversalError(StatusCodes.NOT_FOUND, "Course not found", []);
 
-  const allClassesPrice = (await getCoursesAllClassesPrice([id]))[0]?.price || 0;
+  const allClassesPrice =
+    (await getCoursesAllClassesPrice([id]))[0]?.price || 0;
 
   res.status(StatusCodes.OK).json({ ...theCourse, allClassesPrice });
 }
 
 export async function deleteCourse(
-  req: Request<{ id: string; }, {}, {}>,
+  req: Request<{ id: string }, {}, {}>,
   res: Response,
 ) {
   const id = parseInt(req.params.id);
@@ -318,6 +369,12 @@ export async function deleteCourse(
       id,
     },
   });
+
+  esClient
+    .delete({ index: "courses", id: String(id) })
+    .catch((err: any) =>
+      console.log("Failed to delete course from elasticsearch: ", err),
+    );
 
   res.status(StatusCodes.NO_CONTENT).send();
 }

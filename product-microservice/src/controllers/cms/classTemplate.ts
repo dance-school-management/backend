@@ -7,11 +7,13 @@ import { checkValidations } from "../../utils/errorHelpers";
 import { Warning } from "../../errors/Warning";
 import { ClassType } from "../../../generated/client";
 import { UniversalError } from "../../errors/UniversalError";
+import { ClassTemplateDocument, esClient } from "../../elasticsearch/client";
+import { embed } from "../../grpc/client/aiCommunication/embed";
 import { ClassStatus } from "../../../generated/client";
 import { CourseStatus } from "../../../generated/client";
 
 export async function createClassTemplate(
-  req: Request<{}, {}, ClassTemplate & { isConfirmation: boolean; }>,
+  req: Request<{}, {}, ClassTemplate & { isConfirmation: boolean }>,
   res: Response,
   next: NextFunction,
 ) {
@@ -84,6 +86,47 @@ export async function createClassTemplate(
       classType,
     },
   });
+
+  try {
+    let danceCategory = null;
+    if (danceCategoryId)
+      danceCategory = await prisma.danceCategory.findFirst({
+        where: {
+          id: danceCategoryId,
+        },
+      });
+    let advancementLevel = null;
+    if (advancementLevelId)
+      advancementLevel = await prisma.advancementLevel.findFirst({
+        where: {
+          id: advancementLevelId,
+        },
+      });
+
+    const doc: ClassTemplateDocument = {
+      name,
+      description,
+      danceCategory,
+      advancementLevel,
+      price: Number(price.toFixed(2)),
+      descriptionEmbedded: (await embed(description, false)).embeddingList,
+    };
+
+    esClient
+      .index({
+        index: "class_templates",
+        id: String(createdClassTemplate.id),
+        document: doc,
+      })
+      .catch((err: any) =>
+        console.log(
+          "Failed to replicate/edit class template to/in elasticsearch: ",
+          err,
+        ),
+      );
+  } catch (err) {
+    console.log("Failed to replicate class template to elasticsearch: ", err);
+  }
 
   res.status(StatusCodes.CREATED).json(createdClassTemplate);
 }
@@ -185,37 +228,64 @@ export async function editClassTemplate(
     data: {
       ...(name !== undefined && { name }),
       ...(description !== undefined && { description }),
-      ...(!areSomeClassesPublished && price !== undefined && { price }),
-      ...(!areSomeClassesPublished && danceCategoryId !== undefined && { danceCategoryId }),
-      ...(!areSomeClassesPublished &&
-        advancementLevelId !== undefined && { advancementLevelId }),
-      ...(!areSomeClassesPublished && classType !== undefined && { classType }),
+      ...(price !== undefined && { price }),
+      ...(danceCategoryId !== undefined && { danceCategoryId }),
+      ...(advancementLevelId !== undefined && { advancementLevelId })
     },
   });
+
+  try {
+    let danceCategory = null;
+    if (danceCategoryId)
+      danceCategory = await prisma.danceCategory.findFirst({
+        where: {
+          id: danceCategoryId,
+        },
+      });
+    let advancementLevel = null;
+    if (advancementLevelId)
+      advancementLevel = await prisma.advancementLevel.findFirst({
+        where: {
+          id: advancementLevelId,
+        },
+      });
+
+    const editedDoc: ClassTemplateDocument = {
+      ...(name !== undefined && { name }),
+      ...(description !== undefined && { description }),
+      ...(danceCategory && { danceCategory }),
+      ...(advancementLevel && { advancementLevel }),
+      ...(description !== undefined && {
+        descriptionEmbedded: (await embed(description, false)).embeddingList,
+      }),
+      ...(price && { price: price }),
+    };
+
+    esClient
+      .update({
+        index: "class_templates",
+        id: String(id),
+        doc: editedDoc,
+      })
+      .catch((err: any) =>
+        console.log(
+          "Failed to replicate/edit class template to/in elasticsearch: ",
+          err,
+        ),
+      );
+  } catch (err) {
+    console.log("Failed to edit class template in elasticsearch: ", err);
+  }
 
   res.status(StatusCodes.OK).json(editedClassTemplate);
 }
 
 export async function deleteClassTemplate(
-  req: Request<{ id: string; }, {}, {}>,
+  req: Request<{ id: string }, {}, {}>,
   res: Response,
   next: NextFunction,
 ) {
   const id = parseInt(req.params.id);
-
-  const classesUsingIt = await prisma.class.findMany({
-    where: {
-      classTemplateId: id,
-    },
-  });
-
-  if (classesUsingIt.some((c) => c.classStatus !== ClassStatus.HIDDEN)) {
-    throw new UniversalError(
-      StatusCodes.CONFLICT,
-      "There are existing classes using this class template",
-      [],
-    );
-  }
 
   const theClassTemplate = await prisma.classTemplate.findFirst({
     where: {
@@ -239,17 +309,37 @@ export async function deleteClassTemplate(
     );
   }
 
+  const classesUsingIt = await prisma.class.findMany({
+    where: {
+      classTemplateId: id,
+    },
+  });
+
+  if (classesUsingIt.some((c) => c.classStatus !== ClassStatus.HIDDEN)) {
+    throw new UniversalError(
+      StatusCodes.CONFLICT,
+      "There are existing classes using this class template",
+      [],
+    );
+  }
+
   await prisma.classTemplate.delete({
     where: {
       id: id,
     },
   });
 
+  esClient
+    .delete({ index: "class_templates", id: String(id) })
+    .catch((err: any) =>
+      console.log("Failed to delete class template from elasticsearch: ", err),
+    );
+
   res.status(StatusCodes.NO_CONTENT).send();
 }
 
 export async function getClassTemplate(
-  req: Request<{ id: string; }, {}, {}>,
+  req: Request<{ id: string }, {}, {}>,
   res: Response,
   next: NextFunction,
 ) {

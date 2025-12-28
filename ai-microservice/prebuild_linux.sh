@@ -1,0 +1,1 @@
+docker build -t adam523/es-microservice-prebuilt:0.1.0 -f prebuild_linux.Dockerfile .

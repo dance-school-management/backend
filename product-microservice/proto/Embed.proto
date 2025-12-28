@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package embed;
+
+service Embed {
+  rpc Embed (EmbedRequest) returns (EmbedResponse);
+}
+
+message EmbedRequest {
+  string text = 1;
+  bool is_query = 2;
+}
+
+message EmbedResponse {
+  repeated float embedding = 1;
+}
