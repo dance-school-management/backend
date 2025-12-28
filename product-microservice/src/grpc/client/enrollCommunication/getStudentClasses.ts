@@ -9,7 +9,6 @@ export async function getStudentClasses(
   return new Promise((resolve, reject) => {
     const request = new GetStudentClassesRequest().setStudentId(studentId);
     productWithEnrollClient.getStudentClasses(request, (err: any, response: any) => {
-      console.log(err);
       if (err) {
         let unErr: UniversalError;
         try {

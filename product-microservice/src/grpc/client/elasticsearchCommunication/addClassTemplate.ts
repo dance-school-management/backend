@@ -42,7 +42,6 @@ export async function addClassTemplate(
     productWithElasticsearchClient.addClassTemplate(
       request,
       (err: any, response: any) => {
-        console.log(err);
         if (err) {
           let unErr: UniversalError;
           try {

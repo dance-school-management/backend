@@ -9,7 +9,6 @@ export async function getClassesInstructors(
   return new Promise((resolve, reject) => {
     const request = new ClassIdsRequest().setClassIdsList(classIds);
     productWithEnrollClient.getClassesInstructors(request, (err: any, response: any) => {
-      console.log(err);
       if (err) {
         let unErr: UniversalError;
         try {

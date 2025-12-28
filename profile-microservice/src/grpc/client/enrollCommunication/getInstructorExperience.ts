@@ -16,7 +16,6 @@ export async function getInstructorExperience(
       .setDateFrom(dateFrom)
       .setDateTo(dateTo);
     profileToEnrollClient.getInstructorExperience(request, (err, response) => {
-      console.log(err);
       if (err) {
         let unErr: UniversalError;
         try {
