@@ -207,7 +207,7 @@ export async function searchProducts(
             }
           : null,
         advancementLevel: r.advancementLevelId ? r.advancementLevel : null,
-        price: r.price,
+        price: r.price ? Number(r.price.toFixed(2)) : null,
         startDate: r.courseStartDate,
         endDate: r.courseEndDate,
         courseStartDate: undefined,
