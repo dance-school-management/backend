@@ -1,6 +1,6 @@
 /**
  * @swagger
- * /advanced-search:
+ * /public/advanced-search:
  *   get:
  *     summary: Semantic + filtered search on class_templates or courses index
  *     description: >

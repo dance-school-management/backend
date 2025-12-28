@@ -1,6 +1,6 @@
 /**
  * @swagger
- * /search:
+ * /public/search:
  *   get:
  *     summary: Search for class templates or courses
  *     description: >
