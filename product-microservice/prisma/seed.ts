@@ -423,12 +423,7 @@ async function main() {
       );
     });
 
-    let price = 0;
-    if (!course.customPrice) {
-      classTemplatesClassesCountsMap.forEach((v, k) => {
-        price += v * classTemplatesJson.find((ct) => ct.id === k)!.price;
-      });
-    } else price = course.customPrice;
+    const price = course.customPrice;
 
     const classTemplatesIds = courseClassTemplates.map((ct) => ct.id);
 

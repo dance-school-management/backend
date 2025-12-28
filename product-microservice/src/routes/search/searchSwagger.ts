@@ -64,7 +64,7 @@
  *       - in: query
  *         name: startDateFrom
  *         required: false
- *         description: ISO date, filters classes with startDate >= this value.
+ *         description: ISO date, filters courses with startDate >= this value. In case of class template, this has no effect.
  *         schema:
  *           type: string
  *           format: date-time
@@ -72,7 +72,7 @@
  *       - in: query
  *         name: startDateTo
  *         required: false
- *         description: ISO date, filters classes with startDate <= this value.
+ *         description: ISO date, filters courses with startDate <= this value. In case of class template, this has no effect.
  *         schema:
  *           type: string
  *           format: date-time
@@ -80,7 +80,7 @@
  *       - in: query
  *         name: endDateFrom
  *         required: false
- *         description: ISO date, filters classes with endDate >= this value.
+ *         description: ISO date, filters courses with endDate >= this value. In case of class template, this has no effect.
  *         schema:
  *           type: string
  *           format: date-time
@@ -88,7 +88,7 @@
  *       - in: query
  *         name: endDateTo
  *         required: false
- *         description: ISO date, filters classes with endDate <= this value.
+ *         description: ISO date, filters courses with endDate <= this value. In case of class template, this has no effect.
  *         schema:
  *           type: string
  *           format: date-time

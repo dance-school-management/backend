@@ -70,7 +70,7 @@
  *           type: string
  *           format: date-time
  *         required: false
- *         description: Filter for classes/courses starting on or after this date.
+ *         description: Filter for courses starting on or after this date. In case of class template, this has no effect.
  *
  *       - in: query
  *         name: startDateTo
@@ -78,7 +78,7 @@
  *           type: string
  *           format: date-time
  *         required: false
- *         description: Filter for classes/courses starting on or before this date.
+ *         description: Filter for courses starting on or before this date. In case of class template, this has no effect.
  *
  *       - in: query
  *         name: endDateFrom
@@ -86,7 +86,7 @@
  *           type: string
  *           format: date-time
  *         required: false
- *         description: Filter for classes/courses ending on or after this date.
+ *         description: Filter for courses ending on or after this date. In case of class template, this has no effect.
  *
  *       - in: query
  *         name: endDateTo
@@ -94,7 +94,7 @@
  *           type: string
  *           format: date-time
  *         required: false
- *         description: Filter for classes/courses ending on or before this date.
+ *         description: Filter for courses ending on or before this date. In case of class template, this has no effect.
  *
  *       - in: query
  *         name: topK

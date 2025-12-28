@@ -13,7 +13,7 @@ import { ClassStatus } from "../../../generated/client";
 import { CourseStatus } from "../../../generated/client";
 
 export async function createClassTemplate(
-  req: Request<{}, {}, ClassTemplate & { isConfirmation: boolean; }>,
+  req: Request<{}, {}, ClassTemplate & { isConfirmation: boolean }>,
   res: Response,
   next: NextFunction,
 ) {
@@ -108,7 +108,7 @@ export async function createClassTemplate(
       description,
       danceCategory,
       advancementLevel,
-      price: price,
+      price: Number(price.toFixed(2)),
       descriptionEmbedded: (await embed(description, false)).embeddingList,
     };
 
@@ -118,9 +118,9 @@ export async function createClassTemplate(
         id: String(createdClassTemplate.id),
         document: doc,
       })
-      .catch((err) =>
+      .catch((err: any) =>
         console.log(
-          "Failed to replicate/edit course to/in elasticsearch: ",
+          "Failed to replicate/edit class template to/in elasticsearch: ",
           err,
         ),
       );
@@ -228,11 +228,9 @@ export async function editClassTemplate(
     data: {
       ...(name !== undefined && { name }),
       ...(description !== undefined && { description }),
-      ...(!areSomeClassesPublished && price !== undefined && { price }),
-      ...(!areSomeClassesPublished && danceCategoryId !== undefined && { danceCategoryId }),
-      ...(!areSomeClassesPublished &&
-        advancementLevelId !== undefined && { advancementLevelId }),
-      ...(!areSomeClassesPublished && classType !== undefined && { classType }),
+      ...(price !== undefined && { price }),
+      ...(danceCategoryId !== undefined && { danceCategoryId }),
+      ...(advancementLevelId !== undefined && { advancementLevelId })
     },
   });
 
@@ -253,23 +251,25 @@ export async function editClassTemplate(
       });
 
     const editedDoc: ClassTemplateDocument = {
-      name,
-      description,
-      danceCategory,
-      advancementLevel,
-      descriptionEmbedded: (await embed(description, false)).embeddingList,
-      price: price,
+      ...(name !== undefined && { name }),
+      ...(description !== undefined && { description }),
+      ...(danceCategory && { danceCategory }),
+      ...(advancementLevel && { advancementLevel }),
+      ...(description !== undefined && {
+        descriptionEmbedded: (await embed(description, false)).embeddingList,
+      }),
+      ...(price && { price: price }),
     };
 
     esClient
-      .index({
+      .update({
         index: "class_templates",
         id: String(id),
-        document: editedDoc,
+        doc: editedDoc,
       })
-      .catch((err) =>
+      .catch((err: any) =>
         console.log(
-          "Failed to replicate/edit course to/in elasticsearch: ",
+          "Failed to replicate/edit class template to/in elasticsearch: ",
           err,
         ),
       );
@@ -281,25 +281,11 @@ export async function editClassTemplate(
 }
 
 export async function deleteClassTemplate(
-  req: Request<{ id: string; }, {}, {}>,
+  req: Request<{ id: string }, {}, {}>,
   res: Response,
   next: NextFunction,
 ) {
   const id = parseInt(req.params.id);
-
-  const classesUsingIt = await prisma.class.findMany({
-    where: {
-      classTemplateId: id,
-    },
-  });
-
-  if (classesUsingIt.some((c) => c.classStatus !== ClassStatus.HIDDEN)) {
-    throw new UniversalError(
-      StatusCodes.CONFLICT,
-      "There are existing classes using this class template",
-      [],
-    );
-  }
 
   const theClassTemplate = await prisma.classTemplate.findFirst({
     where: {
@@ -323,17 +309,37 @@ export async function deleteClassTemplate(
     );
   }
 
+  const classesUsingIt = await prisma.class.findMany({
+    where: {
+      classTemplateId: id,
+    },
+  });
+
+  if (classesUsingIt.some((c) => c.classStatus !== ClassStatus.HIDDEN)) {
+    throw new UniversalError(
+      StatusCodes.CONFLICT,
+      "There are existing classes using this class template",
+      [],
+    );
+  }
+
   await prisma.classTemplate.delete({
     where: {
       id: id,
     },
   });
 
+  esClient
+    .delete({ index: "class_templates", id: String(id) })
+    .catch((err: any) =>
+      console.log("Failed to delete class template from elasticsearch: ", err),
+    );
+
   res.status(StatusCodes.NO_CONTENT).send();
 }
 
 export async function getClassTemplate(
-  req: Request<{ id: string; }, {}, {}>,
+  req: Request<{ id: string }, {}, {}>,
   res: Response,
   next: NextFunction,
 ) {

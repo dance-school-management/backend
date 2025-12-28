@@ -11,37 +11,37 @@ export const esClient = new Client({
 })
 
 export interface CourseDocument {
-  name: string
-  description: string
-  descriptionEmbedded: number[]
-  danceCategory: {
+  name?: string
+  description?: string
+  descriptionEmbedded?: number[]
+  danceCategory?: {
     id: number
     name: string
     description: string
   } | null
-  advancementLevel: {
+  advancementLevel?: {
     id: number
     name: string
     description: string
   } | null
-  price: number
-  startDate: Date
-  endDate: Date
+  price?: number
+  startDate?: Date
+  endDate?: Date
 }
 
 export interface ClassTemplateDocument {
-  name: string
-  description: string
-  descriptionEmbedded: number[]
-  danceCategory: {
+  name?: string
+  description?: string
+  descriptionEmbedded?: number[]
+  danceCategory?: {
     id: number
     name: string
     description: string
   } | null
-  advancementLevel: {
+  advancementLevel?: {
     id: number
     name: string
     description: string
   } | null
-  price: number
+  price?: number
 }

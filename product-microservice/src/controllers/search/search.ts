@@ -1,10 +1,7 @@
 import { Request, Response } from "express";
 import prisma from "../../utils/prisma";
 import { StatusCodes } from "http-status-codes";
-import {
-  getCoursesPrices,
-  getCoursesStartAndEndDates,
-} from "../../utils/helpers";
+import { getCoursesStartAndEndDates } from "../../utils/helpers";
 
 interface SearchRequest {
   index: "class_templates" | "courses";
@@ -95,11 +92,13 @@ export async function searchProducts(
         record: {
           name: r.name,
           description: r.description,
-          danceCategory: r.danceCategoryId ? {
-            id: r.danceCategoryId,
-            name: r.danceCategory?.name,
-            description: r.danceCategory?.description
-          } : null,
+          danceCategory: r.danceCategoryId
+            ? {
+                id: r.danceCategoryId,
+                name: r.danceCategory?.name,
+                description: r.danceCategory?.description,
+              }
+            : null,
           advancementLevel: r.advancementLevelId ? r.advancementLevel : null,
           price: Number(r.price),
         },
@@ -122,6 +121,14 @@ export async function searchProducts(
 
         ...(categoryIds && { danceCategoryId: { in: categoryIds } }),
         ...(advancementIds && { advancementLevelId: { in: advancementIds } }),
+        ...(priceMin !== undefined || priceMax !== undefined
+          ? {
+              price: {
+                ...(priceMin !== undefined && { gte: priceMin }),
+                ...(priceMax !== undefined && { lte: priceMax }),
+              },
+            }
+          : {}),
       },
 
       include: {
@@ -136,42 +143,30 @@ export async function searchProducts(
 
     const filteredCoursesByDatesIds = coursesStartAndEndDates
       .filter((c) => {
-        const earliestGroupCourseStartDate = c.courseStartDates.reduce(
-          (acc, cur) => (acc.courseStartDate < cur.courseStartDate ? acc : cur),
-        ).courseStartDate;
-        const latestGroupCourseEndDate = c.courseEndDates.reduce((acc, cur) =>
-          acc.courseEndDate > cur.courseEndDate ? acc : cur,
-        ).courseEndDate;
+        const courseStartDate = c.courseStartDate;
+        const courseEndDate = c.courseEndDate;
 
         const conditions = [];
 
-        if (startDateFrom) {
-          conditions.push(
-            earliestGroupCourseStartDate >= new Date(startDateFrom),
-          );
+        if (startDateFrom && courseStartDate) {
+          conditions.push(courseStartDate >= new Date(startDateFrom));
         }
-        if (startDateTo) {
-          conditions.push(
-            earliestGroupCourseStartDate <= new Date(startDateTo),
-          );
+        if (startDateTo && courseStartDate) {
+          conditions.push(courseStartDate <= new Date(startDateTo));
         }
-        if (endDateFrom) {
-          conditions.push(latestGroupCourseEndDate >= new Date(endDateFrom));
+        if (endDateFrom && courseEndDate) {
+          conditions.push(courseEndDate >= new Date(endDateFrom));
         }
-        if (endDateTo) {
-          conditions.push(latestGroupCourseEndDate <= new Date(endDateTo));
+        if (endDateTo && courseEndDate) {
+          conditions.push(courseEndDate <= new Date(endDateTo));
         }
 
         return !conditions.length || conditions.every(Boolean);
       })
       .map((c) => ({
         courseId: c.courseId,
-        courseStartDate: c.courseStartDates.reduce((acc, cur) =>
-          acc.courseStartDate < cur.courseStartDate ? acc : cur,
-        ).courseStartDate,
-        courseEndDate: c.courseEndDates.reduce((acc, cur) =>
-          acc.courseEndDate > cur.courseEndDate ? acc : cur,
-        ).courseEndDate,
+        courseStartDate: c.courseStartDate,
+        courseEndDate: c.courseEndDate,
       }));
 
     const resultFilteredByDates = result
@@ -193,39 +188,7 @@ export async function searchProducts(
         };
       });
 
-    const coursesPrices = await getCoursesPrices(result.map((c) => c.id));
-
-    const filteredCoursesByPricesIds = coursesPrices
-      .filter((cp) => {
-        const conditions = [];
-        if (priceMin) {
-          conditions.push(cp.price >= priceMin);
-        }
-        if (priceMax) {
-          conditions.push(cp.price <= priceMax);
-        }
-        return conditions.every(Boolean);
-      })
-      .map((cp) => ({
-        courseId: cp.courseId,
-        price: cp.price,
-      }));
-
-    const resultFilteredByPrice = resultFilteredByDates
-      .filter((c) =>
-        filteredCoursesByPricesIds.map((c) => c.courseId).includes(c.id),
-      )
-      .map((c) => {
-        const filteredCourseData = filteredCoursesByPricesIds.find(
-          (cc) => cc.courseId === c.id,
-        );
-        return {
-          ...c,
-          price: filteredCourseData?.price,
-        };
-      });
-
-    const finalResult = resultFilteredByPrice;
+    const finalResult = resultFilteredByDates;
 
     const newResult = finalResult.map((r) => ({
       productId: r.id,
