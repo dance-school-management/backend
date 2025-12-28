@@ -1,0 +1,182 @@
+[
+  {
+    "id": 11,
+    "name": "Salsa Sensation: Beginner's Guide to Latin Rhythms",
+    "description": "Ignite your passion for dance with 'Salsa Sensation,' a vibrant course tailored for absolute beginners. Held in the energetic 'Rhythm Hub' studio downtown, this course is your gateway to the exhilarating world of Salsa. Led by the charismatic instructor, Maria 'La Furia' Rodriguez, known for her encouraging and step-by-step teaching style, you'll master fundamental steps, turns, and partner work. Maria creates a fun, supportive atmosphere, ensuring everyone feels comfortable on the dance floor. Learn to feel the music, connect with your partner, and unleash your inner dancer, gaining confidence and a new social skill.",
+    "danceCategoryId": 20,
+    "advancementLevelId": 2,
+    "courseStatus": "SALE",
+    "customPrice": 484
+  },
+  {
+    "id": 12,
+    "name": "Ballet Basics: Grace & Strength Foundations",
+    "description": "Discover the timeless elegance of classical ballet with 'Ballet Basics,' a course designed for adults new to ballet or those looking to refresh their foundational skills. Conducted in the serene 'Graceful Movement Studio,' under the guidance of former principal dancer, Mr. Alexander Ivanov, this course emphasizes proper posture, alignment, and fundamental barre exercises. Alexander's patient and meticulous approach helps students build core strength, flexibility, and an understanding of ballet terminology. You'll develop grace, discipline, and a deep appreciation for this beautiful art form.",
+    "danceCategoryId": 21,
+    "advancementLevelId": 1,
+    "courseStatus": "SALE",
+    "customPrice": 335
+  },
+  {
+    "id": 13,
+    "name": "Hip-Hop Groove: Urban Dance Essentials",
+    "description": "Unleash your inner street dancer with 'Hip-Hop Groove,' an introductory course perfect for anyone eager to learn the dynamic movements of hip-hop. Taught at the edgy 'Urban Flow Studio' by the energetic instructor, DJ 'B-Fresh' Williams, this course covers fundamental grooves, bounces, and basic choreography. B-Fresh's classes are high-energy, inclusive, and focus on encouraging personal expression within the hip-hop style. You'll learn to move with rhythm, confidence, and flair, mastering popular moves and developing your own unique style.",
+    "danceCategoryId": 22,
+    "advancementLevelId": 2,
+    "courseStatus": "SALE",
+    "customPrice": 563
+  },
+  {
+    "id": 14,
+    "name": "Tango Embrace: Argentine Connection",
+    "description": "Step into the intimate world of Argentine Tango with 'Tango Embrace,' a course for beginners and intermediates seeking to understand this passionate partner dance. Held in the sophisticated 'Velvet Lounge Dance Hall,' the course is led by the experienced duo, Sofia and Ricardo, renowned for their clear instruction and emphasis on connection. They teach the foundational elements of the 'abrazo' (embrace), walking, and basic figures, focusing on communication and musicality between partners. You'll learn to navigate the dance floor with elegance and feel the profound connection of tango.",
+    "danceCategoryId": 23,
+    "advancementLevelId": 1,
+    "courseStatus": "SALE",
+    "customPrice": 464
+  },
+  {
+    "id": 15,
+    "name": "Contemporary Flow: Expressive Movement",
+    "description": "Explore the freedom of movement with 'Contemporary Flow,' a course for all levels interested in expressive and fluid dance. Located in the bright and airy 'Modern Movement Space,' this course is led by the innovative choreographer, Maya Chen. Maya's classes blend elements of ballet, jazz, and modern dance, encouraging students to explore their own unique physicality through improvisation, floor work, and guided choreography. You'll develop flexibility, strength, and a deeper connection to your emotions, learning to tell stories through movement.",
+    "danceCategoryId": 24,
+    "advancementLevelId": 3,
+    "courseStatus": "SALE",
+    "customPrice": 564
+  },
+  {
+    "id": 16,
+    "name": "Tap Rhythm: Shuffle & Groove",
+    "description": "Make some noise and find your rhythm with 'Tap Rhythm,' a lively course for beginners eager to learn the percussive art of tap dance. Held in the 'Beat Feet Studio,' under the guidance of the energetic and encouraging instructor, Mr. Sammy 'Slick' Stone, this course covers basic tap steps like shuffles, flaps, and drawbacks. Sammy's classes are fun, engaging, and focus on developing clear sounds and musicality. You'll learn to create intricate rhythms with your feet, developing coordination and a keen sense of timing.",
+    "danceCategoryId": 25,
+    "advancementLevelId": 3,
+    "courseStatus": "SALE",
+    "customPrice": 324
+  },
+  {
+    "id": 17,
+    "name": "Jazz Fusion: Dynamic Moves & Style",
+    "description": "Inject energy and style into your dancing with 'Jazz Fusion,' a course designed for intermediate dancers looking to expand their vocabulary and performance quality. Located at the 'Groove Central Studio,' this course is taught by the dynamic choreographer, Ms. Lena 'Sparkle' Davis. Lena's classes blend traditional jazz techniques with contemporary influences, focusing on sharp lines, powerful turns, and expressive performance. You'll refine your technique, improve your flexibility, and learn exciting new choreography, bringing a polished flair to your movements.",
+    "danceCategoryId": 26,
+    "advancementLevelId": 1,
+    "courseStatus": "SALE",
+    "customPrice": 429
+  },
+  {
+    "id": 18,
+    "name": "Bellydance Mystique: Foundations & Flow",
+    "description": "Unveil your inner goddess with 'Bellydance Mystique,' a beginner-friendly course introducing the ancient art of bellydance. Conducted in the exotic 'Desert Rose Studio,' this course is led by the graceful and knowledgeable instructor, Zahara. Zahara teaches the fundamental isolations of the torso, hips, and arms, emphasizing fluidity, strength, and cultural context. Her gentle teaching style creates a welcoming space for self-discovery and empowerment. You'll connect with your body, improve flexibility, and embrace the sensual beauty of this captivating dance form.",
+    "danceCategoryId": 27,
+    "advancementLevelId": 2,
+    "courseStatus": "SALE",
+    "customPrice": 327
+  },
+  {
+    "id": 19,
+    "name": "Bollywood Blast: High-Energy Indian Dance",
+    "description": "Experience the vibrant colors and infectious energy of Indian cinema with 'Bollywood Blast,' a high-energy course for all levels. Taught at the lively 'Spice Route Dance Hall' by the enthusiastic instructor, Priya Sharma, this course combines traditional Indian dance moves with modern Bollywood flair. Priya's classes are a joyful celebration of music and movement, teaching expressive facial gestures, intricate hand movements, and dynamic footwork. You'll get a fantastic workout, learn exciting choreography, and immerse yourself in the rich cultural storytelling of Bollywood.",
+    "danceCategoryId": 28,
+    "advancementLevelId": 2,
+    "courseStatus": "SALE",
+    "customPrice": 457
+  },
+  {
+    "id": 20,
+    "name": "Ballroom Beginnings: Waltz & Foxtrot",
+    "description": "Step onto the elegant dance floor with 'Ballroom Beginnings,' an introductory course for couples or individuals eager to learn classic ballroom dances. Held in the sophisticated 'Grand Ballroom Studio,' this course is led by the refined and patient instructors, Mr. and Mrs. Sterling. They will guide you through the fundamental steps and etiquette of the elegant Waltz and the smooth Foxtrot, focusing on posture, lead/follow techniques, and musicality. You'll gain confidence for social events and enjoy the timeless beauty of partner dancing.",
+    "danceCategoryId": 29,
+    "advancementLevelId": 3,
+    "courseStatus": "SALE",
+    "customPrice": 388
+  },
+  {
+    "id": 21,
+    "name": "African Rhythm & Flow: Traditional & Modern",
+    "description": "Connect with the earth and your inner spirit in 'African Rhythm & Flow,' a powerful course for all levels exploring traditional and contemporary African dance. Conducted in the vibrant 'Drumbeat Studio,' this course is led by the inspiring instructor, Baba Kweku. Baba's classes are an exhilarating journey of rhythmic movements, emphasizing groundedness, polyrhythms, and communal energy. You'll learn powerful footwork, expressive torso movements, and experience the joy of dancing to live drumming, connecting deeply with cultural traditions and your own physicality.",
+    "danceCategoryId": 30,
+    "advancementLevelId": 2,
+    "courseStatus": "SALE",
+    "customPrice": 478
+  },
+  {
+    "id": 22,
+    "name": "Street Jazz: Commercial Dance Power",
+    "description": "Bring your sass and power to the dance floor with 'Street Jazz,' an energetic course perfect for intermediate dancers aiming for a commercial dance style. Taught at the dynamic 'Pop & Lock Studio' by the fierce and inspiring instructor, Kayla 'K-Motion' Jones. Kayla's classes fuse jazz technique with hip-hop swagger, focusing on sharp isolations, powerful turns, and performance-ready choreography. You'll enhance your stage presence, improve your technical execution, and learn routines that are perfect for music videos and performances.",
+    "danceCategoryId": 31,
+    "advancementLevelId": 3,
+    "courseStatus": "SALE",
+    "customPrice": 553
+  },
+  {
+    "id": 23,
+    "name": "Lyrical Expression: Emotion in Motion",
+    "description": "Dive deep into emotional storytelling through dance with 'Lyrical Expression,' a course designed for intermediate dancers with a foundation in ballet or jazz. Held in the ambient 'Soulful Steps Studio,' this course is led by the empathetic and artistic instructor, Eleanor Vance. Eleanor guides students through fluid movements, emotional interpretation, and intricate choreography set to contemporary music. You'll learn to convey profound feelings, enhance your musicality, and develop a deeper connection between your body and emotions, making your dance truly resonate.",
+    "danceCategoryId": 32,
+    "advancementLevelId": 1,
+    "courseStatus": "SALE",
+    "customPrice": 393
+  },
+  {
+    "id": 24,
+    "name": "Swing Revival: Lindy Hop Jumpstart",
+    "description": "Travel back to the roaring 20s and 30s with 'Swing Revival,' a lively course for beginners eager to learn the iconic Lindy Hop. Conducted in the retro 'Jitterbug Junction,' this course is led by the enthusiastic duo, Frankie and Ella, who bring vintage charm and clear instruction to every class. They teach the foundational 8-count basic, swing outs, and playful partner variations, focusing on rhythm, connection, and the joy of social dancing. You'll learn to effortlessly 'swing out' and immerse yourself in the energetic world of swing dance.",
+    "danceCategoryId": 33,
+    "advancementLevelId": 3,
+    "courseStatus": "SALE",
+    "customPrice": 548
+  },
+  {
+    "id": 25,
+    "name": "Flamenco Fire: Passion & Rhythm",
+    "description": "Ignite your spirit with 'Flamenco Fire,' an introductory course to the passionate art of Flamenco. Held in the vibrant 'Andalusia Dance Hall,' this course is led by the fiery and authentic instructor, Carmen 'La Chispa' Ramirez. Carmen teaches fundamental footwork (zapateado), hand movements (braceo), and rhythmic clapping (palmas), emphasizing posture and emotional expression. Her classes are infused with the soul of Spain, guiding you to connect with the deep rhythms and dramatic storytelling of Flamenco. You'll develop strength, coordination, and a powerful stage presence.",
+    "danceCategoryId": 34,
+    "advancementLevelId": 2,
+    "courseStatus": "SALE",
+    "customPrice": 485
+  },
+  {
+    "id": 26,
+    "name": "Breaking Fundamentals: Power Moves & Style",
+    "description": "Unlock the dynamic world of Breaking (B-boying/B-girling) with 'Breaking Fundamentals,' a beginner-friendly course. Located at the 'Concrete Canvas Studio,' this course is led by the experienced and encouraging B-boy, 'Freeze' Mike. Mike breaks down essential top rocks, footwork, freezes, and basic power moves, emphasizing safety, strength building, and individual style. You'll learn to confidently navigate the dance floor, develop impressive physical skills, and find your unique flow within this iconic street dance.",
+    "danceCategoryId": 35,
+    "advancementLevelId": 1,
+    "courseStatus": "SALE",
+    "customPrice": 343
+  },
+  {
+    "id": 27,
+    "name": "K-Pop Choreography: Idol Moves",
+    "description": "Step into the spotlight with 'K-Pop Choreography,' a high-energy course for all levels eager to learn the iconic routines of their favorite K-Pop idols. Taught at the trendy 'Seoul Beat Studio' by the charismatic instructor, Min-ji, this course focuses on breaking down popular K-Pop dance routines. Min-ji ensures a fun and fast-paced learning environment, emphasizing sharpness, synchronization, and performance quality. You'll master intricate choreographies, improve your coordination, and embody the stage presence of a K-Pop star, all while having a blast!",
+    "danceCategoryId": 36,
+    "advancementLevelId": 3,
+    "courseStatus": "SALE",
+    "customPrice": 367
+  },
+  {
+    "id": 28,
+    "name": "Afrobeat Fusion: Grooves from the Diaspora",
+    "description": "Feel the infectious rhythms of Africa and its diaspora with 'Afrobeat Fusion,' a high-energy course for all levels. Held in the vibrant 'Vibe Nation Studio,' this course is led by the dynamic instructor, Femi 'The Groove Master' Adebayo. Femi blends traditional West African movements with modern Afrobeat steps, focusing on isolations, groundedness, and joyful expression. His classes are a celebration of culture and movement, encouraging students to let loose and feel the music. You'll get a fantastic full-body workout, learn cultural dances, and connect with empowering rhythms.",
+    "danceCategoryId": 37,
+    "advancementLevelId": 2,
+    "courseStatus": "SALE",
+    "customPrice": 424
+  },
+  {
+    "id": 29,
+    "name": "Samba Carnival: Brazilian Party Dance",
+    "description": "Bring the energy of Rio Carnival to your feet with 'Samba Carnival,' a joyous course for beginners and intermediates. Conducted in the festive 'Tropical Rhythm Studio,' this course is led by the effervescent instructor, Beatriz 'A Rainha' Costa. Beatriz teaches the foundational 'Samba no Pé' step, hip movements, and expressive arm work, focusing on rhythm, lightness, and pure exuberance. Her classes are a non-stop celebration, encouraging you to embrace the vibrant spirit of Brazil. You'll develop incredible leg strength, stamina, and an infectious sense of joy.",
+    "danceCategoryId": 38,
+    "advancementLevelId": 3,
+    "courseStatus": "SALE",
+    "customPrice": 309
+  },
+  {
+    "id": 30,
+    "name": "Dancehall Queen: Jamaican Street Style",
+    "description": "Unleash your inner 'Dancehall Queen' or King with this raw and expressive course, open to all levels. Held at the 'Kingston Vibe Studio,' this course is led by the charismatic instructor, Shanice 'Spice' Brown. Shanice teaches foundational Dancehall steps, grooves, and body isolations, emphasizing confidence, attitude, and musicality. Her classes are high-energy, empowering, and focus on authentic Jamaican street dance culture. You'll learn to move with power, precision, and personal flair, mastering the latest moves from the Dancehall scene.",
+    "danceCategoryId": 39,
+    "advancementLevelId": 2,
+    "courseStatus": "SALE",
+    "customPrice": 569
+  }
+]
