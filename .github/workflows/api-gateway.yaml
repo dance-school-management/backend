@@ -1,0 +1,15 @@
+name: Build image for api-gateway
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'api-gateway/**'
+jobs:
+  call-workflow:
+    uses: ./.github/workflows/docker-build.yaml
+    secrets: inherit
+    with:
+      image_name: api-gateway
+      dockerfile_context: ./api-gateway
+      dockerfile_path: ./api-gateway/docker/dev/Dockerfile
