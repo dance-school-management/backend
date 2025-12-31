@@ -15,7 +15,6 @@ jobs:
         id: filter
         uses: dorny/paths-filter@v3
         with:
-          base: HEAD~1
           filters: |
             api-gateway: 'api-gateway/**'
   create-release:

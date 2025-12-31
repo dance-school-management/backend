@@ -3,9 +3,9 @@ name: Build and Push Docker Image into AWS ECR
 env:
   AWS_REGION: eu-north-1
   AWS_IAM_ROLE: ${{ secrets.AWS_IAM_ROLE }}
-  
-on:   
-  workflow_call:  
+
+on:
+  workflow_call:
     inputs:
       image_name:
         required: true
@@ -42,7 +42,7 @@ jobs:
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
-        
+
       - name: Build, Tag, and Push Docker Image to ECR
         env:
           IMAGE_NAME: ${{ inputs.image_name }}
