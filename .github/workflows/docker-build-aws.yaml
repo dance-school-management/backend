@@ -1,0 +1,63 @@
+name: Build and Push Docker Image into AWS ECR
+
+env:
+  AWS_REGION: eu-north-1
+  AWS_IAM_ROLE: ${{ secrets.AWS_IAM_ROLE }}
+  
+on:   
+  workflow_call:  
+    inputs:
+      image_name:
+        required: true
+        type: string
+      dockerfile_context:
+        required: true
+        type: string
+      dockerfile_path:
+        required: false
+        type: string
+        default: Dockerfile
+      new_tag:
+        required: true
+        type: string
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v5
+        with:
+          audience : sts.amazonaws.com
+          role-to-assume: ${{ env.AWS_IAM_ROLE }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+        
+      - name: Build, Tag, and Push Docker Image to ECR
+        env:
+          IMAGE_NAME: ${{ inputs.image_name }}
+          DOCKERFILE_CONTEXT: ${{ inputs.dockerfile_context }}
+          DOCKERFILE_PATH: ${{ inputs.dockerfile_path }}
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          IMAGE_TAG: ${{ inputs.new_tag }}
+        run: |
+          # Build the Docker image
+          docker build -t $ECR_REGISTRY/$IMAGE_NAME:$IMAGE_TAG \
+                       -f $DOCKERFILE_PATH $DOCKERFILE_CONTEXT
+
+          # Tag the Docker image for ECR
+          docker tag $ECR_REGISTRY/$IMAGE_NAME:$IMAGE_TAG $ECR_REGISTRY/$IMAGE_NAME:latest
+
+          # Push the Docker image to ECR
+          docker push $ECR_REGISTRY/$IMAGE_NAME:$IMAGE_TAG
+          docker push $ECR_REGISTRY/$IMAGE_NAME:latest
