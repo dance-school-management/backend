@@ -5,7 +5,9 @@ import { StatusCodes } from "http-status-codes";
 
 const AUTH_FLAG = process.env.AUTH_FLAG;
 const AUTH_MICROSERVICE_URL = process.env.AUTH_MICROSERVICE_URL;
-const AUTH_TIMEOUT_MS = process.env.AUTH_TIMEOUT_MS ? parseInt(process.env.AUTH_TIMEOUT_MS) : 2000;
+const AUTH_TIMEOUT_MS = process.env.AUTH_TIMEOUT_MS
+  ? parseInt(process.env.AUTH_TIMEOUT_MS)
+  : 2000;
 
 const FAKE_USER = {
   id: "provided-fake-id-string124",
@@ -28,7 +30,7 @@ export function authenticate(options: AuthenticateOptions = { strict: true }) {
   const { strict } = options;
 
   return async (
-    req: Request & { user?: any; },
+    req: Request & { user?: any },
     res: Response,
     next: NextFunction,
   ) => {
@@ -62,19 +64,25 @@ export function authenticate(options: AuthenticateOptions = { strict: true }) {
 
     try {
       const headers: Record<string, string> = {
-        "Accept": "application/json",
+        Accept: "application/json",
       };
       headers["Cookie"] = `better-auth.session_token=${betterAuthCookie}`;
 
-      const response = await fetch(`${AUTH_MICROSERVICE_URL}/api/auth/get-session`, {
-        method: "GET",
-        headers,
-        signal: controller.signal,
-      });
+      const response = await fetch(
+        `${AUTH_MICROSERVICE_URL}/api/auth/get-session`,
+        {
+          method: "GET",
+          headers,
+          signal: controller.signal,
+        },
+      );
 
       clearTimeout(timeout);
 
-      if (response.status === StatusCodes.UNAUTHORIZED || response.status === StatusCodes.FORBIDDEN) {
+      if (
+        response.status === StatusCodes.UNAUTHORIZED ||
+        response.status === StatusCodes.FORBIDDEN
+      ) {
         handleAuthFailure(StatusCodes.UNAUTHORIZED);
         return;
       }
