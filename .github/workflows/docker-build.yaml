@@ -36,6 +36,9 @@ jobs:
           bash ./scripts/git_update.sh -v patch
   call-aws-workflow-for-microservices:
     needs: [check-changes, create-release]
+    permissions:
+      id-token: write
+      contents: write
     strategy:
       matrix:
         service: ${{ fromJSON(needs.check-changes.outputs.changes) }}
@@ -48,6 +51,9 @@ jobs:
       new_tag: ${{ needs.create-release.outputs.new-tag }}
   call-ghcr-workflow-for-microservices:
     needs: [check-changes, create-release]
+    permissions:
+      packages: write
+      contents: write
     strategy:
       matrix:
         service: ${{ fromJSON(needs.check-changes.outputs.changes) }}
