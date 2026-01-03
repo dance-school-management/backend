@@ -6,5 +6,4 @@ cd ..
 (cd profile-microservice && bash clear.sh) &
 (cd notification-microservice && bash clear.sh) &
 (cd blog-microservice && bash clear.sh) &
-
 wait

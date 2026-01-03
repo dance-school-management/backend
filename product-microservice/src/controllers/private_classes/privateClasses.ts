@@ -17,7 +17,7 @@ import { getStudentsProfiles } from "../../grpc/client/profileCommunication/getS
 import { sendPushNotifications } from "../../rabbitmq/senders/sendPushNotifications";
 
 export async function createPrivateClassTemplate(
-  req: Request<{}, {}, { classTemplateData: ClassTemplate; }> & {
+  req: Request<{}, {}, { classTemplateData: ClassTemplate }> & {
     user?: any;
   },
   res: Response,
@@ -43,7 +43,7 @@ export async function createPrivateClassTemplate(
 }
 
 export async function editPrivateClassTemplate(
-  req: Request<{}, {}, { classTemplateData: ClassTemplate; }> & {
+  req: Request<{}, {}, { classTemplateData: ClassTemplate }> & {
     user?: any;
   },
   res: Response,
@@ -125,7 +125,7 @@ export async function getPrivateClassTemplates(
 }
 
 export async function getPrivateClassTemplateDetails(
-  req: Request<{ id: string; }> & {
+  req: Request<{ id: string }> & {
     user?: any;
   },
   res: Response,
@@ -163,7 +163,7 @@ export async function getPrivateClassTemplateDetails(
 }
 
 export async function deletePrivateClassTemplate(
-  req: Request<{ id: string; }> & {
+  req: Request<{ id: string }> & {
     user?: any;
   },
   res: Response,
@@ -211,7 +211,10 @@ export async function deletePrivateClassTemplate(
   res.status(StatusCodes.NO_CONTENT).send();
 }
 
-type CreateClassData = Omit<Class, "peopleLimit" | "createdBy" | "classStatus" | "id">;
+type CreateClassData = Omit<
+  Class,
+  "peopleLimit" | "createdBy" | "classStatus" | "id"
+>;
 
 async function validatePrivateClass(
   classData: CreateClassData,
@@ -305,7 +308,7 @@ async function validatePrivateClass(
 }
 
 export async function createPrivateClass(
-  req: Request<{}, {}, { classData: CreateClassData; studentIds: string[]; }> & {
+  req: Request<{}, {}, { classData: CreateClassData; studentIds: string[] }> & {
     user?: any;
   },
   res: Response,
@@ -329,7 +332,7 @@ export async function createPrivateClass(
     throw new UniversalError(
       StatusCodes.CONFLICT,
       "Some students do not exist",
-      [{ field: "studentIds", message: "Some students do not exist" }]
+      [{ field: "studentIds", message: "Some students do not exist" }],
     );
   }
 
@@ -372,7 +375,7 @@ export async function createPrivateClass(
 }
 
 export async function editPrivateClass(
-  req: Request<{}, {}, { classData: Class; }> & {
+  req: Request<{}, {}, { classData: Class }> & {
     user?: any;
   },
   res: Response,
@@ -467,7 +470,7 @@ export async function getPrivateClasses(
 }
 
 export async function getPrivateClassDetails(
-  req: Request<{ id: string; }> & {
+  req: Request<{ id: string }> & {
     user?: any;
   },
   res: Response,

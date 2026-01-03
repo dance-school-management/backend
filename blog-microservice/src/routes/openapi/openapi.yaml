@@ -1,0 +1,114 @@
+openapi: 3.1.0
+info:
+  title: Prisma API
+  description: ""
+  version: 1.0.0
+paths: {}
+components:
+  schemas:
+    BlogPost:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        title:
+          type: string
+        slug:
+          type: string
+        content:
+          type: string
+        excerpt:
+          type: string
+        status:
+          $ref: "#/components/schemas/PostStatus"
+        authorId:
+          type: string
+        readingTime:
+          type: integer
+          format: int32
+        isPinned:
+          type: boolean
+        pinnedUntil:
+          type: string
+          format: date-time
+        tags:
+          type: array
+          items:
+            type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        publishedAt:
+          type: string
+          format: date-time
+        BlogPhotosOnBlogPosts:
+          type: array
+          items:
+            $ref: "#/components/schemas/BlogPhotosOnBlogPosts"
+      required:
+        - id
+        - title
+        - slug
+        - content
+        - excerpt
+        - status
+        - authorId
+        - readingTime
+        - isPinned
+        - tags
+        - createdAt
+        - updatedAt
+        - BlogPhotosOnBlogPosts
+    BlogPhoto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        path:
+          type: string
+        BlogPhotosOnBlogPosts:
+          type: array
+          items:
+            $ref: "#/components/schemas/BlogPhotosOnBlogPosts"
+      required:
+        - id
+        - path
+        - BlogPhotosOnBlogPosts
+    BlogPhotosOnBlogPosts:
+      type: object
+      properties:
+        blogPost:
+          $ref: "#/components/schemas/BlogPost"
+        blogPostId:
+          type: integer
+          format: int32
+        blogPhoto:
+          $ref: "#/components/schemas/BlogPhoto"
+        blogPhotoId:
+          type: integer
+          format: int32
+      required:
+        - blogPost
+        - blogPostId
+        - blogPhoto
+        - blogPhotoId
+    PostStatus:
+      type: string
+      enum:
+        - draft
+        - published
+  responses: {}
+  parameters: {}
+  examples: {}
+  requestBodies: {}
+  headers: {}
+  securitySchemes: {}
+  links: {}
+  callbacks: {}
+tags: []
+servers: []

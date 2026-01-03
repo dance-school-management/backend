@@ -5,6 +5,7 @@ import { Profile, Role } from "../../../generated/client";
 import { getDanceCategories } from "../../grpc/client/productCommunication/getDanceCategories";
 import { getInstructorExperience } from "../../grpc/client/enrollCommunication/getInstructorExperience";
 import { UniversalError } from "../../errors/UniversalError";
+import { s3Endpoint } from "../../utils/aws-s3/s3Client";
 
 export async function getAllInstructors(
   req: Request<{}, {}, {}>,
@@ -43,8 +44,15 @@ export async function getAllInstructors(
     }),
   );
 
+  const instructorsWithPhotos = instructorsWithDanceCategoriesNames.map(
+    (instructor) => ({
+      ...instructor,
+      photoPath: `${s3Endpoint}${instructor.photoPath}`,
+    }),
+  );
+
   const result = {
-    instructors: instructorsWithDanceCategoriesNames,
+    instructors: instructorsWithPhotos,
   };
 
   res.status(StatusCodes.OK).json(result);
@@ -60,7 +68,7 @@ export async function getInstructor(
   res: Response,
   next: NextFunction,
 ) {
-  const instructor = await prisma.profile.findUnique({
+  let instructor = await prisma.profile.findUnique({
     where: {
       id: req.params.id,
       role: Role.INSTRUCTOR,
@@ -70,6 +78,11 @@ export async function getInstructor(
   if (!instructor) {
     throw new UniversalError(StatusCodes.CONFLICT, "Instructor not found", []);
   }
+
+  instructor = {
+    ...instructor,
+    photoPath: `${s3Endpoint}${instructor?.photoPath}`,
+  };
 
   const timeSpentForEachDCAndAL = (
     await getInstructorExperience(

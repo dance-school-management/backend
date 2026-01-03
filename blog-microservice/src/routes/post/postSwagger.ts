@@ -145,6 +145,13 @@
  *             - draft
  *             - published
  *           example: "draft"
+ *         photosIds:
+ *           description: Array of photo IDs to associate with the post
+ *           required: false
+ *           type: array
+ *           items:
+ *            type: number
+ *           example: [1, 2, 3]
  *
  *     UpdatePostRequest:
  *       type: object
@@ -174,6 +181,13 @@
  *             - draft
  *             - published
  *           example: "published"
+ *         photosIds:
+ *           description: Array of photo IDs to associate with the post
+ *           required: false
+ *           type: array
+ *           items:
+ *            type: number
+ *           example: [1, 2, 3]
  *
  *     PublishPostRequest:
  *       type: object
@@ -597,4 +611,3 @@
  *       404:
  *         description: Post not found or not published
  */
-
