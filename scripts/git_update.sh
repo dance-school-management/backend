@@ -14,7 +14,7 @@ done
 git fetch --prune --unshallow 2>/dev/null
 CURRENT_VERSION=`git describe --abbrev=0 --tags 2>/dev/null`
 
-if [[ $CURRENT_VERSION == '' || ! $CURRENT_VERSION =~ ^v.[0-9]+\.[0-9]+\.[0-9]+$ ]]
+if [[ $CURRENT_VERSION == '' || ! $CURRENT_VERSION =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]
 then
   CURRENT_VERSION='v0.1.0'
 fi
@@ -23,10 +23,13 @@ echo "Current Version: $CURRENT_VERSION"
 # replace . with space so can split into an array
 CURRENT_VERSION_PARTS=(${CURRENT_VERSION//./ })
 
-VERSION_=${CURRENT_VERSION_PARTS[0]}
-VNUM1=${CURRENT_VERSION_PARTS[1]}
-VNUM2=${CURRENT_VERSION_PARTS[2]}
-VNUM3=${CURRENT_VERSION_PARTS[3]}
+# get number parts
+VNUM1=${CURRENT_VERSION_PARTS[0]}
+VNUM2=${CURRENT_VERSION_PARTS[1]}
+VNUM3=${CURRENT_VERSION_PARTS[2]}
+
+# remove v from VNUM1
+VNUM1=${VNUM1//v/}
 
 if [[ $VERSION == 'major' ]]
 then

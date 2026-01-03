@@ -19,6 +19,8 @@ jobs:
             api-gateway: 'api-gateway/**'
   create-release:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     needs:
       - check-changes
     if: ${{ needs.check-changes.outputs.changes != '[]' }}
