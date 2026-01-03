@@ -1,0 +1,290 @@
+services:
+  api-gateway:
+    image: ghcr.io/dance-school-management/api-gateway:latest
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./api-gateway:/usr/src/app
+    env_file:
+      - ./api-gateway/.env.development
+    networks:
+      - microservices-network
+
+  product-microservice:
+    image: ghcr.io/dance-school-management/product-microservice:latest
+    ports:
+      - "8001:8001"
+      - "50051:50051"
+    env_file:
+      - ./product-microservice/.env.development
+    volumes:
+      - ./product-microservice/:/usr/src/app
+    depends_on:
+      product_db:
+        condition: service_healthy
+    networks:
+      - microservices-network
+    command: sh -c "npm run db:deploy && npm run start:dev"
+
+  auth-microservice:
+    image: ghcr.io/dance-school-management/auth-microservice:latest
+    ports:
+      - "8002:8002"
+    env_file:
+      - ./auth-microservice/.env.development
+    volumes:
+      - ./auth-microservice/:/usr/src/app
+    depends_on:
+      auth_db:
+        condition: service_healthy
+    networks:
+      - microservices-network
+    command: sh -c "npm run db:deploy && npm run start:dev"
+
+  enroll-microservice:
+    image: ghcr.io/dance-school-management/enroll-microservice:latest
+    ports:
+      - "8003:8003"
+      - "50053:50051"
+    env_file:
+      - ./enroll-microservice/.env.development
+    volumes:
+      - ./enroll-microservice/:/usr/src/app
+    depends_on:
+      enroll_db:
+        condition: service_healthy
+    networks:
+      - microservices-network
+    command: sh -c "npm run db:deploy && npm run start:dev"
+
+  notification-microservice:
+    image: ghcr.io/dance-school-management/notification-microservice:latest
+    ports:
+      - "8005:8005"
+    env_file:
+      - ./notification-microservice/.env.development
+    volumes:
+      - ./notification-microservice/:/usr/src/app
+    depends_on:
+      notification_db:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - microservices-network
+    command: sh -c "npm run db:deploy && npm run start:dev"
+
+  profile-microservice:
+    image: ghcr.io/dance-school-management/profile-microservice:latest
+    ports:
+      - "8004:8004"
+      - "50052:50051"
+    env_file:
+      - ./profile-microservice/.env.development
+    volumes:
+      - ./profile-microservice/:/usr/src/app
+    depends_on:
+      profile_db:
+        condition: service_healthy
+    networks:
+      - microservices-network
+    command: sh -c "npm run db:deploy && npm run start:dev"
+
+  blog-microservice:
+    image: ghcr.io/dance-school-management/blog-microservice:latest
+    ports:
+      - "8006:8006"
+    env_file:
+      - ./blog-microservice/.env.development
+    volumes:
+      - ./blog-microservice/:/usr/src/app
+    depends_on:
+      blog_db:
+        condition: service_healthy
+    networks:
+      - microservices-network
+    command: sh -c "npm run db:deploy && npm run start:dev"
+
+  product_db:
+    image: postgres:18
+    restart: always
+    user: postgres
+    secrets:
+      - product_db
+    environment:
+      POSTGRES_DB: products
+      POSTGRES_PASSWORD_FILE: /run/secrets/product_db
+    ports:
+      - "5434:5432"
+    volumes:
+      - product_data:/var/lib/postgresql
+    networks:
+      - microservices-network
+    expose:
+      - 5432
+    healthcheck:
+      test: [ "CMD", "pg_isready" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  enroll_db:
+    image: postgres:18
+    restart: always
+    user: postgres
+    secrets:
+      - enroll_db
+    environment:
+      POSTGRES_DB: enroll
+      POSTGRES_PASSWORD_FILE: /run/secrets/enroll_db
+    ports:
+      - "5435:5432"
+    volumes:
+      - enroll_data:/var/lib/postgresql
+    networks:
+      - microservices-network
+    expose:
+      - 5432
+    healthcheck:
+      test: [ "CMD", "pg_isready" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  auth_db:
+    image: postgres:18
+    restart: always
+    user: postgres
+    secrets:
+      - auth_db
+    environment:
+      POSTGRES_DB: auth
+      POSTGRES_PASSWORD_FILE: /run/secrets/auth_db
+    ports:
+      - "5433:5432"
+    volumes:
+      - auth_data:/var/lib/postgresql
+    networks:
+      - microservices-network
+    expose:
+      - 5432
+    healthcheck:
+      test: [ "CMD", "pg_isready" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  notification_db:
+    image: postgres:18
+    restart: always
+    user: postgres
+    secrets:
+      - notification_db
+    environment:
+      POSTGRES_DB: notification
+      POSTGRES_PASSWORD_FILE: /run/secrets/notification_db
+    ports:
+      - "5437:5432"
+    volumes:
+      - notification_data:/var/lib/postgresql
+    networks:
+      - microservices-network
+    expose:
+      - 5432
+    healthcheck:
+      test: [ "CMD", "pg_isready" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  profile_db:
+    image: postgres:18
+    restart: always
+    user: postgres
+    secrets:
+      - profile_db
+    environment:
+      POSTGRES_DB: profiles
+      POSTGRES_PASSWORD_FILE: /run/secrets/profile_db
+    ports:
+      - "5436:5432"
+    volumes:
+      - profile_data:/var/lib/postgresql
+    networks:
+      - microservices-network
+    expose:
+      - 5432
+    healthcheck:
+      test: [ "CMD", "pg_isready" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  blog_db:
+    image: postgres:18
+    restart: always
+    user: postgres
+    secrets:
+      - blog_db
+    environment:
+      POSTGRES_DB: blog
+      POSTGRES_PASSWORD_FILE: /run/secrets/blog_db
+    ports:
+      - "5439:5432"
+    volumes:
+      - blog_data:/var/lib/postgresql
+    networks:
+      - microservices-network
+    expose:
+      - 5432
+    healthcheck:
+      test: [ "CMD", "pg_isready" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5 
+
+  rabbitmq:
+    image: rabbitmq:management
+    container_name: rabbitmq
+    environment:
+      - RABBITMQ_DEFAULT_USER=app
+      - RABBITMQ_DEFAULT_PASS=app
+    ports:
+      - 5672:5672
+      - 15672:15672
+    volumes: 
+      - ./rabbitmq/rabbitmq_data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - microservices-network
+
+volumes:
+  product_data:
+  auth_data:
+  enroll_data:
+  notification_data:
+  profile_data:
+  blog_data:
+  rabbitmq_data:
+
+networks:
+  microservices-network:
+    driver: bridge
+
+secrets:
+  auth_db:
+    file: db/auth-db-password.txt
+  product_db:
+    file: db/product-db-password.txt
+  enroll_db:
+    file: db/enroll-db-password.txt
+  notification_db:
+    file: db/notification-db-password.txt
+  profile_db:
+    file: db/profile-db-password.txt
+  blog_db:
+    file: db/blog-db-password.txt
