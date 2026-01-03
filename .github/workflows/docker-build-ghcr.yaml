@@ -41,6 +41,7 @@ jobs:
           context: ${{ inputs.dockerfile_context }}
           file: ${{ inputs.dockerfile_path }}
           push: true
+          platforms: linux/amd64,linux/arm64
           tags: |
             ghcr.io/${{ github.repository_owner }}/${{ inputs.image_name }}:${{ inputs.new_tag }}
             ghcr.io/${{ github.repository_owner }}/${{ inputs.image_name }}:latest
