@@ -27,8 +27,8 @@ COPY package.json .
 COPY --from=deps /usr/src/app/node_modules ./node_modules
 COPY prisma ./prisma
 
-RUN chown -R node:node .
-USER node
+# RUN chown -R node:node .
+# USER node
 
 EXPOSE 8006
 CMD ["npm", "run", "start:dev"]

@@ -58,7 +58,7 @@ export async function scanTicket(
     const courseTicket = await prisma.courseTicket.findUnique({
       where: {
         studentId_courseId: {
-          studentId: req.user?.id,
+          studentId: enrollment.studentId,
           courseId: classDetails.courseId,
         },
       },

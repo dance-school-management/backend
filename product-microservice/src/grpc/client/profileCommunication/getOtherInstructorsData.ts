@@ -13,7 +13,6 @@ export async function getOtherInstructorsData(
     productWithProfileClient.getOtherInstructorsData(
       request,
       (err: any, response: any) => {
-        console.log(err);
         if (err) {
           let unErr: UniversalError;
           try {

@@ -41,6 +41,8 @@ message ClassDetails {
   float price = 9;
   optional int64 course_id = 10;
   string class_type = 11;
+  int64 people_limit = 12;
+  string class_status = 13;
 }
 
 message ClassesDetailsResponse {

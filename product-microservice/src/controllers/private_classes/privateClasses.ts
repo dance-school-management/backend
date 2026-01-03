@@ -143,6 +143,11 @@ export async function getPrivateClassTemplateDetails(
     include: {
       danceCategory: true,
       advancementLevel: true,
+      class: {
+        include: {
+          classRoom: true,
+        },
+      },
     },
   });
 
@@ -206,8 +211,13 @@ export async function deletePrivateClassTemplate(
   res.status(StatusCodes.NO_CONTENT).send();
 }
 
+type CreateClassData = Omit<
+  Class,
+  "peopleLimit" | "createdBy" | "classStatus" | "id"
+>;
+
 async function validatePrivateClass(
-  classData: Class,
+  classData: CreateClassData,
   studentIds: string[],
   instructorId: string,
 ) {
@@ -298,7 +308,7 @@ async function validatePrivateClass(
 }
 
 export async function createPrivateClass(
-  req: Request<{}, {}, { classData: Class; studentIds: string[] }> & {
+  req: Request<{}, {}, { classData: CreateClassData; studentIds: string[] }> & {
     user?: any;
   },
   res: Response,
@@ -315,6 +325,17 @@ export async function createPrivateClass(
     instructorId,
   );
 
+  const studentsData = (await getStudentsProfiles(studentIds))
+    .studentProfilesList;
+
+  if (studentsData.length !== studentIds.length) {
+    throw new UniversalError(
+      StatusCodes.CONFLICT,
+      "Some students do not exist",
+      [{ field: "studentIds", message: "Some students do not exist" }],
+    );
+  }
+
   const newClass = await prisma.class.create({
     data: {
       classRoomId: classData.classRoomId,
@@ -322,7 +343,7 @@ export async function createPrivateClass(
       classTemplateId: classData.classTemplateId,
       startDate: classData.startDate,
       endDate: classData.endDate,
-      peopleLimit: classData.peopleLimit,
+      peopleLimit: studentIds.length,
       createdBy: instructorId,
     },
   });
@@ -346,9 +367,6 @@ export async function createPrivateClass(
   };
 
   await sendPushNotifications(message);
-
-  const studentsData = (await getStudentsProfiles(studentIds))
-    .studentProfilesList;
 
   res.status(StatusCodes.OK).json({
     class: newClass,

@@ -32,8 +32,9 @@ export function createApp() {
 
   app.use(handleUserContext);
   // Authenticated routes - admin/coordinator
-  app.use("/posts", checkRole(["ADMINISTRATOR", "COORDINATOR"]), postRouter);
-  app.use("/photo", checkRole(["ADMINISTRATOR", "COORDINATOR"]), photoRouter);
+  app.use("/photo", checkRole(["admin", "COORDINATOR"]), photoRouter);
+  app.use("/posts", checkRole(["admin", "COORDINATOR"]), postRouter);
+
   app.get("/", (req, res) => {
     res.send("Hello from blog-microservice");
   });

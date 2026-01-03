@@ -43,7 +43,7 @@ export async function createClassCheckoutSession(
                 `advancement level: ${theClass.advancementLevelName ?? "not provided"} ||| ` +
                 `class description: ${theClass.description}`,
             },
-            unit_amount: price * 100,
+            unit_amount: Math.ceil(price * 100),
             currency: "pln",
           },
           quantity: 1,
@@ -85,7 +85,7 @@ export async function createCourseCheckoutSession(
                 `advancement level: ${theCourse.advancementLevelName ?? "not provided"} | ` +
                 `course description: ${theCourse.description}`,
             },
-            unit_amount: Number((theCourse.price * 100).toFixed(2)),
+            unit_amount: Math.ceil(theCourse.price * 100),
             currency: "pln",
           },
           quantity: 1,

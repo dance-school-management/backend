@@ -38,7 +38,7 @@ describe("Post Routes (E2E Tests)", () => {
     app = createApp();
     adminUserContext = createMockUserContext({
       id: "user-123",
-      role: "ADMINISTRATOR",
+      role: "admin",
       email: "admin@test.com",
     });
   });

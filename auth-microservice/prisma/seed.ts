@@ -1,4 +1,4 @@
-import { PrismaClient, Role } from "../generated/client";
+import { PrismaClient } from "../generated/client";
 import { auth } from "../src/utils/auth";
 import logger from "../src/utils/winston";
 import { generateFakeUsers } from "../src/data/usersFaker";
@@ -13,24 +13,40 @@ async function main() {
     studentsJson,
     instructorsJson,
     administratorsJson,
-    generateFakeUsers(69, 62, Role.STUDENT),
-    generateFakeUsers(15, 15, Role.INSTRUCTOR),
-    generateFakeUsers(4, 6, Role.COORDINATOR),
+    generateFakeUsers(69, 62, "STUDENT"),
+    generateFakeUsers(15, 15, "INSTRUCTOR"),
+    generateFakeUsers(4, 6, "COORDINATOR"),
   );
 
   for (const user of users) {
     try {
-      await auth.api.signUpEmail({
-        body: {
-          email: user.email,
-          password: user.password,
-          name: user.name,
-          //@ts-ignore
-          first_name: user.first_name,
-          surname: user.surname,
-          id: user.id,
-        },
-      });
+      if (user.role === "STUDENT") {
+        await auth.api.signUpEmail({
+          body: {
+            email: user.email,
+            password: user.password,
+            name: user.name,
+            //@ts-ignore
+            role: "STUDENT",
+            first_name: user.first_name,
+            surname: user.surname,
+            id: user.id,
+          },
+        });
+      } else {
+        await auth.api.createUser({
+          body: {
+            email: user.email,
+            name: user.name,
+            password: user.password,
+            //@ts-ignore,
+            role: user.role,
+            first_name: user.first_name,
+            surname: user.surname,
+            id: user.id,
+          },
+        });
+      }
     } catch (error: any) {
       logger.info(
         ` \n User already exists or error occurred, skipping creation. for email: ${user.email} \n error: ${error}`,
@@ -43,7 +59,7 @@ async function main() {
       await prisma.user.update({
         where: { id: user.id },
         data: {
-          role: user.role as Role,
+          role: user.role,
         },
       });
     } catch (error: any) {
