@@ -10,6 +10,12 @@ generator client {
   output          = "../generated/client"
 }
 
+generator pdfErd {
+  provider      = "prisma-erd-generator"
+  mermaidConfig = "mermaidConfig.js"
+  output        = "erd/erd.md"
+}
+
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
@@ -20,34 +26,47 @@ enum AttendanceStatus {
   ABSENT
 }
 
-model ClassTicket {         
-  checkoutSessionId     String?          @unique
+model ClassTicket {
   studentId             String
   classId               Int
-  qrCodeUUID            String         @default(uuid()) @unique
-  isConfirmed           Boolean?
+  qrCodeUUID            String           @unique @default(uuid())
   attendanceStatus      AttendanceStatus @default(ABSENT)
   attendanceLastUpdated DateTime?
 
-  paymentStatus PaymentStatus
+  paymentStatus   PaymentStatus
+  paymentIntentId String?       @unique
+
+  checkoutSessionId String? @unique
+
+  cost Decimal @db.Decimal(precision: 10, scale: 2)
+
+  createdAt     DateTime
 
   @@id([studentId, classId])
 }
 
 model CourseTicket {
-  checkoutSessionId String        @unique
-  studentId         String
-  courseId          Int
-  paymentStatus     PaymentStatus
+  studentId String
+  courseId  Int
+
+  paymentStatus   PaymentStatus
+  paymentIntentId String?       @unique
+
+  checkoutSessionId String? @unique
+
+  cost Decimal @db.Decimal(precision: 10, scale: 2)
+
+  createdAt     DateTime
 
   @@id([studentId, courseId])
 }
 
 enum PaymentStatus {
-  PENDING
   PAID
-  PART_OF_COURSE
   REFUNDED
+  PART_OF_COURSE
+  // PENDING is used only for private classes - instructor enrolls the student with payment status PENDING
+  PENDING
 }
 
 model ClassesOnInstructors {

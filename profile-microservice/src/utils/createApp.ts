@@ -8,8 +8,10 @@ import { UniversalError } from "../errors/UniversalError";
 import { handleUserContext } from "../middlewares/handleUserContext";
 import { checkRole } from "../middlewares/checkRole";
 import unprotectedRouter from "../routes/unprotected/unprotected";
-import userRouter from "../routes/user/profile";  
+import userRouter from "../routes/user/profile";
+import searchRouter from "../routes/search-users/search";
 import path from "path";
+import s3Router from "../routes/s3/s3";
 
 export function createApp() {
   const app = express();
@@ -17,11 +19,15 @@ export function createApp() {
   app.use(helmet());
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
-  setupSwagger(app);
+  if (process.env.NODE_ENV === "development") {
+    setupSwagger(app);
+  }
   app.use("/uploads", express.static(path.resolve("uploads")));
-  app.use(handleUserContext);
   app.use("/", unprotectedRouter);
+  app.use("/s3-endpoint", s3Router);
+  app.use(handleUserContext);
   app.use("/user", userRouter);
+  app.use("/search", checkRole(["INSTRUCTOR", "COORDINATOR"]), searchRouter);
   app.get("/", (req, res) => {
     res.send("Hello from profile-microservice");
   });

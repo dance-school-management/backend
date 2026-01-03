@@ -1,21 +1,24 @@
 import { Router } from "express";
 import {
-  addCourse,
+  createCourse,
   deleteCourse,
   editCourse,
   getCourseDetails,
   getCourses,
+  publishCourse,
 } from "../../../controllers/cms/courses";
 import { body } from "express-validator";
 
 const router = Router();
+
+router.patch("/:id/publish", publishCourse);
 
 router.post("/", getCourses);
 
 router.post(
   "/new",
   body(["name"]).notEmpty().withMessage("Name must not be empty"),
-  addCourse,
+  createCourse,
 );
 
 router.put(

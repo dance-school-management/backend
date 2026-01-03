@@ -11,7 +11,7 @@
     "prettier": "npx prettier . --write",
     "start:dev": "nodemon --legacy-watch ./src/index.ts",
     "lint": "eslint ./src",
-    "db:deploy": "npx prisma migrate deploy && npx prisma generate"
+    "db:deploy": "npx prisma migrate deploy"
   },
   "prisma": {
     "seed": "ts-node prisma/seed.ts"
@@ -24,6 +24,7 @@
     "@grpc/proto-loader": "^0.7.15",
     "@prisma/adapter-pg": "^6.5.0",
     "@prisma/client": "^6.5.0",
+    "amqplib": "^0.10.9",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^5.0.1",
@@ -40,6 +41,8 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.23.0",
+    "@mermaid-js/mermaid-cli": "^11.12.0",
+    "@types/amqplib": "^0.10.6",
     "@types/cookie-parser": "^1.4.8",
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.1",
@@ -58,6 +61,8 @@
     "nodemon": "^3.1.9",
     "prettier": "3.5.3",
     "prisma": "^6.5.0",
+    "prisma-erd-generator": "^2.1.0",
+    "puppeteer": "^23.11.1",
     "supertest": "^7.1.0",
     "ts-jest": "^29.3.1",
     "ts-node": "10.9.1",

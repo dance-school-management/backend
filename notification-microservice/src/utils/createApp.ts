@@ -1,10 +1,14 @@
-import express from "express";
 import "dotenv/config";
-import { setupSwagger } from "./swagger";
-import { errorHandler } from "../middlewares/errorHandler";
-import morgan from "morgan";
+import express from "express";
 import helmet from "helmet";
+import morgan from "morgan";
+
+import { checkRole } from "../middlewares/checkRole";
+import { errorHandler } from "../middlewares/errorHandler";
+import { handleUserContext } from "../middlewares/handleUserContext";
 import notificationRouter from "../routes/notification/notification";
+import notificationManagementRouter from "../routes/notification/notificationManagement";
+import { setupSwagger } from "./swagger";
 
 export function createApp() {
   const app = express();
@@ -12,7 +16,11 @@ export function createApp() {
   app.use(helmet());
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
-  setupSwagger(app);
+  if (process.env.NODE_ENV === "development") {
+    setupSwagger(app);
+  }
+  app.use(handleUserContext);
+  app.use("/notification/management", checkRole(["INSTRUCTOR", "COORDINATOR", "ADMINISTRATOR"]), notificationManagementRouter);
   app.use("/notification", notificationRouter);
   app.use(errorHandler);
   app.get("/", (req, res) => {

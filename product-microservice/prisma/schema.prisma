@@ -10,6 +10,12 @@ generator client {
   output          = "../generated/client"
 }
 
+generator pdfErd {
+  provider      = "prisma-erd-generator"
+  mermaidConfig = "mermaidConfig.js"
+  output        = "erd/erd.md"
+}
+
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
@@ -24,7 +30,7 @@ model Course {
   advancementLevel   AdvancementLevel? @relation(fields: [advancementLevelId], references: [id])
   advancementLevelId Int?
   courseStatus       CourseStatus
-  customPrice        Decimal?
+  price              Decimal?          @db.Decimal(precision: 10, scale: 2)
   classTemplate      ClassTemplate[]
 }
 
@@ -47,15 +53,15 @@ model AdvancementLevel {
 
 model Class {
   id              Int           @id() @default(autoincrement())
-  classTemplate   ClassTemplate @relation(fields: [classTemplateId], references: [id])
+  classTemplate   ClassTemplate @relation(fields: [classTemplateId], references: [id], onDelete: Cascade)
   classTemplateId Int
-  groupNumber     Int
   startDate       DateTime
   endDate         DateTime
   peopleLimit     Int
   classRoom       ClassRoom     @relation(fields: [classRoomId], references: [id])
   classRoomId     Int
   classStatus     ClassStatus
+  createdBy       String?
 }
 
 model ClassRoom {
@@ -68,19 +74,18 @@ model ClassRoom {
 
 model ClassTemplate {
   id                 Int               @id() @default(autoincrement())
-  class              Class[]
-  course             Course?           @relation(fields: [courseId], references: [id])
+  class              Class[]           
+  course             Course?           @relation(fields: [courseId], references: [id], onDelete: Cascade)
   courseId           Int?
   name               String
   description        String
   price              Decimal           @db.Decimal(precision: 10, scale: 2)
-  currency           String
   danceCategory      DanceCategory?    @relation(fields: [danceCategoryId], references: [id])
   danceCategoryId    Int?
   advancementLevel   AdvancementLevel? @relation(fields: [advancementLevelId], references: [id])
   advancementLevelId Int?
   classType          ClassType
-  scheduleTileColor  String?
+  createdBy          String?
 }
 
 enum ClassType {
@@ -94,7 +99,6 @@ enum ClassStatus {
   NORMAL
   CANCELLED
   POSTPONED
-  MAKE_UP
 }
 
 enum CourseStatus {

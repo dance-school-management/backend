@@ -14,7 +14,6 @@ export async function getClassesStudents(
     productWithEnrollClient.getClassesStudents(
       request,
       (err: any, response: any) => {
-        console.log(err);
         if (err) {
           let unErr: UniversalError;
           try {

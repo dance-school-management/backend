@@ -1,9 +1,5 @@
-import { NextFunction, Request, Response } from "express";
-import {
-  ClassTicket,
-  CourseTicket,
-  PaymentStatus,
-} from "../../generated/client";
+import { Request, Response } from "express";
+import { ClassTicket } from "../../generated/client";
 import { checkValidations } from "../utils/errorHelpers";
 import { validationResult } from "express-validator";
 import { StatusCodes } from "http-status-codes";
@@ -11,11 +7,14 @@ import prisma from "../utils/prisma";
 import { UniversalError } from "../errors/UniversalError";
 import { checkClass } from "../grpc/client/productCommunication/checkClass";
 import { checkCourse } from "../grpc/client/productCommunication/checkCourse";
-import { stripe } from "../utils/stripe";
+import {
+  createClassCheckoutSession,
+  createCourseCheckoutSession,
+} from "../utils/helpers";
+import { PaymentStatus } from "../../generated/client";
 import { getClassesDetails } from "../grpc/client/productCommunication/getClassesDetails";
-import { randomUUID } from "crypto";
+import { stripe } from "../utils/stripe";
 import { getCoursesDetails } from "../grpc/client/productCommunication/getCoursesDetails";
-import { convertDateToReadable } from "../utils/helpers";
 
 export async function makeClassOrder(
   req: Request<object, object, ClassTicket> & { user?: any },
@@ -33,19 +32,40 @@ export async function makeClassOrder(
       [],
     );
   }
+
   //check class existance and type and asks for the peopleLimit
   const response = await checkClass(classId);
   const classLimit = response.peopleLimit;
-  const classCount = await prisma.classTicket.aggregate({
+
+  const classDetails = (await getClassesDetails([classId]))
+    .classesdetailsList[0];
+
+  const currentClassTicketsCount = await prisma.classTicket.aggregate({
     where: {
       classId,
+      paymentStatus: {
+        in: [
+          PaymentStatus.PAID,
+          PaymentStatus.PENDING,
+          PaymentStatus.PART_OF_COURSE,
+        ],
+      },
     },
     _count: {
       studentId: true,
     },
   });
 
-  if (classCount._count.studentId >= classLimit) {
+  const classTicketsCount = currentClassTicketsCount._count.studentId;
+
+  const existingReservation = await prisma.classTicket.findFirst({
+    where: {
+      classId,
+      studentId,
+    },
+  });
+
+  if (!existingReservation && classTicketsCount >= classLimit) {
     throw new UniversalError(
       StatusCodes.BAD_REQUEST,
       `This class with id ${classId} is already full`,
@@ -53,62 +73,99 @@ export async function makeClassOrder(
     );
   }
 
-  const idempotencyKey = `checkout-class-${studentId}-${classId}`;
+  if (existingReservation?.paymentStatus === PaymentStatus.PAID) {
+    throw new UniversalError(
+      StatusCodes.CONFLICT,
+      "Class ticket already paid",
+      [],
+    );
+  }
 
-  const theClass = (await getClassesDetails([classId])).classesdetailsList[0];
+  if (existingReservation?.paymentStatus === PaymentStatus.REFUNDED) {
+    throw new UniversalError(StatusCodes.CONFLICT, "Class ticket refunded", []);
+  }
 
-  const price = theClass.price;
+  if (existingReservation?.paymentStatus === PaymentStatus.PART_OF_COURSE) {
+    throw new UniversalError(
+      StatusCodes.CONFLICT,
+      "Class is bought as part of course. You need to pay for the entire course.",
+      [],
+    );
+  }
 
-  const startDate = new Date(theClass.startDate);
-  const endDate = new Date(theClass.endDate);
+  if (!existingReservation) {
 
-  const session = await stripe.checkout.sessions.create(
-    {
-      mode: "payment",
-      payment_method_types: ["blik", "p24", "card"],
-      success_url: "http://localhost:3000/payment/success",
-      line_items: [
-        {
-          price_data: {
-            product_data: {
-              name: theClass.name,
-              description:
-                `start date: ${convertDateToReadable(startDate)} | ` +
-                `end date: ${convertDateToReadable(endDate)} | ` +
-                `dance category: ${theClass.danceCategoryName ?? "not provided"} | ` +
-                `advancement level: ${theClass.advancementLevelName ?? "not provided"} | ` +
-                `class description: ${theClass.description}`,
-            },
-            unit_amount: price * 100,
-            currency: "pln",
-          },
-          quantity: 1,
+    await prisma.$transaction(async (tx) => {
+      const { session, classData } = await createClassCheckoutSession(
+        classId,
+        studentId,
+      );
+      await tx.classTicket.create({
+        data: {
+          classId,
+          studentId,
+          paymentStatus: PaymentStatus.PENDING,
+          checkoutSessionId: session.id,
+          cost: classData.price,
+          createdAt: new Date()
         },
-      ],
-    },
-    { idempotencyKey },
-  );
+      });
 
-  await prisma.classTicket.create({
-    data: {
-      checkoutSessionId: session.id,
-      classId,
-      studentId,
-      isConfirmed: false,
-      paymentStatus: PaymentStatus.PENDING,
-    },
-  });
+      res.status(StatusCodes.OK).json({
+        sessionUrl: session.url,
+        className: classData.name,
+        classDescription: classData.description,
+        classStartDate: classData.startDate,
+        classEndDate: classData.endDate,
+        classPrice: classData.price,
+        classDanceCategory: classData.danceCategoryName,
+        classAdvancementLevel: classData.advancementLevelName,
+      });
+      return;
+    });
+  } else {
+    try {
+      if (!existingReservation.checkoutSessionId) {
+        throw new UniversalError(
+          StatusCodes.INTERNAL_SERVER_ERROR,
+          "Problem with retrieving checkout session. Checkout session not saved in database.",
+          [],
+        );
+      }
 
-  res.status(200).json({ sessionUrl: session.url });
+      const session = await stripe.checkout.sessions.retrieve(
+        existingReservation.checkoutSessionId,
+      );
+
+      res.status(StatusCodes.OK).json({
+        sessionUrl: session.url,
+        className: classDetails.name,
+        classDescription: classDetails.description,
+        classStartDate: classDetails.startDate,
+        classEndDate: classDetails.endDate,
+        classPrice: classDetails.price,
+        classDanceCategory: classDetails.danceCategoryName,
+        classAdvancementLevel: classDetails.advancementLevelName,
+      });
+      return;
+    } catch (error) {
+      throw new UniversalError(
+        StatusCodes.BAD_REQUEST,
+        "Checkout session not found.",
+        [],
+      );
+    }
+  }
 }
+
 export async function makeCourseOrder(
-  req: Request<object, object, { courseId: number; groupNumber: number }> & {
+  req: Request<object, object, { courseId: number; }> & {
     user?: any;
   },
   res: Response,
 ) {
   checkValidations(validationResult(req));
-  const { courseId, groupNumber } = req.body;
+  const { courseId } = req.body;
   let studentId;
   if (req.user) {
     studentId = req.user.id;
@@ -119,107 +176,142 @@ export async function makeCourseOrder(
       [],
     );
   }
-  const response = await checkCourse(courseId, groupNumber); // asks the product-microservice if the course is available, asks for the maximum peopoleLimit in the course's classes
+  const response = await checkCourse(courseId); // asks the product-microservice if the course is available, asks for the maximum peopoleLimit in the course's classes
   const classes = response.peopleLimitsList;
-  const currentTickets = await prisma.classTicket.groupBy({
+
+  const minPeopleLimit = classes.reduce((acc, cur) =>
+    cur.peopleLimit < acc.peopleLimit ? cur : acc,
+  ).peopleLimit;
+
+  const currentCourseTickets = await prisma.courseTicket.aggregate({
     where: {
-      classId: {
-        in: classes.map((classObj) => classObj.classId),
+      courseId,
+      paymentStatus: {
+        in: [PaymentStatus.PAID, PaymentStatus.PENDING],
       },
     },
-    by: "classId",
     _count: {
       studentId: true,
     },
   });
-  currentTickets.forEach((currentTicket) => {
-    const classLimit = classes.find(
-      (classObj) => classObj.classId === currentTicket.classId,
-    )?.peopleLimit;
-    if (classLimit && currentTicket._count.studentId >= classLimit) {
-      throw new UniversalError(
-        StatusCodes.BAD_REQUEST,
-        `This class with id ${currentTicket.classId} is already full, you can't enroll in this course`,
-        [],
-      );
-    }
+
+  const existingReservation = await prisma.courseTicket.findFirst({
+    where: {
+      courseId,
+      studentId,
+    },
   });
 
-  const theCourse = (await getCoursesDetails([courseId])).coursesDetailsList[0];
-
-  const idempotencyKey = `checkout-course-${studentId}-${courseId}`;
-
-  const session = await stripe.checkout.sessions.create(
-    {
-      mode: "payment",
-      payment_method_types: ["blik", "p24", "card"],
-      success_url: "http://localhost:3000/payment/success",
-      line_items: [
-        {
-          price_data: {
-            product_data: {
-              name: theCourse.name,
-              description:
-                `dance category: ${theCourse.danceCategoryName ?? "not provided"} | ` +
-                `advancement level: ${theCourse.advancementLevelName ?? "not provided"} | ` +
-                `course description: ${theCourse.description}`,
-            },
-            unit_amount: Number((theCourse.price * 100).toFixed(2)),
-            currency: "pln",
-          },
-          quantity: 1,
-        },
-      ],
-    },
-    { idempotencyKey },
-  );
-
-  try {
-    await prisma.$transaction(async (tx) => {
-      await tx.classTicket.createMany({
-        data: classes.map((classObj) => ({
-          classId: classObj.classId,
-          studentId,
-          isConfirmed: false,
-          paymentStatus: PaymentStatus.PART_OF_COURSE,
-        })),
-      });
-      await tx.courseTicket.create({
-        data: {
-          checkoutSessionId: session.id,
-          courseId,
-          studentId,
-          paymentStatus: PaymentStatus.PENDING,
-        },
-      });
-    });
-  } catch (err: any) {
+  if (
+    !existingReservation &&
+    currentCourseTickets._count.studentId >= minPeopleLimit
+  ) {
     throw new UniversalError(
-      StatusCodes.INTERNAL_SERVER_ERROR,
-      "Failed to create course order",
+      StatusCodes.CONFLICT,
+      "Maximum number of course participants has been reached",
       [],
     );
   }
 
-  res.status(200).json({ sessionUrl: session.url });
+  if (existingReservation?.paymentStatus === PaymentStatus.PAID) {
+    throw new UniversalError(
+      StatusCodes.CONFLICT,
+      "Course ticket already paid",
+      [],
+    );
+  }
+
+  if (existingReservation?.paymentStatus === PaymentStatus.REFUNDED) {
+    throw new UniversalError(
+      StatusCodes.CONFLICT,
+      "Course ticket refunded",
+      [],
+    );
+  }
+
+  if (!existingReservation) {
+    await prisma.$transaction(async (tx) => {
+      const { session, courseData } = await createCourseCheckoutSession(
+        courseId,
+        studentId,
+      );
+      await tx.courseTicket.create({
+        data: {
+          courseId,
+          studentId,
+          paymentStatus: PaymentStatus.PENDING,
+          checkoutSessionId: session.id,
+          cost: courseData.price,
+          createdAt: new Date()
+        },
+      });
+
+      await tx.classTicket.createMany({
+        data: classes.map((classObj) => ({
+          classId: classObj.classId,
+          studentId,
+          paymentStatus: PaymentStatus.PART_OF_COURSE,
+          cost: 0,
+          createdAt: new Date()
+        })),
+      });
+
+      res.status(StatusCodes.OK).json({
+        sessionUrl: session.url,
+        courseName: courseData.name,
+        courseDescription: courseData.description,
+        coursePrice: courseData.price,
+        courseDanceCategory: courseData.danceCategoryName,
+        courseAdvancementLevel: courseData.advancementLevelName,
+      });
+      return;
+    });
+  } else {
+    try {
+      if (!existingReservation.checkoutSessionId) {
+        throw new UniversalError(
+          StatusCodes.INTERNAL_SERVER_ERROR,
+          "Problem with retrieving checkout session. Checkout session not saved in database.",
+          [],
+        );
+      }
+
+      const session = await stripe.checkout.sessions.retrieve(
+        existingReservation.checkoutSessionId,
+      );
+
+      const courseDetails = (await getCoursesDetails([courseId]))
+        .coursesDetailsList[0];
+
+      res.status(StatusCodes.OK).json({
+        sessionUrl: session.url,
+        courseName: courseDetails.name,
+        courseDescription: courseDetails.description,
+        coursePrice: courseDetails.price,
+        courseDanceCategory: courseDetails.danceCategoryName,
+        courseAdvancementLevel: courseDetails.advancementLevelName,
+      });
+      return;
+    } catch (error) {
+      throw new UniversalError(
+        StatusCodes.BAD_REQUEST,
+        "Checkout session not found.",
+        [],
+      );
+    }
+  }
 }
 
-export async function getPaymentLink(
-  req: Request<{}, {}, {}, { classId?: number; courseId?: number }> & {
+export async function payForPrivateClass(
+  req: Request<object, object, { classId: number }> & {
     user?: any;
   },
   res: Response,
 ) {
-  let userId;
+  const { classId } = req.body;
+  let studentId;
   if (req.user) {
-    userId = req.user.id;
-    if (req.user?.role !== "STUDENT") {
-      throw new UniversalError(
-        StatusCodes.UNAUTHORIZED,
-        `You are not authorized to access /order/payment-link as ${req.user?.role}`,
-        [],
-      );
-    }
+    studentId = req.user.id;
   } else {
     throw new UniversalError(
       StatusCodes.UNAUTHORIZED,
@@ -228,67 +320,130 @@ export async function getPaymentLink(
     );
   }
 
-  const classIdQ = req.query.classId;
-  const courseIdQ = req.query.courseId;
+  const classDetails = (await getClassesDetails([classId]))
+    .classesdetailsList[0];
 
-  if (classIdQ && courseIdQ) {
+  if (classDetails.classType !== "PRIVATE_CLASS") {
     throw new UniversalError(
-      StatusCodes.BAD_REQUEST,
-      "Specify only one of the following parameters: classId, courseId",
+      StatusCodes.CONFLICT,
+      "The class you are trying to pay for is not private",
       [],
     );
   }
 
-  if (classIdQ) {
-    const classId = Number(classIdQ);
-    const paymentData = await prisma.classTicket.findFirst({
-      where: {
+  const enrollment = await prisma.classTicket.findUnique({
+    where: {
+      studentId_classId: {
+        studentId,
         classId,
-        studentId: userId,
       },
-    });
+    },
+  });
 
-    if (!paymentData)
-      throw new UniversalError(StatusCodes.BAD_REQUEST, "Ticket not found", []);
-
-    const sessionId = paymentData.checkoutSessionId;
-
-    if (!sessionId)
-      throw new UniversalError(
-        StatusCodes.BAD_REQUEST,
-        "Checkout session id is missing",
-        [],
-      );
-
-    const session = await stripe.checkout.sessions.retrieve(sessionId);
-
-    res.status(StatusCodes.OK).json({ url: session.url });
+  if (!enrollment) {
+    throw new UniversalError(
+      StatusCodes.CONFLICT,
+      "You are not enrolled for this class or your enrollment has expired",
+      [],
+    );
   }
 
-  if (courseIdQ) {
-    const courseId = Number(courseIdQ)
+  if (enrollment.paymentStatus === PaymentStatus.PAID) {
+    throw new UniversalError(
+      StatusCodes.CONFLICT,
+      "You have already paid for this class",
+      [],
+    );
+  }
 
-    const paymentData = await prisma.courseTicket.findFirst({
+  if (enrollment.paymentStatus === PaymentStatus.PART_OF_COURSE) {
+    throw new UniversalError(
+      StatusCodes.CONFLICT,
+      "Error. Our system says this class is part of course, while it's private.",
+      [],
+    );
+  }
+
+  if (enrollment.paymentStatus === PaymentStatus.REFUNDED) {
+    throw new UniversalError(
+      StatusCodes.CONFLICT,
+      "The class was refunded. You can't pay for a class after refund.",
+      [],
+    );
+  }
+
+  if (!enrollment.checkoutSessionId) {
+    const { session, classData } = await createClassCheckoutSession(
+      classId,
+      studentId,
+    );
+
+    await prisma.classTicket.update({
       where: {
-        courseId,
-        studentId: userId,
+        studentId_classId: {
+          classId,
+          studentId,
+        },
+      },
+      data: {
+        checkoutSessionId: session.id,
       },
     });
 
-    if (!paymentData)
-      throw new UniversalError(StatusCodes.BAD_REQUEST, "Ticket not found", []);
-
-    const sessionId = paymentData.checkoutSessionId;
-
-    if (!sessionId)
-      throw new UniversalError(
-        StatusCodes.BAD_REQUEST,
-        "Checkout session id is missing",
-        [],
+    res.status(StatusCodes.OK).json({
+      sessionUrl: session.url,
+      className: classData.name,
+      classDescription: classData.description,
+      classStartDate: classData.startDate,
+      classEndDate: classData.endDate,
+      classPrice: classData.price,
+      classDanceCategory: classData.danceCategoryName,
+      classAdvancementLevel: classData.advancementLevelName,
+    });
+  } else {
+    try {
+      const session = await stripe.checkout.sessions.retrieve(
+        enrollment.checkoutSessionId,
       );
 
-    const session = await stripe.checkout.sessions.retrieve(sessionId);
+      res.status(StatusCodes.OK).json({
+        sessionUrl: session.url,
+        className: classDetails.name,
+        classDescription: classDetails.description,
+        classStartDate: classDetails.startDate,
+        classEndDate: classDetails.endDate,
+        classPrice: classDetails.price,
+        classDanceCategory: classDetails.danceCategoryName,
+        classAdvancementLevel: classDetails.advancementLevelName,
+      });
+    } catch (error) {
+      const { session, classData } = await createClassCheckoutSession(
+        classId,
+        studentId,
+      );
 
-    res.status(StatusCodes.OK).json({ url: session.url });
+      await prisma.classTicket.update({
+        where: {
+          studentId_classId: {
+            classId,
+            studentId,
+          },
+        },
+        data: {
+          checkoutSessionId: session.id,
+        },
+      });
+
+      res.status(StatusCodes.OK).json({
+        sessionUrl: session.url,
+        className: classData.name,
+        classDescription: classData.description,
+        classStartDate: classData.startDate,
+        classEndDate: classData.endDate,
+        classPrice: classData.price,
+        classDanceCategory: classData.danceCategoryName,
+        classAdvancementLevel: classData.advancementLevelName,
+      });
+    }
   }
 }

@@ -35,6 +35,30 @@ export async function checkClass(
     callback({ code: status.NOT_FOUND, details: JSON.stringify(err) });
     return;
   }
+
+  if (classObj.classStatus === ClassStatus.HIDDEN) {
+    const err = new UniversalError(
+      StatusCodes.CONFLICT,
+      `This class is hidden. You can't buy a ticket for it!`,
+      [],
+    );
+    callback({ code: status.UNAVAILABLE, details: JSON.stringify(err) });
+    return;
+  }
+
+  if (
+    classObj.classStatus === ClassStatus.CANCELLED ||
+    classObj.classStatus === ClassStatus.POSTPONED
+  ) {
+    const err = new UniversalError(
+      StatusCodes.CONFLICT,
+      `This class with id ${classId} is cancelled or postponed. Its purchase time has expired.`,
+      [],
+    );
+    callback({ code: status.UNAVAILABLE, details: JSON.stringify(err) });
+    return;
+  }
+
   if (classObj.startDate < new Date()) {
     const err = new UniversalError(
       StatusCodes.NOT_FOUND,
@@ -53,13 +77,11 @@ export async function checkClass(
         },
       },
     });
-    const firstClassStartDate = courseClasses
-      .filter((cc) => cc.groupNumber === classObj.groupNumber)
-      .reduce(
-        (acc, cur) => (cur.startDate < acc ? cur.startDate : acc),
-        // Biggest date possible
-        new Date(8640000000000000),
-      );
+    const firstClassStartDate = courseClasses.reduce(
+      (acc, cur) => (cur.startDate < acc ? cur.startDate : acc),
+      // Biggest date possible
+      new Date(8640000000000000),
+    );
     const date = new Date();
     const threeDaysLater = new Date(
       date.setDate(
@@ -77,18 +99,7 @@ export async function checkClass(
       return;
     }
   }
-  if (
-    classObj.classStatus === ClassStatus.CANCELLED ||
-    classObj.classStatus === ClassStatus.POSTPONED
-  ) {
-    const err = new UniversalError(
-      StatusCodes.CONFLICT,
-      `This class with id ${classId} is cancelled or postponed`,
-      [],
-    );
-    callback({ code: status.UNAVAILABLE, details: JSON.stringify(err) });
-    return;
-  }
+  
   const res = new CheckResponse().setPeopleLimit(classObj.peopleLimit);
   callback(null, res);
 }

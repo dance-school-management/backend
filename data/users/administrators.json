@@ -6,7 +6,7 @@
     "name": "Alice Admin",
     "first_name": "Alice",
     "surname": "Admin",
-    "role": "ADMINISTRATOR"
+    "role": "admin"
   },
   {
     "id": "2001",
@@ -15,7 +15,7 @@
     "name": "Adam Admin",
     "first_name": "Adam",
     "surname": "Admin",
-    "role": "ADMINISTRATOR"
+    "role": "admin"
   },
   {
     "id": "2002",
@@ -24,6 +24,6 @@
     "name": "Martin Admin",
     "first_name": "Martin",
     "surname": "Admin",
-    "role": "ADMINISTRATOR"
+    "role": "admin"
   }
 ]

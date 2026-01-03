@@ -10,6 +10,12 @@ generator client {
   output          = "../generated/client"
 }
 
+generator pdfErd {
+  provider      = "prisma-erd-generator"
+  mermaidConfig = "mermaidConfig.js"
+  output        = "erd/erd.md"
+}
+
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
@@ -32,5 +38,5 @@ enum Role {
   INSTRUCTOR
   COORDINATOR
   STUDENT
-  ADMINISTRATOR
+  admin
 }

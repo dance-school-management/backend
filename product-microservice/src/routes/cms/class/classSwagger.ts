@@ -11,9 +11,6 @@
  *         classTemplateId:
  *           type: integer
  *           example: 2
- *         groupNumber:
- *           type: integer
- *           example: 1
  *         startDate:
  *           type: string
  *           format: date-time
@@ -35,30 +32,7 @@
  *             - NORMAL
  *             - CANCELLED
  *             - POSTPONED
- *             - MAKE_UP
  *           example: HIDDEN
- *         instructor:
- *           type: array
- *           items:
- *             type: object
- *             properties:
- *               instructorId:
- *                 type: integer
- *                 example: 3
- *               classId:
- *                 type: integer
- *                 example: 1
- *         student:
- *           type: array
- *           items:
- *             type: object
- *             properties:
- *               studentId:
- *                 type: integer
- *                 example: 4
- *               classId:
- *                 type: integer
- *                 example: 1
  */
 
 /**
@@ -80,13 +54,11 @@
  *             required:
  *               - instructorIds
  *               - classRoomId
- *               - groupNumber
  *               - startDate
  *               - endDate
  *               - peopleLimit
  *               - classTemplateId
  *               - isConfirmation
- *               - classStatus
  *             properties:
  *               instructorIds:
  *                 type: array
@@ -98,10 +70,6 @@
  *                 type: integer
  *                 description: ID of the classroom where the class takes place
  *                 example: 1
- *               groupNumber:
- *                 type: integer
- *                 description: Number of the group attending the class
- *                 example: 3
  *               startDate:
  *                 type: string
  *                 format: date-time
@@ -115,7 +83,7 @@
  *               peopleLimit:
  *                 type: integer
  *                 description: Maximum number of people allowed in the class
- *                 example: 25
+ *                 example: 2
  *               classTemplateId:
  *                 type: integer
  *                 description: ID of the class template associated with this class
@@ -126,10 +94,6 @@
  *                   Set to true to confirm creation even if peopleLimit exceeds the room capacity.
  *                   Required in such cases, otherwise the request will be rejected or ignored.
  *                 example: false
- *               classStatus:
- *                 type: string
- *                 description: Status of the class (e.g. OPEN, CANCELLED, etc.)
- *                 example: "HIDDEN"
  *     responses:
  *       "201":
  *         description: Class created successfully
@@ -149,12 +113,11 @@
 
 /**
  * @swagger
- * /cms/class/status/edit:
- *   put:
+ * /cms/class/publish:
+ *   patch:
  *     summary: Edit status of a class
  *     description: >
- *       Updates the status of a class based on its ID.
- *       Requires isConfirmation to be set to true to proceed, otherwise throws a Warning
+ *       Publishes a class (changes its status to normal).
  *     tags:
  *       - cms - Classes
  *     requestBody:
@@ -165,27 +128,11 @@
  *             type: object
  *             required:
  *               - classId
- *               - newStatus
- *               - isConfirmation
  *             properties:
  *               classId:
  *                 type: integer
  *                 description: ID of the class to update
  *                 example: 42
- *               newStatus:
- *                 type: string
- *                 description: New status to set for the class
- *                 enum:
- *                   - HIDDEN
- *                   - NORMAL
- *                   - CANCELLED
- *                   - POSTPONED
- *                   - MAKE_UP
- *                 example: CANCELLED
- *               isConfirmation:
- *                 type: boolean
- *                 description: Must be true if updating from HIDDEN to any status other than NORMAL
- *                 example: false
  *     responses:
  *       200:
  *         description: Class status successfully updated
@@ -193,19 +140,94 @@
  *           application/json:
  *             schema:
  *               type: object
- *               properties:
- *                 id:
- *                   type: integer
- *                 classStatus:
- *                   type: string
  *       400:
  *         description: Bad request (e.g., missing or invalid data)
  *       404:
  *         description: Class not found
- *       409:
- *         description: Conflict — confirmation required when changing status from HIDDEN
  *       500:
  *         description: Internal server error
+ */
+
+/**
+ * @swagger
+ * /cms/class:
+ *   patch:
+ *     summary: Edit existing class
+ *     description: >
+ *       Updates an existing class.  
+ *       Behavior depends on the current class status:
+ *
+ *       - If the class is **hidden**, full validation is performed
+ *         (dates, classroom, instructors, people limits, confirmation flag).
+ *       - If the class is **published** (or not hidden), only `peopleLimit`
+ *         and `classRoomId` can be updated with additional business checks.
+ *     tags:
+ *       - cms - Classes
+ *     requestBody:
+ *       required: true
+ *       description: Class data used to edit an existing class.
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - id
+ *               - isConfirmation
+ *             properties:
+ *               id:
+ *                 type: integer
+ *                 description: ID of the class that should be edited.
+ *                 example: 47
+ *               instructorIds:
+ *                 type: array
+ *                 description: >
+ *                   List of instructor IDs that should be assigned to this class.
+ *                 items:
+ *                   type: string
+ *                 example: ["13", "14"]
+ *               classRoomId:
+ *                 type: integer
+ *                 description: ID of the classroom where the class will be held.
+ *                 example: 1
+ *               startDate:
+ *                 type: string
+ *                 format: date-time
+ *                 description: Start date and time of the class (ISO 8601).
+ *                 example: "2026-03-10T09:00:00.000Z"
+ *               endDate:
+ *                 type: string
+ *                 format: date-time
+ *                 description: End date and time of the class (ISO 8601).
+ *                 example: "2026-03-10T11:00:00.000Z"
+ *               peopleLimit:
+ *                 type: integer
+ *                 description: >
+ *                   Maximum number of people allowed to enroll in the class.
+ *                 example: 8
+ *               isConfirmation:
+ *                 type: boolean
+ *                 description: >
+ *                   When `true`, confirms exceeding the classroom people limit.  
+ *                   When `false`, exceeding the classroom limit results in a warning/conflict.
+ *                 example: false
+ *     responses:
+ *       200:
+ *         description: >
+ *           Class successfully updated.  
+ *           The response body contains the updated class object
+ *           (including fields such as `id`, `startDate`, `endDate`,
+ *           `classRoomId`, `peopleLimit`, status and other class-related data).
+ *       409:
+ *         description: >
+ *           Business conflict while editing the class, e.g.:
+ *           - Class not found.  
+ *           - Trying to decrease people limit of a published class.  
+ *           - Trying to exceed classroom people limit without confirmation.  
+ *           In such cases an error object is returned with a message describing the problem.
+ *       500:
+ *         description: >
+ *           Unexpected server error.  
+ *           The response body contains an error object with a generic error message.
  */
 
 /**
@@ -365,3 +387,34 @@
  *       500:
  *         description: Internal server error
  */
+
+/**
+ * @swagger
+ * /cms/class/{id}:
+ *   delete:
+ *     summary: Delete a class
+ *     description: >
+ *       Deletes a class **only if it exists** and its status is `HIDDEN`.  
+ *       If the class is published, the server returns an error.
+ *     tags:
+ *       - cms - Classes
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         example: 12
+ *         description: ID of the class to delete
+ *     responses:
+ *       204:
+ *         description: Class deleted successfully (no content).
+ *       409:
+ *         description: >
+ *           Possible reasons:  
+ *           - Class not found  
+ *           - Class is published and cannot be deleted
+ *       500:
+ *         description: Unexpected server error.
+ */
+

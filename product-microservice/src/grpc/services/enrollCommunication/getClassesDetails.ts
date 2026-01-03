@@ -36,7 +36,8 @@ export async function getClassesDetails(
       .setName(classDetails.classTemplate.name)
       .setStartDate(classDetails.startDate.toISOString())
       .setEndDate(classDetails.endDate.toISOString())
-      .setClassRoomName(classDetails.classRoom.name);
+      .setClassRoomName(classDetails.classRoom.name)
+      .setClassType(classDetails.classTemplate.classType);
     if (classDetails.classTemplate.danceCategory)
       cbd.setDanceCategoryName(classDetails.classTemplate.danceCategory.name);
     if (classDetails.classTemplate.advancementLevel)
@@ -48,6 +49,8 @@ export async function getClassesDetails(
       .setPrice(Number(classDetails.classTemplate.price.toNumber().toFixed(2)));
     if (classDetails.classTemplate.courseId)
       cbd.setCourseId(classDetails.classTemplate.courseId);
+    cbd.setPeopleLimit(classDetails.peopleLimit);
+    cbd.setClassStatus(classDetails.classStatus);
     return cbd;
   });
 

@@ -24,6 +24,11 @@ You can use script ```create-files-with-db-password.sh```. It creates each of th
    3. Install the stripe CLI. This is a simple CLI app. For example on the macOS it can be installed through homebrew. You can also install it with ```npm i -g stripe```.
    4. Use command ```stripe listen --forward-to localhost:8000/enroll/stripe/webhook```
    5. Copy the stripe webhook secret from the terminal and paste it into .env.development in enroll-microservice
+5. To make sending emails work, you need to go to ```auth-microservice/src/react-email-starter``` and run ```npm i```. You also need those environment variables in .env.development in auth-microservice:
+```
+RESEND_API_KEY=...
+RESEND_SOURCE_EMAIL=onboarding@resend.dev
+```
 
 You can find swagger docs at:
 
@@ -32,6 +37,8 @@ You can find swagger docs at:
 - localhost:8000/auth/2/api-docs
 - localhost:8000/enroll/api-docs
 - localhost:8000/profile/api-docs
+- localhost:8000/notification/api-docs
+- localhost:8000/elasticsearch/api-docs
 
 Authentication (2 places):
 

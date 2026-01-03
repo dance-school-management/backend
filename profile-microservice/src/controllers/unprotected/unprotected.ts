@@ -3,6 +3,9 @@ import { StatusCodes } from "http-status-codes";
 import prisma from "../../utils/prisma";
 import { Profile, Role } from "../../../generated/client";
 import { getDanceCategories } from "../../grpc/client/productCommunication/getDanceCategories";
+import { getInstructorExperience } from "../../grpc/client/enrollCommunication/getInstructorExperience";
+import { UniversalError } from "../../errors/UniversalError";
+import { s3Endpoint } from "../../utils/aws-s3/s3Client";
 
 export async function getAllInstructors(
   req: Request<{}, {}, {}>,
@@ -41,24 +44,59 @@ export async function getAllInstructors(
     }),
   );
 
+  const instructorsWithPhotos = instructorsWithDanceCategoriesNames.map(
+    (instructor) => ({
+      ...instructor,
+      photoPath: `${s3Endpoint}${instructor.photoPath}`,
+    }),
+  );
+
   const result = {
-    instructors: instructorsWithDanceCategoriesNames,
+    instructors: instructorsWithPhotos,
   };
 
   res.status(StatusCodes.OK).json(result);
 }
 
 export async function getInstructor(
-  req: Request<Profile>,
+  req: Request<
+    Profile,
+    {},
+    {},
+    { experienceDateFrom: string; experienceDateTo: string }
+  >,
   res: Response,
   next: NextFunction,
 ) {
-  const instructor = await prisma.profile.findUnique({
+  let instructor = await prisma.profile.findUnique({
     where: {
       id: req.params.id,
       role: Role.INSTRUCTOR,
     },
   });
+
+  if (!instructor) {
+    throw new UniversalError(StatusCodes.CONFLICT, "Instructor not found", []);
+  }
+
+  instructor = {
+    ...instructor,
+    photoPath: `${s3Endpoint}${instructor?.photoPath}`,
+  };
+
+  const timeSpentForEachDCAndAL = (
+    await getInstructorExperience(
+      instructor?.id,
+      req.query.experienceDateFrom,
+      req.query.experienceDateTo,
+    )
+  ).instructorExperienceList;
+
+  const instructorWithExperience = {
+    ...instructor,
+    experience: [...new Set(timeSpentForEachDCAndAL)],
+  };
+
   if (
     instructor?.favouriteDanceCategories &&
     instructor.favouriteDanceCategories.length > 0
@@ -67,7 +105,7 @@ export async function getInstructor(
       await getDanceCategories(instructor?.favouriteDanceCategories)
     ).danceCategoriesList;
     const instructorWithDanceCategoriesNames = {
-      ...instructor,
+      ...instructorWithExperience,
       favouriteDanceCategories: instructor.favouriteDanceCategories.map(
         (favId) =>
           danceCategoriesEntries.find(

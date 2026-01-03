@@ -1,13 +1,13 @@
 /**
  * @swagger
- * /pricing/most_popular_courses:
+ * /public/pricing/most_popular_courses:
  *   get:
  *     summary: Get most popular courses
  *     description: >
  *       Returns top (10) most popular (but having at least one ticket bought) courses 
  *       within the specified date range for the pricing page.
  *     tags:
- *       - pricing - most popular courses
+ *       - pricing - public
  *     parameters:
  *       - in: query
  *         name: startDateFrom

@@ -7,3 +7,6 @@ uploads
 .env
 .env.*
 !.env.*.example
+prisma/**/*.md
+prisma/**/*.mmd
+prisma/**/*.pdf

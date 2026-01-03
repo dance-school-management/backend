@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+package profile_to_enroll;
+
+import "ProfileToEnrollMessages.proto";
+
+service ProfileToEnroll {
+  rpc GetInstructorExperience (GetInstructorExperienceRequest) returns (GetInstructorExperienceResponse);
+}

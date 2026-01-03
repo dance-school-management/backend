@@ -6,7 +6,6 @@ import { ClassStatus, Prisma } from "../../generated/client";
 import { getStudentClasses } from "../grpc/client/enrollCommunication/getStudentClasses";
 import { getInstructorsClasses } from "../grpc/client/enrollCommunication/getInstructorsClasses";
 import { CourseStatus } from "../../generated/client";
-import { getCoursesPrices } from "../utils/helpers";
 import { getClassesInstructors } from "../grpc/client/enrollCommunication/getClassesInstructors";
 import { getInstructorsData } from "../grpc/client/profileCommunication/getInstructorsData";
 
@@ -16,7 +15,7 @@ interface GetScheduleParams {
 }
 
 export async function getSchedule(
-  req: Request<object, object, object, GetScheduleParams> & { user?: any },
+  req: Request<object, object, object, GetScheduleParams> & { user?: any; },
   res: Response,
   next: NextFunction,
 ) {
@@ -31,7 +30,7 @@ export async function getSchedule(
     classStatus: { notIn: [ClassStatus.HIDDEN] },
   };
   try {
-    let classesData = await prisma.class.findMany({
+    const classesData = await prisma.class.findMany({
       where,
       include: {
         classTemplate: {
@@ -39,6 +38,12 @@ export async function getSchedule(
             danceCategory: true,
             advancementLevel: true,
             course: true,
+          },
+        },
+        classRoom: {
+          select: {
+            id: true,
+            name: true,
           },
         },
       },
@@ -124,8 +129,79 @@ export async function getSchedule(
   }
 }
 
+export async function getClassDetails(
+  req: Request<{ id: string; }, object, object, object> & { user?: any; },
+  res: Response,
+  next: NextFunction,
+) {
+  const classId = Number(req.params.id);
+
+  if (Number.isNaN(classId)) {
+    throw new UniversalError(
+      StatusCodes.BAD_REQUEST,
+      "Class id must be a number",
+      [],
+    );
+  }
+
+  try {
+    const classData = await prisma.class.findFirst({
+      where: {
+        id: classId,
+        classStatus: { not: ClassStatus.HIDDEN },
+      },
+      include: {
+        classTemplate: {
+          include: {
+            danceCategory: true,
+            advancementLevel: true,
+            course: true,
+          },
+        },
+        classRoom: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+      },
+    });
+
+    if (!classData) {
+      throw new UniversalError(StatusCodes.NOT_FOUND, "Class not found", []);
+    }
+
+    const classesInstructorsIds = (
+      await getClassesInstructors([classData.id])
+    ).instructorsClassesIdsList;
+
+    const instructorIds = [
+      ...new Set(classesInstructorsIds.map((ci) => ci.instructorId)),
+    ];
+
+    const instructorsData = instructorIds.length
+      ? (await getInstructorsData(instructorIds)).instructorsDataList
+      : [];
+
+    res.status(StatusCodes.OK).json({
+      ...classData,
+      instructors: instructorsData,
+    });
+  } catch (err: any) {
+    if (err instanceof UniversalError) {
+      throw err;
+    }
+
+    throw new UniversalError(
+      StatusCodes.INTERNAL_SERVER_ERROR,
+      "Problem with getting class details",
+      [],
+    );
+  }
+}
+
 export async function getSchedulePersonal(
-  req: Request<object, object, object, GetScheduleParams> & { user?: any },
+  req: Request<object, object, object, GetScheduleParams> & { user?: any; },
   res: Response,
   next: NextFunction,
 ) {
@@ -180,6 +256,12 @@ export async function getSchedulePersonal(
             danceCategory: true,
             advancementLevel: true,
             course: true,
+          },
+        },
+        classRoom: {
+          select: {
+            id: true,
+            name: true,
           },
         },
       },
@@ -246,7 +328,7 @@ export async function getSearchAndFilterCourses(
       priceMin: string;
       priceMax: string;
     }
-  > & { user?: any },
+  > & { user?: any; },
   res: Response,
 ) {
   const priceMax = req.query.priceMax ? Number(req.query.priceMax) : 999999;
@@ -278,17 +360,17 @@ export async function getSearchAndFilterCourses(
   const where = {
     ...(danceCategoryIds.length > 0
       ? {
-          danceCategoryId: {
-            in: danceCategoryIds,
-          },
-        }
+        danceCategoryId: {
+          in: danceCategoryIds,
+        },
+      }
       : null),
     ...(advancementLevelIds.length > 0
       ? {
-          advancementLevelId: {
-            in: advancementLevelIds,
-          },
-        }
+        advancementLevelId: {
+          in: advancementLevelIds,
+        },
+      }
       : null),
     courseStatus: { not: CourseStatus.HIDDEN },
   };
@@ -353,7 +435,7 @@ export async function getSearchAndFilterCourses(
 
   const coursesInstructorsMap: Map<
     number | null | undefined,
-    { id: string; name: string; surname: string }[]
+    { id: string; name: string; surname: string; }[]
   > = new Map();
 
   coursesClassesInstructors.forEach((cci) => {
@@ -361,40 +443,22 @@ export async function getSearchAndFilterCourses(
     coursesInstructorsMap.set(cci.courseId, [...current, ...cci.instructors]);
   });
 
-  const coursesClassesPricesMap: Map<number, number[]> = new Map();
-
-  coursesClasses.forEach((cc) => {
-    if (!cc.classTemplate.courseId) return;
-    if (cc.classTemplate.course?.customPrice) {
-      coursesClassesPricesMap.set(cc.classTemplate.courseId, [
-        Number(cc.classTemplate.course.customPrice.toFixed(2)),
-      ]);
-      return;
-    }
-    if (!coursesClassesPricesMap.get(cc.classTemplate.courseId)) {
-      coursesClassesPricesMap.set(cc.classTemplate.courseId, [
-        Number(cc.classTemplate.price.toFixed(2)),
-      ]);
-    } else {
-      coursesClassesPricesMap.set(cc.classTemplate.courseId, [
-        ...(coursesClassesPricesMap.get(cc.classTemplate.courseId) || []),
-        Number(cc.classTemplate.price.toFixed(2)),
-      ]);
-    }
-  });
-
-  const coursesFilteredByPrice: { courseId: number; price: number }[] = [];
-
-  const keys = [...coursesClassesPricesMap.keys()];
-
-  keys.forEach((k) => {
-    const coursePrice = (coursesClassesPricesMap.get(k) ?? []).reduce(
-      (acc, cur) => acc + cur,
-      0,
-    );
-    if (coursePrice && coursePrice >= priceMin && coursePrice <= priceMax)
-      coursesFilteredByPrice.push({ courseId: k, price: coursePrice });
-  });
+  const coursesFilteredByPrice = coursesClasses
+    .filter((cc) => {
+      const coursePrice = cc.classTemplate.course?.price?.toNumber();
+      return coursePrice && coursePrice >= priceMin && coursePrice <= priceMax;
+    })
+    .map((cc) => {
+      if (cc.classTemplate.courseId) {
+        return {
+          courseId: cc.classTemplate.courseId,
+          price: cc.classTemplate.course?.price?.toNumber(),
+        };
+      } else {
+        return null;
+      }
+    })
+    .filter((item) => item !== null);
 
   const resultCourses = await prisma.course.findMany({
     where: {
@@ -445,7 +509,7 @@ type AllClassesType = Prisma.ClassGetPayload<{
 }>[];
 
 export async function getCoursesClasses(
-  req: Request<object, object, {}, { coursesIds: string[] }> & { user?: any },
+  req: Request<object, object, {}, { coursesIds: string[]; }> & { user?: any; },
   res: Response,
 ) {
   let coursesIdsQ: string[] = [];
@@ -487,11 +551,9 @@ export async function getCoursesClasses(
     coursesClassesMap.set(c.classTemplate.courseId, [...current, c]);
   });
 
-  const result: { courseData: any; classes: any[] }[] = [];
+  const result: { courseData: any; classes: any[]; }[] = [];
 
   const keys = [...coursesClassesMap.keys()];
-
-  const coursesPrices = await getCoursesPrices(coursesIds);
 
   const classesIds = allClasses.map((cl) => cl.id);
 
@@ -532,8 +594,6 @@ export async function getCoursesClasses(
       courseData: {
         ...allClasses.find((ac) => ac.classTemplate.courseId === k)
           ?.classTemplate.course,
-        coursePrice: coursesPrices.find((cp) => cp.courseId === k)?.price,
-        customPrice: undefined,
         instructors: [
           ...new Set(
             classesInstructors
