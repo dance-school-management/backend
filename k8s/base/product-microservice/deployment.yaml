@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: product-microservice
+  labels:
+    app: product-microservice
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: product-microservice
+  template:
+    metadata:
+      labels:
+        app: product-microservice
+    spec:
+      serviceAccountName: product-microservice-sa
+      initContainers:
+      - name: product-microservice-migrate-wait
+        image: ghcr.io/groundnuty/k8s-wait-for:v2.0
+        args:
+        - "job"
+        - "product-microservice-migrate"
+      containers:
+      - name: product-microservice
+        image: backend-product-microservice
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8001
+        - containerPort: 50051
+        envFrom:
+        - secretRef:
+            name: product-microservice-secret
+        - configMapRef:
+            name: product-microservice-config
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "128Mi"
+          limits:
+            cpu: "500m"
+            memory: "512Mi"

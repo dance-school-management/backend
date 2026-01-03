@@ -9,7 +9,7 @@ You can use script ```bash compare-envs.sh``` (needs to be run with ```bash```, 
 
 - auth-db-password.txt
 - product-db-password.txt
-- enroll-db-password.txt 
+- enroll-db-password.txt
 - profile-db-password.txt
 - notification-db-password.txt
 
@@ -74,3 +74,7 @@ Development mode (auth):
 
 - Careful! Auth seeding is related with profile-microservice. Remember about starting all needed docker's containers.
 - Remember to create "uploads" folder if isn't there. It is used by muter for uploading photo.
+
+## Kubernetes [In progress]
+
+- For now there is a basic configuration creating 2 pods of api-gateway. For dev-purposes skaffold.yaml can be used `skaffold dev`. You will need to have skaffold, kustomize, minikube installed. k9s would also be handy.

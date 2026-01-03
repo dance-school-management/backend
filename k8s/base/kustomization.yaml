@@ -1,0 +1,4 @@
+resources:
+- api-gateway
+- product-db
+- product-microservice

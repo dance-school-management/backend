@@ -1,0 +1,4 @@
+secretGenerator:
+- name: product-db-secret
+  envs:
+  - db.template.secrets

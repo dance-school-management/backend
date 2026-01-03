@@ -1,0 +1,7 @@
+namespace: dev-backend
+resources:
+- ../../base
+- namespace.yaml
+- ./api-gateway
+- ./product-db
+- ./product-microservice

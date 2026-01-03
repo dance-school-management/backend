@@ -1,0 +1,8 @@
+secretGenerator:
+- name: product-microservice-secret
+  envs:
+  - product-microservice.secrets
+configMapGenerator:
+- name: product-microservice-config
+  envs:
+  - product-microservice.properties
