@@ -17,6 +17,12 @@ jobs:
         with:
           filters: |
             api-gateway: 'api-gateway/**'
+            product-microservice: 'product-microservice/**'
+            auth-microservice: 'auth-microservice/**'
+            enroll-microservice: 'enroll-microservice/**'
+            notification-microservice: 'notification-microservice/**'
+            profile-microservice: 'profile-microservice/**'
+            blog-microservice: 'blog-microservice/**'
   create-release:
     runs-on: ubuntu-latest
     permissions:
@@ -35,21 +41,21 @@ jobs:
         id: release
         run: |
           bash ./scripts/git_update.sh -v patch
-  call-aws-workflow-for-microservices:
-    needs: [check-changes, create-release]
-    permissions:
-      id-token: write
-      contents: write
-    strategy:
-      matrix:
-        service: ${{ fromJSON(needs.check-changes.outputs.changes) }}
-    uses: ./.github/workflows/docker-build-aws.yaml
-    secrets: inherit
-    with:
-      image_name: ${{ matrix.service }}
-      dockerfile_context: ./${{ matrix.service }}
-      dockerfile_path: ./${{ matrix.service }}/docker/dev/Dockerfile
-      new_tag: ${{ needs.create-release.outputs.new-tag }}
+  # call-aws-workflow-for-microservices:
+  #   needs: [check-changes, create-release]
+  #   permissions:
+  #     id-token: write
+  #     contents: write
+  #   strategy:
+  #     matrix:
+  #       service: ${{ fromJSON(needs.check-changes.outputs.changes) }}
+  #   uses: ./.github/workflows/docker-build-aws.yaml
+  #   secrets: inherit
+  #   with:
+  #     image_name: ${{ matrix.service }}
+  #     dockerfile_context: ./${{ matrix.service }}
+  #     dockerfile_path: ./${{ matrix.service }}/docker/dev/Dockerfile
+  #     new_tag: ${{ needs.create-release.outputs.new-tag }}
   call-ghcr-workflow-for-microservices:
     needs: [check-changes, create-release]
     permissions:
