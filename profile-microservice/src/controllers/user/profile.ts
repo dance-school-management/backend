@@ -8,6 +8,7 @@ import { validationResult } from "express-validator";
 import logger from "../../utils/winston";
 import { Prisma } from "../../../generated/client";
 import { deletePublicPhoto, uploadPublicPhoto } from "../../utils/aws-s3/crud";
+import { s3Endpoint } from "../../utils/aws-s3/s3Client";
 
 export async function editProfile(
   req: Request<{}, {}, Profile> & { user?: any },
@@ -96,11 +97,15 @@ export async function getProfile(
     );
   }
 
-  const response = await prisma.profile.findFirst({
+  let response = await prisma.profile.findFirst({
     where: {
       id,
     },
   });
+  if (!response) {
+    throw new UniversalError(StatusCodes.NOT_FOUND, "Profile not found", []);
+  }
+  response = { ...response, photoPath: `${s3Endpoint}${response?.photoPath}` };
 
   res.status(StatusCodes.OK).json({ userData: response });
 }
